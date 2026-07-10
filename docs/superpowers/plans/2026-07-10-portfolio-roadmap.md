@@ -32,7 +32,7 @@
 ## Interfaces entre fases (contratos)
 
 - **F0 → resto:** workspace `web` (`apps/web`) y raíz con scripts `pnpm run lint|format|typecheck|test|build`; helper `resolveOutputMode(env: Record<string, string | undefined>): 'export' | 'node'` en `apps/web/src/lib/output-mode.ts`; config agentes en raíz (`AGENTS.md`, `skills/`, `agents/`, `scripts/setup-agents.sh`).
-- **F1 → F2/F3/F4:** tokens CSS `--color-*`, `--space-*`, `--radius-*`, `--font-*` definidos en `apps/web/src/app/globals.css` bajo `:root[data-theme='dark' | 'light']`; primitivas en `apps/web/src/components/ui/` (Button, Card, Input, Select, Tabs, Badge, Skeleton) con variantes cva; página `/{locale}/showcase`.
+- **F1 → F2/F3/F4:** tokens CSS `--color-*`, `--radius-*`, `--font-*` vía `@theme inline` en `apps/web/src/app/globals.css`, con valores por tema bajo `:root[data-theme='dark' | 'light']` (spacing: escala estándar de Tailwind, sin tokens propios — AMENDED 2026-07-10, YAGNI); primitivas en `apps/web/src/components/ui/` (Button, Card, Field, Input, Select, Tabs, Badge, Skeleton) con variantes cva; página `/showcase` (F3 la mueve bajo `/[locale]/`).
 - **F2 → F4:** `@nicobehm/media-kit` exporta `CompareSlider` y `MediaLightbox` (props documentadas en su README); el playground los consume como workspace dependency.
 - **F3 → F4/F6:** rutas `/{es,en}/{'', cv, projects, projects/[slug]}`, layout con header/footer/theme-switcher/locale-switcher; helpers SEO en `apps/web/src/lib/seo.ts`; schemas Zod en `apps/web/src/data/schemas.ts`.
 - **F4 → F5:** puerto `GenerationService` (`apps/web/src/features/playground/domain/`) con adaptadores `mock` | `pollinations` | `proxy`; el `proxy` espera `POST /api/ai-proxy` (implementado en F5 modo Node).
