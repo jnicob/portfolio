@@ -87,15 +87,17 @@ No CSS-in-JS, no build-time theming step: import `@nicobehm/media-kit/styles.css
 override any of the following custom properties on `:root` (or on a wrapping element) to restyle
 the components.
 
-| Custom property      | Default            | Controls                                                                                                       |
-| -------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------- |
-| `--mk-handle-color`  | `#ffffff`          | Background of the CompareSlider divider line, its circular grip indicator, and the MediaLightbox close button. |
-| `--mk-handle-size`   | `2.5rem`           | Diameter of the CompareSlider handle's circular grip indicator (the enlarged touch target).                    |
-| `--mk-divider-width` | `2px`              | Thickness of the CompareSlider divider line (width when horizontal, height when vertical).                     |
-| `--mk-focus-ring`    | `#6d5ce8`          | `focus-visible` outline color for the CompareSlider handle and the MediaLightbox close button/content.         |
-| `--mk-overlay-bg`    | `rgb(0 0 0 / 0.8)` | Background of the MediaLightbox overlay.                                                                       |
-| `--mk-radius`        | `0.75rem`          | Border radius of the CompareSlider container and of `<img>`/`<video>` elements inside the lightbox.            |
-| `--mk-z-lightbox`    | `50`               | `z-index` of the MediaLightbox overlay.                                                                        |
+| Custom property          | Default             | Controls                                                                                                                                                                                                                  |
+| ------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--mk-handle-color`      | `#ffffff`           | Background of the CompareSlider divider line, its circular grip indicator, and the MediaLightbox close button. Intentionally not theme-mapped by consumers — it must contrast with the media shown, not the page surface. |
+| `--mk-handle-icon-color` | `#18181b`           | Color of the chevron affordance (`◂ ▸` / `▴ ▾`) rendered inside the CompareSlider grip indicator.                                                                                                                         |
+| `--mk-handle-ring`       | `rgb(0 0 0 / 0.4)`  | Outline `box-shadow` around the CompareSlider divider line, its grip indicator, and the MediaLightbox close button, keeping them visible against any media.                                                               |
+| `--mk-handle-size`       | `2.5rem`            | Diameter of the CompareSlider handle's circular grip indicator (the enlarged touch target).                                                                                                                               |
+| `--mk-divider-width`     | `2px`               | Thickness of the CompareSlider divider line (width when horizontal, height when vertical).                                                                                                                                |
+| `--mk-focus-ring`        | `#6d5ce8`           | `focus-visible` outline color for the CompareSlider handle's grip indicator and the MediaLightbox close button/content.                                                                                                   |
+| `--mk-overlay-bg`        | `rgb(0 0 0 / 0.88)` | Background of the MediaLightbox overlay.                                                                                                                                                                                  |
+| `--mk-radius`            | `0.75rem`           | Border radius of the CompareSlider container and of `<img>`/`<video>` elements inside the lightbox.                                                                                                                       |
+| `--mk-z-lightbox`        | `50`                | `z-index` of the MediaLightbox overlay.                                                                                                                                                                                   |
 
 ## Accessibility
 
