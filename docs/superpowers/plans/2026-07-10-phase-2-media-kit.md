@@ -45,9 +45,14 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./styles.css": "./dist/styles.css"
   },
@@ -64,6 +69,8 @@
   }
 }
 ```
+
+Nota (AMENDED 2026-07-10): exports con types anidados por condición para que los consumidores CJS resuelvan index.d.cts (hallazgo de review).
 
 Instalar devDeps (mismos pins que apps/web — si pnpm resuelve una versión que exige Node ≥20.19, pinnear igual que la fila existente del decision-log):
 
