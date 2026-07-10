@@ -317,6 +317,15 @@ export default defineConfig({
 import '@testing-library/jest-dom/vitest';
 ```
 
+Nota (AMENDED 2026-07-10): sin `test.globals`, el auto-cleanup de RTL no se registra (su guard usa el `afterEach` global). El setup real añade:
+
+```ts
+import { afterEach } from 'vitest';
+import { cleanup } from '@testing-library/react';
+
+afterEach(() => cleanup());
+```
+
 Run: `pnpm --filter web test` → los 6 tests existentes siguen PASS (jsdom es superset para tests puros).
 
 - [ ] **Step 3: Helper `cn`**
