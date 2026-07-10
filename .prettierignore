@@ -5,3 +5,4 @@ dist/
 coverage/
 .superpowers/
 .github/copilot-instructions.md
+apps/web/next-env.d.ts

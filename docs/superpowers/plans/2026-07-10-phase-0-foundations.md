@@ -177,6 +177,10 @@ pnpm add -D typescript @types/react @types/react-dom @types/node tailwindcss@^4 
 }
 ```
 
+Nota (AMENDED 2026-07-10): Next 16 reescribe `jsx` a `"react-jsx"` y añade
+`.next/dev/types` al `include` en el primer build — el committed
+`tsconfig.json` refleja eso.
+
 `apps/web/postcss.config.mjs`:
 
 ```js

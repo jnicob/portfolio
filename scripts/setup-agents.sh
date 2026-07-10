@@ -31,7 +31,8 @@ create_links() {
   done
 }
 
-generate_copilot() {
+generate_copilot_to() {
+  local out="$1"
   {
     echo "<!-- Auto-generated from AGENTS.md and skills/ by scripts/setup-agents.sh. Do not edit. -->"
     cat AGENTS.md
@@ -44,7 +45,11 @@ generate_copilot() {
       desc="$(awk -F': ' '/^description:/ {sub(/^description: /, ""); print; exit}' "$skill")"
       echo "- **${name}**: ${desc}"
     done
-  } > "$COPILOT_FILE"
+  } > "$out"
+}
+
+generate_copilot() {
+  generate_copilot_to "$COPILOT_FILE"
   echo "generated: $COPILOT_FILE"
 }
 
@@ -63,6 +68,17 @@ validate() {
   elif ! head -1 "$COPILOT_FILE" | grep -q "Auto-generated"; then
     echo "FAIL: $COPILOT_FILE lost its auto-generated header" >&2
     ok=1
+  else
+    local tmp
+    tmp="$(mktemp)"
+    trap 'rm -f "$tmp"' RETURN
+    generate_copilot_to "$tmp"
+    if ! diff -q "$tmp" "$COPILOT_FILE" >/dev/null; then
+      echo "FAIL: $COPILOT_FILE is stale (run --copilot)" >&2
+      ok=1
+    fi
+    rm -f "$tmp"
+    trap - RETURN
   fi
   [ "$ok" -eq 0 ] && echo "agent config OK"
   return "$ok"
