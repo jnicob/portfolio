@@ -20,14 +20,17 @@
 ### Task 1: Esqueleto del monorepo pnpm
 
 **Files:**
+
 - Create: `pnpm-workspace.yaml`, `package.json`, `.gitignore`, `.npmrc`, `.editorconfig`
 
 **Interfaces:**
+
 - Produces: workspace raíz con scripts `lint`, `format`, `format:fix`, `typecheck`, `test`, `build`, `dev` que las demás tareas y fases invocan.
 
 - [ ] **Step 1: Crear los ficheros raíz**
 
 `pnpm-workspace.yaml`:
+
 ```yaml
 packages:
   - apps/*
@@ -35,6 +38,7 @@ packages:
 ```
 
 `package.json`:
+
 ```json
 {
   "name": "nicobehm-portfolio",
@@ -54,9 +58,11 @@ packages:
   }
 }
 ```
+
 Nota: si `pnpm --version` local difiere, usar la versión local exacta en `packageManager`.
 
 `.gitignore`:
+
 ```gitignore
 node_modules/
 .next/
@@ -72,11 +78,13 @@ playwright-report/
 ```
 
 `.npmrc`:
+
 ```ini
 engine-strict=true
 ```
 
 `.editorconfig`:
+
 ```ini
 root = true
 
@@ -105,9 +113,11 @@ git commit -m "chore: scaffold pnpm monorepo"
 ### Task 2: App Next.js 16 con TS estricto y Tailwind v4
 
 **Files:**
+
 - Create: `apps/web/package.json`, `apps/web/tsconfig.json`, `apps/web/next.config.ts`, `apps/web/postcss.config.mjs`, `apps/web/src/app/layout.tsx`, `apps/web/src/app/page.tsx`, `apps/web/src/app/globals.css`, `apps/web/src/lib/output-mode.ts`, `apps/web/src/lib/output-mode.test.ts`, `apps/web/vitest.config.ts`, `apps/web/.env.example`
 
 **Interfaces:**
+
 - Produces: workspace `web`; `resolveOutputMode(env: NodeJS.ProcessEnv): 'export' | 'node'` en `apps/web/src/lib/output-mode.ts` (lo consume `next.config.ts` ahora y la F5 al documentar el dual). Página raíz provisional (F3 la sustituye por `[locale]`).
 
 - [ ] **Step 1: Instalar dependencias**
@@ -117,11 +127,13 @@ cd apps/web  # crear carpeta primero: mkdir -p apps/web/src/app apps/web/src/lib
 pnpm add next@^16 react@^19 react-dom@^19
 pnpm add -D typescript @types/react @types/react-dom @types/node tailwindcss@^4 @tailwindcss/postcss postcss vitest
 ```
+
 (Ejecutar desde `apps/web` tras crear su `package.json` mínimo en el paso 2, o crear el `package.json` a mano y luego `pnpm install`.)
 
 - [ ] **Step 2: Crear config del workspace**
 
 `apps/web/package.json` (versiones: las que resuelva pnpm en Step 1). AMENDED 2026-07-10: engines.node relajado a >=20 por entorno local (Node 20.17, engine-strict); subir a >=22 cuando el owner actualice Node (20 es EOL desde 2026-04). CI verifica con Node 22:
+
 ```json
 {
   "name": "web",
@@ -137,6 +149,7 @@ pnpm add -D typescript @types/react @types/react-dom @types/node tailwindcss@^4 
 ```
 
 `apps/web/tsconfig.json`:
+
 ```json
 {
   "compilerOptions": {
@@ -165,6 +178,7 @@ pnpm add -D typescript @types/react @types/react-dom @types/node tailwindcss@^4 
 ```
 
 `apps/web/postcss.config.mjs`:
+
 ```js
 export default {
   plugins: { '@tailwindcss/postcss': {} },
@@ -172,6 +186,7 @@ export default {
 ```
 
 `apps/web/.env.example`:
+
 ```bash
 # 'export' (default, estático) | 'node' (SSR + route handlers)
 NEXT_OUTPUT_MODE=export
@@ -182,6 +197,7 @@ NEXT_PUBLIC_SITE_URL=https://example-placeholder.dev
 - [ ] **Step 3: TDD — test de `resolveOutputMode` (failing)**
 
 `apps/web/src/lib/output-mode.test.ts`:
+
 ```ts
 import { describe, expect, it } from 'vitest';
 import { resolveOutputMode } from './output-mode';
@@ -202,6 +218,7 @@ describe('resolveOutputMode', () => {
 ```
 
 `apps/web/vitest.config.ts`:
+
 ```ts
 import { defineConfig } from 'vitest/config';
 
@@ -216,6 +233,7 @@ Expected: FAIL — `Cannot find module './output-mode'`.
 - [ ] **Step 4: Implementación mínima**
 
 `apps/web/src/lib/output-mode.ts`:
+
 ```ts
 export type OutputMode = 'export' | 'node';
 
@@ -231,6 +249,7 @@ Expected: PASS (3 tests).
 - [ ] **Step 5: next.config.ts dual + app mínima**
 
 `apps/web/next.config.ts`:
+
 ```ts
 import type { NextConfig } from 'next';
 import { resolveOutputMode } from './src/lib/output-mode';
@@ -248,12 +267,14 @@ export default nextConfig;
 ```
 
 `apps/web/src/app/globals.css`:
+
 ```css
 @import 'tailwindcss';
 /* Tokens semánticos: se definen en Fase 1 (design system). */
 ```
 
 `apps/web/src/app/layout.tsx`:
+
 ```tsx
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
@@ -274,6 +295,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 ```
 
 `apps/web/src/app/page.tsx`:
+
 ```tsx
 export default function HomePage() {
   return (
@@ -307,9 +329,11 @@ git commit -m "feat: add Next.js 16 app with strict TS, Tailwind v4 and dual out
 ### Task 3: ESLint (flat) + Prettier en raíz
 
 **Files:**
+
 - Create: `eslint.config.mjs`, `.prettierrc.json`, `.prettierignore`
 
 **Interfaces:**
+
 - Produces: `pnpm run lint` y `pnpm run format` operativos repo-wide (los usa el CI de Task 8 y todas las fases).
 
 - [ ] **Step 1: Instalar en raíz**
@@ -321,6 +345,7 @@ pnpm add -D -w eslint typescript-eslint @eslint/js eslint-config-next eslint-con
 - [ ] **Step 2: Crear configs**
 
 `eslint.config.mjs`:
+
 ```js
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
@@ -342,9 +367,11 @@ export default tseslint.config(
   prettier,
 );
 ```
+
 Nota: `@next/eslint-plugin-next` viene como dependencia de `eslint-config-next`; si el import directo falla, añadirlo explícito con `pnpm add -D -w @next/eslint-plugin-next`.
 
 `.prettierrc.json`:
+
 ```json
 {
   "singleQuote": true,
@@ -355,6 +382,7 @@ Nota: `@next/eslint-plugin-next` viene como dependencia de `eslint-config-next`;
 ```
 
 `.prettierignore`:
+
 ```
 pnpm-lock.yaml
 .next/
@@ -384,16 +412,18 @@ git commit -m "chore: add ESLint flat config and Prettier"
 ### Task 4: AGENTS.md — fuente de verdad agnóstica
 
 **Files:**
+
 - Create: `AGENTS.md`
 
 **Interfaces:**
+
 - Produces: `AGENTS.md` con tabla de routing que referencia las skills de Task 5 y agents de Task 6 (nombres EXACTOS: `nextjs-static-dual`, `tailwind-tokens`, `component-patterns`, `accessibility`, `performance`, `code-principles`, `design-reviewer`, `qa-a11y-perf`).
 
 - [ ] **Step 1: Crear `AGENTS.md`**
 
 Contenido completo (es la fuente de verdad para CUALQUIER agente; en inglés, estándar del ecosistema):
 
-````markdown
+```markdown
 # AGENTS.md — nicobehm portfolio
 
 Source of truth for ANY coding agent (Claude Code, Cursor, Codex, Gemini CLI, Copilot…).
@@ -410,15 +440,15 @@ structure, tests, tooling and this agent config are meant to be audited.
 
 ## Commands
 
-| Action | Command |
-| ------ | ------- |
-| Install | `pnpm install` |
-| Dev server | `pnpm run dev` |
-| Build (static, default) | `pnpm run build` |
-| Build (Node mode) | `NEXT_OUTPUT_MODE=node pnpm run build` |
-| Lint / format / types | `pnpm run lint` · `pnpm run format` · `pnpm run typecheck` |
-| Tests | `pnpm run test` |
-| Agent config setup/validate | `pnpm run agents:setup` · `pnpm run agents:validate` |
+| Action                      | Command                                                    |
+| --------------------------- | ---------------------------------------------------------- |
+| Install                     | `pnpm install`                                             |
+| Dev server                  | `pnpm run dev`                                             |
+| Build (static, default)     | `pnpm run build`                                           |
+| Build (Node mode)           | `NEXT_OUTPUT_MODE=node pnpm run build`                     |
+| Lint / format / types       | `pnpm run lint` · `pnpm run format` · `pnpm run typecheck` |
+| Tests                       | `pnpm run test`                                            |
+| Agent config setup/validate | `pnpm run agents:setup` · `pnpm run agents:validate`       |
 
 ## Hard rules
 
@@ -461,20 +491,20 @@ Read the matching skill in `skills/<name>/SKILL.md` BEFORE working on a matching
 
 ## Tool discovery map
 
-| Tool | Entry point |
-| ---- | ----------- |
-| Claude Code | `CLAUDE.md` (symlink) + `.claude/skills`, `.claude/agents` (symlinks) |
-| Cursor | `AGENTS.md` (native) + `.cursor/skills` (symlink) |
-| Codex CLI | `AGENTS.md` (native) + `.codex/skills` (symlink) |
-| Gemini CLI | `GEMINI.md` (symlink) |
+| Tool           | Entry point                                                                |
+| -------------- | -------------------------------------------------------------------------- |
+| Claude Code    | `CLAUDE.md` (symlink) + `.claude/skills`, `.claude/agents` (symlinks)      |
+| Cursor         | `AGENTS.md` (native) + `.cursor/skills` (symlink)                          |
+| Codex CLI      | `AGENTS.md` (native) + `.codex/skills` (symlink)                           |
+| Gemini CLI     | `GEMINI.md` (symlink)                                                      |
 | GitHub Copilot | `.github/copilot-instructions.md` (generated) + `.github/skills` (symlink) |
-| Anything else | read this file + `skills/` + `agents/` directly |
+| Anything else  | read this file + `skills/` + `agents/` directly                            |
 
 Symlinks and the generated Copilot file are managed by `scripts/setup-agents.sh`
 (`--all` to create, `--validate` in CI). On checkouts without symlink support (Windows
 without developer mode), run `pnpm run agents:setup` after enabling symlinks or read the
 root sources directly.
-````
+```
 
 - [ ] **Step 2: Verificar formato**
 
@@ -493,13 +523,16 @@ git commit -m "docs: add AGENTS.md as tool-agnostic source of truth"
 ### Task 5: Las 6 skills de conocimiento
 
 **Files:**
+
 - Create: `skills/nextjs-static-dual/SKILL.md`, `skills/tailwind-tokens/SKILL.md`, `skills/component-patterns/SKILL.md`, `skills/accessibility/SKILL.md`, `skills/performance/SKILL.md`, `skills/code-principles/SKILL.md`
 
 **Interfaces:**
+
 - Consumes: nombres de skill de la tabla de routing de `AGENTS.md` (Task 4) — deben coincidir EXACTAMENTE.
 - Produces: 6 `SKILL.md` con frontmatter portable (`name`, `description`, `metadata.auto-invoke`).
 
 Formato común de frontmatter (mismo patrón en las 6):
+
 ```yaml
 ---
 name: <slug>
@@ -511,7 +544,7 @@ metadata:
 
 - [ ] **Step 1: `skills/nextjs-static-dual/SKILL.md`**
 
-````markdown
+```markdown
 ---
 name: nextjs-static-dual
 description: Next.js 16 App Router with dual runtime — static export (default) and optional Node mode. Use when creating routes/pages, choosing RSC vs client components, or touching next.config, route handlers, images or anything runtime-dependent.
@@ -548,11 +581,11 @@ metadata:
 
 - `/api/ai-proxy` route handler (playground live-premium) exists but is excluded from the
   build in export mode. Anything server-secret-dependent belongs ONLY here.
-````
+```
 
 - [ ] **Step 2: `skills/tailwind-tokens/SKILL.md`**
 
-````markdown
+```markdown
 ---
 name: tailwind-tokens
 description: Semantic design tokens with Tailwind v4 and dark/light theming via CSS variables + data-theme. Use when styling anything, adding colors, spacing, radii, or working on themes.
@@ -588,11 +621,11 @@ metadata:
 
 `grep -rnE '#[0-9a-fA-F]{3,8}|rgb\(' apps/web/src/components apps/web/src/features` must
 return nothing (except token definitions in globals.css).
-````
+```
 
 - [ ] **Step 3: `skills/component-patterns/SKILL.md`**
 
-````markdown
+```markdown
 ---
 name: component-patterns
 description: Component conventions — composition, cva variants, headless patterns, accessible forms, explicit empty/loading/error states. Use when creating or refactoring any UI component.
@@ -634,11 +667,11 @@ metadata:
 
 Unit/RTL tests for behavior and a11y basics; entry in `/showcase` with all variants and
 states; props documented (JSDoc or README table); no hardcoded colors or copy.
-````
+```
 
 - [ ] **Step 4: `skills/accessibility/SKILL.md`**
 
-````markdown
+```markdown
 ---
 name: accessibility
 description: WCAG AA checklist applied during build and review. Use when building interactive components, reviewing UI, or auditing pages for keyboard, ARIA, contrast.
@@ -676,11 +709,11 @@ metadata:
 
 RTL + `vitest-axe`/`jest-axe` for components; Playwright + `@axe-core/playwright` per page
 in BOTH themes (Phase 6 automates this in CI).
-````
+```
 
 - [ ] **Step 5: `skills/performance/SKILL.md`**
 
-````markdown
+```markdown
 ---
 name: performance
 description: Core Web Vitals, image discipline, bundle budget and code splitting for a static-first Next.js site. Use when adding dependencies, images, fonts, client components, or investigating slowness.
@@ -713,11 +746,11 @@ metadata:
 
 `pnpm --filter web build` prints route sizes — check them on every feature. Run Lighthouse
 locally on `out/` before phase close (`pnpm dlx serve apps/web/out`).
-````
+```
 
 - [ ] **Step 6: `skills/code-principles/SKILL.md`**
 
-````markdown
+```markdown
 ---
 name: code-principles
 description: Readability, SOLID, single responsibility and module-size rules for this repo. Use when writing, refactoring or reviewing any code.
@@ -756,7 +789,7 @@ metadata:
 
 - Test behavior through the public API, not implementation details. Every bug fix starts
   with a failing test. Table-driven cases for pure logic.
-````
+```
 
 - [ ] **Step 7: Verificar y commitear**
 
@@ -775,14 +808,16 @@ git commit -m "docs: add 6 domain knowledge skills"
 ### Task 6: Los 2 agents (lentes de revisión)
 
 **Files:**
+
 - Create: `agents/design-reviewer.md`, `agents/qa-a11y-perf.md`
 
 **Interfaces:**
+
 - Produces: briefs markdown con frontmatter compatible con subagentes Claude, ejecutables como prompt por cualquier herramienta. Referenciados desde `AGENTS.md` (Task 4).
 
 - [ ] **Step 1: `agents/design-reviewer.md`**
 
-````markdown
+```markdown
 ---
 name: design-reviewer
 description: Visual and taste audit of the portfolio UI. Use after building or changing any page/component — checks hierarchy, spacing, states and coherence across both themes. Read-only reviewer; reports findings, does not fix.
@@ -820,11 +855,11 @@ as a review prompt.
 
 Markdown report: summary verdict (ship / fix-first), findings grouped by severity,
 top 3 improvements with the highest visual payoff.
-````
+```
 
 - [ ] **Step 2: `agents/qa-a11y-perf.md`**
 
-````markdown
+```markdown
 ---
 name: qa-a11y-perf
 description: QA lens that runs the automated quality gates — Playwright e2e, accessibility (axe) and performance (Lighthouse) — and reports findings. Use before closing a phase or PR that touches UI or build config. Read-only reviewer; reports findings, does not fix.
@@ -852,7 +887,7 @@ never estimate results you didn't measure. Any tool can run this file as a promp
 
 Markdown report: table of gates (gate → result → evidence), findings with severity and
 repro steps, and a final verdict: PASS / FAIL with the exact blockers.
-````
+```
 
 - [ ] **Step 3: Commit**
 
@@ -866,16 +901,19 @@ git commit -m "docs: add design-reviewer and qa-a11y-perf review lenses"
 ### Task 7: `scripts/setup-agents.sh` + symlinks multi-herramienta
 
 **Files:**
+
 - Create: `scripts/setup-agents.sh`
 - Create (vía script): `CLAUDE.md`, `GEMINI.md`, `.claude/skills`, `.claude/agents`, `.cursor/skills`, `.codex/skills`, `.github/skills` (symlinks), `.github/copilot-instructions.md` (generado)
 
 **Interfaces:**
+
 - Consumes: `AGENTS.md` (Task 4), `skills/` (Task 5), `agents/` (Task 6).
 - Produces: `pnpm run agents:setup` y `pnpm run agents:validate` (usado por CI en Task 8).
 
 - [ ] **Step 1: Crear el script**
 
 `scripts/setup-agents.sh`:
+
 ```bash
 #!/usr/bin/env bash
 # Manages tool-specific entry points for the agent-agnostic config.
@@ -962,6 +1000,7 @@ chmod +x scripts/setup-agents.sh
 pnpm run agents:setup
 pnpm run agents:validate
 ```
+
 Expected: 7 `link:` + 1 `generated:` y después `agent config OK`.
 
 Run: `ls -la CLAUDE.md GEMINI.md .claude/ .cursor/ .codex/ .github/`
@@ -979,15 +1018,18 @@ git commit -m "feat: add setup-agents.sh managing multi-tool symlinks and genera
 ### Task 8: CI base (GitHub Actions)
 
 **Files:**
+
 - Create: `.github/workflows/ci.yml`
 
 **Interfaces:**
+
 - Consumes: scripts raíz (Task 1), builds duales (Task 2), `agents:validate` (Task 7).
 - Produces: workflow `ci` que las fases siguientes amplían (Playwright y Lighthouse se añaden en F6).
 
 - [ ] **Step 1: Crear workflow**
 
 `.github/workflows/ci.yml`:
+
 ```yaml
 name: CI
 
@@ -1048,9 +1090,11 @@ git commit -m "ci: add base workflow (checks + dual-mode build matrix)"
 ### Task 9: README provisional + cierre de fase
 
 **Files:**
+
 - Create: `README.md`
 
 **Interfaces:**
+
 - Produces: README mínimo honesto (la versión completa con matriz de deploy es entregable de F6).
 
 - [ ] **Step 1: Crear README**
@@ -1088,6 +1132,7 @@ git commit -m "docs: add provisional README"
 1. Ejecutar la cadena completa de checks (comando del Task 8 Step 2) — todo verde.
 2. Code review de la fase (superpowers:requesting-code-review).
 3. Actualizar Estado de F0 en `2026-07-10-portfolio-roadmap.md` a ✅ y commitear:
+
 ```bash
 git add docs/superpowers/plans/2026-07-10-portfolio-roadmap.md
 git commit -m "docs: mark phase 0 as done in roadmap"

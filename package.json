@@ -2,7 +2,9 @@
   "name": "nicobehm-portfolio",
   "private": true,
   "packageManager": "pnpm@9.9.0",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "pnpm --filter web dev",
     "build": "pnpm -r build",
@@ -18,5 +20,13 @@
     "overrides": {
       "vite": "^6"
     }
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.10",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.5",
+    "typescript-eslint": "8.55.0"
   }
 }

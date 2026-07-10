@@ -8,27 +8,27 @@
 
 ## 1. Visión
 
-Portfolio profesional bilingüe (es/en) de Nicolás Behm (full-stack, Freepik Company), con estética **dev-tool / API landing** (referencias: Stripe, Vercel, Linear). El hilo narrativo es su especialidad real: *construir plataformas de API de IA end-to-end*. El propio repositorio es parte del portfolio: organización, patrones, tests, config de agentes y CI/CD deben ser auditables por un revisor técnico.
+Portfolio profesional bilingüe (es/en) de Nicolás Behm (full-stack, Freepik Company), con estética **dev-tool / API landing** (referencias: Stripe, Vercel, Linear). El hilo narrativo es su especialidad real: _construir plataformas de API de IA end-to-end_. El propio repositorio es parte del portfolio: organización, patrones, tests, config de agentes y CI/CD deben ser auditables por un revisor técnico.
 
 **Audiencia:** recruiters técnicos y engineering managers (internacional → inglés primario en alcance, español al mismo nivel desde el día 1).
 
 ## 2. Decisiones cerradas (log)
 
-| Decisión | Valor |
-|---|---|
-| Idioma | **Bilingüe es/en desde el día 1** (contenido completo en ambos) |
-| Estilo visual | **Dev-tool / API landing**: oscuro por defecto, acentos vibrantes, bloques de código como elemento visual, grid limpio |
-| Playground | **Dentro del portfolio** (`/playground`) + **paquete npm propio** con los componentes media (híbrido) |
-| Playground: qué muestra | Generación/edición de **imagen y vídeo** con parámetros simples (prompt, modelo, aspect ratio, seed). Sin parametrización compleja tipo Flux |
-| Edición de imagen v1 | **Solo ejemplos pregrabados** before/after (upscale, relight, remove-bg) con CompareSlider. Edición live = extensión documentada, no implementada |
-| Vídeo | **Solo mocks** (verificado 2026-07-10: no existe API de vídeo gratuita fiable) |
-| Imagen live (estático) | **Pollinations.ai** — gratis, sin key, CORS `*` (verificado con generación real), GET por URL, con `referrer`. Fallback automático a mock |
-| Imagen live (modo Node) | Proxy → **Cloudflare Workers AI** (FLUX.1-schnell, 10k neurons/día ≈ 200 img/día gratis, sin tarjeta) |
-| Paquete npm | **`@nicobehm/media-kit`** |
-| Dominio | Aún no existe → `SITE_URL` configurable por env con placeholder claro |
-| CV | Etapa Freepik redactada desde los 779 PRs reales (GitHub `jnicob`) + titular público de LinkedIn. Experiencia previa y formación: **placeholders tipados** hasta que el usuario entregue el export PDF de LinkedIn (pendiente, no bloqueante) |
-| Case studies | ① Plataforma web API Freepik/Magnific · ② Onboarding end-to-end de modelos IA · ③ Flows API. API keys/billing como sección del ①; Freepik Manager como entrada de experiencia, no case study. Los case studies enlazan la web real de Freepik/Magnific API |
-| Config agentes | **Agnóstica a cualquier agente** (patrón `fc_freepik_web`): fuentes de verdad en raíz (`AGENTS.md`, `skills/`, `agents/`); adaptación por herramienta solo vía symlinks (`CLAUDE.md`, `GEMINI.md`, `.claude/`, `.cursor/`, `.codex/`, `.github/`) + `scripts/setup-agents.sh` que los crea/valida y genera `copilot-instructions.md` |
+| Decisión                | Valor                                                                                                                                                                                                                                                                                                                                |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Idioma                  | **Bilingüe es/en desde el día 1** (contenido completo en ambos)                                                                                                                                                                                                                                                                      |
+| Estilo visual           | **Dev-tool / API landing**: oscuro por defecto, acentos vibrantes, bloques de código como elemento visual, grid limpio                                                                                                                                                                                                               |
+| Playground              | **Dentro del portfolio** (`/playground`) + **paquete npm propio** con los componentes media (híbrido)                                                                                                                                                                                                                                |
+| Playground: qué muestra | Generación/edición de **imagen y vídeo** con parámetros simples (prompt, modelo, aspect ratio, seed). Sin parametrización compleja tipo Flux                                                                                                                                                                                         |
+| Edición de imagen v1    | **Solo ejemplos pregrabados** before/after (upscale, relight, remove-bg) con CompareSlider. Edición live = extensión documentada, no implementada                                                                                                                                                                                    |
+| Vídeo                   | **Solo mocks** (verificado 2026-07-10: no existe API de vídeo gratuita fiable)                                                                                                                                                                                                                                                       |
+| Imagen live (estático)  | **Pollinations.ai** — gratis, sin key, CORS `*` (verificado con generación real), GET por URL, con `referrer`. Fallback automático a mock                                                                                                                                                                                            |
+| Imagen live (modo Node) | Proxy → **Cloudflare Workers AI** (FLUX.1-schnell, 10k neurons/día ≈ 200 img/día gratis, sin tarjeta)                                                                                                                                                                                                                                |
+| Paquete npm             | **`@nicobehm/media-kit`**                                                                                                                                                                                                                                                                                                            |
+| Dominio                 | Aún no existe → `SITE_URL` configurable por env con placeholder claro                                                                                                                                                                                                                                                                |
+| CV                      | Etapa Freepik redactada desde los 779 PRs reales (GitHub `jnicob`) + titular público de LinkedIn. Experiencia previa y formación: **placeholders tipados** hasta que el usuario entregue el export PDF de LinkedIn (pendiente, no bloqueante)                                                                                        |
+| Case studies            | ① Plataforma web API Freepik/Magnific · ② Onboarding end-to-end de modelos IA · ③ Flows API. API keys/billing como sección del ①; Freepik Manager como entrada de experiencia, no case study. Los case studies enlazan la web real de Freepik/Magnific API                                                                           |
+| Config agentes          | **Agnóstica a cualquier agente** (patrón `fc_freepik_web`): fuentes de verdad en raíz (`AGENTS.md`, `skills/`, `agents/`); adaptación por herramienta solo vía symlinks (`CLAUDE.md`, `GEMINI.md`, `.claude/`, `.cursor/`, `.codex/`, `.github/`) + `scripts/setup-agents.sh` que los crea/valida y genera `copilot-instructions.md` |
 
 ## 3. Restricciones globales
 
@@ -170,25 +170,25 @@ features/playground/
 
 ## 7. Deploy + CI/CD (3 targets documentados con workflows reales)
 
-| Target | Modo | CI/CD | Qué funciona |
-|---|---|---|---|
-| **Cloudflare Pages / Vercel** (recomendado) | export (o node en Vercel) | Nativo + previews por PR (`deploy-cloudflare.yml` o config Vercel) | Todo lo estático; en Vercel-node también proxy live |
-| **GoDaddy / hosting compartido** | export | Sin CI/CD: `scripts/deploy-shared-hosting.sh` (build local + subida FTP/SFTP + backup) | Solo estático: sin SSR, sin previews, sin secretos → playground live solo Pollinations |
-| **VPS básico** | export o node | `deploy-vps.yml` (SSH/rsync) | Con Node: todo. Sin Node: estático + **proxy PHP mínimo de ejemplo** para el modo live |
+| Target                                      | Modo                      | CI/CD                                                                                  | Qué funciona                                                                           |
+| ------------------------------------------- | ------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| **Cloudflare Pages / Vercel** (recomendado) | export (o node en Vercel) | Nativo + previews por PR (`deploy-cloudflare.yml` o config Vercel)                     | Todo lo estático; en Vercel-node también proxy live                                    |
+| **GoDaddy / hosting compartido**            | export                    | Sin CI/CD: `scripts/deploy-shared-hosting.sh` (build local + subida FTP/SFTP + backup) | Solo estático: sin SSR, sin previews, sin secretos → playground live solo Pollinations |
+| **VPS básico**                              | export o node             | `deploy-vps.yml` (SSH/rsync)                                                           | Con Node: todo. Sin Node: estático + **proxy PHP mínimo de ejemplo** para el modo live |
 
 README raíz con matriz target → qué funciona → pasos.
 
 ## 8. Fases de implementación
 
-| Fase | Entregable verificable |
-|---|---|
-| **0. Fundaciones** | Monorepo pnpm, Next 16 + TS estricto, Tailwind v4, ESLint/Prettier, CI base, AGENTS.md + skills + agents + setup-agents.sh (symlinks multi-herramienta) |
-| **1. Design system** | Tokens semánticos + dark/light, primitivas UI (cva), página showcase |
-| **2. media-kit** | CompareSlider + MediaLightbox (TDD, a11y), build publicable, README |
-| **3. Contenido + páginas** | Schemas Zod, datos CV/skills/projects, 3 case studies MDX es+en, Home/CV/Projects, SEO completo |
-| **4. Playground** | Puerto+adaptadores (mock/pollinations/proxy), UI form→preview, estados, fullscreen + before/after |
-| **5. Dual + deploys** | Modo export/node, workflows de los 3 targets, docs de deploy, proxy PHP ejemplo |
-| **6. QA final** | E2E + visual + axe, auditoría qa-a11y-perf, design review, Lighthouse > 90, README final |
+| Fase                       | Entregable verificable                                                                                                                                  |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **0. Fundaciones**         | Monorepo pnpm, Next 16 + TS estricto, Tailwind v4, ESLint/Prettier, CI base, AGENTS.md + skills + agents + setup-agents.sh (symlinks multi-herramienta) |
+| **1. Design system**       | Tokens semánticos + dark/light, primitivas UI (cva), página showcase                                                                                    |
+| **2. media-kit**           | CompareSlider + MediaLightbox (TDD, a11y), build publicable, README                                                                                     |
+| **3. Contenido + páginas** | Schemas Zod, datos CV/skills/projects, 3 case studies MDX es+en, Home/CV/Projects, SEO completo                                                         |
+| **4. Playground**          | Puerto+adaptadores (mock/pollinations/proxy), UI form→preview, estados, fullscreen + before/after                                                       |
+| **5. Dual + deploys**      | Modo export/node, workflows de los 3 targets, docs de deploy, proxy PHP ejemplo                                                                         |
+| **6. QA final**            | E2E + visual + axe, auditoría qa-a11y-perf, design review, Lighthouse > 90, README final                                                                |
 
 Cada fase cierra con code review y verification-before-completion (Superpowers).
 
