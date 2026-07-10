@@ -4,7 +4,7 @@
 
 **Goal:** Paquete npm publicable `@nicobehm/media-kit` con `CompareSlider` (before/after accesible) y `MediaLightbox` (visor fullscreen imagen/vídeo con focus trap), consumido por el portfolio y demostrado en `/showcase`.
 
-**Architecture:** Paquete workspace en `packages/media-kit`,独立 de Tailwind: estilos propios en `styles.css` con clases `mk-*` personalizables vía custom properties públicas `--mk-*`. Build con tsup (ESM+CJS+d.ts, banner `'use client'`, React como external/peer). Tests propios (vitest+jsdom+RTL, mismos pins que apps/web). El portfolio lo consume como `workspace:*` y mapea sus tokens a los `--mk-*` en el punto de uso (nunca dentro del paquete).
+**Architecture:** Paquete workspace en `packages/media-kit`, independiente de Tailwind: estilos propios en `styles.css` con clases `mk-*` personalizables vía custom properties públicas `--mk-*`. Build con tsup (ESM+CJS+d.ts, banner `'use client'`, React como external/peer). Tests propios (vitest+jsdom+RTL, mismos pins que apps/web). El portfolio lo consume como `workspace:*` y mapea sus tokens a los `--mk-*` en el punto de uso (nunca dentro del paquete).
 
 **Tech Stack:** tsup, React 19 (peer >=18), vitest ^3.2.7 + jsdom 26.1.0 + Testing Library (pins existentes por Node 20.17).
 
