@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run agents:validate
+      - run: pnpm run lint
+      - run: pnpm run format
+      - run: pnpm run typecheck
+      - run: pnpm run test
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        output-mode: [export, node]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+        env:
+          NEXT_OUTPUT_MODE: ${{ matrix.output-mode }}
