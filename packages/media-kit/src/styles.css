@@ -12,3 +12,82 @@
   --mk-radius: 0.75rem;
   --mk-z-lightbox: 50;
 }
+
+/* CompareSlider */
+.mk-compare {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--mk-radius);
+  touch-action: none;
+  user-select: none;
+}
+
+.mk-compare__before,
+.mk-compare__after {
+  display: block;
+}
+
+.mk-compare__before img,
+.mk-compare__before video,
+.mk-compare__after img,
+.mk-compare__after video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mk-compare__after {
+  position: absolute;
+  inset: 0;
+}
+
+.mk-compare[data-orientation='horizontal'] .mk-compare__after {
+  clip-path: inset(0 0 0 var(--mk-compare-pos));
+}
+
+.mk-compare[data-orientation='vertical'] .mk-compare__after {
+  clip-path: inset(var(--mk-compare-pos) 0 0 0);
+}
+
+.mk-compare__handle {
+  position: absolute;
+  cursor: col-resize;
+}
+
+.mk-compare[data-orientation='horizontal'] .mk-compare__handle {
+  top: 0;
+  bottom: 0;
+  left: var(--mk-compare-pos);
+  width: var(--mk-divider-width);
+  background: var(--mk-handle-color);
+  transform: translateX(-50%);
+}
+
+.mk-compare[data-orientation='vertical'] .mk-compare__handle {
+  left: 0;
+  right: 0;
+  top: var(--mk-compare-pos);
+  height: var(--mk-divider-width);
+  background: var(--mk-handle-color);
+  transform: translateY(-50%);
+  cursor: row-resize;
+}
+
+/* Zona de agarre táctil ampliada + indicador circular */
+.mk-compare__handle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--mk-handle-size);
+  height: var(--mk-handle-size);
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  background: var(--mk-handle-color);
+  opacity: 0.9;
+}
+
+.mk-compare__handle:focus-visible {
+  outline: 2px solid var(--mk-focus-ring);
+  outline-offset: 2px;
+}
