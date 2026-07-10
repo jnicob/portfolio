@@ -39,8 +39,8 @@ packages:
 {
   "name": "nicobehm-portfolio",
   "private": true,
-  "packageManager": "pnpm@10.14.0",
-  "engines": { "node": ">=22" },
+  "packageManager": "pnpm@9.9.0",
+  "engines": { "node": ">=20" },
   "scripts": {
     "dev": "pnpm --filter web dev",
     "build": "pnpm -r build",
@@ -121,7 +121,7 @@ pnpm add -D typescript @types/react @types/react-dom @types/node tailwindcss@^4 
 
 - [ ] **Step 2: Crear config del workspace**
 
-`apps/web/package.json` (versiones: las que resuelva pnpm en Step 1):
+`apps/web/package.json` (versiones: las que resuelva pnpm en Step 1). AMENDED 2026-07-10: engines.node relajado a >=20 por entorno local (Node 20.17, engine-strict); subir a >=22 cuando el owner actualice Node (20 es EOL desde 2026-04). CI verifica con Node 22:
 ```json
 {
   "name": "web",
