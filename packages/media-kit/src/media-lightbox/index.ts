@@ -1,2 +1,1 @@
-export { CompareSlider, type CompareSliderProps } from './compare-slider';
 export { MediaLightbox, type MediaLightboxProps } from './media-lightbox';
