@@ -32,6 +32,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@nicobehm/media-kit':
+        specifier: workspace:*
+        version: link:../../packages/media-kit
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1

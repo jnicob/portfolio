@@ -59,3 +59,11 @@ body {
   color: var(--fg);
   font-family: var(--font-geist-sans);
 }
+
+/* Mapeo de design tokens del portfolio a la API pública de @nicobehm/media-kit */
+:root[data-theme='dark'],
+:root[data-theme='light'] {
+  --mk-focus-ring: var(--ring);
+  --mk-handle-color: var(--surface);
+  --mk-radius: var(--radius-card);
+}

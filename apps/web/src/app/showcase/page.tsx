@@ -8,6 +8,7 @@ import { Select } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
 import { ThemeSwitcher } from '@/components/layout/theme-switcher';
+import { MediaKitDemo } from '@/components/showcase/media-kit-demo';
 
 export const metadata: Metadata = { title: 'Showcase — UI primitives' };
 
@@ -128,6 +129,13 @@ export default function ShowcasePage() {
             </pre>
           </TabPanel>
         </Tabs>
+      </Section>
+
+      <Section title="@nicobehm/media-kit">
+        <p className="text-fg-muted">
+          Componentes media del paquete propio: CompareSlider (before/after) y MediaLightbox.
+        </p>
+        <MediaKitDemo />
       </Section>
     </main>
   );

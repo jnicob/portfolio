@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import './globals.css';
+import '@nicobehm/media-kit/styles.css';
 
 export const metadata: Metadata = {
   title: 'Nico Behm — Full-stack engineer',
