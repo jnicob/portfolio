@@ -1,0 +1,193 @@
+# Spec de diseño — Portfolio profesional de Nico Behm
+
+**Fecha:** 2026-07-10
+**Estado:** Aprobación pendiente de revisión del spec por el usuario
+**Proceso:** Superpowers (brainstorming → writing-plans → executing-plans → TDD → code-review → verification → finishing)
+
+---
+
+## 1. Visión
+
+Portfolio profesional bilingüe (es/en) de Nicolás Behm (full-stack, Freepik Company), con estética **dev-tool / API landing** (referencias: Stripe, Vercel, Linear). El hilo narrativo es su especialidad real: *construir plataformas de API de IA end-to-end*. El propio repositorio es parte del portfolio: organización, patrones, tests, config de agentes y CI/CD deben ser auditables por un revisor técnico.
+
+**Audiencia:** recruiters técnicos y engineering managers (internacional → inglés primario en alcance, español al mismo nivel desde el día 1).
+
+## 2. Decisiones cerradas (log)
+
+| Decisión | Valor |
+|---|---|
+| Idioma | **Bilingüe es/en desde el día 1** (contenido completo en ambos) |
+| Estilo visual | **Dev-tool / API landing**: oscuro por defecto, acentos vibrantes, bloques de código como elemento visual, grid limpio |
+| Playground | **Dentro del portfolio** (`/playground`) + **paquete npm propio** con los componentes media (híbrido) |
+| Playground: qué muestra | Generación/edición de **imagen y vídeo** con parámetros simples (prompt, modelo, aspect ratio, seed). Sin parametrización compleja tipo Flux |
+| Edición de imagen v1 | **Solo ejemplos pregrabados** before/after (upscale, relight, remove-bg) con CompareSlider. Edición live = extensión documentada, no implementada |
+| Vídeo | **Solo mocks** (verificado 2026-07-10: no existe API de vídeo gratuita fiable) |
+| Imagen live (estático) | **Pollinations.ai** — gratis, sin key, CORS `*` (verificado con generación real), GET por URL, con `referrer`. Fallback automático a mock |
+| Imagen live (modo Node) | Proxy → **Cloudflare Workers AI** (FLUX.1-schnell, 10k neurons/día ≈ 200 img/día gratis, sin tarjeta) |
+| Paquete npm | **`@nicobehm/media-kit`** |
+| Dominio | Aún no existe → `SITE_URL` configurable por env con placeholder claro |
+| CV | Etapa Freepik redactada desde los 779 PRs reales (GitHub `jnicob`) + titular público de LinkedIn. Experiencia previa y formación: **placeholders tipados** hasta que el usuario entregue el export PDF de LinkedIn (pendiente, no bloqueante) |
+| Case studies | ① Plataforma web API Freepik/Magnific · ② Onboarding end-to-end de modelos IA · ③ Flows API. API keys/billing como sección del ①; Freepik Manager como entrada de experiencia, no case study. Los case studies enlazan la web real de Freepik/Magnific API |
+| Config agentes | Patrón `fc_freepik_web`: `AGENTS.md` fuente de verdad, `CLAUDE.md` symlink, `skills/` raíz con symlinks por herramienta, tabla de routing por keywords, `metadata.auto-invoke` en frontmatter |
+
+## 3. Restricciones globales
+
+- **Next.js 16** (App Router) + **TypeScript estricto** + **Tailwind CSS v4** + **pnpm** (workspaces).
+- Dark/light con **tokens semánticos**: CSS variables + `data-theme`. **Prohibido hardcodear colores** en componentes.
+- **Prohibido** cualquier paquete interno de empresa (perita, etc.) o dependencia privada. Todo clean-room con OSS público o código propio.
+- Runtime **dual**: por defecto `output: 'export'` (corre en hosting compartido); modo Node opcional (SSR + route handlers) activable por env/config **sin reescribir componentes**.
+- **Nunca** secretos en el bundle estático. El modo live con secretos requiere runtime Node o proxy externo.
+- ESLint + Prettier + typecheck **siempre en verde**.
+- Reimplementación clean-room de patrones (landings de API, playground): inspiración en patrones, cero copia literal de código de empresa.
+- WCAG AA en ambos temas. Lighthouse > 95. Presupuesto de bundle vigilado.
+
+## 4. Arquitectura — monorepo pnpm
+
+```
+portfolio/
+├── AGENTS.md                      # fuente de verdad (CLAUDE.md → symlink)
+├── CLAUDE.md -> AGENTS.md
+├── README.md                      # qué es, cómo correr, matriz de deploy, mapa arquitectura, lista componentes
+├── pnpm-workspace.yaml
+├── .github/workflows/             # ci.yml, deploy-cloudflare.yml, deploy-vps.yml
+├── .claude/
+│   ├── skills -> ../skills        # symlink
+│   └── agents/                    # design-reviewer.md, qa-a11y-perf.md
+├── skills/                        # 6 skills de dominio (carpeta por skill, SKILL.md)
+├── docs/
+│   ├── superpowers/{specs,plans}/
+│   ├── architecture.md
+│   └── deploy/                    # vercel-cloudflare.md, shared-hosting.md, vps.md
+├── scripts/                       # deploy-shared-hosting.sh, proxy PHP de ejemplo
+├── packages/media-kit/            # @nicobehm/media-kit
+│   ├── src/                       # CompareSlider, MediaLightbox, primitivas
+│   ├── __tests__/
+│   ├── README.md                  # API documentada (props, ejemplos)
+│   └── (build con tsup, exports ESM+CJS, types)
+└── apps/web/
+    ├── next.config.ts             # NEXT_OUTPUT_MODE: 'export' (default) | 'node'
+    ├── content/{es,en}/projects/  # case studies MDX
+    ├── public/mocks/              # imágenes/vídeos pregrabados del playground
+    ├── e2e/                       # Playwright (flujos + visual + axe)
+    └── src/
+        ├── app/[locale]/          # home, cv, projects, projects/[slug], playground, showcase
+        ├── components/{ui,layout,sections}/
+        ├── features/playground/   # domain/ adapters/{mock,pollinations,proxy}/ ui/
+        ├── data/                  # profile, experience, education, skills, projects + schemas Zod
+        └── lib/                   # i18n, seo (metadata/JSON-LD/sitemap), theme
+```
+
+### 4.1 `@nicobehm/media-kit`
+
+Componentes media reutilizables, accesibles, headless-friendly:
+
+- **`CompareSlider`** — slider before/after para pares imagen/imagen. Accesible (teclado: flechas mueven el divisor; `role="slider"` + aria). Variantes horizontal/vertical.
+- **`MediaLightbox`** — visor fullscreen para imagen **y vídeo**: focus trap, `Escape` cierra, navegación por teclado, scroll lock, respeta `prefers-reduced-motion`.
+- Primitivas de soporte que surjan (p.ej. `AspectRatio`).
+
+Requisitos: cero dependencia de Tailwind — estilos propios mínimos encapsulados, personalizables vía CSS custom properties públicas documentadas (`--mk-*`); tests unitarios propios, README con tabla de props y ejemplos, build publicable en npm (tsup, ESM+CJS+d.ts). El portfolio es su demo pública.
+
+### 4.2 Runtime dual
+
+- `next.config.ts` lee `NEXT_OUTPUT_MODE`:
+  - `export` (default): `output: 'export'`, imágenes con loader compatible estático, sin route handlers dinámicos.
+  - `node`: SSR disponible + route handler `/api/ai-proxy` (proxy a Cloudflare Workers AI con secretos en env server-side).
+- Los componentes no cambian entre modos; la variación vive en config + selección de adaptador.
+- `docs/architecture.md` documenta qué se degrada en estático (sin proxy con secretos, sin SSR, imágenes sin optimización server-side).
+
+### 4.3 Contenido como datos
+
+- `src/data/*` en TypeScript, validado con **Zod** en build (script `validate-content` en CI). Nada de contenido hardcodeado en JSX.
+- Schemas: `Profile`, `ExperienceEntry`, `EducationEntry`, `Skill` (nombre, nivel 1-5, tags, categoría), `Project` (slug, resumen, stack, enlaces, métricas, rol).
+- Case studies: MDX por locale en `content/{es,en}/projects/`, con frontmatter validado por Zod.
+- Placeholders de CV pendientes de LinkedIn: marcados con convención visible (`TODO_CV:`) y listados en README hasta completarse.
+
+### 4.4 i18n y SEO
+
+- `next-intl` con segmento `[locale]` (`/es/…`, `/en/…`), prerenderizado vía `generateStaticParams` (compatible export). Redirección de raíz por defecto a `/en` (mercado internacional) con selector visible.
+- Metadata por página y locale, OpenGraph (imágenes OG estáticas generadas en build), `sitemap.xml` + `robots.txt` estáticos, JSON-LD `Person` (+ `SoftwareSourceCode` en case studies si aporta).
+- `SITE_URL` por env (`NEXT_PUBLIC_SITE_URL`), placeholder documentado hasta que exista dominio.
+
+### 4.5 Playground (`/playground`)
+
+**UX:** panel de parámetros (prompt, modo generar-imagen | editar-imagen | generar-vídeo, modelo mock, aspect ratio, seed) → botón Generar → panel resultado con pestañas **Preview** y **API** (request/response JSON que se enviaría/recibiría, estilo API reference). Resultado clicable → **MediaLightbox fullscreen**. En modo edición, resultado con **CompareSlider** before/after. Estados **empty / loading / error** explícitos y diseñados.
+
+**Arquitectura de datos (puerto/adaptador):**
+
+```
+features/playground/
+├── domain/          # tipos: GenerationRequest, GenerationResult, PlaygroundMode
+├── adapters/
+│   ├── mock.ts          # respuestas/medios pregrabados de public/mocks (default)
+│   ├── pollinations.ts  # live imagen desde navegador (GET URL, referrer, timeout + fallback a mock)
+│   └── proxy.ts         # live vía /api/ai-proxy (solo modo Node)
+└── ui/              # form, result panel, api tab, estados
+```
+
+- Selección de adaptador: mock por defecto; `pollinations` activable por env pública (`NEXT_PUBLIC_PLAYGROUND_LIVE=pollinations`); `proxy` solo si modo Node + secretos configurados.
+- Vídeo y edición: siempre adaptador mock en v1 (decisión cerrada).
+- Resiliencia: timeout y error del adaptador live degradan a mock con aviso en UI.
+- Los case studies enlazan el playground real de Freepik/Magnific como "versión de producción".
+
+## 5. Config de agentes (agente-agnóstica)
+
+- **`AGENTS.md`** (fuente de verdad): descripción del proyecto, comandos, restricciones, **tabla de enrutado** `| Action | Skill |` por keywords (formato `fc_freepik_web`, con `<!-- prettier-ignore -->`), y la división de responsabilidades: **Superpowers = proceso · skills = conocimiento de dominio · agents = lentes de revisión**.
+- **`CLAUDE.md` → `AGENTS.md`** (symlink).
+- **`skills/`** (raíz, symlink desde `.claude/skills`), cada una con frontmatter `name`, `description` ("Use when…"), `metadata.auto-invoke`:
+  - `nextjs-static-dual` — App Router, RSC vs client, restricciones de `output:'export'`, modo Node opcional.
+  - `tailwind-tokens` — tokens semánticos, theming CSS vars + `data-theme`, prohibición de color hardcodeado.
+  - `component-patterns` — composición, headless, variantes con cva, formularios accesibles, estados empty/error/loading.
+  - `accessibility` — checklist WCAG AA aplicable en review.
+  - `performance` — Core Web Vitals, imágenes, presupuesto de bundle.
+  - `code-principles` — legibilidad, SOLID, responsabilidad única, tamaño de módulos.
+  - Solo conocimiento; **no duplican proceso de Superpowers**.
+- **`.claude/agents/`**:
+  - `design-reviewer` — auditoría visual y de taste: jerarquía, espaciado, estados, coherencia en ambos temas.
+  - `qa-a11y-perf` — ejecuta Playwright + auditoría a11y y Lighthouse, reporta hallazgos.
+
+## 6. Calidad (Definition of Done)
+
+- **Vitest + Testing Library**: unidad y componentes (TDD durante implementación).
+- **Playwright**: flujo completo del playground, navegación i18n, visual regression, **axe** en ambos temas.
+- **WCAG AA**: teclado completo, roles/aria, contraste verificado en dark y light.
+- **Performance**: imágenes optimizadas (estático-compatibles), code-splitting, presupuesto de bundle en CI, Lighthouse > 95.
+- Cada componente UI: ejemplo de uso + entrada en la página **showcase** (kitchen sink).
+- Typecheck + lint + tests en verde en cada commit a main (CI).
+
+## 7. Deploy + CI/CD (3 targets documentados con workflows reales)
+
+| Target | Modo | CI/CD | Qué funciona |
+|---|---|---|---|
+| **Cloudflare Pages / Vercel** (recomendado) | export (o node en Vercel) | Nativo + previews por PR (`deploy-cloudflare.yml` o config Vercel) | Todo lo estático; en Vercel-node también proxy live |
+| **GoDaddy / hosting compartido** | export | Sin CI/CD: `scripts/deploy-shared-hosting.sh` (build local + subida FTP/SFTP + backup) | Solo estático: sin SSR, sin previews, sin secretos → playground live solo Pollinations |
+| **VPS básico** | export o node | `deploy-vps.yml` (SSH/rsync) | Con Node: todo. Sin Node: estático + **proxy PHP mínimo de ejemplo** para el modo live |
+
+README raíz con matriz target → qué funciona → pasos.
+
+## 8. Fases de implementación
+
+| Fase | Entregable verificable |
+|---|---|
+| **0. Fundaciones** | Monorepo pnpm, Next 16 + TS estricto, Tailwind v4, ESLint/Prettier, CI base, AGENTS.md + symlink + 6 skills + 2 agents |
+| **1. Design system** | Tokens semánticos + dark/light, primitivas UI (cva), página showcase |
+| **2. media-kit** | CompareSlider + MediaLightbox (TDD, a11y), build publicable, README |
+| **3. Contenido + páginas** | Schemas Zod, datos CV/skills/projects, 3 case studies MDX es+en, Home/CV/Projects, SEO completo |
+| **4. Playground** | Puerto+adaptadores (mock/pollinations/proxy), UI form→preview, estados, fullscreen + before/after |
+| **5. Dual + deploys** | Modo export/node, workflows de los 3 targets, docs de deploy, proxy PHP ejemplo |
+| **6. QA final** | E2E + visual + axe, auditoría qa-a11y-perf, design review, Lighthouse > 95, README final |
+
+Cada fase cierra con code review y verification-before-completion (Superpowers).
+
+## 9. Fuera de alcance (v1)
+
+- Edición de imagen live (remove-bg client-side, inpainting vía proxy) — documentada como extensión.
+- Vídeo live por API (no existe opción gratuita fiable; re-evaluar si aparece).
+- Blog/escritos.
+- Publicación efectiva en npm de media-kit (queda **listo para publicar**; el publish es acción manual del usuario).
+- Compra de dominio y configuración DNS.
+
+## 10. Pendientes del usuario (no bloqueantes)
+
+1. **Export PDF de LinkedIn** (perfil → Más → Guardar como PDF) para experiencia previa + formación.
+2. **Dominio** definitivo (mientras: `SITE_URL` por env).
+3. Decidir si publicar `@nicobehm/media-kit` en npm al final.
