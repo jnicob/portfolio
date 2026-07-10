@@ -5,11 +5,13 @@
 Local development runs Node 20.17.0 (`engines.node >=20`, `engine-strict`). Three pins
 work around that:
 
-| Pin                         | Where                                                              | Why                                                     | Removal condition                                 |
-| --------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------- | ------------------------------------------------- |
-| `pnpm.overrides.vite: "^6"` | root `package.json` (pnpm only allows overrides at workspace root) | vite 7/8 requires Node ≥ 20.19                          | Node upgraded to 22 → drop override, unpin vitest |
-| `vitest: ^3.2.7`            | `apps/web`                                                         | vitest 4 pulls vite 7/8                                 | same as above                                     |
-| `typescript: ^5.9.3`        | `apps/web`                                                         | typescript 7 (tsgo) breaks `next build` on Next 16.2.10 | Next release notes confirm TS 7 support           |
+| Pin                                  | Where                                                              | Why                                                     | Removal condition                                 |
+| ------------------------------------ | ------------------------------------------------------------------ | ------------------------------------------------------- | ------------------------------------------------- |
+| `pnpm.overrides.vite: "^6"`          | root `package.json` (pnpm only allows overrides at workspace root) | vite 7/8 requires Node ≥ 20.19                          | Node upgraded to 22 → drop override, unpin vitest |
+| `vitest: ^3.2.7`                     | `apps/web`                                                         | vitest 4 pulls vite 7/8                                 | same as above                                     |
+| `typescript: ^5.9.3`                 | `apps/web`                                                         | typescript 7 (tsgo) breaks `next build` on Next 16.2.10 | Next release notes confirm TS 7 support           |
+| `eslint` / `@eslint/js` `^9.39.4`    | root `package.json`                                                | eslint 10.x requires Node ≥ 20.19                       | Node upgraded to 22 → unpin to latest             |
+| `typescript-eslint` `8.55.0` (exact) | root `package.json`                                                | 8.56.0+ requires Node ≥ 20.19 (transitive)              | Node upgraded to 22 → unpin                       |
 
 Node 20 is EOL since 2026-04; upgrading to Node 22 LTS is already tracked as an owner
 pending item. After upgrading: remove the pins, run `pnpm update`, verify both builds

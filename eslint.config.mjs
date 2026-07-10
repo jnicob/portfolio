@@ -4,7 +4,16 @@ import nextPlugin from '@next/eslint-plugin-next';
 import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
-  { ignores: ['**/node_modules/', '**/.next/', '**/out/', '**/dist/', '**/coverage/'] },
+  {
+    ignores: [
+      '**/node_modules/',
+      '**/.next/',
+      '**/out/',
+      '**/dist/',
+      '**/coverage/',
+      '.superpowers/',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
