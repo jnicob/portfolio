@@ -1,7 +1,7 @@
 # Spec de diseño — Portfolio profesional de Nico Behm
 
 **Fecha:** 2026-07-10
-**Estado:** Aprobación pendiente de revisión del spec por el usuario
+**Estado:** Aprobado por el usuario (2026-07-10), con ajustes: clean-room "similar/mejorado con autoría propia", Lighthouse > 90, config 100% agnóstica a cualquier agente
 **Proceso:** Superpowers (brainstorming → writing-plans → executing-plans → TDD → code-review → verification → finishing)
 
 ---
@@ -28,7 +28,7 @@ Portfolio profesional bilingüe (es/en) de Nicolás Behm (full-stack, Freepik Co
 | Dominio | Aún no existe → `SITE_URL` configurable por env con placeholder claro |
 | CV | Etapa Freepik redactada desde los 779 PRs reales (GitHub `jnicob`) + titular público de LinkedIn. Experiencia previa y formación: **placeholders tipados** hasta que el usuario entregue el export PDF de LinkedIn (pendiente, no bloqueante) |
 | Case studies | ① Plataforma web API Freepik/Magnific · ② Onboarding end-to-end de modelos IA · ③ Flows API. API keys/billing como sección del ①; Freepik Manager como entrada de experiencia, no case study. Los case studies enlazan la web real de Freepik/Magnific API |
-| Config agentes | Patrón `fc_freepik_web`: `AGENTS.md` fuente de verdad, `CLAUDE.md` symlink, `skills/` raíz con symlinks por herramienta, tabla de routing por keywords, `metadata.auto-invoke` en frontmatter |
+| Config agentes | **Agnóstica a cualquier agente** (patrón `fc_freepik_web`): fuentes de verdad en raíz (`AGENTS.md`, `skills/`, `agents/`); adaptación por herramienta solo vía symlinks (`CLAUDE.md`, `GEMINI.md`, `.claude/`, `.cursor/`, `.codex/`, `.github/`) + `scripts/setup-agents.sh` que los crea/valida y genera `copilot-instructions.md` |
 
 ## 3. Restricciones globales
 
@@ -38,27 +38,34 @@ Portfolio profesional bilingüe (es/en) de Nicolás Behm (full-stack, Freepik Co
 - Runtime **dual**: por defecto `output: 'export'` (corre en hosting compartido); modo Node opcional (SSR + route handlers) activable por env/config **sin reescribir componentes**.
 - **Nunca** secretos en el bundle estático. El modo live con secretos requiere runtime Node o proxy externo.
 - ESLint + Prettier + typecheck **siempre en verde**.
-- Reimplementación clean-room de patrones (landings de API, playground): inspiración en patrones, cero copia literal de código de empresa.
-- WCAG AA en ambos temas. Lighthouse > 95. Presupuesto de bundle vigilado.
+- Reimplementación clean-room de patrones (landings de API, playground): inspiración en patrones, no copia literal de código de empresa (puede ser similar/mejorado, lo he hecho yo mismo al original).
+- WCAG AA en ambos temas. Lighthouse > 90. Presupuesto de bundle vigilado.
 
 ## 4. Arquitectura — monorepo pnpm
 
 ```
 portfolio/
-├── AGENTS.md                      # fuente de verdad (CLAUDE.md → symlink)
-├── CLAUDE.md -> AGENTS.md
+├── AGENTS.md                      # FUENTE DE VERDAD para cualquier agente
+├── CLAUDE.md -> AGENTS.md         # symlink (Claude Code)
+├── GEMINI.md -> AGENTS.md         # symlink (Gemini CLI)
 ├── README.md                      # qué es, cómo correr, matriz de deploy, mapa arquitectura, lista componentes
 ├── pnpm-workspace.yaml
-├── .github/workflows/             # ci.yml, deploy-cloudflare.yml, deploy-vps.yml
+├── .github/
+│   ├── workflows/                 # ci.yml, deploy-cloudflare.yml, deploy-vps.yml
+│   ├── copilot-instructions.md    # GENERADO desde AGENTS.md (setup-agents.sh, no editar)
+│   └── skills -> ../skills        # symlink (Copilot)
 ├── .claude/
 │   ├── skills -> ../skills        # symlink
-│   └── agents/                    # design-reviewer.md, qa-a11y-perf.md
-├── skills/                        # 6 skills de dominio (carpeta por skill, SKILL.md)
+│   └── agents -> ../agents        # symlink
+├── .cursor/skills -> ../skills    # symlink (Cursor)
+├── .codex/skills -> ../skills     # symlink (Codex)
+├── skills/                        # 6 skills de dominio (carpeta por skill, SKILL.md) — única copia real
+├── agents/                        # design-reviewer.md, qa-a11y-perf.md — única copia real
 ├── docs/
 │   ├── superpowers/{specs,plans}/
 │   ├── architecture.md
 │   └── deploy/                    # vercel-cloudflare.md, shared-hosting.md, vps.md
-├── scripts/                       # deploy-shared-hosting.sh, proxy PHP de ejemplo
+├── scripts/                       # setup-agents.sh, deploy-shared-hosting.sh, proxy PHP de ejemplo
 ├── packages/media-kit/            # @nicobehm/media-kit
 │   ├── src/                       # CompareSlider, MediaLightbox, primitivas
 │   ├── __tests__/
@@ -129,11 +136,18 @@ features/playground/
 - Resiliencia: timeout y error del adaptador live degradan a mock con aviso en UI.
 - Los case studies enlazan el playground real de Freepik/Magnific como "versión de producción".
 
-## 5. Config de agentes (agente-agnóstica)
+## 5. Config de agentes (agnóstica a cualquier agente)
 
-- **`AGENTS.md`** (fuente de verdad): descripción del proyecto, comandos, restricciones, **tabla de enrutado** `| Action | Skill |` por keywords (formato `fc_freepik_web`, con `<!-- prettier-ignore -->`), y la división de responsabilidades: **Superpowers = proceso · skills = conocimiento de dominio · agents = lentes de revisión**.
-- **`CLAUDE.md` → `AGENTS.md`** (symlink).
-- **`skills/`** (raíz, symlink desde `.claude/skills`), cada una con frontmatter `name`, `description` ("Use when…"), `metadata.auto-invoke`:
+**Principio:** ningún contenido vive en carpetas propietarias de una herramienta. Las fuentes de verdad están en la raíz del repo (`AGENTS.md`, `skills/`, `agents/`) en markdown estándar; cada herramienta (Claude Code, Cursor, Codex, Gemini CLI, Copilot…) las descubre vía symlink o archivo generado. Añadir soporte a una herramienta nueva = añadir un symlink, nunca duplicar contenido.
+
+- **`AGENTS.md`** (fuente de verdad, [estándar agents.md](https://agents.md) que ya leen Codex/Cursor/Copilot/Gemini de forma nativa): descripción del proyecto, comandos, restricciones, **tabla de enrutado** `| Action | Skill |` por keywords (formato `fc_freepik_web`, con `<!-- prettier-ignore -->`), y la división de responsabilidades: **Superpowers = proceso · skills = conocimiento de dominio · agents = lentes de revisión**. Nota explícita para agentes sin Superpowers: la tabla de skills y las lentes de revisión funcionan como documentación normal (leer y aplicar).
+- **Symlinks por herramienta** (creados y validados por `scripts/setup-agents.sh`):
+  - `CLAUDE.md → AGENTS.md` · `GEMINI.md → AGENTS.md`
+  - `.claude/skills → ../skills` · `.cursor/skills → ../skills` · `.codex/skills → ../skills` · `.github/skills → ../skills`
+  - `.claude/agents → ../agents`
+- **`.github/copilot-instructions.md`**: generado por `setup-agents.sh --copilot` concatenando `AGENTS.md` + índice de skills (cabecera "Auto-generated, do not edit").
+- **`scripts/setup-agents.sh`**: idempotente; `--validate` comprueba que symlinks y generado están al día (se ejecuta en CI); documentado en README para checkouts sin symlinks (Windows).
+- **`skills/`** (raíz, única copia real), cada una con frontmatter portable `name`, `description` ("Use when…"), `metadata.auto-invoke` (los campos extra no molestan a herramientas que no los usan):
   - `nextjs-static-dual` — App Router, RSC vs client, restricciones de `output:'export'`, modo Node opcional.
   - `tailwind-tokens` — tokens semánticos, theming CSS vars + `data-theme`, prohibición de color hardcodeado.
   - `component-patterns` — composición, headless, variantes con cva, formularios accesibles, estados empty/error/loading.
@@ -141,7 +155,7 @@ features/playground/
   - `performance` — Core Web Vitals, imágenes, presupuesto de bundle.
   - `code-principles` — legibilidad, SOLID, responsabilidad única, tamaño de módulos.
   - Solo conocimiento; **no duplican proceso de Superpowers**.
-- **`.claude/agents/`**:
+- **`agents/`** (raíz, única copia real; `.claude/agents` es symlink). Cada agente es un brief markdown ejecutable por cualquier herramienta como prompt de revisión (el frontmatter de subagente Claude es compatible y opcionalmente ignorable por otras):
   - `design-reviewer` — auditoría visual y de taste: jerarquía, espaciado, estados, coherencia en ambos temas.
   - `qa-a11y-perf` — ejecuta Playwright + auditoría a11y y Lighthouse, reporta hallazgos.
 
@@ -150,7 +164,7 @@ features/playground/
 - **Vitest + Testing Library**: unidad y componentes (TDD durante implementación).
 - **Playwright**: flujo completo del playground, navegación i18n, visual regression, **axe** en ambos temas.
 - **WCAG AA**: teclado completo, roles/aria, contraste verificado en dark y light.
-- **Performance**: imágenes optimizadas (estático-compatibles), code-splitting, presupuesto de bundle en CI, Lighthouse > 95.
+- **Performance**: imágenes optimizadas (estático-compatibles), code-splitting, presupuesto de bundle en CI, Lighthouse > 90.
 - Cada componente UI: ejemplo de uso + entrada en la página **showcase** (kitchen sink).
 - Typecheck + lint + tests en verde en cada commit a main (CI).
 
@@ -168,13 +182,13 @@ README raíz con matriz target → qué funciona → pasos.
 
 | Fase | Entregable verificable |
 |---|---|
-| **0. Fundaciones** | Monorepo pnpm, Next 16 + TS estricto, Tailwind v4, ESLint/Prettier, CI base, AGENTS.md + symlink + 6 skills + 2 agents |
+| **0. Fundaciones** | Monorepo pnpm, Next 16 + TS estricto, Tailwind v4, ESLint/Prettier, CI base, AGENTS.md + skills + agents + setup-agents.sh (symlinks multi-herramienta) |
 | **1. Design system** | Tokens semánticos + dark/light, primitivas UI (cva), página showcase |
 | **2. media-kit** | CompareSlider + MediaLightbox (TDD, a11y), build publicable, README |
 | **3. Contenido + páginas** | Schemas Zod, datos CV/skills/projects, 3 case studies MDX es+en, Home/CV/Projects, SEO completo |
 | **4. Playground** | Puerto+adaptadores (mock/pollinations/proxy), UI form→preview, estados, fullscreen + before/after |
 | **5. Dual + deploys** | Modo export/node, workflows de los 3 targets, docs de deploy, proxy PHP ejemplo |
-| **6. QA final** | E2E + visual + axe, auditoría qa-a11y-perf, design review, Lighthouse > 95, README final |
+| **6. QA final** | E2E + visual + axe, auditoría qa-a11y-perf, design review, Lighthouse > 90, README final |
 
 Cada fase cierra con code review y verification-before-completion (Superpowers).
 
