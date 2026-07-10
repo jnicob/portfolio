@@ -1,0 +1,17 @@
+{
+  "name": "nicobehm-portfolio",
+  "private": true,
+  "packageManager": "pnpm@9.9.0",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm -r build",
+    "lint": "eslint .",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "agents:setup": "bash scripts/setup-agents.sh --all",
+    "agents:validate": "bash scripts/setup-agents.sh --validate"
+  }
+}
