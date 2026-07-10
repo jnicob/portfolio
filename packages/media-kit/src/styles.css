@@ -1,0 +1,14 @@
+/*
+ * @nicobehm/media-kit — estilos base.
+ * Personalización vía custom properties públicas (--mk-*): defínelas en el
+ * consumidor (p.ej. mapeadas a los design tokens de tu app).
+ */
+:root {
+  --mk-handle-color: #ffffff;
+  --mk-handle-size: 2.5rem;
+  --mk-divider-width: 2px;
+  --mk-focus-ring: #6d5ce8;
+  --mk-overlay-bg: rgb(0 0 0 / 0.8);
+  --mk-radius: 0.75rem;
+  --mk-z-lightbox: 50;
+}
