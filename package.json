@@ -13,5 +13,10 @@
     "test": "pnpm -r test",
     "agents:setup": "bash scripts/setup-agents.sh --all",
     "agents:validate": "bash scripts/setup-agents.sh --validate"
+  },
+  "pnpm": {
+    "overrides": {
+      "vite": "^6"
+    }
   }
 }
