@@ -40,6 +40,12 @@ export default function ShowcasePage() {
           <Button variant="ghost">Ghost</Button>
           <Button variant="danger">Danger</Button>
           <Button disabled>Disabled</Button>
+          <Button variant="secondary" disabled>
+            Disabled
+          </Button>
+          <Button variant="ghost" disabled>
+            Disabled
+          </Button>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <Button size="sm">Small</Button>
@@ -95,7 +101,12 @@ export default function ShowcasePage() {
             />
           </Field>
           <Field label="Con error" htmlFor="demo-error" error="Este campo es obligatorio.">
-            <Input id="demo-error" aria-invalid aria-describedby="demo-error-error" />
+            <Input
+              id="demo-error"
+              aria-invalid
+              aria-describedby="demo-error-error"
+              defaultValue="!!!"
+            />
           </Field>
         </div>
       </Section>
@@ -112,7 +123,7 @@ export default function ShowcasePage() {
             </Card>
           </TabPanel>
           <TabPanel value="api">
-            <pre className="overflow-x-auto rounded-card border border-border bg-surface p-4 font-mono text-sm text-fg-muted">
+            <pre className="overflow-x-auto rounded-card border border-border bg-surface p-4 font-mono text-sm text-fg">
               {`{ "status": "ok" }`}
             </pre>
           </TabPanel>
