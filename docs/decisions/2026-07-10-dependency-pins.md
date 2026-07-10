@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-10 · **Status:** active · **Remove when:** local/CI Node ≥ 22 everywhere
 
-Local development runs Node 20.17.0 (`engines.node >=20`, `engine-strict`). Three pins
+Local development runs Node 20.17.0 (`engines.node >=20`, `engine-strict`). These pins
 work around that:
 
 | Pin                                  | Where                                                              | Why                                                     | Removal condition                                 |
