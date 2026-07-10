@@ -60,6 +60,19 @@ describe('MediaLightbox', () => {
     expect(link).toHaveFocus();
   });
 
+  it('Tab desde un elemento no rastreado (p.ej. vídeo enfocado) no escapa del dialog', async () => {
+    render(
+      <MediaLightbox open onClose={() => {}} label="V">
+        <div tabIndex={-1} data-testid="media-surface" />
+        <a href="/download">Descargar</a>
+      </MediaLightbox>,
+    );
+    screen.getByTestId('media-surface').focus();
+    expect(screen.getByTestId('media-surface')).toHaveFocus();
+    await userEvent.tab();
+    expect(screen.getByRole('button', { name: 'Close' })).toHaveFocus();
+  });
+
   it('click en el overlay cierra, click en el contenido no', async () => {
     const onClose = vi.fn();
     render(

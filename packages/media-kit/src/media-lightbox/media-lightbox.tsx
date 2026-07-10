@@ -43,6 +43,8 @@ export function MediaLightbox({
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key === 'Escape') {
+      // Solo detiene la propagación dentro del árbol de React; los listeners
+      // nativos a nivel de document siguen recibiendo el evento.
       event.stopPropagation();
       onClose();
       return;
@@ -59,7 +61,10 @@ export function MediaLightbox({
     if (event.shiftKey && (active === first || !dialogRef.current?.contains(active))) {
       event.preventDefault();
       last?.focus();
-    } else if (!event.shiftKey && active === last) {
+    } else if (
+      !event.shiftKey &&
+      (active === last || !focusables.includes(active as HTMLElement))
+    ) {
       event.preventDefault();
       first?.focus();
     }
