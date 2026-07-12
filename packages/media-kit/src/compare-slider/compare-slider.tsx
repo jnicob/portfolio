@@ -86,6 +86,7 @@ export function CompareSlider({
       <div className="mk-compare__after" aria-hidden="true">
         {after}
       </div>
+      <div className="mk-compare__divider" aria-hidden="true" />
       <div
         role="slider"
         tabIndex={0}

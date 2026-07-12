@@ -84,8 +84,11 @@ focus trap.
 ## Styling
 
 No CSS-in-JS, no build-time theming step: import `@nicobehm/media-kit/styles.css` once and
-override any of the following custom properties on `:root` (or on a wrapping element) to restyle
-the components.
+override any of the following custom properties on `:root` to restyle the components. For
+`CompareSlider` you can also override them on a wrapping element; `MediaLightbox` renders in a
+portal under `document.body`, so wrapper-level overrides do **not** reach it — set its
+properties (`--mk-overlay-bg`, `--mk-z-lightbox`, close-button vars) on `:root` (or
+`:root[data-theme='…']`).
 
 | Custom property          | Default             | Controls                                                                                                                                                                                                                  |
 | ------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -94,7 +97,7 @@ the components.
 | `--mk-handle-ring`       | `rgb(0 0 0 / 0.4)`  | Outline `box-shadow` around the CompareSlider divider line, its grip indicator, and the MediaLightbox close button, keeping them visible against any media.                                                               |
 | `--mk-handle-size`       | `2.5rem`            | Diameter of the CompareSlider handle's circular grip indicator (the enlarged touch target).                                                                                                                               |
 | `--mk-divider-width`     | `2px`               | Thickness of the CompareSlider divider line (width when horizontal, height when vertical).                                                                                                                                |
-| `--mk-focus-ring`        | `#6d5ce8`           | `focus-visible` outline color for the CompareSlider handle's grip indicator and the MediaLightbox close button/content.                                                                                                   |
+| `--mk-focus-ring`        | `#6d5ce8`           | `focus-visible` indicator color: outer layer of the two-layer ring on the CompareSlider grip, and outline on the MediaLightbox close button/content.                                                                      |
 | `--mk-overlay-bg`        | `rgb(0 0 0 / 0.88)` | Background of the MediaLightbox overlay.                                                                                                                                                                                  |
 | `--mk-radius`            | `0.75rem`           | Border radius of the CompareSlider container and of `<img>`/`<video>` elements inside the lightbox.                                                                                                                       |
 | `--mk-z-lightbox`        | `50`                | `z-index` of the MediaLightbox overlay.                                                                                                                                                                                   |

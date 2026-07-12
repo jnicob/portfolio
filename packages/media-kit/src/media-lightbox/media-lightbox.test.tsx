@@ -73,6 +73,27 @@ describe('MediaLightbox', () => {
     expect(screen.getByRole('button', { name: 'Close' })).toHaveFocus();
   });
 
+  it('con el foco en el root del dialog (click en contenido no enfocable), Escape y Tab siguen funcionando', async () => {
+    // En navegador, click sobre contenido no enfocable mueve el foco al ancestro
+    // enfocable más cercano; el root del dialog debe serlo (tabIndex=-1) para que
+    // sus handlers de teclado sigan recibiendo los eventos.
+    const onClose = vi.fn();
+    render(
+      <MediaLightbox open onClose={onClose} label="V">
+        <img src="/a.png" alt="contenido" />
+        <a href="/download">Descargar</a>
+      </MediaLightbox>,
+    );
+    const dialog = screen.getByRole('dialog');
+    dialog.focus();
+    expect(dialog).toHaveFocus();
+    await userEvent.tab();
+    expect(screen.getByRole('button', { name: 'Close' })).toHaveFocus();
+    dialog.focus();
+    await userEvent.keyboard('{Escape}');
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
   it('click en el overlay cierra, click en el contenido no', async () => {
     const onClose = vi.fn();
     render(

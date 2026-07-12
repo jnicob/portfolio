@@ -43,8 +43,9 @@ export function MediaLightbox({
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key === 'Escape') {
-      // Solo detiene la propagación dentro del árbol de React; los listeners
-      // nativos a nivel de document siguen recibiendo el evento.
+      // Evita que otros handlers React por encima (p.ej. otro modal) reaccionen
+      // al mismo Escape. Nota: con la delegación de React ≥17 esto también corta
+      // el bubbling nativo por encima del contenedor root de la app.
       event.stopPropagation();
       onClose();
       return;
@@ -80,6 +81,9 @@ export function MediaLightbox({
       role="dialog"
       aria-modal="true"
       aria-label={label}
+      // Enfocable (no tabulable): al hacer click en contenido no enfocable, el
+      // navegador enfoca este root en vez de body, y Escape/Tab siguen llegando.
+      tabIndex={-1}
       className="mk-lightbox"
       onKeyDown={onKeyDown}
       onClick={onOverlayClick}
