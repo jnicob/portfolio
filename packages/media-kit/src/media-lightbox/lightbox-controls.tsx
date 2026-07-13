@@ -1,24 +1,9 @@
 'use client';
 
-// NOTA Task 7: mover estos dos tipos a media-lightbox.tsx (export público) y
-// cambiar esto por: import type { MediaLightboxFit, MediaLightboxLabels } from './media-lightbox';
-export type MediaLightboxFit = 'contain' | 'cover' | 'actual';
+import type { MediaLightboxFit, MediaLightboxLabels } from './media-lightbox';
 
-export type MediaLightboxLabels = {
-  controls: string;
-  zoomIn: string;
-  zoomOut: string;
-  /** Plantilla del anuncio de zoom; {percent} se sustituye. */
-  zoomLevel: string;
-  reset: string;
-  /** Plantilla del botón de ajuste; {current} y {next} se sustituyen. */
-  fit: string;
-  fullscreen: string;
-  exitFullscreen: string;
-  hideControls: string;
-  showControls: string;
-  close: string;
-};
+// Re-export: lightbox-controls.test.tsx importa los tipos desde este módulo.
+export type { MediaLightboxFit, MediaLightboxLabels };
 
 export type LightboxControlsProps = {
   labels: MediaLightboxLabels;

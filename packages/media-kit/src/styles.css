@@ -152,26 +152,57 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
   background: var(--mk-overlay-bg);
   backdrop-filter: blur(4px);
   animation: mk-fade-in 150ms ease-out;
 }
 
-.mk-lightbox__content {
-  max-width: 100%;
-  max-height: 100%;
+.mk-lightbox__viewport {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-.mk-lightbox__content img,
-.mk-lightbox__content video {
+.mk-lightbox__media {
+  display: flex;
+  /* Desviación consciente del spec ("will-change solo durante el gesto"): el
+     elemento solo existe con el lightbox abierto, así que el hint permanente
+     es equivalente y evita toggles de compositing en pleno gesto. */
+  will-change: transform;
+  transition: transform 120ms ease-out;
+}
+
+.mk-lightbox__media :is(img, video) {
   display: block;
-  max-width: 100%;
-  max-height: calc(100vh - 4rem);
+}
+
+/* El viewport es inset:0 sobre el overlay fixed → 100vw/100dvh equivalen a su tamaño. */
+.mk-lightbox[data-fit='contain'] .mk-lightbox__media :is(img, video) {
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100dvh - 2rem);
+  width: auto;
+  height: auto;
   border-radius: var(--mk-radius);
 }
 
-.mk-lightbox__close {
+.mk-lightbox[data-fit='cover'] .mk-lightbox__media :is(img, video) {
+  width: 100vw;
+  height: 100dvh;
+  object-fit: cover;
+}
+
+.mk-lightbox[data-fit='actual'] .mk-lightbox__media :is(img, video) {
+  max-width: none;
+  max-height: none;
+  width: auto;
+  height: auto;
+}
+
+.mk-lightbox__close,
+.mk-lightbox__controls-toggle {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -190,8 +221,7 @@
   font-size: 1rem;
 }
 
-.mk-lightbox__close:focus-visible,
-.mk-lightbox__content :focus-visible {
+.mk-lightbox :focus-visible {
   outline: 2px solid var(--mk-focus-ring);
   outline-offset: 2px;
 }
@@ -205,6 +235,10 @@
 @media (prefers-reduced-motion: reduce) {
   .mk-lightbox {
     animation: none;
+  }
+
+  .mk-lightbox__media {
+    transition: none;
   }
 }
 
