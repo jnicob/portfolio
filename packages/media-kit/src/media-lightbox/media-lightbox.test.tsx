@@ -272,4 +272,25 @@ describe('MediaLightbox v2', () => {
     );
     expect(screen.getByRole('button', { name: 'Schließen' })).toBeInTheDocument();
   });
+
+  it('auto-hide reubica el foco fuera de la región antes de inertizarla (no queda huérfano)', () => {
+    vi.useFakeTimers();
+    try {
+      render(
+        <MediaLightbox open autoHideDelay={3000} onClose={() => {}} label="V">
+          <img src="/a.png" alt="a" />
+        </MediaLightbox>,
+      );
+      expect(screen.getByRole('button', { name: 'Close' })).toHaveFocus();
+      const region = document.querySelector('.mk-lightbox__controls-region') as HTMLElement;
+      act(() => vi.advanceTimersByTime(3000));
+      expect(region).toHaveAttribute('inert');
+      // El foco NO quedó atrapado dentro de la región inertizada...
+      expect(region.contains(document.activeElement)).toBe(false);
+      // ...sigue dentro del diálogo, en el toggle siempre visible.
+      expect(screen.getByRole('button', { name: 'Show controls' })).toHaveFocus();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });

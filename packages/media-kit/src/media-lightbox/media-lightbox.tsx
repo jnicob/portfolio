@@ -107,6 +107,7 @@ function MediaLightboxContent({
   const viewportRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const controlsRegionRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
   // El foco inicial (más abajo) aterriza en Close, que ahora vive DENTRO de la
   // toolbar: el focusin sintético de React burbujea hasta controls-region y
   // dispararía pin(true) sin que el usuario haya interactuado. Se suprime solo
@@ -157,10 +158,20 @@ function MediaLightboxContent({
     };
   }, []);
 
-  // Toolbar oculta = inert: fuera del trap y del árbol de accesibilidad.
+  // Toolbar oculta = inert (fuera del trap y del árbol de accesibilidad). Antes de
+  // inertizar, si el foco vive dentro de la región lo reubicamos al toggle (que está
+  // fuera de la región y siempre visible): inert desenfoca a su descendiente activo
+  // hacia document.body, que está fuera del portal, y ahí Escape/Tab dejarían de
+  // llegar al diálogo. El toggle mantiene el foco dentro del diálogo.
   useEffect(() => {
-    controlsRegionRef.current?.toggleAttribute('inert', !autoHide.visible);
-  });
+    const region = controlsRegionRef.current;
+    if (!region) return;
+    const hiding = !autoHide.visible;
+    if (hiding && region.contains(document.activeElement)) {
+      toggleRef.current?.focus();
+    }
+    region.toggleAttribute('inert', hiding);
+  }, [autoHide.visible]);
 
   const nextFit = FIT_ORDER[(FIT_ORDER.indexOf(fit) + 1) % FIT_ORDER.length] ?? 'contain';
 
@@ -270,6 +281,7 @@ function MediaLightboxContent({
       {controls ? (
         <>
           <button
+            ref={toggleRef}
             type="button"
             className="mk-lightbox__controls-toggle"
             aria-expanded={autoHide.visible}
