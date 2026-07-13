@@ -33,18 +33,23 @@ de 30 segundos.
 > Actualizado: YYYY-MM-DD · por /checkpoint
 
 ## Ahora
+
 <fase/tarea actual en 1-2 líneas, con su estado real (empezada / no empezada)>
 
 ## Hecho
+
 <fases completadas, 1 línea cada una, con commits/merges clave>
 
 ## Siguiente acción
+
 <lista numerada con comandos, ramas y paths exactos>
 
 ## Pendientes del usuario (no bloqueantes)
+
 <lista corta>
 
 ## Fuentes de verdad
+
 <links relativos a roadmap, spec vigente y plan vigente>
 ```
 

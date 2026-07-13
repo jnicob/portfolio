@@ -12,7 +12,7 @@ fullscreen nativo, slider hover). Planificada, **no empezada**.
 - ✅ Fase 0 — fundaciones del monorepo (pnpm, Next.js 16, tooling, agent config).
 - ✅ Fase 1 — design system (tokens semánticos, dark/light, acento violeta).
 - ✅ Fase 2 — `@nicobehm/media-kit` v0.1.0 (CompareSlider + MediaLightbox, 0 deps)
-  + demo en /showcase. Merge FF `ac82e8a..c774005`, en `github.com:jnicob/portfolio`.
+  - demo en /showcase. Merge FF `ac82e8a..c774005`, en `github.com:jnicob/portfolio`.
 - ✅ Infra de estado — STATUS.md + /checkpoint v2 (`3c0b781..69f9757`) y setup portable
   `github.com:jnicob/ai-config` (privado: AGENTS.md global, memorias curadas, install.sh).
 

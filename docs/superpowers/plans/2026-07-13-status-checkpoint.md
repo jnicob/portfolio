@@ -22,9 +22,11 @@
 ### Task 1: STATUS.md inicial
 
 **Files:**
+
 - Create: `STATUS.md` (raíz del repo portfolio)
 
 **Interfaces:**
+
 - Consumes: memoria local `~/.claude/projects/-home-nbehm-workspace-formaciones-claude-superpowers-portfolio/memory/portfolio-project-state.md` (solo como borrador; la verdad es git).
 - Produces: `STATUS.md` con secciones exactas `Ahora / Hecho / Siguiente acción / Pendientes del usuario (no bloqueantes) / Fuentes de verdad` — el paso 3 del checkpoint v2 (Task 2) asume estos nombres de sección.
 
@@ -55,7 +57,7 @@ fullscreen nativo, slider hover). Planificada, **no empezada**.
 - ✅ Fase 0 — fundaciones del monorepo (pnpm, Next.js 16, tooling, agent config).
 - ✅ Fase 1 — design system (tokens semánticos, dark/light, acento violeta).
 - ✅ Fase 2 — `@nicobehm/media-kit` v0.1.0 (CompareSlider + MediaLightbox, 0 deps)
-  + demo en /showcase. Merge FF `ac82e8a..c774005`, en `github.com:jnicob/portfolio`.
+  - demo en /showcase. Merge FF `ac82e8a..c774005`, en `github.com:jnicob/portfolio`.
 
 ## Siguiente acción
 
@@ -97,9 +99,11 @@ git commit -m "docs: add STATUS.md (estado operativo versionado, mantenido por /
 ### Task 2: /checkpoint v2
 
 **Files:**
+
 - Modify: `~/.claude/commands/checkpoint.md` (reemplazo completo del contenido)
 
 **Interfaces:**
+
 - Consumes: formato de secciones de STATUS.md definido en Task 1.
 - Produces: comando `/checkpoint` con 5 pasos; el plan de `ai-config` (repo `~/workspace/ai-config`, plan `docs/plans/2026-07-13-ai-config-v1.md`, Task 2) copia este archivo tal cual a `commands/checkpoint.md` — no editarlo allí de forma divergente.
 
