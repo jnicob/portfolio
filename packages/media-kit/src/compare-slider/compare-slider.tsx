@@ -12,11 +12,18 @@ export type CompareSliderProps = {
   /** Posición inicial del divisor, 0-100. */
   initialPosition?: number;
   orientation?: 'horizontal' | 'vertical';
+  /**
+   * 'drag' (default): arrastrar para mover, como v1.
+   * 'hover': con ratón el divisor sigue al puntero sin click (al salir se queda
+   * donde estaba); touch/pen usan el camino drag. Teclado idéntico en ambos.
+   */
+  mode?: 'drag' | 'hover';
   className?: string;
   onPositionChange?: (position: number) => void;
 };
 
 function clamp(value: number): number {
+  if (!Number.isFinite(value)) return 50;
   return Math.min(100, Math.max(0, value));
 }
 
@@ -26,11 +33,13 @@ export function CompareSlider({
   label = 'Compare',
   initialPosition = 50,
   orientation = 'horizontal',
+  mode = 'drag',
   className,
   onPositionChange,
 }: CompareSliderProps) {
   const [position, setPosition] = useState(() => clamp(initialPosition));
   const containerRef = useRef<HTMLDivElement>(null);
+  const handleRef = useRef<HTMLDivElement>(null);
   const horizontal = orientation === 'horizontal';
 
   function update(next: number) {
@@ -63,12 +72,24 @@ export function CompareSlider({
       : ((event.clientY - rect.top) / rect.height) * 100;
   }
 
+  function followsHover(event: PointerEvent<HTMLDivElement>): boolean {
+    return mode === 'hover' && event.pointerType === 'mouse';
+  }
+
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
+    if (!event.isPrimary || event.button !== 0) return;
+    handleRef.current?.focus({ preventScroll: true });
+    // Con hover activo el ratón ya sigue al puntero; el down solo aplica a touch/pen.
+    if (followsHover(event)) return;
     event.currentTarget.setPointerCapture(event.pointerId);
     update(positionFromPointer(event));
   }
 
   function onPointerMove(event: PointerEvent<HTMLDivElement>) {
+    if (followsHover(event)) {
+      update(positionFromPointer(event));
+      return;
+    }
     if (!event.currentTarget.hasPointerCapture(event.pointerId)) return;
     update(positionFromPointer(event));
   }
@@ -88,6 +109,7 @@ export function CompareSlider({
       </div>
       <div className="mk-compare__divider" aria-hidden="true" />
       <div
+        ref={handleRef}
         role="slider"
         tabIndex={0}
         aria-label={label}

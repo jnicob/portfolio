@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { CompareSlider } from './compare-slider';
@@ -65,5 +65,118 @@ describe('CompareSlider', () => {
     expect(handle).toHaveAttribute('aria-valuenow', '51');
     await userEvent.keyboard('{ArrowDown}');
     expect(handle).toHaveAttribute('aria-valuenow', '50');
+  });
+});
+
+function mockRect(element: HTMLElement) {
+  vi.spyOn(element, 'getBoundingClientRect').mockReturnValue({
+    x: 0,
+    y: 0,
+    top: 0,
+    left: 0,
+    right: 200,
+    bottom: 100,
+    width: 200,
+    height: 100,
+    toJSON: () => ({}),
+  } as DOMRect);
+}
+
+describe('CompareSlider v2', () => {
+  it('mode="hover": el divisor sigue al ratón sin click', () => {
+    render(
+      <CompareSlider
+        mode="hover"
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+    fireEvent.pointerMove(container, { clientX: 150, clientY: 50, pointerType: 'mouse' });
+    expect(slider).toHaveAttribute('aria-valuenow', '75');
+  });
+
+  it('mode="hover": un puntero táctil NO mueve el divisor solo con move (cae a drag)', () => {
+    render(
+      <CompareSlider
+        mode="hover"
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+    fireEvent.pointerMove(container, { clientX: 150, clientY: 50, pointerType: 'touch' });
+    expect(slider).toHaveAttribute('aria-valuenow', '50');
+    fireEvent.pointerDown(container, {
+      clientX: 160,
+      clientY: 50,
+      pointerType: 'touch',
+      button: 0,
+      isPrimary: true,
+      pointerId: 1,
+    });
+    expect(slider).toHaveAttribute('aria-valuenow', '80');
+  });
+
+  it('mode="drag" (default): move sin capture no mueve el divisor (v1 intacto)', () => {
+    render(
+      <CompareSlider before={<img src="/b.png" alt="b" />} after={<img src="/a.png" alt="" />} />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+    fireEvent.pointerMove(container, { clientX: 150, clientY: 50, pointerType: 'mouse' });
+    expect(slider).toHaveAttribute('aria-valuenow', '50');
+  });
+
+  it('ignora botones de puntero no primarios', () => {
+    render(
+      <CompareSlider before={<img src="/b.png" alt="b" />} after={<img src="/a.png" alt="" />} />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+    fireEvent.pointerDown(container, {
+      clientX: 150,
+      clientY: 50,
+      pointerType: 'mouse',
+      button: 2,
+      isPrimary: true,
+      pointerId: 1,
+    });
+    expect(slider).toHaveAttribute('aria-valuenow', '50');
+  });
+
+  it('initialPosition no finito cae al 50', () => {
+    render(
+      <CompareSlider
+        initialPosition={Number.NaN}
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    expect(screen.getByRole('slider')).toHaveAttribute('aria-valuenow', '50');
+  });
+
+  it('pointerdown enfoca el handle (las flechas funcionan tras arrastrar)', () => {
+    render(
+      <CompareSlider before={<img src="/b.png" alt="b" />} after={<img src="/a.png" alt="" />} />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+    fireEvent.pointerDown(container, {
+      clientX: 100,
+      clientY: 50,
+      pointerType: 'mouse',
+      button: 0,
+      isPrimary: true,
+      pointerId: 1,
+    });
+    expect(slider).toHaveFocus();
   });
 });
