@@ -1,4 +1,11 @@
-import { useCallback, useRef, useState, type CSSProperties, type RefObject } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type RefObject,
+} from 'react';
 
 export type UseZoomPanOptions = {
   minZoom?: number;
@@ -96,6 +103,102 @@ export function useZoomPan(
     draggedRef.current = false;
     return dragged;
   }, []);
+
+  // Gestos: listeners nativos sobre el viewport (wheel necesita passive: false).
+  useEffect(() => {
+    const vp = viewportRef.current;
+    if (!vp) return;
+
+    const pointers = new Map<number, { x: number; y: number }>();
+    let pinch: { dist: number; scale: number } | null = null;
+    let pan: { x: number; y: number } | null = null;
+    let downAt: { x: number; y: number } | null = null;
+
+    const anchorFrom = (clientX: number, clientY: number) => {
+      const rect = vp.getBoundingClientRect();
+      return {
+        x: clientX - rect.left - rect.width / 2,
+        y: clientY - rect.top - rect.height / 2,
+      };
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const factor = Math.pow(1.1, -event.deltaY / 100);
+      zoomTo(scaleRef.current * factor, anchorFrom(event.clientX, event.clientY));
+    };
+
+    const onDblClick = (event: MouseEvent) => {
+      if (scaleRef.current > 1.01) reset();
+      else zoomTo(2, anchorFrom(event.clientX, event.clientY));
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      vp.setPointerCapture?.(event.pointerId);
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()] as [
+          { x: number; y: number },
+          { x: number; y: number },
+        ];
+        pinch = { dist: Math.hypot(b.x - a.x, b.y - a.y), scale: scaleRef.current };
+        pan = null;
+      } else if (pointers.size === 1) {
+        pan = { x: event.clientX, y: event.clientY };
+        downAt = { x: event.clientX, y: event.clientY };
+      }
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (!pointers.has(event.pointerId)) return;
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (pinch && pointers.size === 2) {
+        const [a, b] = [...pointers.values()] as [
+          { x: number; y: number },
+          { x: number; y: number },
+        ];
+        const dist = Math.hypot(b.x - a.x, b.y - a.y);
+        if (dist > 0 && pinch.dist > 0) {
+          zoomTo(pinch.scale * (dist / pinch.dist), anchorFrom((a.x + b.x) / 2, (a.y + b.y) / 2));
+        }
+        draggedRef.current = true;
+      } else if (pan) {
+        panBy(event.clientX - pan.x, event.clientY - pan.y);
+        pan = { x: event.clientX, y: event.clientY };
+        if (downAt && Math.hypot(event.clientX - downAt.x, event.clientY - downAt.y) > 4) {
+          draggedRef.current = true;
+        }
+      }
+    };
+
+    const onPointerEnd = (event: PointerEvent) => {
+      pointers.delete(event.pointerId);
+      if (pointers.size < 2) pinch = null;
+      if (pointers.size === 0) {
+        pan = null;
+        downAt = null;
+      } else if (pointers.size === 1) {
+        const [rest] = [...pointers.values()] as [{ x: number; y: number }];
+        pan = { x: rest.x, y: rest.y };
+      }
+    };
+
+    vp.addEventListener('wheel', onWheel, { passive: false });
+    vp.addEventListener('dblclick', onDblClick);
+    vp.addEventListener('pointerdown', onPointerDown);
+    vp.addEventListener('pointermove', onPointerMove);
+    vp.addEventListener('pointerup', onPointerEnd);
+    vp.addEventListener('pointercancel', onPointerEnd);
+    return () => {
+      vp.removeEventListener('wheel', onWheel);
+      vp.removeEventListener('dblclick', onDblClick);
+      vp.removeEventListener('pointerdown', onPointerDown);
+      vp.removeEventListener('pointermove', onPointerMove);
+      vp.removeEventListener('pointerup', onPointerEnd);
+      vp.removeEventListener('pointercancel', onPointerEnd);
+    };
+  }, [panBy, reset, viewportRef, zoomTo]);
 
   const { maxTx, maxTy } = bounds(state.scale);
 

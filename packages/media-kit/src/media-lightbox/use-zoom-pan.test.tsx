@@ -78,3 +78,127 @@ describe('useZoomPan núcleo', () => {
     expect(result.current.style.transform).toBe('translate(0px, 0px) scale(1)');
   });
 });
+
+import { fireEvent, render } from '@testing-library/react';
+import { useRef } from 'react';
+import type { UseZoomPanResult } from './use-zoom-pan';
+
+function GestureProbe({ onRender }: { onRender: (r: UseZoomPanResult) => void }) {
+  const vpRef = useRef<HTMLDivElement>(null);
+  const ctRef = useRef<HTMLDivElement>(null);
+  const result = useZoomPan(vpRef, ctRef);
+  onRender(result);
+  return (
+    <div ref={vpRef} data-testid="viewport">
+      <div ref={ctRef} data-testid="content" style={result.style} />
+    </div>
+  );
+}
+
+function mockSizes(el: HTMLElement, width: number, height: number) {
+  Object.defineProperty(el, 'clientWidth', { value: width, configurable: true });
+  Object.defineProperty(el, 'clientHeight', { value: height, configurable: true });
+  Object.defineProperty(el, 'offsetWidth', { value: width, configurable: true });
+  Object.defineProperty(el, 'offsetHeight', { value: height, configurable: true });
+  el.getBoundingClientRect = () =>
+    ({
+      x: 0,
+      y: 0,
+      top: 0,
+      left: 0,
+      right: width,
+      bottom: height,
+      width,
+      height,
+      toJSON: () => ({}),
+    }) as DOMRect;
+}
+
+describe('useZoomPan gestos', () => {
+  function setupProbe() {
+    let latest: UseZoomPanResult | undefined;
+    const utils = render(<GestureProbe onRender={(r) => (latest = r)} />);
+    const viewport = utils.getByTestId('viewport');
+    const content = utils.getByTestId('content');
+    mockSizes(viewport, 800, 600);
+    mockSizes(content, 800, 600);
+    return { viewport, content, latest: () => latest! };
+  }
+
+  it('rueda hacia arriba hace zoom in anclado al cursor', () => {
+    const { viewport, latest } = setupProbe();
+    fireEvent.wheel(viewport, { deltaY: -100, clientX: 600, clientY: 300 });
+    expect(latest().scale).toBeCloseTo(1.1);
+    // ancla x = 600 − 400 = 200 → tx = 200 − 200·1.1 = −20 (con tolerancia de fp: 200*1.1 no
+    // es exacto en IEEE-754, la fórmula de zoomTo del núcleo de Task 4 arrastra ese residuo).
+    const match = (latest().style.transform ?? '').match(
+      /^translate\(([-\d.]+)px, ([-\d.]+)px\) scale\(1\.1\)$/,
+    );
+    expect(match).not.toBeNull();
+    expect(Number(match?.[1])).toBeCloseTo(-20);
+    expect(Number(match?.[2])).toBeCloseTo(0);
+  });
+
+  it('doble click alterna 1x ↔ 2x', () => {
+    const { viewport, latest } = setupProbe();
+    fireEvent.dblClick(viewport, { clientX: 400, clientY: 300 });
+    expect(latest().scale).toBe(2);
+    fireEvent.dblClick(viewport, { clientX: 400, clientY: 300 });
+    expect(latest().scale).toBe(1);
+  });
+
+  it('drag de un puntero panea (con zoom) y marca consumeDrag', () => {
+    const { viewport, latest } = setupProbe();
+    fireEvent.wheel(viewport, { deltaY: -800, clientX: 400, clientY: 300 }); // zoom céntrico
+    const scale = latest().scale;
+    expect(scale).toBeGreaterThan(1.5);
+    fireEvent.pointerDown(viewport, {
+      pointerId: 1,
+      clientX: 400,
+      clientY: 300,
+      button: 0,
+      pointerType: 'mouse',
+    });
+    fireEvent.pointerMove(viewport, { pointerId: 1, clientX: 360, clientY: 300 });
+    expect(latest().style.transform).toContain('translate(-40px, 0px)');
+    fireEvent.pointerUp(viewport, { pointerId: 1 });
+    expect(latest().consumeDrag()).toBe(true);
+    expect(latest().consumeDrag()).toBe(false);
+  });
+
+  it('click sin apenas movimiento NO marca drag', () => {
+    const { viewport, latest } = setupProbe();
+    fireEvent.pointerDown(viewport, {
+      pointerId: 1,
+      clientX: 400,
+      clientY: 300,
+      button: 0,
+      pointerType: 'mouse',
+    });
+    fireEvent.pointerMove(viewport, { pointerId: 1, clientX: 402, clientY: 300 });
+    fireEvent.pointerUp(viewport, { pointerId: 1 });
+    expect(latest().consumeDrag()).toBe(false);
+  });
+
+  it('pinch con dos punteros escala según la distancia', () => {
+    const { viewport, latest } = setupProbe();
+    fireEvent.pointerDown(viewport, {
+      pointerId: 1,
+      clientX: 300,
+      clientY: 300,
+      pointerType: 'touch',
+      button: 0,
+    });
+    fireEvent.pointerDown(viewport, {
+      pointerId: 2,
+      clientX: 500,
+      clientY: 300,
+      pointerType: 'touch',
+      button: 0,
+    });
+    // distancia 200 → 400: escala ×2
+    fireEvent.pointerMove(viewport, { pointerId: 1, clientX: 200, clientY: 300 });
+    fireEvent.pointerMove(viewport, { pointerId: 2, clientX: 600, clientY: 300 });
+    expect(latest().scale).toBeCloseTo(2, 1);
+  });
+});
