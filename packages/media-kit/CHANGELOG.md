@@ -12,7 +12,10 @@
   (instead of `⋯`) and both corner buttons (`?`, eye) show a CSS-only tooltip mirroring their
   `aria-label`.
 
-No breaking changes: all new labels default to English; no new props; v2 behavior unchanged.
+No runtime breaking changes: all new labels default to English, there are no new props, and v2
+behavior is unchanged. Type-level note: `MediaLightboxLabels` gained new required keys, so objects
+annotated with the full type must add them — usage through the `labels` prop (`Partial`) is
+unaffected.
 
 ## 0.2.0 — 2026-07-14
 

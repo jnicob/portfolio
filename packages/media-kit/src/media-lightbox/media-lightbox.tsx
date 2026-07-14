@@ -318,7 +318,8 @@ function MediaLightboxContent({
     }
     if (target.matches('input, textarea, select, [contenteditable="true"]')) return;
     if (event.key === ' ') {
-      // Espacio sobre un elemento interactivo lo activa (convención nativa): no panear.
+      // Espacio sobre un elemento interactivo conserva el default del navegador
+      // (activa botones; en enlaces no hace nada): nunca entra en modo pan.
       if (target.closest('button, a')) return;
       event.preventDefault();
       if (!event.repeat) setSpacePan(true);

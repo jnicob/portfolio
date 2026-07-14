@@ -286,6 +286,12 @@
   opacity: 1;
 }
 
+/* Con el panel de ayuda abierto, su título ya nombra al botón: el tooltip sobraría
+   y se pintaría debajo del panel (mismo z-index, orden DOM). */
+.mk-lightbox__corner button[aria-expanded='true']::after {
+  display: none;
+}
+
 /* B2: panel de ayuda de teclado, bajo el cluster de la esquina. */
 .mk-lightbox__help {
   position: absolute;
@@ -322,6 +328,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;
+  align-self: start; /* el dt no se estira al alto de la fila del grid */
+  align-items: start; /* y cada kbd conserva su altura natural */
 }
 
 .mk-lightbox__help dd {
