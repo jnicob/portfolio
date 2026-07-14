@@ -6,6 +6,7 @@ import {
   useState,
   type KeyboardEvent,
   type MouseEvent,
+  type PointerEvent,
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
@@ -110,6 +111,10 @@ function MediaLightboxContent({
   const toggleRef = useRef<HTMLButtonElement>(null);
 
   const [fit, setFit] = useState<MediaLightboxFit>(initialFit);
+  // B1: Espacio mantenido = modo pan (cursor grab + mover panea). El flag vive aquí
+  // (no en useZoomPan) porque es una convención de teclado del dialog, no un gesto.
+  const [spacePan, setSpacePan] = useState(false);
+  const lastPointRef = useRef<{ x: number; y: number } | null>(null);
   const zoomPan = useZoomPan(viewportRef, contentRef, {
     minZoom: zoom?.min,
     maxZoom: zoom?.max,
@@ -167,6 +172,17 @@ function MediaLightboxContent({
     region.toggleAttribute('inert', hiding);
   }, [autoHide.visible]);
 
+  // Si la ventana pierde el foco con Espacio pulsado, el keyup nunca llega: liberar.
+  useEffect(() => {
+    if (!spacePan) return;
+    const release = () => {
+      setSpacePan(false);
+      lastPointRef.current = null;
+    };
+    window.addEventListener('blur', release);
+    return () => window.removeEventListener('blur', release);
+  }, [spacePan]);
+
   const nextFit = FIT_ORDER[(FIT_ORDER.indexOf(fit) + 1) % FIT_ORDER.length] ?? 'contain';
 
   function cycleFit() {
@@ -219,6 +235,13 @@ function MediaLightboxContent({
       return;
     }
     if (target.matches('input, textarea, select, [contenteditable="true"]')) return;
+    if (event.key === ' ') {
+      // Espacio sobre un elemento interactivo lo activa (convención nativa): no panear.
+      if (target.closest('button, a')) return;
+      event.preventDefault();
+      if (!event.repeat) setSpacePan(true);
+      return;
+    }
     if (event.key === '+' || event.key === '=') {
       zoomPan.zoomIn();
     } else if (event.key === '-') {
@@ -250,6 +273,26 @@ function MediaLightboxContent({
     }
   }
 
+  function onKeyUp(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === ' ') {
+      setSpacePan(false);
+      lastPointRef.current = null;
+    }
+  }
+
+  function onRootPointerMove(event: PointerEvent<HTMLDivElement>) {
+    autoHide.poke();
+    // Con botón pulsado ya panea el drag de useZoomPan sobre el viewport; este camino
+    // cubre "Espacio + mover" sin botón y evita duplicar el delta del arrastre.
+    if (!spacePan || event.buttons !== 0) {
+      lastPointRef.current = null;
+      return;
+    }
+    const last = lastPointRef.current;
+    if (last) zoomPan.panBy(event.clientX - last.x, event.clientY - last.y);
+    lastPointRef.current = { x: event.clientX, y: event.clientY };
+  }
+
   function onOverlayClick(event: MouseEvent<HTMLDivElement>) {
     // Un pan que termina en click no debe cerrar.
     if (zoomPan.consumeDrag()) return;
@@ -267,9 +310,11 @@ function MediaLightboxContent({
       tabIndex={-1}
       className="mk-lightbox"
       data-fit={fit}
+      data-space-pan={spacePan ? 'true' : undefined}
       onKeyDown={onKeyDown}
+      onKeyUp={onKeyUp}
       onClick={onOverlayClick}
-      onPointerMove={autoHide.poke}
+      onPointerMove={onRootPointerMove}
     >
       <div ref={viewportRef} className="mk-lightbox__viewport">
         <div ref={contentRef} className="mk-lightbox__media" style={zoomPan.style}>

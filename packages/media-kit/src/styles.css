@@ -182,6 +182,15 @@
   display: block;
 }
 
+/* B1: Espacio mantenido = modo pan. Solo affordance de cursor; el pan lo hace JS. */
+.mk-lightbox[data-space-pan] .mk-lightbox__viewport {
+  cursor: grab;
+}
+
+.mk-lightbox[data-space-pan] .mk-lightbox__viewport:active {
+  cursor: grabbing;
+}
+
 /* El viewport es inset:0 sobre el overlay fixed → 100vw/100dvh equivalen a su tamaño. */
 .mk-lightbox[data-fit='contain'] .mk-lightbox__media :is(img, video) {
   max-width: calc(100vw - 2rem);

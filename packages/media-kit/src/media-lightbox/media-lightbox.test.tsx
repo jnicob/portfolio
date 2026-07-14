@@ -342,3 +342,46 @@ describe('MediaLightbox v2', () => {
     }
   });
 });
+
+describe('MediaLightbox v2.1 — pan con Espacio (B1)', () => {
+  function openWithOverflow() {
+    render(
+      <MediaLightbox open onClose={() => {}} label="Vista" fit="actual">
+        <img src="/big.png" alt="grande" />
+      </MediaLightbox>,
+    );
+    const dialog = screen.getByRole('dialog');
+    const viewport = document.querySelector('.mk-lightbox__viewport') as HTMLElement;
+    const media = document.querySelector('.mk-lightbox__media') as HTMLElement;
+    mockSizes(viewport, 800, 600);
+    mockSizes(media, 1600, 1200);
+    return { dialog, media };
+  }
+
+  it('con Espacio mantenido, mover el puntero panea cuando hay desborde', () => {
+    const { dialog, media } = openWithOverflow();
+    fireEvent.keyDown(dialog, { key: ' ' });
+    expect(dialog).toHaveAttribute('data-space-pan');
+    fireEvent.pointerMove(dialog, { clientX: 400, clientY: 300 });
+    fireEvent.pointerMove(dialog, { clientX: 360, clientY: 300 });
+    expect(media.style.transform).toContain('translate(-40px, 0px)');
+  });
+
+  it('al soltar Espacio deja de panear y retira la affordance de cursor', () => {
+    const { dialog, media } = openWithOverflow();
+    fireEvent.keyDown(dialog, { key: ' ' });
+    fireEvent.pointerMove(dialog, { clientX: 400, clientY: 300 });
+    fireEvent.keyUp(dialog, { key: ' ' });
+    expect(dialog).not.toHaveAttribute('data-space-pan');
+    fireEvent.pointerMove(dialog, { clientX: 300, clientY: 300 });
+    expect(media.style.transform).toContain('translate(0px, 0px)');
+  });
+
+  it('Espacio con el foco en un botón NO entra en modo pan (el botón se sigue activando)', () => {
+    openWithOverflow();
+    const close = screen.getByRole('button', { name: 'Close' });
+    close.focus();
+    fireEvent.keyDown(close, { key: ' ' });
+    expect(screen.getByRole('dialog')).not.toHaveAttribute('data-space-pan');
+  });
+});
