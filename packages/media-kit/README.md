@@ -54,15 +54,16 @@ export function Example() {
 A before/after divider that reveals the `after` media as the user drags, or moves it with the
 keyboard. Implements the [ARIA slider pattern](https://www.w3.org/WAI/ARIA/apg/patterns/slider/).
 
-| Prop               | Type                         | Default        | Description                                                                                                                                                                                                                                                      |
-| ------------------ | ---------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `before`           | `ReactNode`                  | —              | Original media (typically an `<img>`). Rendered on the left / top.                                                                                                                                                                                               |
-| `after`            | `ReactNode`                  | —              | Processed media. Revealed to the right / bottom of the divider.                                                                                                                                                                                                  |
-| `label`            | `string`                     | `'Compare'`    | Accessible name of the divider (`role="slider"`).                                                                                                                                                                                                                |
-| `initialPosition`  | `number`                     | `50`           | Initial divider position, `0`–`100`. **Uncontrolled**: read once at mount into internal state; changing the prop afterwards does not move the divider.                                                                                                           |
-| `orientation`      | `'horizontal' \| 'vertical'` | `'horizontal'` | Drag/keyboard axis. Also toggles cursor (`col-resize`/`row-resize`) and `aria-orientation`.                                                                                                                                                                      |
-| `className`        | `string`                     | `undefined`    | Extra class name appended to the root element.                                                                                                                                                                                                                   |
-| `onPositionChange` | `(position: number) => void` | `undefined`    | Receives the clamped position (0–100). Pointer dragging produces fractional values; keyboard steps add/subtract whole numbers but preserve any fractional part from a previous drag — only `Home`/`End` guarantee an integer. `aria-valuenow` is always rounded. |
+| Prop               | Type                         | Default        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------ | ---------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `before`           | `ReactNode`                  | —              | Original media (typically an `<img>`). Rendered on the left / top.                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `after`            | `ReactNode`                  | —              | Processed media. Revealed to the right / bottom of the divider.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `label`            | `string`                     | `'Compare'`    | Accessible name of the divider (`role="slider"`).                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `initialPosition`  | `number`                     | `50`           | Initial divider position, `0`–`100`. **Uncontrolled**: read once at mount into internal state; changing the prop afterwards does not move the divider.                                                                                                                                                                                                                                                                                                                                                          |
+| `orientation`      | `'horizontal' \| 'vertical'` | `'horizontal'` | Drag/keyboard axis. Also toggles cursor (`col-resize`/`row-resize`) and `aria-orientation`.                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `mode`             | `'drag' \| 'hover'`          | `'drag'`       | `'drag'` requires pressing and dragging to move the divider — identical to v1. `'hover'` makes the divider follow the mouse pointer without pressing (touch/pen input always falls back to the `'drag'` behavior; on mouse-out the divider stays where it was, it does not reset). Keyboard operation is identical in both modes. Pressing the pointer down over the handle moves focus to it in both modes; in `'hover'` mode, moving the mouse without pressing updates the position but does not move focus. |
+| `className`        | `string`                     | `undefined`    | Extra class name appended to the root element.                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `onPositionChange` | `(position: number) => void` | `undefined`    | Receives the clamped position (0–100). Pointer dragging produces fractional values; keyboard steps add/subtract whole numbers but preserve any fractional part from a previous drag — only `Home`/`End` guarantee an integer. `aria-valuenow` is always rounded.                                                                                                                                                                                                                                                |
 
 ### MediaLightbox
 
@@ -71,15 +72,56 @@ A fullscreen modal for viewing a single piece of media, rendered via a portal in
 [ARIA dialog (modal) pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/), including a
 focus trap.
 
-| Prop         | Type         | Default   | Description                                                                 |
-| ------------ | ------------ | --------- | --------------------------------------------------------------------------- |
-| `open`       | `boolean`    | —         | Whether the dialog is rendered. When `false`, the component renders `null`. |
-| `onClose`    | `() => void` | —         | Called when the user presses `Escape`, clicks the overlay, or clicks close. |
-| `label`      | `string`     | —         | Accessible name of the dialog (`aria-label`).                               |
-| `closeLabel` | `string`     | `'Close'` | Accessible name of the close button.                                        |
-| `children`   | `ReactNode`  | —         | Fullscreen content: `<img>`, `<video>`, or a composition of either.         |
+| Prop                     | Type                               | Default              | Description                                                                                                                                                                                                                                                       |
+| ------------------------ | ---------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `open`                   | `boolean`                          | —                    | Whether the dialog is rendered. When `false`, the component renders `null`.                                                                                                                                                                                       |
+| `onClose`                | `() => void`                       | —                    | Called when the user presses `Escape` (unless native fullscreen is active — see [Keyboard map](#keyboard-map)), clicks the overlay/empty viewport, or clicks close.                                                                                               |
+| `label`                  | `string`                           | —                    | Accessible name of the dialog (`aria-label`).                                                                                                                                                                                                                     |
+| `closeLabel`             | `string`                           | `'Close'`            | **Legacy alias** of `labels.close` (v1 prop, kept for backward compatibility). If both `closeLabel` and `labels.close` are set, `labels.close` wins.                                                                                                              |
+| `fit`                    | `'contain' \| 'cover' \| 'actual'` | `'contain'`          | Base sizing at zoom 1x. `'contain'` fits the media inside the viewport; `'cover'` fills the viewport (cropping); `'actual'` renders at natural size (1:1). Changing `fit` (via the toolbar or by re-rendering with a new value) resets zoom to 1x and re-centers. |
+| `zoom`                   | `{ min?: number; max?: number }`   | `{ min: 1, max: 8 }` | Zoom bounds, relative to the `fit` base size.                                                                                                                                                                                                                     |
+| `controls`               | `boolean`                          | `true`               | Whether to render the command toolbar (zoom, reset, fit, fullscreen, close). When `false`, only a standalone close button is rendered (the v1 look); pointer gestures and keyboard shortcuts remain fully active.                                                 |
+| `defaultControlsVisible` | `boolean`                          | `true`               | Initial visibility of the toolbar. Ignored when `controls` is `false`.                                                                                                                                                                                            |
+| `autoHideDelay`          | `number \| null`                   | `3000`               | Milliseconds of pointer inactivity before the toolbar auto-hides. `null` disables auto-hide (the toolbar then only toggles via the `c` key or the visibility button). Auto-hide never triggers while focus is inside the toolbar.                                 |
+| `labels`                 | `Partial<MediaLightboxLabels>`     | `undefined`          | Overrides for the toolbar/close button text (i18n). Each key falls back to the English default listed below.                                                                                                                                                      |
+| `children`               | `ReactNode`                        | —                    | Fullscreen content: `<img>`, `<video>`, or a composition of either.                                                                                                                                                                                               |
 
 `open`, `onClose`, `label`, and `children` have no default — they are required props.
+
+#### `MediaLightboxLabels`
+
+All keys are optional (`Partial<MediaLightboxLabels>`) and merge over these English defaults:
+
+| Key              | Default (English)                    | Used for                                                                  |
+| ---------------- | ------------------------------------ | ------------------------------------------------------------------------- |
+| `controls`       | `'Controls'`                         | `aria-label` of the toolbar (`role="group"`)                              |
+| `zoomIn`         | `'Zoom in'`                          | Zoom-in button                                                            |
+| `zoomOut`        | `'Zoom out'`                         | Zoom-out button                                                           |
+| `zoomLevel`      | `'Zoom {percent}%'`                  | `aria-live` announcement template — `{percent}` is substituted            |
+| `reset`          | `'Reset view'`                       | Reset button                                                              |
+| `fit`            | `'Fit: {current}. Switch to {next}'` | Fit-cycle button — `{current}` and `{next}` are substituted               |
+| `fullscreen`     | `'Enter fullscreen'`                 | Fullscreen button, shown while inactive                                   |
+| `exitFullscreen` | `'Exit fullscreen'`                  | Fullscreen button, shown while active                                     |
+| `hideControls`   | `'Hide controls'`                    | Visibility toggle, shown while the toolbar is visible                     |
+| `showControls`   | `'Show controls'`                    | Visibility toggle, shown while the toolbar is hidden                      |
+| `close`          | `'Close'`                            | Close button (also used by the standalone button when `controls={false}`) |
+
+## Keyboard map
+
+`MediaLightbox` binds every shortcut to its own dialog element — never to `window` — so they're
+only active while the lightbox is open. All of them (except `Escape` and `Tab`/`Shift+Tab`) are
+ignored while focus sits on a form field (`input`, `textarea`, `select`, `[contenteditable]`).
+
+| Key                                                  | Action                                                        | Condition                                                                                                                        |
+| ---------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `Escape`                                             | Closes the dialog.                                            | If native fullscreen is active, this `Escape` only exits fullscreen instead (matching browser behavior) — the dialog stays open. |
+| `Tab` / `Shift+Tab`                                  | Cycles the focus trap across the dialog's focusable elements. | Always.                                                                                                                          |
+| `+` / `=`                                            | Zooms in (same step as the toolbar's `+` button).             | Always.                                                                                                                          |
+| `-`                                                  | Zooms out (same step as the toolbar's `−` button).            | Always.                                                                                                                          |
+| `0`                                                  | Resets to zoom 1x, re-centered.                               | Always.                                                                                                                          |
+| `ArrowLeft` / `ArrowRight` / `ArrowUp` / `ArrowDown` | Pans the media by a fixed step.                               | Focus is outside the toolbar; a no-op when the content doesn't overflow the viewport.                                            |
+| `f`                                                  | Toggles native fullscreen.                                    | Only when the Fullscreen API is supported (otherwise the button isn't rendered either).                                          |
+| `c`                                                  | Shows/hides the toolbar.                                      | Only when `controls` is `true`.                                                                                                  |
 
 ## Styling
 
@@ -90,17 +132,175 @@ portal under `document.body`, so wrapper-level overrides do **not** reach it —
 properties (`--mk-overlay-bg`, `--mk-z-lightbox`, close-button vars) on `:root` (or
 `:root[data-theme='…']`).
 
-| Custom property          | Default             | Controls                                                                                                                                                                                                                  |
-| ------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--mk-handle-color`      | `#ffffff`           | Background of the CompareSlider divider line, its circular grip indicator, and the MediaLightbox close button. Intentionally not theme-mapped by consumers — it must contrast with the media shown, not the page surface. |
-| `--mk-handle-icon-color` | `#18181b`           | Color of the chevron affordance (`◂ ▸` / `▴ ▾`) rendered inside the CompareSlider grip indicator.                                                                                                                         |
-| `--mk-handle-ring`       | `rgb(0 0 0 / 0.4)`  | Outline `box-shadow` around the CompareSlider divider line, its grip indicator, and the MediaLightbox close button, keeping them visible against any media.                                                               |
-| `--mk-handle-size`       | `2.5rem`            | Diameter of the CompareSlider handle's circular grip indicator (the enlarged touch target).                                                                                                                               |
-| `--mk-divider-width`     | `2px`               | Thickness of the CompareSlider divider line (width when horizontal, height when vertical).                                                                                                                                |
-| `--mk-focus-ring`        | `#6d5ce8`           | `focus-visible` indicator color: outer layer of the two-layer ring on the CompareSlider grip, and outline on the MediaLightbox close button/content.                                                                      |
-| `--mk-overlay-bg`        | `rgb(0 0 0 / 0.88)` | Background of the MediaLightbox overlay.                                                                                                                                                                                  |
-| `--mk-radius`            | `0.75rem`           | Border radius of the CompareSlider container and of `<img>`/`<video>` elements inside the lightbox.                                                                                                                       |
-| `--mk-z-lightbox`        | `50`                | `z-index` of the MediaLightbox overlay.                                                                                                                                                                                   |
+| Custom property          | Default                | Controls                                                                                                                                                                                                                  |
+| ------------------------ | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--mk-handle-color`      | `#ffffff`              | Background of the CompareSlider divider line, its circular grip indicator, and the MediaLightbox close button. Intentionally not theme-mapped by consumers — it must contrast with the media shown, not the page surface. |
+| `--mk-handle-icon-color` | `#18181b`              | Color of the chevron affordance (`◂ ▸` / `▴ ▾`) rendered inside the CompareSlider grip indicator.                                                                                                                         |
+| `--mk-handle-ring`       | `rgb(0 0 0 / 0.4)`     | Outline `box-shadow` around the CompareSlider divider line, its grip indicator, and the MediaLightbox close button, keeping them visible against any media.                                                               |
+| `--mk-handle-size`       | `2.5rem`               | Diameter of the CompareSlider handle's circular grip indicator (the enlarged touch target).                                                                                                                               |
+| `--mk-divider-width`     | `2px`                  | Thickness of the CompareSlider divider line (width when horizontal, height when vertical).                                                                                                                                |
+| `--mk-focus-ring`        | `#6d5ce8`              | `focus-visible` indicator color: outer layer of the two-layer ring on the CompareSlider grip, and outline on the MediaLightbox close button/content.                                                                      |
+| `--mk-overlay-bg`        | `rgb(0 0 0 / 0.88)`    | Background of the MediaLightbox overlay.                                                                                                                                                                                  |
+| `--mk-radius`            | `0.75rem`              | Border radius of the CompareSlider container and of `<img>`/`<video>` elements inside the lightbox.                                                                                                                       |
+| `--mk-z-lightbox`        | `50`                   | `z-index` of the MediaLightbox overlay.                                                                                                                                                                                   |
+| `--mk-control-bg`        | `rgb(24 24 27 / 0.85)` | Background of the MediaLightbox command toolbar.                                                                                                                                                                          |
+| `--mk-control-color`     | `#fafafa`              | Text/icon color inside the MediaLightbox command toolbar.                                                                                                                                                                 |
+
+## Recipes
+
+All examples assume the stylesheet is already imported once (see [Quick start](#quick-start)).
+
+### 1. Basic lightbox (v1 usage, unchanged)
+
+```tsx
+import { useState } from 'react';
+import { MediaLightbox } from '@nicobehm/media-kit';
+
+function BasicLightbox() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <button type="button" onClick={() => setOpen(true)}>
+        Open lightbox
+      </button>
+      <MediaLightbox open={open} onClose={() => setOpen(false)} label="Photo preview">
+        <img src="/after.jpg" alt="Enhanced photo" />
+      </MediaLightbox>
+    </>
+  );
+}
+```
+
+### 2. Gallery image with zoom/pan and `fit="cover"`
+
+`cover` fills the viewport edge-to-edge (cropping the media), which suits a gallery that wants an
+immersive, no-letterboxing preview. Zoom bounds can be narrowed since `cover` already starts closer
+to the content's native resolution.
+
+```tsx
+function GalleryLightbox({ src, alt }: { src: string; alt: string }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <img src={src} alt={alt} onClick={() => setOpen(true)} role="button" tabIndex={0} />
+      <MediaLightbox
+        open={open}
+        onClose={() => setOpen(false)}
+        label="Gallery image"
+        fit="cover"
+        zoom={{ min: 1, max: 4 }}
+      >
+        <img src={src} alt={alt} />
+      </MediaLightbox>
+    </>
+  );
+}
+```
+
+### 3. Toolbar-less lightbox (`controls={false}`)
+
+`controls={false}` removes the visual command toolbar and falls back to a single standalone close
+button (the v1 look) — pointer gestures (wheel, pinch, double-tap/click) and every keyboard
+shortcut except `c` keep working silently in the background. Note that `MediaLightbox` doesn't
+expose the internal zoom/fit state or setters, so building a fully custom toolbar synced to that
+state isn't possible through the public API today; use this mode when you want the bare chrome, not
+to replace the toolbar with your own zoom controls.
+
+```tsx
+function BareLightbox() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <button type="button" onClick={() => setOpen(true)}>
+        Open
+      </button>
+      <MediaLightbox
+        open={open}
+        onClose={() => setOpen(false)}
+        label="Photo preview"
+        controls={false}
+      >
+        <img src="/after.jpg" alt="Enhanced photo" />
+      </MediaLightbox>
+    </>
+  );
+}
+```
+
+### 4. Full i18n via `labels`
+
+Every key in `MediaLightboxLabels` is optional and can be overridden independently; here all of
+them are set for a Spanish UI (`{percent}`, `{current}` and `{next}` are template placeholders
+substituted at render time):
+
+```tsx
+<MediaLightbox
+  open={open}
+  onClose={() => setOpen(false)}
+  label="Vista previa de la foto"
+  labels={{
+    controls: 'Controles',
+    zoomIn: 'Acercar',
+    zoomOut: 'Alejar',
+    zoomLevel: 'Zoom al {percent}%',
+    reset: 'Restablecer vista',
+    fit: 'Ajuste: {current}. Cambiar a {next}',
+    fullscreen: 'Pantalla completa',
+    exitFullscreen: 'Salir de pantalla completa',
+    hideControls: 'Ocultar controles',
+    showControls: 'Mostrar controles',
+    close: 'Cerrar',
+  }}
+>
+  <img src="/after.jpg" alt="Foto mejorada" />
+</MediaLightbox>
+```
+
+### 5. `CompareSlider mode="hover"` for before/after grids
+
+`mode="hover"` suits a grid of several before/after cases: hovering each card previews the
+comparison without requiring a click-and-drag per card. Touch users still get the drag behavior.
+
+```tsx
+<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+  <CompareSlider
+    mode="hover"
+    label="Before and after — portrait"
+    before={<img src="/case-1/before.jpg" alt="Original photo" />}
+    after={<img src="/case-1/after.jpg" alt="Enhanced photo" />}
+  />
+  <CompareSlider
+    mode="hover"
+    label="Before and after — landscape"
+    before={<img src="/case-2/before.jpg" alt="Original photo" />}
+    after={<img src="/case-2/after.jpg" alt="Enhanced photo" />}
+  />
+</div>
+```
+
+### 6. Mapping your design tokens to `--mk-*`
+
+Map the package's custom properties to your own theme tokens once, under your theme selectors —
+this is the pattern used by this monorepo's showcase app (`apps/web/src/app/globals.css`):
+
+```css
+/* globals.css (or wherever your app defines its theme tokens) */
+:root[data-theme='dark'],
+:root[data-theme='light'] {
+  --mk-focus-ring: var(--ring);
+  --mk-radius: var(--radius-card);
+  /* Extending the same pattern to the new toolbar colors: */
+  --mk-control-bg: var(--surface);
+  --mk-control-color: var(--fg);
+}
+
+/* --mk-handle-color is intentionally left un-mapped: it must contrast with
+   the media being shown (a photo or video), not with the page surface, in
+   either theme. */
+```
 
 ## Accessibility
 
@@ -121,17 +321,37 @@ tree.
 
 **MediaLightbox** implements the ARIA
 [dialog (modal) pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/): the root has
-`role="dialog"`, `aria-modal="true"`, and `aria-label` from the `label` prop. Keyboard contract:
+`role="dialog"`, `aria-modal="true"`, and `aria-label` from the `label` prop. Keyboard contract: see
+the full [Keyboard map](#keyboard-map) above; in summary, `Escape` calls `onClose` (unless native
+fullscreen is active, in which case it only exits fullscreen), and `Tab`/`Shift+Tab` cycle focus
+within the dialog only (a focus trap over all elements matching
+`a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])`, minus
+anything under an `[inert]` subtree); focus cannot escape to the underlying page while open.
 
-- `Escape` calls `onClose`.
-- `Tab` / `Shift+Tab` cycle focus within the dialog only (a focus trap over all elements matching
-  `a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])`);
-  focus cannot escape to the underlying page while open.
-- On open, the close button receives focus and `document.body` scrolling is locked.
+- On open, the close button receives focus and `document.body` scrolling is locked (the scrollbar
+  width is compensated with `padding-right` so there's no layout shift).
 - On close, focus returns to the element that had focus before the dialog opened (the trigger),
   and body scroll is restored.
 
-Clicking the overlay itself (outside `.mk-lightbox__content`) also calls `onClose`.
+Clicking the overlay itself — the dialog root or the empty viewport area outside the media, i.e.
+outside `.mk-lightbox__media` — also calls `onClose`, unless the pointer gesture that just ended
+was a pan drag (a drag ending over the overlay never closes the dialog).
+
+**Command toolbar (`controls={true}`, the default):**
+
+- Auto-hide (`autoHideDelay`, default `3000`ms) never hides the toolbar while focus is inside it:
+  focusing any toolbar control pins it visible, and it's released on blur.
+- When the toolbar transitions to hidden, it's marked `inert` (removed from both the focus trap and
+  the accessibility tree) and `visibility: hidden`; if focus was inside it at that moment, focus
+  first moves to the always-visible toggle button so keyboard navigation never lands on inert
+  content.
+- The zoom percentage is announced via a visually-hidden `aria-live="polite"` region, debounced to
+  the gesture's final value (not on every wheel/pinch tick), using the `labels.zoomLevel` template.
+- The visibility toggle button always carries `aria-expanded` reflecting the toolbar's current
+  visibility, plus an `aria-label` that switches between `labels.hideControls` /
+  `labels.showControls`.
+- The fit-cycle button's `aria-label` states both the current and the next fit (`labels.fit`
+  template), and every toolbar button meets the 44px touch-target minimum.
 
 ## SSR & RSC notes
 
