@@ -47,6 +47,7 @@ Read the matching skill in `skills/<name>/SKILL.md` BEFORE working on a matching
 | accessibility, a11y, WCAG, aria, keyboard, focus, contrast, screen reader | `accessibility` |
 | performance, Core Web Vitals, LCP, bundle size, images, code splitting, Lighthouse | `performance` |
 | refactor, readability, SOLID, module size, naming, single responsibility, code review | `code-principles` |
+| TypeScript, types, hooks rules, naming, imports, constants, test conventions | `code-conventions` |
 
 ## Review lenses (agents)
 
@@ -83,6 +84,7 @@ root sources directly.
 ## Skills index (full content in skills/<name>/SKILL.md)
 
 - **accessibility**: WCAG AA checklist applied during build and review. Use when building interactive components, reviewing UI, or auditing pages for keyboard, ARIA, contrast.
+- **code-conventions**: Concrete TypeScript, React hooks and code-style conventions for this repo. Use when writing or reviewing any TypeScript/React code — types, hooks, naming, imports, component internals, test conventions.
 - **code-principles**: Readability, SOLID, single responsibility and module-size rules for this repo. Use when writing, refactoring or reviewing any code.
 - **component-patterns**: Component conventions — composition, cva variants, headless patterns, accessible forms, explicit empty/loading/error states. Use when creating or refactoring any UI component.
 - **nextjs-static-dual**: Next.js 16 App Router with dual runtime — static export (default) and optional Node mode. Use when creating routes/pages, choosing RSC vs client components, or touching next.config, route handlers, images or anything runtime-dependent.

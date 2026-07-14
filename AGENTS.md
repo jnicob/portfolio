@@ -46,6 +46,7 @@ Read the matching skill in `skills/<name>/SKILL.md` BEFORE working on a matching
 | accessibility, a11y, WCAG, aria, keyboard, focus, contrast, screen reader | `accessibility` |
 | performance, Core Web Vitals, LCP, bundle size, images, code splitting, Lighthouse | `performance` |
 | refactor, readability, SOLID, module size, naming, single responsibility, code review | `code-principles` |
+| TypeScript, types, hooks rules, naming, imports, constants, test conventions | `code-conventions` |
 
 ## Review lenses (agents)
 
