@@ -212,7 +212,7 @@ export default function ShowcasePage() {
         <Section
           id="tabs"
           title="Tabs"
-          description="Pestañas APG con roving tabindex; los paneles persisten montados (sin layout-shift)."
+          description="Pestañas APG con roving tabindex; los paneles persisten montados (sin perder estado al cambiar)."
         >
           <Tabs defaultValue="preview">
             <TabList label="Ejemplo de resultado">

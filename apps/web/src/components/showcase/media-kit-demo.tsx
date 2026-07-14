@@ -34,7 +34,7 @@ export function MediaKitDemo() {
       </div>
       <PortraitCompareDemo />
       <Button variant="secondary" className="self-start" onClick={() => setOpen(true)}>
-        Abrir en fullscreen
+        Ampliar con zoom
       </Button>
       <MediaLightbox
         open={open}
