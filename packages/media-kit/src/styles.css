@@ -254,20 +254,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .mk-lightbox {
-    animation: none;
-  }
-
-  .mk-lightbox__media {
-    transition: none;
-  }
-
-  .mk-lightbox__controls-region {
-    transition: none;
-  }
-}
-
 /* Toolbar del lightbox */
 .mk-lightbox__controls-region {
   position: absolute;
@@ -280,6 +266,22 @@
 .mk-lightbox__controls-region[data-visible='false'] {
   opacity: 0;
   visibility: hidden;
+}
+
+/* Reduced-motion: colocado DESPUÉS de las reglas base para que su override gane
+   la cascada (misma especificidad → decide el orden de origen). */
+@media (prefers-reduced-motion: reduce) {
+  .mk-lightbox {
+    animation: none;
+  }
+
+  .mk-lightbox__media {
+    transition: none;
+  }
+
+  .mk-lightbox__controls-region {
+    transition: none;
+  }
 }
 
 .mk-lightbox__controls {
