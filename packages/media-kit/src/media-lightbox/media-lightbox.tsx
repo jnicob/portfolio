@@ -101,6 +101,45 @@ const DEFAULT_LABELS: MediaLightboxLabels = {
 
 const FIT_ORDER: MediaLightboxFit[] = ['contain', 'cover', 'actual'];
 
+// Iconos SVG inline (trazo currentColor): deterministas y sin dependencias.
+const EYE_ICON = (
+  <svg
+    data-mk-icon="eye"
+    viewBox="0 0 24 24"
+    width="18"
+    height="18"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+
+const EYE_OFF_ICON = (
+  <svg
+    data-mk-icon="eye-off"
+    viewBox="0 0 24 24"
+    width="18"
+    height="18"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M17.94 17.94A10.5 10.5 0 0 1 12 19c-7 0-11-7-11-7a19.9 19.9 0 0 1 5.06-5.94" />
+    <path d="M9.9 4.24A10.4 10.4 0 0 1 12 5c7 0 11 7 11 7a19.9 19.9 0 0 1-3.22 4.19" />
+    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+    <line x1="1" y1="1" x2="23" y2="23" />
+  </svg>
+);
+
 type FullscreenDocument = Document & { webkitFullscreenElement?: Element | null };
 
 function nativeFullscreenActive(): boolean {
@@ -382,6 +421,7 @@ function MediaLightboxContent({
           className="mk-lightbox__help-toggle"
           aria-expanded={helpOpen}
           aria-label={labels.help}
+          data-mk-tooltip={labels.help}
           onClick={() => (helpOpen ? closeHelp() : setHelpOpen(true))}
         >
           ?
@@ -393,9 +433,10 @@ function MediaLightboxContent({
             className="mk-lightbox__controls-toggle"
             aria-expanded={autoHide.visible}
             aria-label={autoHide.visible ? labels.hideControls : labels.showControls}
+            data-mk-tooltip={autoHide.visible ? labels.hideControls : labels.showControls}
             onClick={autoHide.toggle}
           >
-            ⋯
+            {autoHide.visible ? EYE_ICON : EYE_OFF_ICON}
           </button>
         ) : null}
         <button

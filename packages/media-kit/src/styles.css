@@ -260,6 +260,32 @@
   outline-offset: 2px;
 }
 
+/* B3: tooltip ligero CSS. Complementa (nunca sustituye) al aria-label. */
+.mk-lightbox__corner button[data-mk-tooltip] {
+  position: relative;
+}
+
+.mk-lightbox__corner button[data-mk-tooltip]::after {
+  content: attr(data-mk-tooltip);
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  background: var(--mk-control-bg);
+  color: var(--mk-control-color);
+  box-shadow: 0 0 0 1px var(--mk-handle-ring);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.mk-lightbox__corner button[data-mk-tooltip]:hover::after,
+.mk-lightbox__corner button[data-mk-tooltip]:focus-visible::after {
+  opacity: 1;
+}
+
 /* B2: panel de ayuda de teclado, bajo el cluster de la esquina. */
 .mk-lightbox__help {
   position: absolute;

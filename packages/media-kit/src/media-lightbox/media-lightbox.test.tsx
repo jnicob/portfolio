@@ -421,3 +421,26 @@ describe('MediaLightbox v2.1 — ayuda de teclado (B2)', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });
+
+describe('MediaLightbox v2.1 — toggle ojo y tooltips (B3)', () => {
+  it('el toggle muestra ojo/ojo-tachado y su tooltip sigue al aria-label', async () => {
+    render(<Harness />);
+    await userEvent.click(screen.getByRole('button', { name: 'Abrir' }));
+    const toggle = screen.getByRole('button', { name: 'Hide controls' });
+    expect(toggle.querySelector('svg[data-mk-icon="eye"]')).toBeInTheDocument();
+    expect(toggle).toHaveAttribute('data-mk-tooltip', 'Hide controls');
+    await userEvent.click(toggle);
+    expect(toggle).toHaveAccessibleName('Show controls');
+    expect(toggle.querySelector('svg[data-mk-icon="eye-off"]')).toBeInTheDocument();
+    expect(toggle).toHaveAttribute('data-mk-tooltip', 'Show controls');
+  });
+
+  it('el botón de ayuda también lleva tooltip', async () => {
+    render(<Harness />);
+    await userEvent.click(screen.getByRole('button', { name: 'Abrir' }));
+    expect(screen.getByRole('button', { name: 'Keyboard shortcuts' })).toHaveAttribute(
+      'data-mk-tooltip',
+      'Keyboard shortcuts',
+    );
+  });
+});
