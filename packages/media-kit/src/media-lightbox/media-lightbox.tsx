@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { LightboxControls } from './lightbox-controls';
+import { LightboxControls, template } from './lightbox-controls';
 import { useAutoHide } from './use-auto-hide';
 import { useFullscreen } from './use-fullscreen';
 import { useZoomPan } from './use-zoom-pan';
@@ -108,12 +108,6 @@ function MediaLightboxContent({
   const contentRef = useRef<HTMLDivElement>(null);
   const controlsRegionRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
-  // El foco inicial (más abajo) aterriza en Close, que ahora vive DENTRO de la
-  // toolbar: el focusin sintético de React burbujea hasta controls-region y
-  // dispararía pin(true) sin que el usuario haya interactuado. Se suprime solo
-  // ese focus programático de apertura; cualquier foco posterior (Tab del
-  // usuario, foco en Zoom in, etc.) sigue pineando con normalidad.
-  const initialFocusRef = useRef(false);
 
   const [fit, setFit] = useState<MediaLightboxFit>(initialFit);
   const zoomPan = useZoomPan(viewportRef, contentRef, {
@@ -139,6 +133,8 @@ function MediaLightboxContent({
   }, [percent]);
 
   // Al montar (= al abrir): foco previo, scroll lock compensando la barra, foco al Close.
+  // Close vive en la esquina superior derecha (fuera de la región auto-ocultable), así que
+  // este foco de apertura no dispara el onFocus/pin de la región.
   useEffect(() => {
     const previouslyFocused = document.activeElement as HTMLElement | null;
     const prevOverflow = document.body.style.overflow;
@@ -146,11 +142,9 @@ function MediaLightboxContent({
     const scrollbar = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = 'hidden';
     if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`;
-    initialFocusRef.current = true;
     (
       dialogRef.current?.querySelector<HTMLElement>('[data-mk-close]') ?? dialogRef.current
     )?.focus();
-    initialFocusRef.current = false;
     return () => {
       document.body.style.overflow = prevOverflow;
       document.body.style.paddingRight = prevPadding;
@@ -183,6 +177,10 @@ function MediaLightboxContent({
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    // Cualquier interacción de teclado revive una toolbar oculta por inactividad
+    // (poke() es no-op si el usuario la ocultó explícitamente): así un usuario de
+    // teclado estacionario recupera la toolbar y el feedback de zoom.
+    autoHide.poke();
     const target = event.target as HTMLElement;
     if (event.key === 'Escape') {
       // Con fullscreen nativo activo el navegador sale de fullscreen con este
@@ -278,8 +276,16 @@ function MediaLightboxContent({
           {children}
         </div>
       </div>
-      {controls ? (
-        <>
+      {/* Anuncio de zoom: vive en el root del dialog, FUERA de la región auto-ocultable,
+          por lo que nunca se inertiza y anuncia el zoom en cualquier estado (incluso con
+          la toolbar oculta o con controls=false). Debounced al valor final del gesto. */}
+      <span className="mk-visually-hidden" aria-live="polite">
+        {template(labels.zoomLevel, { percent: announced })}
+      </span>
+      {/* Esquina persistente, siempre visible, fuera de la región auto-ocultable:
+          cerrar (ambos modos) + toggle de la toolbar (solo con controls). */}
+      <div className="mk-lightbox__corner">
+        {controls ? (
           <button
             ref={toggleRef}
             type="button"
@@ -290,37 +296,7 @@ function MediaLightboxContent({
           >
             ⋯
           </button>
-          <div
-            ref={controlsRegionRef}
-            className="mk-lightbox__controls-region"
-            data-visible={autoHide.visible}
-            onFocus={() => {
-              if (!initialFocusRef.current) autoHide.pin(true);
-            }}
-            onBlur={(event) => {
-              if (!event.currentTarget.contains(event.relatedTarget as Node)) autoHide.pin(false);
-            }}
-          >
-            <LightboxControls
-              labels={labels}
-              percent={percent}
-              announcedPercent={announced}
-              atMin={zoomPan.scale <= zoomPan.minZoom}
-              atMax={zoomPan.scale >= zoomPan.maxZoom}
-              fit={fit}
-              nextFit={nextFit}
-              fullscreenSupported={fullscreen.supported}
-              fullscreenActive={fullscreen.active}
-              onZoomIn={zoomPan.zoomIn}
-              onZoomOut={zoomPan.zoomOut}
-              onReset={resetZoom}
-              onCycleFit={cycleFit}
-              onToggleFullscreen={fullscreen.toggle}
-              onClose={onClose}
-            />
-          </div>
-        </>
-      ) : (
+        ) : null}
         <button
           type="button"
           aria-label={labels.close}
@@ -330,7 +306,34 @@ function MediaLightboxContent({
         >
           ✕
         </button>
-      )}
+      </div>
+      {controls ? (
+        <div
+          ref={controlsRegionRef}
+          className="mk-lightbox__controls-region"
+          data-visible={autoHide.visible}
+          onFocus={() => autoHide.pin(true)}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget as Node)) autoHide.pin(false);
+          }}
+        >
+          <LightboxControls
+            labels={labels}
+            percent={percent}
+            atMin={zoomPan.scale <= zoomPan.minZoom}
+            atMax={zoomPan.scale >= zoomPan.maxZoom}
+            fit={fit}
+            nextFit={nextFit}
+            fullscreenSupported={fullscreen.supported}
+            fullscreenActive={fullscreen.active}
+            onZoomIn={zoomPan.zoomIn}
+            onZoomOut={zoomPan.zoomOut}
+            onReset={resetZoom}
+            onCycleFit={cycleFit}
+            onToggleFullscreen={fullscreen.toggle}
+          />
+        </div>
+      ) : null}
     </div>,
     document.body,
   );

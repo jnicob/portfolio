@@ -72,19 +72,19 @@ A fullscreen modal for viewing a single piece of media, rendered via a portal in
 [ARIA dialog (modal) pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/), including a
 focus trap.
 
-| Prop                     | Type                               | Default              | Description                                                                                                                                                                                                                                                       |
-| ------------------------ | ---------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `open`                   | `boolean`                          | —                    | Whether the dialog is rendered. When `false`, the component renders `null`.                                                                                                                                                                                       |
-| `onClose`                | `() => void`                       | —                    | Called when the user presses `Escape` (unless native fullscreen is active — see [Keyboard map](#keyboard-map)), clicks the overlay/empty viewport, or clicks close.                                                                                               |
-| `label`                  | `string`                           | —                    | Accessible name of the dialog (`aria-label`).                                                                                                                                                                                                                     |
-| `closeLabel`             | `string`                           | `'Close'`            | **Legacy alias** of `labels.close` (v1 prop, kept for backward compatibility). If both `closeLabel` and `labels.close` are set, `labels.close` wins.                                                                                                              |
-| `fit`                    | `'contain' \| 'cover' \| 'actual'` | `'contain'`          | Base sizing at zoom 1x. `'contain'` fits the media inside the viewport; `'cover'` fills the viewport (cropping); `'actual'` renders at natural size (1:1). Changing `fit` (via the toolbar or by re-rendering with a new value) resets zoom to 1x and re-centers. |
-| `zoom`                   | `{ min?: number; max?: number }`   | `{ min: 1, max: 8 }` | Zoom bounds, relative to the `fit` base size.                                                                                                                                                                                                                     |
-| `controls`               | `boolean`                          | `true`               | Whether to render the command toolbar (zoom, reset, fit, fullscreen, close). When `false`, only a standalone close button is rendered (the v1 look); pointer gestures and keyboard shortcuts remain fully active.                                                 |
-| `defaultControlsVisible` | `boolean`                          | `true`               | Initial visibility of the toolbar. Ignored when `controls` is `false`.                                                                                                                                                                                            |
-| `autoHideDelay`          | `number \| null`                   | `3000`               | Milliseconds of pointer inactivity before the toolbar auto-hides. `null` disables auto-hide (the toolbar then only toggles via the `c` key or the visibility button). Auto-hide never triggers while focus is inside the toolbar.                                 |
-| `labels`                 | `Partial<MediaLightboxLabels>`     | `undefined`          | Overrides for the toolbar/close button text (i18n). Each key falls back to the English default listed below.                                                                                                                                                      |
-| `children`               | `ReactNode`                        | —                    | Fullscreen content: `<img>`, `<video>`, or a composition of either.                                                                                                                                                                                               |
+| Prop                     | Type                               | Default              | Description                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------ | ---------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `open`                   | `boolean`                          | —                    | Whether the dialog is rendered. When `false`, the component renders `null`.                                                                                                                                                                                                                                                                                                                                     |
+| `onClose`                | `() => void`                       | —                    | Called when the user presses `Escape` (unless native fullscreen is active — see [Keyboard map](#keyboard-map)), clicks the overlay/empty viewport, or clicks close.                                                                                                                                                                                                                                             |
+| `label`                  | `string`                           | —                    | Accessible name of the dialog (`aria-label`).                                                                                                                                                                                                                                                                                                                                                                   |
+| `closeLabel`             | `string`                           | `'Close'`            | **Legacy alias** of `labels.close` (v1 prop, kept for backward compatibility). If both `closeLabel` and `labels.close` are set, `labels.close` wins.                                                                                                                                                                                                                                                            |
+| `fit`                    | `'contain' \| 'cover' \| 'actual'` | `'contain'`          | Base sizing at zoom 1x. `'contain'` fits the media inside the viewport; `'cover'` fills the viewport (cropping); `'actual'` renders at natural size (1:1). **Uncontrolled**: read once when the dialog opens; changing the prop while open does not move it (like `CompareSlider`'s `initialPosition`). During a session it changes via the toolbar's fit-cycle button, which resets zoom to 1x and re-centers. |
+| `zoom`                   | `{ min?: number; max?: number }`   | `{ min: 1, max: 8 }` | Zoom bounds, relative to the `fit` base size.                                                                                                                                                                                                                                                                                                                                                                   |
+| `controls`               | `boolean`                          | `true`               | Whether to render the bottom command toolbar (zoom, reset, fit, fullscreen) plus a controls-visibility toggle `⋯` (top-right). When `false`, neither is rendered; pointer gestures and keyboard shortcuts remain fully active. A persistent close `✕` (top-right) is present in **both** modes.                                                                                                                 |
+| `defaultControlsVisible` | `boolean`                          | `true`               | Initial visibility of the toolbar. Ignored when `controls` is `false`.                                                                                                                                                                                                                                                                                                                                          |
+| `autoHideDelay`          | `number \| null`                   | `3000`               | Milliseconds of pointer inactivity before the toolbar auto-hides. `null` disables auto-hide (the toolbar then only toggles via the `c` key or the visibility button). Auto-hide never triggers while focus is inside the toolbar.                                                                                                                                                                               |
+| `labels`                 | `Partial<MediaLightboxLabels>`     | `undefined`          | Overrides for the toolbar/close button text (i18n). Each key falls back to the English default listed below.                                                                                                                                                                                                                                                                                                    |
+| `children`               | `ReactNode`                        | —                    | Fullscreen content: `<img>`, `<video>`, or a composition of either.                                                                                                                                                                                                                                                                                                                                             |
 
 `open`, `onClose`, `label`, and `children` have no default — they are required props.
 
@@ -92,19 +92,19 @@ focus trap.
 
 All keys are optional (`Partial<MediaLightboxLabels>`) and merge over these English defaults:
 
-| Key              | Default (English)                    | Used for                                                                  |
-| ---------------- | ------------------------------------ | ------------------------------------------------------------------------- |
-| `controls`       | `'Controls'`                         | `aria-label` of the toolbar (`role="group"`)                              |
-| `zoomIn`         | `'Zoom in'`                          | Zoom-in button                                                            |
-| `zoomOut`        | `'Zoom out'`                         | Zoom-out button                                                           |
-| `zoomLevel`      | `'Zoom {percent}%'`                  | `aria-live` announcement template — `{percent}` is substituted            |
-| `reset`          | `'Reset view'`                       | Reset button                                                              |
-| `fit`            | `'Fit: {current}. Switch to {next}'` | Fit-cycle button — `{current}` and `{next}` are substituted               |
-| `fullscreen`     | `'Enter fullscreen'`                 | Fullscreen button, shown while inactive                                   |
-| `exitFullscreen` | `'Exit fullscreen'`                  | Fullscreen button, shown while active                                     |
-| `hideControls`   | `'Hide controls'`                    | Visibility toggle, shown while the toolbar is visible                     |
-| `showControls`   | `'Show controls'`                    | Visibility toggle, shown while the toolbar is hidden                      |
-| `close`          | `'Close'`                            | Close button (also used by the standalone button when `controls={false}`) |
+| Key              | Default (English)                    | Used for                                                                                                       |
+| ---------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `controls`       | `'Controls'`                         | `aria-label` of the toolbar (`role="group"`)                                                                   |
+| `zoomIn`         | `'Zoom in'`                          | Zoom-in button                                                                                                 |
+| `zoomOut`        | `'Zoom out'`                         | Zoom-out button                                                                                                |
+| `zoomLevel`      | `'Zoom {percent}%'`                  | `aria-live` announcement template — `{percent}` is substituted                                                 |
+| `reset`          | `'Reset view'`                       | Reset button                                                                                                   |
+| `fit`            | `'Fit: {current}. Switch to {next}'` | Fit-cycle button's `aria-label` — `{current}`/`{next}` substituted (the button itself shows a fixed glyph `▣`) |
+| `fullscreen`     | `'Enter fullscreen'`                 | Fullscreen button, shown while inactive                                                                        |
+| `exitFullscreen` | `'Exit fullscreen'`                  | Fullscreen button, shown while active                                                                          |
+| `hideControls`   | `'Hide controls'`                    | Visibility toggle, shown while the toolbar is visible                                                          |
+| `showControls`   | `'Show controls'`                    | Visibility toggle, shown while the toolbar is hidden                                                           |
+| `close`          | `'Close'`                            | Persistent close button (top-right), present in both `controls` modes                                          |
 
 ## Keyboard map
 
@@ -201,9 +201,9 @@ function GalleryLightbox({ src, alt }: { src: string; alt: string }) {
 
 ### 3. Toolbar-less lightbox (`controls={false}`)
 
-`controls={false}` removes the visual command toolbar and falls back to a single standalone close
-button (the v1 look) — pointer gestures (wheel, pinch, double-tap/click) and every keyboard
-shortcut except `c` keep working silently in the background. Note that `MediaLightbox` doesn't
+`controls={false}` removes the visual command toolbar and the `⋯` visibility toggle, leaving only
+the persistent close `✕` (the v1 look) — pointer gestures (wheel, pinch, double-tap/click) and every
+keyboard shortcut except `c` keep working silently in the background. Note that `MediaLightbox` doesn't
 expose the internal zoom/fit state or setters, so building a fully custom toolbar synced to that
 state isn't possible through the public API today; use this mode when you want the bare chrome, not
 to replace the toolbar with your own zoom controls.
@@ -283,8 +283,10 @@ comparison without requiring a click-and-drag per card. Touch users still get th
 
 ### 6. Mapping your design tokens to `--mk-*`
 
-Map the package's custom properties to your own theme tokens once, under your theme selectors —
-this is the pattern used by this monorepo's showcase app (`apps/web/src/app/globals.css`):
+Map the package's custom properties to your own theme tokens once, under your theme selectors.
+This monorepo's showcase app (`apps/web/src/app/globals.css`) maps `--mk-focus-ring` and
+`--mk-radius` this way; the toolbar-color mappings below are illustrative — extend the same
+pattern to whichever `--mk-*` you want to theme:
 
 ```css
 /* globals.css (or wherever your app defines its theme tokens) */
@@ -292,7 +294,7 @@ this is the pattern used by this monorepo's showcase app (`apps/web/src/app/glob
 :root[data-theme='light'] {
   --mk-focus-ring: var(--ring);
   --mk-radius: var(--radius-card);
-  /* Extending the same pattern to the new toolbar colors: */
+  /* Illustrative — extend the same pattern to the control colors if you want them themed: */
   --mk-control-bg: var(--surface);
   --mk-control-color: var(--fg);
 }
@@ -328,10 +330,15 @@ within the dialog only (a focus trap over all elements matching
 `a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])`, minus
 anything under an `[inert]` subtree); focus cannot escape to the underlying page while open.
 
-- On open, the close button receives focus and `document.body` scrolling is locked (the scrollbar
-  width is compensated with `padding-right` so there's no layout shift).
+- A close button `✕` is persistent in the top-right corner in **both** `controls` modes (outside
+  the auto-hide region, so it never becomes inert). On open it receives focus, and
+  `document.body` scrolling is locked (the scrollbar width is compensated with `padding-right`
+  so there's no layout shift).
 - On close, focus returns to the element that had focus before the dialog opened (the trigger),
   and body scroll is restored.
+- The zoom announcement (`aria-live="polite"`, see below) is a direct child of the dialog root,
+  outside the auto-hide region — so zoom stays announced even while the toolbar is hidden, and in
+  `controls={false}` mode where keyboard zoom still works.
 
 Clicking the overlay itself — the dialog root or the empty viewport area outside the media, i.e.
 outside `.mk-lightbox__media` — also calls `onClose`, unless the pointer gesture that just ended
@@ -342,16 +349,19 @@ was a pan drag (a drag ending over the overlay never closes the dialog).
 - Auto-hide (`autoHideDelay`, default `3000`ms) never hides the toolbar while focus is inside it:
   focusing any toolbar control pins it visible, and it's released on blur.
 - When the toolbar transitions to hidden, it's marked `inert` (removed from both the focus trap and
-  the accessibility tree) and `visibility: hidden`; if focus was inside it at that moment, focus
-  first moves to the always-visible toggle button so keyboard navigation never lands on inert
-  content.
+  the accessibility tree) and `visibility: hidden`; if focus was inside it at that moment (e.g. the
+  `c` key pressed while a toolbar button is focused), focus first moves to the always-visible toggle
+  button so keyboard navigation never lands on inert content.
 - The zoom percentage is announced via a visually-hidden `aria-live="polite"` region, debounced to
   the gesture's final value (not on every wheel/pinch tick), using the `labels.zoomLevel` template.
-- The visibility toggle button always carries `aria-expanded` reflecting the toolbar's current
-  visibility, plus an `aria-label` that switches between `labels.hideControls` /
-  `labels.showControls`.
-- The fit-cycle button's `aria-label` states both the current and the next fit (`labels.fit`
-  template), and every toolbar button meets the 44px touch-target minimum.
+  It lives outside the auto-hide region (never inert), so it announces in every state. Any keyboard
+  interaction also re-shows an idle-hidden toolbar, restoring the visible zoom feedback.
+- The visibility toggle button `⋯` (top-right, next to the persistent close) always carries
+  `aria-expanded` reflecting the toolbar's current visibility, plus an `aria-label` that switches
+  between `labels.hideControls` / `labels.showControls`.
+- The fit-cycle button shows a fixed glyph `▣`; its meaning (current fit and next fit) lives in the
+  `aria-label` (`labels.fit` template), keeping the UI language-neutral. Every toolbar button and the
+  top-right close/toggle meet the 44px touch-target minimum.
 
 ## SSR & RSC notes
 

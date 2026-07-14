@@ -32,7 +32,7 @@ export function MediaKitDemo() {
         </figure>
       </div>
       <Button variant="secondary" className="self-start" onClick={() => setOpen(true)}>
-        Abrir en fullscreen (zoom, pan y fit)
+        Abrir en fullscreen
       </Button>
       <MediaLightbox
         open={open}

@@ -24,13 +24,11 @@ function renderControls(overrides: Record<string, unknown> = {}) {
     onReset: vi.fn(),
     onCycleFit: vi.fn(),
     onToggleFullscreen: vi.fn(),
-    onClose: vi.fn(),
   };
   render(
     <LightboxControls
       labels={LABELS}
       percent={100}
-      announcedPercent={100}
       atMin
       atMax={false}
       fit="contain"
@@ -46,26 +44,24 @@ function renderControls(overrides: Record<string, unknown> = {}) {
 
 describe('LightboxControls', () => {
   it('grupo etiquetado con todos los comandos', () => {
+    // El cierre ya no vive en la toolbar (ahora es persistente en la esquina, en
+    // media-lightbox); la toolbar solo lleva zoom/reset/fit/fullscreen.
     renderControls();
     expect(screen.getByRole('group', { name: 'Controls' })).toBeInTheDocument();
-    for (const name of ['Zoom out', 'Zoom in', 'Reset view', 'Enter fullscreen', 'Close']) {
+    for (const name of ['Zoom out', 'Zoom in', 'Reset view', 'Enter fullscreen']) {
       expect(screen.getByRole('button', { name })).toBeInTheDocument();
     }
+    expect(screen.queryByRole('button', { name: 'Close' })).not.toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'Fit: contain. Switch to cover' }),
     ).toBeInTheDocument();
   });
 
   it('deshabilita zoom out en el mínimo y muestra el porcentaje', () => {
-    renderControls({ percent: 150, announcedPercent: 150, atMin: false, atMax: true });
+    renderControls({ percent: 150, atMin: false, atMax: true });
     expect(screen.getByRole('button', { name: 'Zoom in' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Zoom out' })).toBeEnabled();
     expect(screen.getByText('150%')).toBeInTheDocument();
-  });
-
-  it('anuncia el zoom con aria-live usando la plantilla', () => {
-    renderControls({ announcedPercent: 200 });
-    expect(screen.getByText('Zoom 200%')).toBeInTheDocument();
   });
 
   it('sin soporte fullscreen no renderiza el botón', () => {
@@ -83,10 +79,8 @@ describe('LightboxControls', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Zoom in' }));
     await userEvent.click(screen.getByRole('button', { name: 'Zoom out' }));
     await userEvent.click(screen.getByRole('button', { name: 'Fit: contain. Switch to cover' }));
-    await userEvent.click(screen.getByRole('button', { name: 'Close' }));
     expect(handlers.onZoomIn).toHaveBeenCalledOnce();
     expect(handlers.onZoomOut).toHaveBeenCalledOnce();
     expect(handlers.onCycleFit).toHaveBeenCalledOnce();
-    expect(handlers.onClose).toHaveBeenCalledOnce();
   });
 });

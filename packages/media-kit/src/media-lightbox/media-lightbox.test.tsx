@@ -51,13 +51,17 @@ describe('MediaLightbox', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Abrir' }));
     const close = screen.getByRole('button', { name: 'Close' });
     const link = screen.getByRole('link', { name: 'Descargar' });
+    // Orden de foco tras el rediseño: contenido (enlace) → toggle/close (esquina) →
+    // botones de la toolbar. El último focusable es el botón de fit.
+    const fit = screen.getByRole('button', { name: 'Fit: contain. Switch to cover' });
     expect(close).toHaveFocus();
-    // close es el último focusable del dialog → Tab envuelve al primero (el enlace)
+    // Shift+Tab desde el primer focusable (el enlace) envuelve al último (fit), sin salir.
+    link.focus();
+    await userEvent.tab({ shift: true });
+    expect(fit).toHaveFocus();
+    // Tab desde el último envuelve al primero (el enlace).
     await userEvent.tab();
     expect(link).toHaveFocus();
-    // Shift+Tab desde el primero envuelve al último (close)
-    await userEvent.tab({ shift: true });
-    expect(close).toHaveFocus();
   });
 
   it('Tab desde un elemento no rastreado (p.ej. vídeo enfocado) no escapa del dialog', async () => {
@@ -88,8 +92,10 @@ describe('MediaLightbox', () => {
     const dialog = screen.getByRole('dialog');
     dialog.focus();
     expect(dialog).toHaveFocus();
+    // Con el root enfocado, Tab avanza al último focusable del dialog (el botón de fit)
+    // en vez de escapar a la página.
     await userEvent.tab();
-    expect(screen.getByRole('button', { name: 'Close' })).toHaveFocus();
+    expect(screen.getByRole('button', { name: 'Fit: contain. Switch to cover' })).toHaveFocus();
     dialog.focus();
     await userEvent.keyboard('{Escape}');
     expect(onClose).toHaveBeenCalledOnce();
@@ -273,7 +279,28 @@ describe('MediaLightbox v2', () => {
     expect(screen.getByRole('button', { name: 'Schließen' })).toBeInTheDocument();
   });
 
-  it('auto-hide reubica el foco fuera de la región antes de inertizarla (no queda huérfano)', () => {
+  it('al ocultar la toolbar con foco dentro reubica el foco fuera de la región antes de inertizarla', async () => {
+    // El auto-hide por inactividad no puede dispararse con foco dentro (queda pineada),
+    // así que el camino "ocultar con foco dentro" es la tecla "c" (o el toggle). Tras él,
+    // el foco NO debe quedar huérfano en la región inertizada.
+    render(
+      <MediaLightbox open onClose={() => {}} label="V">
+        <img src="/a.png" alt="a" />
+      </MediaLightbox>,
+    );
+    const zoomIn = screen.getByRole('button', { name: 'Zoom in' });
+    zoomIn.focus();
+    expect(zoomIn).toHaveFocus();
+    await userEvent.keyboard('c');
+    const region = document.querySelector('.mk-lightbox__controls-region') as HTMLElement;
+    expect(region).toHaveAttribute('inert');
+    // El foco NO quedó atrapado dentro de la región inertizada...
+    expect(region.contains(document.activeElement)).toBe(false);
+    // ...sigue dentro del diálogo, en el toggle siempre visible.
+    expect(screen.getByRole('button', { name: 'Show controls' })).toHaveFocus();
+  });
+
+  it('el anuncio de zoom (aria-live) vive fuera de la región y no se inertiza al auto-ocultar', () => {
     vi.useFakeTimers();
     try {
       render(
@@ -281,14 +308,35 @@ describe('MediaLightbox v2', () => {
           <img src="/a.png" alt="a" />
         </MediaLightbox>,
       );
-      expect(screen.getByRole('button', { name: 'Close' })).toHaveFocus();
+      const live = document.querySelector('[aria-live="polite"]') as HTMLElement;
       const region = document.querySelector('.mk-lightbox__controls-region') as HTMLElement;
+      // Presente, con la plantilla de zoomLevel, y fuera de la región de controles.
+      expect(live).toHaveTextContent('Zoom 100%');
+      expect(region.contains(live)).toBe(false);
+      // Tras el auto-hide la región se inertiza, pero el aria-live no: sigue anunciando.
       act(() => vi.advanceTimersByTime(3000));
       expect(region).toHaveAttribute('inert');
-      // El foco NO quedó atrapado dentro de la región inertizada...
-      expect(region.contains(document.activeElement)).toBe(false);
-      // ...sigue dentro del diálogo, en el toggle siempre visible.
-      expect(screen.getByRole('button', { name: 'Show controls' })).toHaveFocus();
+      expect(live.closest('[inert]')).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('una tecla revive la toolbar oculta por inactividad (poke en keydown)', () => {
+    vi.useFakeTimers();
+    try {
+      render(
+        <MediaLightbox open autoHideDelay={3000} onClose={() => {}} label="V">
+          <img src="/a.png" alt="a" />
+        </MediaLightbox>,
+      );
+      const region = document.querySelector('.mk-lightbox__controls-region') as HTMLElement;
+      act(() => vi.advanceTimersByTime(3000));
+      expect(region).toHaveAttribute('data-visible', 'false');
+      act(() => {
+        fireEvent.keyDown(screen.getByRole('dialog'), { key: 'x' });
+      });
+      expect(region).toHaveAttribute('data-visible', 'true');
     } finally {
       vi.useRealTimers();
     }

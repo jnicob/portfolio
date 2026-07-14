@@ -22,6 +22,9 @@
   position: relative;
   overflow: hidden;
   border-radius: var(--mk-radius);
+  /* Marco sutil: enmarca el medio como figura y evita que un borde oscuro de la
+     imagen se funda con una página oscura. */
+  box-shadow: 0 0 0 1px var(--mk-handle-ring);
   touch-action: none;
   user-select: none;
 }
@@ -201,24 +204,43 @@
   height: auto;
 }
 
-.mk-lightbox__close,
-.mk-lightbox__controls-toggle {
+/* Esquina persistente superior derecha: cerrar + toggle de la toolbar. */
+.mk-lightbox__corner {
   position: absolute;
   top: 1rem;
   right: 1rem;
+  z-index: 1;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Familia de controles unificada: cerrar y toggle comparten el mismo tratamiento
+   translúcido oscuro que la píldora de la toolbar. */
+.mk-lightbox__close,
+.mk-lightbox__controls-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  min-width: 2.75rem; /* target táctil 44px */
+  min-height: 2.75rem;
+  padding: 0;
   border: 0;
   border-radius: 9999px;
-  background: var(--mk-handle-color);
-  /* El glifo no debe heredar el color de texto de la página (invisible en dark) */
-  color: var(--mk-handle-icon-color);
-  box-shadow: 0 0 0 2px var(--mk-handle-ring);
+  background: var(--mk-control-bg);
+  color: var(--mk-control-color);
+  box-shadow: 0 0 0 1px var(--mk-handle-ring);
   cursor: pointer;
   font-size: 1rem;
+}
+
+.mk-lightbox__close:hover:not(:disabled),
+.mk-lightbox__controls-toggle:hover:not(:disabled) {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.mk-lightbox__close:active,
+.mk-lightbox__controls-toggle:active {
+  transform: scale(0.94);
 }
 
 .mk-lightbox :focus-visible {
@@ -238,6 +260,10 @@
   }
 
   .mk-lightbox__media {
+    transition: none;
+  }
+
+  .mk-lightbox__controls-region {
     transition: none;
   }
 }
@@ -287,6 +313,10 @@
   background: rgb(255 255 255 / 0.12);
 }
 
+.mk-lightbox__controls button:active:not(:disabled) {
+  background: rgb(255 255 255 / 0.2);
+}
+
 .mk-lightbox__controls button:disabled {
   opacity: 0.4;
   cursor: default;
@@ -309,10 +339,4 @@
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mk-lightbox__controls-region {
-    transition: none;
-  }
 }

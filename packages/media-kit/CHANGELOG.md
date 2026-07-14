@@ -20,8 +20,12 @@
 
 ### Changed
 
-- **Visual (default props):** the lightbox now renders a bottom command toolbar by default. Pass
-  `controls={false}` to keep the v1 look (a single standalone close button).
+- **Visual (default props):** the lightbox now renders a bottom-center command toolbar (zoom,
+  reset, fit, fullscreen) by default. The close `✕` and a controls-visibility toggle `⋯` are
+  persistent in the top-right corner (revised after the closing design review — close stays in the
+  top-right by convention/discoverability, and is present even with `controls={false}`). The
+  fit-cycle button shows a fixed glyph `▣` with its meaning in the `aria-label`. Pass
+  `controls={false}` to keep the v1 look (only the persistent close button).
 - The lightbox's media wrapper is now `.mk-lightbox__media`, itself inside a new
   `.mk-lightbox__viewport` element (previously the wrapper was `.mk-lightbox__content`). Clicking
   the empty viewport area (outside the media) still calls `onClose`, same as clicking the dialog

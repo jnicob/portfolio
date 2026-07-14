@@ -8,8 +8,6 @@ export type { MediaLightboxFit, MediaLightboxLabels };
 export type LightboxControlsProps = {
   labels: MediaLightboxLabels;
   percent: number;
-  /** Valor debounced para el aria-live (anuncia el final del gesto, no cada tick). */
-  announcedPercent: number;
   atMin: boolean;
   atMax: boolean;
   fit: MediaLightboxFit;
@@ -21,17 +19,19 @@ export type LightboxControlsProps = {
   onReset: () => void;
   onCycleFit: () => void;
   onToggleFullscreen: () => void;
-  onClose: () => void;
 };
 
-function template(text: string, values: Record<string, string | number>): string {
+/**
+ * Sustituye {clave} por values[clave]. Exportado para que media-lightbox reutilice la
+ * misma plantilla en el aria-live del zoom (que vive fuera de esta región inertizable).
+ */
+export function template(text: string, values: Record<string, string | number>): string {
   return text.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? ''));
 }
 
 export function LightboxControls({
   labels,
   percent,
-  announcedPercent,
   atMin,
   atMax,
   fit,
@@ -43,7 +43,6 @@ export function LightboxControls({
   onReset,
   onCycleFit,
   onToggleFullscreen,
-  onClose,
 }: LightboxControlsProps) {
   return (
     <div className="mk-lightbox__controls" role="group" aria-label={labels.controls}>
@@ -52,9 +51,6 @@ export function LightboxControls({
       </button>
       <span className="mk-lightbox__zoom-level" aria-hidden="true">
         {percent}%
-      </span>
-      <span className="mk-visually-hidden" aria-live="polite">
-        {template(labels.zoomLevel, { percent: announcedPercent })}
       </span>
       <button type="button" aria-label={labels.zoomIn} disabled={atMax} onClick={onZoomIn}>
         +
@@ -67,7 +63,10 @@ export function LightboxControls({
         aria-label={template(labels.fit, { current: fit, next: nextFit })}
         onClick={onCycleFit}
       >
-        {nextFit}
+        {/* Glifo de ancho fijo: el significado (fit actual → siguiente) vive en el
+            aria-label. Evita meter la palabra del enum en la UI (i18n) y que la píldora
+            desborde a 375px al cambiar entre "contain"/"actual". */}
+        ▣
       </button>
       {fullscreenSupported ? (
         <button
@@ -78,9 +77,6 @@ export function LightboxControls({
           ⤢
         </button>
       ) : null}
-      <button type="button" aria-label={labels.close} data-mk-close onClick={onClose}>
-        ✕
-      </button>
     </div>
   );
 }
