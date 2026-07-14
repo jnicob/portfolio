@@ -195,9 +195,6 @@ export default function ShowcasePage() {
           title="@nicobehm/media-kit"
           description="Componentes media del paquete propio: CompareSlider (drag/hover, color/B-N) y MediaLightbox con zoom."
         >
-          <p className="text-fg-muted">
-            Componentes media del paquete propio: CompareSlider (before/after) y MediaLightbox.
-          </p>
           <MediaKitDemo />
         </Section>
       </div>
