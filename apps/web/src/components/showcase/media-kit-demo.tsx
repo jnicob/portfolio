@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { CompareSlider, MediaLightbox } from '@nicobehm/media-kit';
 import { Button } from '@/components/ui/button';
+import { PortraitCompareDemo } from './portrait-compare-demo';
 
 export function MediaKitDemo() {
   const [open, setOpen] = useState(false);
@@ -31,6 +32,7 @@ export function MediaKitDemo() {
           </figcaption>
         </figure>
       </div>
+      <PortraitCompareDemo />
       <Button variant="secondary" className="self-start" onClick={() => setOpen(true)}>
         Abrir en fullscreen
       </Button>
@@ -50,6 +52,17 @@ export function MediaKitDemo() {
           hideControls: 'Ocultar controles',
           showControls: 'Mostrar controles',
           close: 'Cerrar',
+          help: 'Atajos de teclado',
+          helpTitle: 'Atajos de teclado',
+          shortcutZoom: 'Acercar / alejar',
+          shortcutReset: 'Restablecer vista',
+          shortcutPanKeys: 'Desplazar',
+          shortcutPanDrag: 'Mantén Espacio y arrastra para desplazar',
+          shortcutFit: 'Cambiar modo de ajuste (toolbar)',
+          shortcutFullscreen: 'Pantalla completa',
+          shortcutControls: 'Mostrar / ocultar controles',
+          shortcutHelp: 'Mostrar esta ayuda',
+          shortcutClose: 'Cerrar',
         }}
       >
         <img src="/demo/photo-after.svg" alt="Resultado procesado a pantalla completa" />
