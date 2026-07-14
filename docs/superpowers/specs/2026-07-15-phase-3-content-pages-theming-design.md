@@ -1,33 +1,44 @@
 # Spec de diseño — Fase 3: contenido + páginas + theming v2
 
 **Fecha:** 2026-07-15
-**Estado:** Aprobado por el usuario (2026-07-15, brainstorm sección a sección)
+**Estado:** Aprobado por el usuario (2026-07-15, brainstorm sección a sección); ampliado el
+2026-07-15 con el bloque C (feedback del usuario sobre media-kit/showcase), pendiente de
+re-revisión
 **Entrada:** spec de producto `2026-07-10-portfolio-design.md` (§4.3, §4.4, F3 del roadmap) +
-diferidos de F2.6 (`2026-07-14-media-kit-v2.1-showcase-design.md`, non-goals)
+diferidos de F2.6 (`2026-07-14-media-kit-v2.1-showcase-design.md`, non-goals) + feedback del
+usuario 2026-07-15 con paridad vs Playground de `fc_freepik_web`/landings (clean-room)
 **Proceso:** Superpowers (brainstorming → writing-plans → subagent-driven-development)
 
 ---
 
 ## 1. Alcance
 
-Dos bloques en una sola fase (decisión del usuario; A primero — F4 depende de su layout/i18n):
+Tres bloques en una sola fase (decisión del usuario, ampliada 2026-07-15):
 
 - **Bloque A — contenido + páginas:** schemas Zod, datos de CV reales, 3 case studies MDX
   es+en, i18n con `next-intl` bajo `[locale]`, layout compartido, SEO completo.
 - **Bloque B — theming v2:** 4 skins globales sobre los tokens, 3 vistas de la página CV,
   estado skin/vista/tema fijable por URL, y selector auto-filtrable reutilizable
   (showcase + skin-switcher).
+- **Bloque C — media-kit v2.2 (paquete → 0.4.0) + ejemplos del showcase:** correcciones y
+  paridad de features con el Playground de referencia (fullscreen por ejemplo,
+  compare-lightbox, doble resolución, pausa de hover al click).
+
+Orden: A primero (F4 depende de su layout/i18n). C es autocontenido (paquete + sección
+media-kit del showcase) y conviene ejecutarlo antes que B para que el pulido del showcase
+de B trabaje sobre los ejemplos ya corregidos; el plan fija el orden final por tarea.
 
 ### Decisiones cerradas en el brainstorm
 
-| Decisión          | Valor                                                                                               |
-| ----------------- | --------------------------------------------------------------------------------------------------- |
-| Alcance           | Todo en F3, dos bloques (no se difiere theming v2)                                                  |
-| PII               | `apps/web/content/cv/` a `.gitignore`; contacto público SOLO LinkedIn/GitHub (ni email ni teléfono) |
-| Skins             | 4: `dev-tool` (default, actual) + `editorial` + `terminal` + `vibrant`                              |
-| Vistas de CV      | 3: `standard` + `compact` (ATS/print) + `timeline`                                                  |
-| Mecanismo URL     | Query params + `data-skin` (Opción 1); sin rutas por variante                                       |
-| Descargable de CV | No hay PDF descargable; `compact` + `@media print` cuidado lo reemplaza                             |
+| Decisión          | Valor                                                                                                  |
+| ----------------- | ------------------------------------------------------------------------------------------------------ |
+| Alcance           | Todo en F3, dos bloques (no se difiere theming v2)                                                     |
+| PII               | `apps/web/content/cv/` a `.gitignore`; contacto público SOLO LinkedIn/GitHub (ni email ni teléfono)    |
+| Skins             | 4: `dev-tool` (default, actual) + `editorial` + `terminal` + `vibrant`                                 |
+| Vistas de CV      | 3: `standard` + `compact` (ATS/print) + `timeline`                                                     |
+| Mecanismo URL     | Query params + `data-skin` (Opción 1); sin rutas por variante                                          |
+| Descargable de CV | No hay PDF descargable; `compact` + `@media print` cuidado lo reemplaza                                |
+| Slider + zoom     | El zoom/pan/toolbar del slider vive en su fullscreen (compare-lightbox); el slider inline queda simple |
 
 ## 2. Bloque A — rutas, i18n y layout
 
@@ -90,7 +101,7 @@ Dos bloques en una sola fase (decisión del usuario; A primero — F4 depende de
   - `vibrant` — acentos saturados, playful.
 - Componentes intactos: la regla "cero color hardcodeado" hace que los skins se apliquen
   solos. Las **8 combinaciones** skin×tema cumplen contraste WCAG AA (verificado en el
-  cierre, §8). Fuentes extra (serif/mono) autoalojadas con subsetting, dentro del
+  cierre, §9). Fuentes extra (serif/mono) autoalojadas con subsetting, dentro del
   presupuesto de performance.
 - **`lib/appearance.ts`** (evolución de `theme.ts`, que queda absorbido): estado
   `{ theme, skin, view }`.
@@ -125,7 +136,82 @@ teléfono en ninguna vista (§1); contacto = LinkedIn/GitHub.
   - Índice del showcase: filtra secciones/componentes del kitchen sink.
   - Skin-switcher del header: lista de skins con swatch de preview por skin.
 
-## 8. Testing y cierre
+## 8. Bloque C — media-kit v2.2 (0.4.0) + ejemplos del showcase
+
+Origen: feedback del usuario (2026-07-15) tras usar el showcase de F2.6, con el Playground
+de `fc_freepik_web` (proyecto landings) como referencia de paridad. Regla clean-room del
+spec de producto: se igualan **comportamientos**, nunca se copia código de empresa.
+
+### C1 — Fullscreen por ejemplo
+
+- Cada ejemplo de la sección media-kit del showcase lleva SU botón de pantalla completa
+  **dentro del ejemplo** (overlay sobre la esquina del media), con icono expand (SVG
+  inline, como los de F2.6) + texto "Full Screen" (localizable vía `labels`).
+- Desaparece el botón suelto "Ampliar con zoom" (`media-kit-demo.tsx`): era la demo del
+  `MediaLightbox` pero desconectada de los ejemplos — UX confusa confirmada. Su función la
+  absorben los botones por ejemplo.
+- El patrón se empaqueta en media-kit (no ad-hoc en el showcase): prop opcional del
+  paquete que renderiza el botón overlay y abre el fullscreen correspondiente.
+
+### C2 — Compare-lightbox (decisión: fullscreen, no inline)
+
+- `MediaLightbox` acepta un par before/after y renderiza el `CompareSlider` DENTRO del
+  visor con toda la barra de comandos: zoom, pan, fit, reset, ojo, ayuda, fullscreen
+  nativo, atajos.
+- Resolución del conflicto de gestos (lo que F2.6 difirió): el divisor se mueve SOLO con
+  drag directo sobre el handle (y flechas cuando el handle tiene foco); el pan usa
+  Espacio+drag, flechas fuera del handle y el gesto existente; el zoom usa rueda/botones/
+  `+`/`−`. El slider inline queda simple (drag/hover), como la referencia.
+- Internamente se comparte UN motor de viewport (zoom/pan/toolbar) entre imagen simple y
+  compare — sin duplicar la máquina de estados.
+
+### C3 — Doble resolución (estándar inline, HD en fullscreen)
+
+- Nuevo modelo de fuente de imagen en el paquete: `{ src, fullSrc?, alt }` aceptado por
+  `CompareSlider` (before/after) y `MediaLightbox`. Inline usa `src`; el fullscreen usa
+  `fullSrc ?? src`, con **preload del `fullSrc` al interactuar con el CTA** (patrón de la
+  referencia) para que la entrada a fullscreen no muestre un salto de calidad tardío.
+- La API actual por `ReactNode` sigue funcionando (sin breaking); el modelo estructurado es
+  la vía recomendada y lo que usan los ejemplos del showcase.
+
+### C4 — Verificación del panning con ratón
+
+- Reporte del usuario: el pan con ratón puede no funcionar bien. Se audita con
+  `superpowers:systematic-debugging` ANTES de construir encima (reproducir → causa raíz →
+  fix con test de regresión). Cubre: drag con Espacio, pan con zoom > 100 %, límites de
+  desborde y cursor grab/grabbing.
+
+### C5 — Paridad con la referencia (mismas features o más)
+
+Checklist de paridad a cerrar (inventario del `ImageComparisonSlider` + fullscreen del
+Playground de landings, 2026-07-15):
+
+| Feature de la referencia                                     | Estado en media-kit → acción                 |
+| ------------------------------------------------------------ | -------------------------------------------- |
+| Hover sigue al ratón; **click pausa/reanuda** (por defecto)  | Falta → C6                                   |
+| Doble resolución `src`/`src2x` + preload antes de fullscreen | Falta → C3                                   |
+| Labels Before/After superpuestos configurables               | Falta → prop `overlayLabels` opcional        |
+| `objectFit` configurable                                     | Falta → prop opcional                        |
+| Estado de carga con transición de opacidad                   | Falta → estado de carga explícito            |
+| Soporte touch en el divisor                                  | Existe (pointer events) → verificar con test |
+| Botón fullscreen con icono expand                            | Parcial (solo demo retrato) → C1             |
+| Precedencia de Escape (ayuda > fullscreen > visor)           | Existe desde F2.6 → sin acción               |
+| Zoom/pan/fit/atajos/ayuda en el visor                        | Existe y SUPERA a la referencia → sin acción |
+
+### C6 — Pausa del hover al click
+
+- En `mode="hover"`, click sobre el slider pausa el seguimiento (el divisor se queda);
+  otro click lo reanuda. Prop `pauseOnClick` (default `true`, opt-out). Indicación
+  accesible del estado (aria + cue visual sutil).
+
+### C7 — Empaquetado
+
+- media-kit → **0.4.0**: README (nuevas props, receta compare-lightbox y doble
+  resolución), CHANGELOG, sin breaking (la API v2 por `ReactNode` se conserva).
+- Los ejemplos del showcase se actualizan para usar el modelo nuevo (assets demo en
+  resolución estándar + HD dentro del presupuesto de performance).
+
+## 9. Testing y cierre
 
 **TDD por unidad:**
 
@@ -138,6 +224,10 @@ teléfono en ninguna vista (§1); contacto = LinkedIn/GitHub.
 - Vistas CV: las 3 renderizan las mismas entradas; `compact` sin interactivos rotos en print.
 - `seo.ts`: metadata por locale, hreflang, sitemap con todas las rutas.
 - `validate-content` en el gate.
+- Bloque C: compare-lightbox (divisor solo desde el handle; pan/zoom no lo mueven);
+  `fullSrc` usado en fullscreen y preload disparado desde el CTA; `pauseOnClick`
+  (pausa/reanuda + aria); regresión del pan con ratón (C4); labels overlay y estado de
+  carga; los tests v2/v2.1 existentes del paquete pasan sin modificarse.
 
 **Errores explícitos:** slug MDX inexistente → `notFound()` (404 estática por locale);
 datos inválidos → build falla; query params inválidos → fallback silencioso.
@@ -146,21 +236,28 @@ datos inválidos → build falla; query params inválidos → fallback silencios
 
 - Verificación visual en vivo (Playwright): matriz crítica — 4 skins × 2 temas en home y
   CV; 3 vistas de CV; navegación es↔en conservando ruta; filtro del showcase por teclado;
-  vista print de `compact`.
+  vista print de `compact`; bloque C — fullscreen por ejemplo, compare-lightbox con
+  teclado completo, pausa de hover al click y pan con ratón verificado en vivo.
 - Design review + code review final de rama; roadmap F3 → hecha; merge FF a main.
 - E2E formales, axe y Lighthouse siguen siendo F6 (roadmap).
 
-## 9. Fuera de alcance (F3)
+## 10. Fuera de alcance (F3)
 
 - Playground (F4) — solo CTA/placeholder en home.
 - E2E/axe/Lighthouse formales (F6).
 - PDF de CV descargable (lo cubre `compact` + print).
 - Publicación en npm de media-kit; dominio/DNS.
 - Skins adicionales a los 4 definidos; editor de skins.
+- Resto del backlog v2.2/v3 del ledger de F2.6 no pedido aquí (Tabs grid-stack, foco
+  condicional al cerrar ayuda, EmptyState/ErrorState reutilizable…) — salvo que una tarea
+  del bloque C lo toque de paso.
+- Zoom/compare inline en el `CompareSlider` (decisión: solo en compare-lightbox).
 
-## 10. Contratos que esta fase deja para F4/F6
+## 11. Contratos que esta fase deja para F4/F6
 
 - Rutas `/{es,en}/{'', cv, projects, projects/[slug], showcase}` + layout con header
   (theme/locale/skin switchers) y footer.
 - `lib/seo.ts`, `lib/appearance.ts`, `src/data/schemas.ts`, `messages/{es,en}.json`.
 - `FilterableList` como primitiva reutilizable.
+- media-kit 0.4.0 con compare-lightbox y doble resolución — F4 (playground) lo consume
+  para el resultado editar-imagen (before/after fullscreen) y previews estándar+HD.
