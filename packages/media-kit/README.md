@@ -75,12 +75,12 @@ focus trap.
 | Prop                     | Type                               | Default              | Description                                                                                                                                                                                                                                                                                                                                                                                                     |
 | ------------------------ | ---------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `open`                   | `boolean`                          | —                    | Whether the dialog is rendered. When `false`, the component renders `null`.                                                                                                                                                                                                                                                                                                                                     |
-| `onClose`                | `() => void`                       | —                    | Called when the user presses `Escape` (unless native fullscreen is active — see [Keyboard map](#keyboard-map)), clicks the overlay/empty viewport, or clicks close.                                                                                                                                                                                                                                             |
+| `onClose`                | `() => void`                       | —                    | Called when the user presses `Escape` (unless native fullscreen is active, or the keyboard-shortcuts help panel is open — see [Keyboard map](#keyboard-map)), clicks the overlay/empty viewport, or clicks close.                                                                                                                                                                                               |
 | `label`                  | `string`                           | —                    | Accessible name of the dialog (`aria-label`).                                                                                                                                                                                                                                                                                                                                                                   |
 | `closeLabel`             | `string`                           | `'Close'`            | **Legacy alias** of `labels.close` (v1 prop, kept for backward compatibility). If both `closeLabel` and `labels.close` are set, `labels.close` wins.                                                                                                                                                                                                                                                            |
 | `fit`                    | `'contain' \| 'cover' \| 'actual'` | `'contain'`          | Base sizing at zoom 1x. `'contain'` fits the media inside the viewport; `'cover'` fills the viewport (cropping); `'actual'` renders at natural size (1:1). **Uncontrolled**: read once when the dialog opens; changing the prop while open does not move it (like `CompareSlider`'s `initialPosition`). During a session it changes via the toolbar's fit-cycle button, which resets zoom to 1x and re-centers. |
 | `zoom`                   | `{ min?: number; max?: number }`   | `{ min: 1, max: 8 }` | Zoom bounds, relative to the `fit` base size.                                                                                                                                                                                                                                                                                                                                                                   |
-| `controls`               | `boolean`                          | `true`               | Whether to render the bottom command toolbar (zoom, reset, fit, fullscreen) plus a controls-visibility toggle `⋯` (top-right). When `false`, neither is rendered; pointer gestures and keyboard shortcuts remain fully active. A persistent close `✕` (top-right) is present in **both** modes.                                                                                                                 |
+| `controls`               | `boolean`                          | `true`               | Whether to render the bottom command toolbar (zoom, reset, fit, fullscreen) plus a controls-visibility toggle showing an inline eye / eye-off icon (top-right). When `false`, neither is rendered; pointer gestures and keyboard shortcuts remain fully active. A persistent close `✕` and the keyboard-shortcuts `?` button (top-right) are present in **both** modes.                                         |
 | `defaultControlsVisible` | `boolean`                          | `true`               | Initial visibility of the toolbar. Ignored when `controls` is `false`.                                                                                                                                                                                                                                                                                                                                          |
 | `autoHideDelay`          | `number \| null`                   | `3000`               | Milliseconds of pointer inactivity before the toolbar auto-hides. `null` disables auto-hide (the toolbar then only toggles via the `c` key or the visibility button). Auto-hide never triggers while focus is inside the toolbar.                                                                                                                                                                               |
 | `labels`                 | `Partial<MediaLightboxLabels>`     | `undefined`          | Overrides for the toolbar/close button text (i18n). Each key falls back to the English default listed below.                                                                                                                                                                                                                                                                                                    |
@@ -92,19 +92,30 @@ focus trap.
 
 All keys are optional (`Partial<MediaLightboxLabels>`) and merge over these English defaults:
 
-| Key              | Default (English)                    | Used for                                                                                                       |
-| ---------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| `controls`       | `'Controls'`                         | `aria-label` of the toolbar (`role="group"`)                                                                   |
-| `zoomIn`         | `'Zoom in'`                          | Zoom-in button                                                                                                 |
-| `zoomOut`        | `'Zoom out'`                         | Zoom-out button                                                                                                |
-| `zoomLevel`      | `'Zoom {percent}%'`                  | `aria-live` announcement template — `{percent}` is substituted                                                 |
-| `reset`          | `'Reset view'`                       | Reset button                                                                                                   |
-| `fit`            | `'Fit: {current}. Switch to {next}'` | Fit-cycle button's `aria-label` — `{current}`/`{next}` substituted (the button itself shows a fixed glyph `▣`) |
-| `fullscreen`     | `'Enter fullscreen'`                 | Fullscreen button, shown while inactive                                                                        |
-| `exitFullscreen` | `'Exit fullscreen'`                  | Fullscreen button, shown while active                                                                          |
-| `hideControls`   | `'Hide controls'`                    | Visibility toggle, shown while the toolbar is visible                                                          |
-| `showControls`   | `'Show controls'`                    | Visibility toggle, shown while the toolbar is hidden                                                           |
-| `close`          | `'Close'`                            | Persistent close button (top-right), present in both `controls` modes                                          |
+| Key                  | Default (English)                    | Used for                                                                                                       |
+| -------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `controls`           | `'Controls'`                         | `aria-label` of the toolbar (`role="group"`)                                                                   |
+| `zoomIn`             | `'Zoom in'`                          | Zoom-in button                                                                                                 |
+| `zoomOut`            | `'Zoom out'`                         | Zoom-out button                                                                                                |
+| `zoomLevel`          | `'Zoom {percent}%'`                  | `aria-live` announcement template — `{percent}` is substituted                                                 |
+| `reset`              | `'Reset view'`                       | Reset button                                                                                                   |
+| `fit`                | `'Fit: {current}. Switch to {next}'` | Fit-cycle button's `aria-label` — `{current}`/`{next}` substituted (the button itself shows a fixed glyph `▣`) |
+| `fullscreen`         | `'Enter fullscreen'`                 | Fullscreen button, shown while inactive                                                                        |
+| `exitFullscreen`     | `'Exit fullscreen'`                  | Fullscreen button, shown while active                                                                          |
+| `hideControls`       | `'Hide controls'`                    | Visibility toggle, shown while the toolbar is visible                                                          |
+| `showControls`       | `'Show controls'`                    | Visibility toggle, shown while the toolbar is hidden                                                           |
+| `close`              | `'Close'`                            | Persistent close button (top-right), present in both `controls` modes                                          |
+| `help`               | `'Keyboard shortcuts'`               | `aria-label` and CSS tooltip of the corner `?` button, which toggles the keyboard-shortcuts help panel         |
+| `helpTitle`          | `'Keyboard shortcuts'`               | Accessible name (`aria-label`) of the help panel (`role="group"`) and its visible heading text                 |
+| `shortcutZoom`       | `'Zoom in / out'`                    | Help panel row describing `+`/`−`/wheel/double-click                                                           |
+| `shortcutReset`      | `'Reset view'`                       | Help panel row describing `0`                                                                                  |
+| `shortcutPanKeys`    | `'Pan'`                              | Help panel row describing the arrow keys                                                                       |
+| `shortcutPanDrag`    | `'Hold Space and drag to pan'`       | Help panel row describing `Space`                                                                              |
+| `shortcutFit`        | `'Cycle fit mode (toolbar)'`         | Help panel row describing the fit-cycle glyph (`▣`); cycling fit has no keyboard shortcut of its own           |
+| `shortcutFullscreen` | `'Toggle fullscreen'`                | Help panel row describing `f`                                                                                  |
+| `shortcutControls`   | `'Show / hide controls'`             | Help panel row describing `c`                                                                                  |
+| `shortcutHelp`       | `'Toggle this help'`                 | Help panel row describing `?`                                                                                  |
+| `shortcutClose`      | `'Close'`                            | Help panel row describing `Esc`                                                                                |
 
 ## Keyboard map
 
@@ -112,16 +123,18 @@ All keys are optional (`Partial<MediaLightboxLabels>`) and merge over these Engl
 only active while the lightbox is open. All of them (except `Escape` and `Tab`/`Shift+Tab`) are
 ignored while focus sits on a form field (`input`, `textarea`, `select`, `[contenteditable]`).
 
-| Key                                                  | Action                                                        | Condition                                                                                                                        |
-| ---------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `Escape`                                             | Closes the dialog.                                            | If native fullscreen is active, this `Escape` only exits fullscreen instead (matching browser behavior) — the dialog stays open. |
-| `Tab` / `Shift+Tab`                                  | Cycles the focus trap across the dialog's focusable elements. | Always.                                                                                                                          |
-| `+` / `=`                                            | Zooms in (same step as the toolbar's `+` button).             | Always.                                                                                                                          |
-| `-`                                                  | Zooms out (same step as the toolbar's `−` button).            | Always.                                                                                                                          |
-| `0`                                                  | Resets to zoom 1x, re-centered.                               | Always.                                                                                                                          |
-| `ArrowLeft` / `ArrowRight` / `ArrowUp` / `ArrowDown` | Pans the media by a fixed step.                               | Focus is outside the toolbar; a no-op when the content doesn't overflow the viewport.                                            |
-| `f`                                                  | Toggles native fullscreen.                                    | Only when the Fullscreen API is supported (otherwise the button isn't rendered either).                                          |
-| `c`                                                  | Shows/hides the toolbar.                                      | Only when `controls` is `true`.                                                                                                  |
+| Key                                                  | Action                                                                                                                                                    | Condition                                                                                                                                                                                                                                                                                               |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Escape`                                             | Closes the topmost active layer.                                                                                                                          | Precedence: if native fullscreen is active, this `Escape` only exits fullscreen instead (matching browser behavior) — the dialog and help panel stay as they are; otherwise, if the help panel is open, this `Escape` closes the panel instead — the dialog stays open; otherwise it closes the dialog. |
+| `Tab` / `Shift+Tab`                                  | Cycles the focus trap across the dialog's focusable elements.                                                                                             | Always.                                                                                                                                                                                                                                                                                                 |
+| `+` / `=`                                            | Zooms in (same step as the toolbar's `+` button).                                                                                                         | Always.                                                                                                                                                                                                                                                                                                 |
+| `-`                                                  | Zooms out (same step as the toolbar's `−` button).                                                                                                        | Always.                                                                                                                                                                                                                                                                                                 |
+| `0`                                                  | Resets to zoom 1x, re-centered.                                                                                                                           | Always.                                                                                                                                                                                                                                                                                                 |
+| `ArrowLeft` / `ArrowRight` / `ArrowUp` / `ArrowDown` | Pans the media by a fixed step.                                                                                                                           | Focus is outside the toolbar; a no-op when the content doesn't overflow the viewport.                                                                                                                                                                                                                   |
+| `Space` (hold)                                       | While held, moving the pointer pans (grab cursor). With a button pressed, regular drag-panning applies. Over a button/link, `Space` activates it instead. | A no-op when the content doesn't overflow the viewport.                                                                                                                                                                                                                                                 |
+| `f`                                                  | Toggles native fullscreen.                                                                                                                                | Only when the Fullscreen API is supported (otherwise the button isn't rendered either).                                                                                                                                                                                                                 |
+| `c`                                                  | Shows/hides the toolbar.                                                                                                                                  | Only when `controls` is `true`.                                                                                                                                                                                                                                                                         |
+| `?`                                                  | Toggles the keyboard-shortcuts help panel.                                                                                                                | Focus moves into the panel on open, back to the `?` button on close.                                                                                                                                                                                                                                    |
 
 ## Styling
 
@@ -201,9 +214,10 @@ function GalleryLightbox({ src, alt }: { src: string; alt: string }) {
 
 ### 3. Toolbar-less lightbox (`controls={false}`)
 
-`controls={false}` removes the visual command toolbar and the `⋯` visibility toggle, leaving only
-the persistent close `✕` (the v1 look) — pointer gestures (wheel, pinch, double-tap/click) and every
-keyboard shortcut except `c` keep working silently in the background. Note that `MediaLightbox` doesn't
+`controls={false}` removes the visual command toolbar and the eye / eye-off visibility toggle,
+leaving only the persistent close `✕` and the keyboard-shortcuts `?` button (the v1 look, plus
+help) — pointer gestures (wheel, pinch, double-tap/click) and every keyboard shortcut except `c`
+keep working silently in the background. Note that `MediaLightbox` doesn't
 expose the internal zoom/fit state or setters, so building a fully custom toolbar synced to that
 state isn't possible through the public API today; use this mode when you want the bare chrome, not
 to replace the toolbar with your own zoom controls.
@@ -304,6 +318,20 @@ pattern to whichever `--mk-*` you want to theme:
    either theme. */
 ```
 
+### 7. Color vs. black & white from a single bitmap
+
+Derive the "before" side with a CSS filter — one asset, no double weight:
+
+```tsx
+<CompareSlider
+  before={
+    <img src="/portrait.webp" alt="Black and white portrait" style={{ filter: 'grayscale(1)' }} />
+  }
+  after={<img src="/portrait.webp" alt="" />}
+  label="Compare black & white with color"
+/>
+```
+
 ## Accessibility
 
 **CompareSlider** implements the ARIA
@@ -324,9 +352,10 @@ tree.
 **MediaLightbox** implements the ARIA
 [dialog (modal) pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/): the root has
 `role="dialog"`, `aria-modal="true"`, and `aria-label` from the `label` prop. Keyboard contract: see
-the full [Keyboard map](#keyboard-map) above; in summary, `Escape` calls `onClose` (unless native
-fullscreen is active, in which case it only exits fullscreen), and `Tab`/`Shift+Tab` cycle focus
-within the dialog only (a focus trap over all elements matching
+the full [Keyboard map](#keyboard-map) above; in summary, `Escape` calls `onClose` unless native
+fullscreen is active (exits fullscreen instead) or the keyboard-shortcuts help panel is open
+(closes the panel instead), and `Tab`/`Shift+Tab` cycle focus within the dialog only (a focus trap
+over all elements matching
 `a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])`, minus
 anything under an `[inert]` subtree); focus cannot escape to the underlying page while open.
 
@@ -356,12 +385,25 @@ was a pan drag (a drag ending over the overlay never closes the dialog).
   the gesture's final value (not on every wheel/pinch tick), using the `labels.zoomLevel` template.
   It lives outside the auto-hide region (never inert), so it announces in every state. Any keyboard
   interaction also re-shows an idle-hidden toolbar, restoring the visible zoom feedback.
-- The visibility toggle button `⋯` (top-right, next to the persistent close) always carries
-  `aria-expanded` reflecting the toolbar's current visibility, plus an `aria-label` that switches
-  between `labels.hideControls` / `labels.showControls`.
+- The visibility toggle button (top-right, next to the persistent close and the `?` help button)
+  renders an inline eye icon while the toolbar is visible and an eye-off icon while hidden (plain
+  `currentColor` SVGs, no external assets or icon library). It always carries `aria-expanded`
+  reflecting the toolbar's current visibility, plus an `aria-label` that switches between
+  `labels.hideControls` / `labels.showControls`.
 - The fit-cycle button shows a fixed glyph `▣`; its meaning (current fit and next fit) lives in the
   `aria-label` (`labels.fit` template), keeping the UI language-neutral. Every toolbar button and the
-  top-right close/toggle meet the 44px touch-target minimum.
+  top-right close/toggle/help meet the 44px touch-target minimum.
+- Both the visibility toggle and the `?` help button show a CSS-only tooltip (`data-mk-tooltip`)
+  mirroring their current `aria-label`, visible on hover and on `:focus-visible`.
+
+**Keyboard-shortcuts help panel:**
+
+- The corner `?` button (`aria-label`/tooltip `labels.help`, `aria-expanded` reflecting whether the
+  panel is open) toggles a `role="group"` panel (`aria-label` from `labels.helpTitle`) listing every
+  shortcut; it's rendered regardless of the `controls` prop. Opening it moves focus into the panel;
+  closing it (via `?`, `Escape`, or clicking the button again) returns focus to the `?` button.
+- With the help panel open, `Escape` closes the panel instead of the dialog (see the `Escape`
+  precedence in the [Keyboard map](#keyboard-map)).
 
 ## SSR & RSC notes
 

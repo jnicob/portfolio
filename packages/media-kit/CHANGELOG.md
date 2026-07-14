@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0 — 2026-07-14
+
+### Added
+
+- **MediaLightbox:** hold `Space` to pan with a `grab` cursor (pointer move pans while held;
+  `Space` still activates focused buttons); `?` key and corner button toggle a keyboard-shortcuts
+  help panel (`Escape` closes the help before the lightbox; focus is managed in/out of the panel);
+  new `labels` keys `help`, `helpTitle` and `shortcut*` for full i18n of the panel.
+- **MediaLightbox:** the controls-visibility toggle now renders an inline eye / eye-off SVG
+  (instead of `⋯`) and both corner buttons (`?`, eye) show a CSS-only tooltip mirroring their
+  `aria-label`.
+
+No breaking changes: all new labels default to English; no new props; v2 behavior unchanged.
+
 ## 0.2.0 — 2026-07-14
 
 ### Added
