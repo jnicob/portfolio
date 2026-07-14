@@ -19,16 +19,16 @@
 
 ## Fases
 
-| #   | Fase                                                             | Plan                                                        | Estado    | Depende de                          |
-| --- | ---------------------------------------------------------------- | ----------------------------------------------------------- | --------- | ----------------------------------- |
-| 0   | Fundaciones (monorepo, tooling, CI, config agentes)              | `2026-07-10-phase-0-foundations.md`                         | ✅ hecha  | —                                   |
-| 1   | Design system (tokens, theming, primitivas UI, showcase)         | `2026-07-10-phase-1-design-system.md`                       | ✅ hecha  | 0                                   |
-| 2   | `@nicobehm/media-kit` (CompareSlider, MediaLightbox)             | `2026-07-10-phase-2-media-kit.md`                           | ✅ hecha  | 0 (1 solo para la demo en showcase) |
-| 2.5 | media-kit v2 (zoom/pan, controles, fit modes, slider hover)      | spec `2026-07-13-media-kit-v2-design.md`; plan just-in-time | pendiente | 2                                   |
-| 3   | Contenido + páginas (Zod, datos CV, MDX case studies, i18n, SEO) | just-in-time                                                | pendiente | 1                                   |
-| 4   | Playground (adaptadores mock/pollinations/proxy, UI, estados)    | just-in-time                                                | pendiente | 1, 2, 3 (layout/i18n)               |
-| 5   | Runtime dual + deploys (3 targets, workflows, proxy PHP)         | just-in-time                                                | pendiente | 0–4                                 |
-| 6   | QA final (e2e, visual, axe, Lighthouse, README final)            | just-in-time                                                | pendiente | todas                               |
+| #   | Fase                                                             | Plan                                   | Estado    | Depende de                          |
+| --- | ---------------------------------------------------------------- | -------------------------------------- | --------- | ----------------------------------- |
+| 0   | Fundaciones (monorepo, tooling, CI, config agentes)              | `2026-07-10-phase-0-foundations.md`    | ✅ hecha  | —                                   |
+| 1   | Design system (tokens, theming, primitivas UI, showcase)         | `2026-07-10-phase-1-design-system.md`  | ✅ hecha  | 0                                   |
+| 2   | `@nicobehm/media-kit` (CompareSlider, MediaLightbox)             | `2026-07-10-phase-2-media-kit.md`      | ✅ hecha  | 0 (1 solo para la demo en showcase) |
+| 2.5 | media-kit v2 (zoom/pan, controles, fit modes, slider hover)      | `2026-07-13-phase-2.5-media-kit-v2.md` | ✅ hecha  | 2                                   |
+| 3   | Contenido + páginas (Zod, datos CV, MDX case studies, i18n, SEO) | just-in-time                           | pendiente | 1                                   |
+| 4   | Playground (adaptadores mock/pollinations/proxy, UI, estados)    | just-in-time                           | pendiente | 1, 2, 3 (layout/i18n)               |
+| 5   | Runtime dual + deploys (3 targets, workflows, proxy PHP)         | just-in-time                           | pendiente | 0–4                                 |
+| 6   | QA final (e2e, visual, axe, Lighthouse, README final)            | just-in-time                           | pendiente | todas                               |
 
 ## Interfaces entre fases (contratos)
 
