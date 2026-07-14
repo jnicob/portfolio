@@ -4,48 +4,41 @@
 
 ## Ahora
 
-Fase 2.6 — media-kit v2.1 + showcase polish. **Spec aprobado, plan NO escrito, sin empezar.**
-Fase 2.5 (media-kit v2) completa y mergeada a main.
+**Fase 2.6 COMPLETA y mergeada a main.** Siguiente fase: F3 (contenido + páginas) — sin spec ni plan aún.
 
 ## Hecho
 
-- ✅ Fase 0 — fundaciones del monorepo (pnpm, Next.js 16, tooling, agent config).
-- ✅ Fase 1 — design system (tokens semánticos, dark/light, acento violeta).
-- ✅ Fase 2 — `@nicobehm/media-kit` v0.1.0 (CompareSlider + MediaLightbox, 0 deps)
-  - demo en /showcase. Merge FF `ac82e8a..c774005`, en `github.com:jnicob/portfolio`.
-- ✅ Infra de estado — STATUS.md + /checkpoint v2 (`3c0b781..69f9757`) y setup portable
-  `github.com:jnicob/ai-config` (privado: AGENTS.md global, memorias curadas, install.sh).
-- ✅ Fase 2.5 — media-kit **v0.2.0**: zoom/pan/pinch, toolbar auto-hide + fit modes,
-  fullscreen nativo, slider `mode="hover"`. Cierre con design + code review (Opus) +
-  verificación visual en vivo; cerrar persistente arriba-derecha, aria-live fuera de `inert`,
-  glifo de fit, marco del slider. Merge FF `da042c6..24f79b2`.
-- ✅ Spec F2.6 aprobado (`fab7c14`) — falta escribir el plan.
+- ✅ Fase 0 — fundaciones · Fase 1 — design system · Fase 2 — media-kit v0.1.0 · Fase 2.5 — media-kit v0.2.0 (ver roadmap).
+- ✅ Infra de estado — STATUS.md + /checkpoint v2 + setup portable `github.com:jnicob/ai-config`.
+- ✅ **Fase 2.6 — media-kit v0.3.0 + showcase polish** (17 commits, merge FF `fa00854..c8c46f8`, pusheado):
+  - B1 pan con `Espacio` (cursor grab/grabbing) · B2 help box de teclado (`?`, Escape con precedencia) ·
+    B3 toggle ojo/ojo-tachado SVG + tooltips CSS · B4 demo retrato IA color/B-N (68 kB webp) con
+    fullscreen nativo del slider · C1 Tabs sin desmontar (`hidden`) · C2 showcase (índice lateral,
+    intros, estados vacío/error/disabled, `:active`).
+  - Skill nuevo `skills/code-conventions/` (TS + React + estilo + tests, genérico) + routing en AGENTS.md.
+  - Cierre completo: gate verde, grep colores limpio, builds duales, verificación Playwright en vivo
+    (ambos temas + teclado completo), design review (Opus) y code review final — bloqueantes resueltos
+    (`d61d75f`, `a4c5c10`). Ledger detallado: `.superpowers/sdd/progress.md`.
 
 ## Siguiente acción
 
-1. `git checkout main && git pull`; crear rama `feature/phase-2.6-media-kit-v2.1`.
-2. Escribir el plan con `superpowers:writing-plans` desde el spec F2.6 →
-   `docs/superpowers/plans/2026-07-14-phase-2.6-media-kit-v2.1.md`.
-3. Ejecutar con `superpowers:subagent-driven-development`, TDD estricto, alcance cerrado al plan.
-   (B4 genera un retrato con Magnific → optimizar → `apps/web/public/demo/`.)
-4. Gate por tarea: `pnpm run lint && pnpm run typecheck && pnpm run test`.
-5. Cierre estándar (grep colores + design review + code review + verificación en vivo +
-   roadmap + merge FF). media-kit → `0.3.0`.
+1. Brainstorm de Fase 3 con `superpowers:brainstorming` (contenido + páginas: Zod, datos CV, MDX case
+   studies, i18n es/en, SEO) — incluye el selector de estilos por URL y el selector auto-filtrable del
+   showcase (diferidos de F2.6). Entrada: roadmap + spec de producto.
+2. Spec aprobado → plan con `superpowers:writing-plans` → ejecutar con subagent-driven-development.
+3. Antes de F3: decidir el tratamiento del PII de los CVs (bloquea la página de CV).
 
 ## Pendientes del usuario (no bloqueantes)
 
-- **CV:** PDFs (es/en) en `apps/web/content/cv/` **sin trackear** — contienen PII (teléfono,
-  email). Decidir antes de commitear: `.gitignore` / redactar / commitear. Mejora de contenido
-  del CV → al construir la página en Fase 3.
-- Dominio definitivo · Decisión: publicar `@nicobehm/media-kit` en npm.
-- Backlog v3: galería multi-imagen/prev-next; chevrons SVG del grip; `canPan` live para flechas;
-  zoom+compare combinados.
-- Fase 3: selector de estilos (fijable por URL, para compartir el CV) + selector auto-filtrable
-  del showcase reutilizable como base; i18n es/en; contenido/página de CV.
+- **CV:** PDFs (es/en) en `apps/web/content/cv/` **sin trackear** — PII (teléfono, email). Decidir:
+  `.gitignore` / redactar / commitear.
+- Dominio definitivo · Decisión: publicar `@nicobehm/media-kit` en npm (0.3.0 lista).
+- Backlog v2.2/v3 del paquete (anotado en ledger F2.6): iconos toolbar unificados en SVG, Tabs
+  grid-stack (cero shift real), precedencia de capas en click de overlay, foco condicional al cerrar
+  ayuda, tests blur-release/Tab-cycle, EmptyState/ErrorState reutilizable, scrim del botón del retrato.
 
 ## Fuentes de verdad
 
 - Roadmap: [docs/superpowers/plans/2026-07-10-portfolio-roadmap.md](docs/superpowers/plans/2026-07-10-portfolio-roadmap.md)
 - Spec producto: [docs/superpowers/specs/2026-07-10-portfolio-design.md](docs/superpowers/specs/2026-07-10-portfolio-design.md)
-- Spec vigente (F2.6): [docs/superpowers/specs/2026-07-14-media-kit-v2.1-showcase-design.md](docs/superpowers/specs/2026-07-14-media-kit-v2.1-showcase-design.md)
-- F2.5 (referencia): [docs/superpowers/specs/2026-07-13-media-kit-v2-design.md](docs/superpowers/specs/2026-07-13-media-kit-v2-design.md)
+- F2.6 (hecha): spec [docs/superpowers/specs/2026-07-14-media-kit-v2.1-showcase-design.md](docs/superpowers/specs/2026-07-14-media-kit-v2.1-showcase-design.md) · plan [docs/superpowers/plans/2026-07-14-phase-2.6-media-kit-v2.1.md](docs/superpowers/plans/2026-07-14-phase-2.6-media-kit-v2.1.md)
