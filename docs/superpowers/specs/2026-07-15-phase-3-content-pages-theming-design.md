@@ -165,7 +165,7 @@ spec de producto: se igualan **comportamientos**, nunca se copia código de empr
 - Internamente se comparte UN motor de viewport (zoom/pan/toolbar) entre imagen simple y
   compare — sin duplicar la máquina de estados.
 
-### C3 — Doble resolución (estándar inline, HD en fullscreen)
+### C3 — Doble resolución (estándar inline, HD retina en fullscreen)
 
 - Nuevo modelo de fuente de imagen en el paquete: `{ src, fullSrc?, alt }` aceptado por
   `CompareSlider` (before/after) y `MediaLightbox`. Inline usa `src`; el fullscreen usa
@@ -173,6 +173,8 @@ spec de producto: se igualan **comportamientos**, nunca se copia código de empr
   referencia) para que la entrada a fullscreen no muestre un salto de calidad tardío.
 - La API actual por `ReactNode` sigue funcionando (sin breaking); el modelo estructurado es
   la vía recomendada y lo que usan los ejemplos del showcase.
+- Detectar pantalla del usuario para elegir imagen adecuada (resolucion/calidad). 
+En un movil no abriremos una imagen 4k, si lo podemos hacer en un monitor grande 4k.
 
 ### C4 — Verificación del panning con ratón
 
