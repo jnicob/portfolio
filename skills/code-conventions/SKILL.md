@@ -7,7 +7,7 @@ metadata:
 
 # Code conventions
 
-Complements `code-principles` (the *why*); this skill is the *how* — concrete rules.
+Complements `code-principles` (the _why_); this skill is the _how_ — concrete rules.
 
 ## TypeScript
 
