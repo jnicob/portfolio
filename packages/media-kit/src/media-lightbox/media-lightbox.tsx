@@ -31,6 +31,20 @@ export type MediaLightboxLabels = {
   hideControls: string;
   showControls: string;
   close: string;
+  /** aria-label del botón de ayuda. */
+  help: string;
+  /** Encabezado del panel de ayuda. */
+  helpTitle: string;
+  /** Descripciones del mapa de teclado (las teclas son literales, no traducibles). */
+  shortcutZoom: string;
+  shortcutReset: string;
+  shortcutPanKeys: string;
+  shortcutPanDrag: string;
+  shortcutFit: string;
+  shortcutFullscreen: string;
+  shortcutControls: string;
+  shortcutHelp: string;
+  shortcutClose: string;
 };
 
 export type MediaLightboxProps = {
@@ -71,6 +85,17 @@ const DEFAULT_LABELS: MediaLightboxLabels = {
   hideControls: 'Hide controls',
   showControls: 'Show controls',
   close: 'Close',
+  help: 'Keyboard shortcuts',
+  helpTitle: 'Keyboard shortcuts',
+  shortcutZoom: 'Zoom in / out',
+  shortcutReset: 'Reset view',
+  shortcutPanKeys: 'Pan',
+  shortcutPanDrag: 'Hold Space and drag to pan',
+  shortcutFit: 'Cycle fit mode (toolbar)',
+  shortcutFullscreen: 'Toggle fullscreen',
+  shortcutControls: 'Show / hide controls',
+  shortcutHelp: 'Toggle this help',
+  shortcutClose: 'Close',
 };
 
 const FIT_ORDER: MediaLightboxFit[] = ['contain', 'cover', 'actual'];

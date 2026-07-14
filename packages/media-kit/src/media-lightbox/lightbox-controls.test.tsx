@@ -15,6 +15,17 @@ const LABELS: MediaLightboxLabels = {
   hideControls: 'Hide controls',
   showControls: 'Show controls',
   close: 'Close',
+  help: 'Keyboard shortcuts',
+  helpTitle: 'Keyboard shortcuts',
+  shortcutZoom: 'Zoom in / out',
+  shortcutReset: 'Reset view',
+  shortcutPanKeys: 'Pan',
+  shortcutPanDrag: 'Hold Space and drag to pan',
+  shortcutFit: 'Cycle fit mode (toolbar)',
+  shortcutFullscreen: 'Toggle fullscreen',
+  shortcutControls: 'Show / hide controls',
+  shortcutHelp: 'Toggle this help',
+  shortcutClose: 'Close',
 };
 
 function renderControls(overrides: Record<string, unknown> = {}) {
