@@ -32,7 +32,7 @@ de B trabaje sobre los ejemplos ya corregidos; el plan fija el orden final por t
 
 | Decisión          | Valor                                                                                                  |
 | ----------------- | ------------------------------------------------------------------------------------------------------ |
-| Alcance           | Todo en F3, dos bloques (no se difiere theming v2)                                                     |
+| Alcance           | Todo en F3, tres bloques (no se difiere theming v2; C añadido el 2026-07-15)                           |
 | PII               | `apps/web/content/cv/` a `.gitignore`; contacto público SOLO LinkedIn/GitHub (ni email ni teléfono)    |
 | Skins             | 4: `dev-tool` (default, actual) + `editorial` + `terminal` + `vibrant`                                 |
 | Vistas de CV      | 3: `standard` + `compact` (ATS/print) + `timeline`                                                     |
