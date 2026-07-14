@@ -21,7 +21,7 @@ describe('Tabs', () => {
     renderTabs();
     expect(screen.getByRole('tab', { name: 'Preview' })).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByText('panel-preview')).toBeVisible();
-    expect(screen.queryByText('panel-api')).not.toBeInTheDocument();
+    expect(screen.getByText('panel-api')).not.toBeVisible();
   });
 
   it('cambia con click', async () => {
@@ -44,5 +44,24 @@ describe('Tabs', () => {
     renderTabs();
     expect(screen.getByRole('tab', { name: 'Preview' })).toHaveAttribute('tabindex', '0');
     expect(screen.getByRole('tab', { name: 'API' })).toHaveAttribute('tabindex', '-1');
+  });
+});
+
+describe('Tabs v2.1 — paneles persistentes (C1)', () => {
+  it('mantiene ambos paneles montados; el inactivo con hidden, fuera del árbol de a11y', () => {
+    renderTabs();
+    expect(screen.getByText('panel-preview')).toBeVisible();
+    expect(screen.getByText('panel-api')).not.toBeVisible();
+    // Solo el panel activo expone role=tabpanel (hidden lo saca del árbol de a11y).
+    expect(screen.getAllByRole('tabpanel')).toHaveLength(1);
+  });
+
+  it('cambiar de tab alterna hidden sin desmontar (cero remount → cero layout-shift)', async () => {
+    renderTabs();
+    const api = screen.getByText('panel-api');
+    await userEvent.click(screen.getByRole('tab', { name: 'API' }));
+    // Mismo nodo de antes del click: no se desmontó.
+    expect(api).toBeVisible();
+    expect(screen.getByText('panel-preview')).not.toBeVisible();
   });
 });

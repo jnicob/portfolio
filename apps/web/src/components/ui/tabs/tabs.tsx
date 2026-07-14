@@ -88,13 +88,16 @@ export function Tab({ value, children }: { value: string; children: ReactNode })
 
 export function TabPanel({ value, children }: { value: string; children: ReactNode }) {
   const { active, baseId } = useTabs('TabPanel');
-  if (active !== value) return null;
+  const selected = active === value;
+  // El panel inactivo queda montado y oculto con `hidden` (no se desmonta): cero
+  // layout-shift al cambiar de tab, y `hidden` lo saca del árbol de accesibilidad.
   return (
     <div
       role="tabpanel"
       id={`${baseId}-panel-${value}`}
       aria-labelledby={`${baseId}-tab-${value}`}
       tabIndex={0}
+      hidden={!selected}
       className="mt-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     >
       {children}
