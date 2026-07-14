@@ -226,7 +226,8 @@
 /* Familia de controles unificada: cerrar y toggle comparten el mismo tratamiento
    translúcido oscuro que la píldora de la toolbar. */
 .mk-lightbox__close,
-.mk-lightbox__controls-toggle {
+.mk-lightbox__controls-toggle,
+.mk-lightbox__help-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -243,18 +244,71 @@
 }
 
 .mk-lightbox__close:hover:not(:disabled),
-.mk-lightbox__controls-toggle:hover:not(:disabled) {
+.mk-lightbox__controls-toggle:hover:not(:disabled),
+.mk-lightbox__help-toggle:hover:not(:disabled) {
   background: rgb(255 255 255 / 0.12);
 }
 
 .mk-lightbox__close:active,
-.mk-lightbox__controls-toggle:active {
+.mk-lightbox__controls-toggle:active,
+.mk-lightbox__help-toggle:active {
   transform: scale(0.94);
 }
 
 .mk-lightbox :focus-visible {
   outline: 2px solid var(--mk-focus-ring);
   outline-offset: 2px;
+}
+
+/* B2: panel de ayuda de teclado, bajo el cluster de la esquina. */
+.mk-lightbox__help {
+  position: absolute;
+  top: 4.5rem;
+  right: 1rem;
+  z-index: 1;
+  max-width: min(22rem, calc(100vw - 2rem));
+  padding: 1rem;
+  border-radius: var(--mk-radius);
+  background: var(--mk-control-bg);
+  color: var(--mk-control-color);
+  box-shadow: 0 0 0 1px var(--mk-handle-ring);
+  font-size: 0.8125rem;
+}
+
+.mk-lightbox__help-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.mk-lightbox__help dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 0.75rem;
+  margin: 0;
+}
+
+.mk-lightbox__help-row {
+  display: contents;
+}
+
+.mk-lightbox__help dt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.mk-lightbox__help dd {
+  margin: 0;
+  align-self: center;
+}
+
+.mk-lightbox__help kbd {
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  background: rgb(255 255 255 / 0.12);
+  font: inherit;
+  font-size: 0.75rem;
 }
 
 @keyframes mk-fade-in {

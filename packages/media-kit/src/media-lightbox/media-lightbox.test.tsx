@@ -385,3 +385,39 @@ describe('MediaLightbox v2.1 — pan con Espacio (B1)', () => {
     expect(screen.getByRole('dialog')).not.toHaveAttribute('data-space-pan');
   });
 });
+
+describe('MediaLightbox v2.1 — ayuda de teclado (B2)', () => {
+  it("la tecla '?' abre la ayuda, el foco entra al panel, y '?' la cierra", async () => {
+    render(<Harness />);
+    await userEvent.click(screen.getByRole('button', { name: 'Abrir' }));
+    await userEvent.keyboard('?');
+    const panel = screen.getByRole('group', { name: 'Keyboard shortcuts' });
+    expect(panel).toHaveFocus();
+    expect(screen.getByText('Hold Space and drag to pan')).toBeInTheDocument();
+    await userEvent.keyboard('?');
+    expect(screen.queryByRole('group', { name: 'Keyboard shortcuts' })).not.toBeInTheDocument();
+  });
+
+  it('el botón ? abre la ayuda y refleja aria-expanded', async () => {
+    render(<Harness />);
+    await userEvent.click(screen.getByRole('button', { name: 'Abrir' }));
+    const helpButton = screen.getByRole('button', { name: 'Keyboard shortcuts' });
+    expect(helpButton).toHaveAttribute('aria-expanded', 'false');
+    await userEvent.click(helpButton);
+    expect(helpButton).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('group', { name: 'Keyboard shortcuts' })).toBeInTheDocument();
+  });
+
+  it('Escape cierra la ayuda ANTES que el lightbox y devuelve el foco al botón ?', async () => {
+    render(<Harness />);
+    await userEvent.click(screen.getByRole('button', { name: 'Abrir' }));
+    const helpButton = screen.getByRole('button', { name: 'Keyboard shortcuts' });
+    await userEvent.click(helpButton);
+    await userEvent.keyboard('{Escape}');
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.queryByRole('group', { name: 'Keyboard shortcuts' })).not.toBeInTheDocument();
+    expect(helpButton).toHaveFocus();
+    await userEvent.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+});

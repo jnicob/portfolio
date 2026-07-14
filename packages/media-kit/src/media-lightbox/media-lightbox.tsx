@@ -11,6 +11,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { LightboxControls, template } from './lightbox-controls';
+import { LightboxHelp } from './lightbox-help';
 import { useAutoHide } from './use-auto-hide';
 import { useFullscreen } from './use-fullscreen';
 import { useZoomPan } from './use-zoom-pan';
@@ -140,6 +141,8 @@ function MediaLightboxContent({
   // (no en useZoomPan) porque es una convención de teclado del dialog, no un gesto.
   const [spacePan, setSpacePan] = useState(false);
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const helpButtonRef = useRef<HTMLButtonElement>(null);
   const zoomPan = useZoomPan(viewportRef, contentRef, {
     minZoom: zoom?.min,
     maxZoom: zoom?.max,
@@ -208,6 +211,11 @@ function MediaLightboxContent({
     return () => window.removeEventListener('blur', release);
   }, [spacePan]);
 
+  // Al abrir la ayuda, el foco entra al panel (closeHelp lo devuelve al botón).
+  useEffect(() => {
+    if (helpOpen) dialogRef.current?.querySelector<HTMLElement>('[data-mk-help]')?.focus();
+  }, [helpOpen]);
+
   const nextFit = FIT_ORDER[(FIT_ORDER.indexOf(fit) + 1) % FIT_ORDER.length] ?? 'contain';
 
   function cycleFit() {
@@ -215,6 +223,12 @@ function MediaLightboxContent({
       (current) => FIT_ORDER[(FIT_ORDER.indexOf(current) + 1) % FIT_ORDER.length] ?? 'contain',
     );
     resetZoom();
+  }
+
+  // La ayuda devuelve el foco a su disparador al cerrarse (patrón de overlay).
+  function closeHelp() {
+    setHelpOpen(false);
+    helpButtonRef.current?.focus();
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
@@ -229,6 +243,10 @@ function MediaLightboxContent({
       if (nativeFullscreenActive()) return;
       // Evita que otros handlers React por encima reaccionen al mismo Escape.
       event.stopPropagation();
+      if (helpOpen) {
+        closeHelp();
+        return;
+      }
       onClose();
       return;
     }
@@ -277,6 +295,9 @@ function MediaLightboxContent({
       fullscreen.toggle();
     } else if (event.key === 'c' && controls) {
       autoHide.toggle();
+    } else if (event.key === '?') {
+      if (helpOpen) closeHelp();
+      else setHelpOpen(true);
     } else if (!target.closest('.mk-lightbox__controls-region')) {
       const pan: Record<string, [number, number]> = {
         ArrowLeft: [40, 0],
@@ -355,6 +376,16 @@ function MediaLightboxContent({
       {/* Esquina persistente, siempre visible, fuera de la región auto-ocultable:
           cerrar (ambos modos) + toggle de la toolbar (solo con controls). */}
       <div className="mk-lightbox__corner">
+        <button
+          ref={helpButtonRef}
+          type="button"
+          className="mk-lightbox__help-toggle"
+          aria-expanded={helpOpen}
+          aria-label={labels.help}
+          onClick={() => (helpOpen ? closeHelp() : setHelpOpen(true))}
+        >
+          ?
+        </button>
         {controls ? (
           <button
             ref={toggleRef}
@@ -377,6 +408,7 @@ function MediaLightboxContent({
           ✕
         </button>
       </div>
+      {helpOpen ? <LightboxHelp labels={labels} /> : null}
       {controls ? (
         <div
           ref={controlsRegionRef}
