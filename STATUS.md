@@ -1,44 +1,40 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-14 · por /checkpoint
+> Actualizado: 2026-07-15 · por /checkpoint
 
 ## Ahora
 
-**Fase 2.6 COMPLETA y mergeada a main.** Siguiente fase: F3 (contenido + páginas) — sin spec ni plan aún.
+**Fase 3 con spec escrita y commiteada** (`2026-07-15-phase-3-content-pages-theming-design.md`,
+commits `f39d6af..55d0cf3`): 3 bloques — A contenido+páginas+i18n+SEO · B theming v2 (4 skins,
+3 vistas CV, URL) · C media-kit v2.2 (0.4.0) + ejemplos showcase. **Falta: usuario re-revisa la
+spec (bloque C añadido tras su primera aprobación) → escribir plan → ejecutar.**
 
 ## Hecho
 
-- ✅ Fase 0 — fundaciones · Fase 1 — design system · Fase 2 — media-kit v0.1.0 · Fase 2.5 — media-kit v0.2.0 (ver roadmap).
-- ✅ Infra de estado — STATUS.md + /checkpoint v2 + setup portable `github.com:jnicob/ai-config`.
-- ✅ **Fase 2.6 — media-kit v0.3.0 + showcase polish** (17 commits, merge FF `fa00854..c8c46f8`, pusheado):
-  - B1 pan con `Espacio` (cursor grab/grabbing) · B2 help box de teclado (`?`, Escape con precedencia) ·
-    B3 toggle ojo/ojo-tachado SVG + tooltips CSS · B4 demo retrato IA color/B-N (68 kB webp) con
-    fullscreen nativo del slider · C1 Tabs sin desmontar (`hidden`) · C2 showcase (índice lateral,
-    intros, estados vacío/error/disabled, `:active`).
-  - Skill nuevo `skills/code-conventions/` (TS + React + estilo + tests, genérico) + routing en AGENTS.md.
-  - Cierre completo: gate verde, grep colores limpio, builds duales, verificación Playwright en vivo
-    (ambos temas + teclado completo), design review (Opus) y code review final — bloqueantes resueltos
-    (`d61d75f`, `a4c5c10`). Ledger detallado: `.superpowers/sdd/progress.md`.
+- ✅ Fases 0–2.6 (ver roadmap): fundaciones · design system · media-kit 0.1→0.3.0 · showcase.
+- ✅ Brainstorm F3 completo (2026-07-15): decisiones en la spec §1 — PII fuera del repo
+  (`.gitignore` para `apps/web/content/cv/`, contacto solo LinkedIn/GitHub), 4 skins vía
+  `data-skin`, 3 vistas de CV, query params + localStorage, compare-lightbox (no zoom inline).
+- ✅ Bloque C especificado con paridad clean-room vs Playground `fc_freepik_web`/landings
+  (tabla C5 de la spec); resuelve el botón "Ampliar con zoom" (se elimina, C1 lo absorbe).
 
 ## Siguiente acción
 
-1. Brainstorm de Fase 3 con `superpowers:brainstorming` (contenido + páginas: Zod, datos CV, MDX case
-   studies, i18n es/en, SEO) — incluye el selector de estilos por URL y el selector auto-filtrable del
-   showcase (diferidos de F2.6). Entrada: roadmap + spec de producto.
-2. Spec aprobado → plan con `superpowers:writing-plans` → ejecutar con subagent-driven-development.
-3. Antes de F3: decidir el tratamiento del PII de los CVs (bloquea la página de CV).
+1. Usuario re-revisa la spec F3 (bloque C nuevo); ajustar si pide cambios.
+2. Plan con `superpowers:writing-plans` → `docs/superpowers/plans/2026-07-15-phase-3-*.md`
+   (orden sugerido A → C → B; rama `feature/phase-3-content-theming`).
+3. Ejecutar con `superpowers:subagent-driven-development` (TDD, commit por tarea, gate
+   `pnpm run lint && pnpm run typecheck && pnpm run test` por tarea).
 
 ## Pendientes del usuario (no bloqueantes)
 
-- **CV:** PDFs (es/en) en `apps/web/content/cv/` **sin trackear** — PII (teléfono, email). Decidir:
-  `.gitignore` / redactar / commitear.
-- Dominio definitivo · Decisión: publicar `@nicobehm/media-kit` en npm (0.3.0 lista).
-- Backlog v2.2/v3 del paquete (anotado en ledger F2.6): iconos toolbar unificados en SVG, Tabs
-  grid-stack (cero shift real), precedencia de capas en click de overlay, foco condicional al cerrar
-  ayuda, tests blur-release/Tab-cycle, EmptyState/ErrorState reutilizable, scrim del botón del retrato.
+- Re-revisión de la spec F3 (bloqueante solo para arrancar el plan).
+- Dominio definitivo · publicar `@nicobehm/media-kit` en npm (0.3.0 lista).
+- `apps/web/content/cv/` sigue sin trackear a propósito (PII); F3 lo mete en `.gitignore`.
 
 ## Fuentes de verdad
 
 - Roadmap: [docs/superpowers/plans/2026-07-10-portfolio-roadmap.md](docs/superpowers/plans/2026-07-10-portfolio-roadmap.md)
 - Spec producto: [docs/superpowers/specs/2026-07-10-portfolio-design.md](docs/superpowers/specs/2026-07-10-portfolio-design.md)
-- F2.6 (hecha): spec [docs/superpowers/specs/2026-07-14-media-kit-v2.1-showcase-design.md](docs/superpowers/specs/2026-07-14-media-kit-v2.1-showcase-design.md) · plan [docs/superpowers/plans/2026-07-14-phase-2.6-media-kit-v2.1.md](docs/superpowers/plans/2026-07-14-phase-2.6-media-kit-v2.1.md)
+- Spec F3 (activa): [docs/superpowers/specs/2026-07-15-phase-3-content-pages-theming-design.md](docs/superpowers/specs/2026-07-15-phase-3-content-pages-theming-design.md)
+- Ledger SDD: `.superpowers/sdd/progress.md`
