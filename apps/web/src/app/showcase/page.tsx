@@ -134,6 +134,34 @@ export default function ShowcasePage() {
                 </div>
               </CardContent>
             </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Estado vacío</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col items-start gap-3">
+                  <p>Sin resultados todavía. Genera tu primera imagen para verla aquí.</p>
+                  <Button size="sm" variant="secondary">
+                    Crear imagen
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Estado error</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col items-start gap-3">
+                  <p className="text-danger">
+                    No se pudo cargar el resultado. Comprueba tu conexión.
+                  </p>
+                  <Button size="sm" variant="secondary">
+                    Reintentar
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </Section>
 
@@ -162,6 +190,20 @@ export default function ShowcasePage() {
                 aria-invalid
                 aria-describedby="demo-error-error"
                 defaultValue="!!!"
+              />
+            </Field>
+            <Field
+              label="Deshabilitado"
+              htmlFor="demo-disabled"
+              hint="Campo no editable en este plan."
+            >
+              <Input id="demo-disabled" disabled defaultValue="Solo lectura" />
+            </Field>
+            <Field label="Select deshabilitado" htmlFor="demo-select-disabled">
+              <Select
+                id="demo-select-disabled"
+                disabled
+                options={[{ value: '1_1', label: '1:1' }]}
               />
             </Field>
           </div>
