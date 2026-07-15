@@ -25,8 +25,8 @@ export type CompareSliderProps = {
    * el handle tiene el foco); el resto de la superficie ignora el pointerdown. Pensado
    * para cuando el compare vive dentro de un visor con su propio pan (T13/MediaLightbox):
    * el gesto de pan del visor y el drag del divisor no deben pelear por el mismo puntero.
-   * No se combina con `mode="hover"` (el hover sobre superficie no tendría sentido si
-   * la superficie no responde al puntero).
+   * Con dragTarget='handle', mode='hover' se ignora: el divisor solo se mueve desde el
+   * handle (puntero o teclado).
    */
   dragTarget?: 'surface' | 'handle';
   className?: string;
@@ -91,12 +91,17 @@ export function CompareSlider({
   }
 
   function followsHover(event: PointerEvent<HTMLDivElement>): boolean {
-    return mode === 'hover' && event.pointerType === 'mouse';
+    // Con dragTarget='handle' el hover-follow queda desactivado por completo: la
+    // superficie no responde al puntero, solo el handle (puntero o teclado).
+    return dragTarget === 'surface' && mode === 'hover' && event.pointerType === 'mouse';
   }
 
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
     if (!event.isPrimary || event.button !== 0) return;
-    if (dragTarget === 'handle' && !(event.target as Element).closest('.mk-compare__handle')) {
+    if (
+      dragTarget === 'handle' &&
+      !(event.target instanceof Element && event.target.closest('.mk-compare__handle'))
+    ) {
       return;
     }
     handleRef.current?.focus({ preventScroll: true });

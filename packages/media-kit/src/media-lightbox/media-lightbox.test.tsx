@@ -538,6 +538,24 @@ describe('MediaLightbox v2.2 — compare (C2)', () => {
     expect(media.style.transform).toBe(transformBefore);
   });
 
+  it('Escape con el foco en el handle cierra el lightbox (el stopPropagation del slider no se extiende a Escape)', async () => {
+    const onClose = vi.fn();
+    render(
+      <MediaLightbox
+        open
+        onClose={onClose}
+        label="Compare"
+        compare={{
+          before: <img src="/before.png" alt="antes" />,
+          after: <img src="/after.png" alt="después" />,
+        }}
+      />,
+    );
+    screen.getByRole('slider', { name: 'Compare' }).focus();
+    await userEvent.keyboard('{Escape}');
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
   it('sin compare, children sigue funcionando (regresión v2)', () => {
     render(
       <MediaLightbox open onClose={() => {}} label="V">

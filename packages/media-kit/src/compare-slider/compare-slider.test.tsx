@@ -241,6 +241,22 @@ describe('CompareSlider v2.2 — dragTarget handle (C2)', () => {
     expect(screen.getByRole('slider')).toHaveAttribute('data-mk-drag-exempt', '');
   });
 
+  it("con dragTarget='handle' el modo hover se ignora: pointermove sobre la superficie NO mueve el divisor", () => {
+    render(
+      <CompareSlider
+        mode="hover"
+        dragTarget="handle"
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+    fireEvent.pointerMove(container, { clientX: 150, clientY: 50, pointerType: 'mouse' });
+    expect(slider).toHaveAttribute('aria-valuenow', '50');
+  });
+
   it("dragTarget por defecto ('surface') conserva el drag actual", () => {
     render(
       <CompareSlider before={<img src="/b.png" alt="b" />} after={<img src="/a.png" alt="" />} />,
