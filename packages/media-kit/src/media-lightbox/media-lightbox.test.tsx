@@ -1,8 +1,13 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useState } from 'react';
 import { MediaLightbox } from './media-lightbox';
+
+function stubScreen(width: number, devicePixelRatio: number) {
+  vi.stubGlobal('screen', { width });
+  vi.stubGlobal('devicePixelRatio', devicePixelRatio);
+}
 
 function Harness() {
   const [open, setOpen] = useState(false);
@@ -564,5 +569,76 @@ describe('MediaLightbox v2.2 — compare (C2)', () => {
     );
     expect(screen.getByAltText('contenido')).toBeInTheDocument();
     expect(screen.queryByRole('slider')).not.toBeInTheDocument();
+  });
+});
+
+describe('MediaLightbox v2.2 — MediaSource (C3)', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('con media (pantalla grande) renderiza el fullSrc elegido por pantalla', () => {
+    stubScreen(2560, 1);
+    render(
+      <MediaLightbox
+        open
+        onClose={() => {}}
+        label="V"
+        media={{ src: '/a.png', fullSrc: '/a-full.png', alt: 'contenido' }}
+      />,
+    );
+    const img = screen.getByAltText('contenido');
+    expect(img).toHaveAttribute('src', '/a-full.png');
+    expect(img).toHaveAttribute('draggable', 'false');
+  });
+
+  it('con media (pantalla chica) renderiza src, no fullSrc', () => {
+    stubScreen(390, 3);
+    render(
+      <MediaLightbox
+        open
+        onClose={() => {}}
+        label="V"
+        media={{ src: '/a.png', fullSrc: '/a-full.png', alt: 'contenido' }}
+      />,
+    );
+    expect(screen.getByAltText('contenido')).toHaveAttribute('src', '/a.png');
+  });
+
+  it('compare gana sobre media, y media gana sobre children', () => {
+    render(
+      <MediaLightbox
+        open
+        onClose={() => {}}
+        label="V"
+        compare={{
+          before: { src: '/before.png', alt: 'antes' },
+          after: { src: '/after.png', alt: 'después' },
+        }}
+        media={{ src: '/media.png', alt: 'medio' }}
+      >
+        <img src="/children.png" alt="hijos" />
+      </MediaLightbox>,
+    );
+    expect(screen.getByRole('slider', { name: 'Compare' })).toBeInTheDocument();
+    expect(screen.queryByAltText('medio')).not.toBeInTheDocument();
+    expect(screen.queryByAltText('hijos')).not.toBeInTheDocument();
+  });
+
+  it('compare con lados MediaSource resuelve cada lado con pickFullscreenSrc (pantalla grande → fullSrc)', () => {
+    stubScreen(2560, 1);
+    render(
+      <MediaLightbox
+        open
+        onClose={() => {}}
+        label="Compare"
+        compare={{
+          before: { src: '/before.png', fullSrc: '/before-full.png', alt: 'antes' },
+          after: { src: '/after.png', fullSrc: '/after-full.png', alt: 'después' },
+        }}
+      />,
+    );
+    expect(screen.getByAltText('antes')).toHaveAttribute('src', '/before-full.png');
+    expect(screen.getByAltText('después')).toHaveAttribute('src', '/after-full.png');
   });
 });

@@ -275,3 +275,39 @@ describe('CompareSlider v2.2 — dragTarget handle (C2)', () => {
     expect(slider).toHaveAttribute('aria-valuenow', '75');
   });
 });
+
+describe('CompareSlider v2.2 — MediaSource (C3)', () => {
+  it('con MediaSource renderiza su propio <img> con src/alt/draggable=false', () => {
+    render(
+      <CompareSlider
+        before={{ src: '/a.png', alt: 'Antes' }}
+        after={{ src: '/b.png', alt: 'Después' }}
+      />,
+    );
+    const before = screen.getByAltText('Antes');
+    expect(before).toHaveAttribute('src', '/a.png');
+    expect(before).toHaveAttribute('draggable', 'false');
+    const after = screen.getByAltText('Después');
+    expect(after).toHaveAttribute('src', '/b.png');
+    expect(after).toHaveAttribute('draggable', 'false');
+  });
+
+  it('acepta ReactNode en un lado y MediaSource en el otro (mezcla)', () => {
+    render(
+      <CompareSlider
+        before={<img src="/a.png" alt="Antes" />}
+        after={{ src: '/b.png', alt: 'Después' }}
+      />,
+    );
+    expect(screen.getByAltText('Antes')).toBeInTheDocument();
+    const after = screen.getByAltText('Después');
+    expect(after).toHaveAttribute('src', '/b.png');
+    expect(after).toHaveAttribute('draggable', 'false');
+  });
+
+  it('con ReactNode sigue funcionando igual que antes (regresión)', () => {
+    renderSlider();
+    expect(screen.getByAltText('Antes')).toBeInTheDocument();
+    expect(screen.getByAltText('Después')).toBeInTheDocument();
+  });
+});

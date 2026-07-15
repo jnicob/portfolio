@@ -1,12 +1,16 @@
 'use client';
 
 import { useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
+import { isMediaSource, type MediaSource } from '../media-source';
 
 export type CompareSliderProps = {
-  /** Medio original (típicamente <img>). Se muestra a la izquierda / arriba. */
-  before: ReactNode;
-  /** Medio procesado. Se revela a la derecha / abajo del divisor. */
-  after: ReactNode;
+  /**
+   * Medio original (típicamente <img>). Se muestra a la izquierda / arriba.
+   * Acepta un `MediaSource`: el slider renderiza internamente su `<img src alt draggable={false}>`.
+   */
+  before: ReactNode | MediaSource;
+  /** Medio procesado. Se revela a la derecha / abajo del divisor. Mismas reglas que `before`. */
+  after: ReactNode | MediaSource;
   /** Nombre accesible del divisor. */
   label?: string;
   /** Posición inicial del divisor, 0-100. */
@@ -36,6 +40,10 @@ export type CompareSliderProps = {
 function clamp(value: number): number {
   if (!Number.isFinite(value)) return 50;
   return Math.min(100, Math.max(0, value));
+}
+
+function renderSide(side: ReactNode | MediaSource): ReactNode {
+  return isMediaSource(side) ? <img src={side.src} alt={side.alt} draggable={false} /> : side;
 }
 
 export function CompareSlider({
@@ -129,9 +137,9 @@ export function CompareSlider({
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
     >
-      <div className="mk-compare__before">{before}</div>
+      <div className="mk-compare__before">{renderSide(before)}</div>
       <div className="mk-compare__after" aria-hidden="true">
-        {after}
+        {renderSide(after)}
       </div>
       <div className="mk-compare__divider" aria-hidden="true" />
       <div

@@ -11,6 +11,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { CompareSlider } from '../compare-slider';
+import { isMediaSource, pickFullscreenSrc, type MediaSource } from '../media-source';
 import { LightboxControls, template } from './lightbox-controls';
 import { LightboxHelp } from './lightbox-help';
 import { useAutoHide } from './use-auto-hide';
@@ -70,15 +71,23 @@ export type MediaLightboxProps = {
   labels?: Partial<MediaLightboxLabels>;
   /**
    * Contenido a pantalla completa: <img>, <video> o composición. Ignorado si
-   * `compare` está presente.
+   * `compare` o `media` están presentes.
    */
   children?: ReactNode;
   /**
+   * Medio único como `MediaSource` (alternativa a `children`): el lightbox
+   * renderiza su propio `<img>` eligiendo `fullSrc` según la pantalla (C3, vía
+   * `pickFullscreenSrc`). Prioridad: `compare` > `media` > `children`.
+   */
+  media?: MediaSource;
+  /**
    * Compare (before/after) dentro del visor: hereda zoom/pan/toolbar del lightbox
    * sin duplicar el motor de gestos (spec C2). Si está presente, gana sobre
-   * `children`. Sin ninguno de los dos, el visor no renderiza media.
+   * `media` y `children`. Cada lado acepta `ReactNode` o `MediaSource`; con
+   * `MediaSource` el lado se resuelve con `pickFullscreenSrc` (fullscreen = contexto HD).
+   * Sin ninguno de los tres, el visor no renderiza media.
    */
-  compare?: { before: ReactNode; after: ReactNode; label?: string };
+  compare?: { before: ReactNode | MediaSource; after: ReactNode | MediaSource; label?: string };
 };
 
 const FOCUSABLE =
@@ -157,6 +166,16 @@ function nativeFullscreenActive(): boolean {
   return Boolean(document.fullscreenElement ?? doc.webkitFullscreenElement);
 }
 
+// Fullscreen = contexto HD: cualquier MediaSource (media único o cada lado del
+// compare) se resuelve con pickFullscreenSrc antes de renderizarse.
+function renderFullscreenSide(side: ReactNode | MediaSource): ReactNode {
+  return isMediaSource(side) ? (
+    <img src={pickFullscreenSrc(side)} alt={side.alt} draggable={false} />
+  ) : (
+    side
+  );
+}
+
 export function MediaLightbox(props: MediaLightboxProps) {
   // Guard externo: el contenido monta FRESCO en cada apertura. Esto garantiza
   // estado limpio (zoom/fit/toolbar) sin effects de reset, y que el effect de
@@ -178,6 +197,7 @@ function MediaLightboxContent({
   autoHideDelay = 3000,
   labels: labelOverrides,
   children,
+  media,
   compare,
 }: MediaLightboxProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -417,11 +437,13 @@ function MediaLightboxContent({
         <div ref={contentRef} className="mk-lightbox__media" style={zoomPan.style}>
           {compare ? (
             <CompareSlider
-              before={compare.before}
-              after={compare.after}
+              before={renderFullscreenSide(compare.before)}
+              after={renderFullscreenSide(compare.after)}
               label={compare.label ?? 'Compare'}
               dragTarget="handle"
             />
+          ) : media ? (
+            renderFullscreenSide(media)
           ) : (
             children
           )}

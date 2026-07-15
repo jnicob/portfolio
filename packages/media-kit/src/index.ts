@@ -5,3 +5,9 @@ export {
   type MediaLightboxFit,
   type MediaLightboxLabels,
 } from './media-lightbox';
+export {
+  isMediaSource,
+  preloadFullSources,
+  shouldUseFullSrc,
+  type MediaSource,
+} from './media-source';
