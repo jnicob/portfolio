@@ -293,6 +293,25 @@ describe('projectSchema y frontmatter', () => {
   });
 });
 
+describe('datos reales', () => {
+  it('los módulos de datos parsean contra sus schemas', async () => {
+    const { profile } = await import('./profile');
+    const { experience } = await import('./experience');
+    const { education } = await import('./education');
+    const { skills } = await import('./skills');
+    const { projects } = await import('./projects');
+    expect(profile.name).toBe('Nico Behm');
+    expect(experience.length).toBeGreaterThanOrEqual(2);
+    expect(education.length).toBeGreaterThanOrEqual(1);
+    expect(skills.length).toBeGreaterThanOrEqual(8);
+    expect(projects.map((p) => p.slug)).toEqual([
+      'freepik-api-platform',
+      'ai-model-onboarding',
+      'flows-api',
+    ]);
+  });
+});
+
 describe('enums de apariencia', () => {
   it('skin válido e inválido', () => {
     expect(skinSchema.safeParse('editorial').success).toBe(true);
