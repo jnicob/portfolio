@@ -69,6 +69,7 @@
       "card": {
         "title": "Card",
         "description": "Composable container (header, title, content) for case studies and results.",
+        "sampleTitle": "Case study",
         "compositionBody": "Composition via children: header, title and content.",
         "loadingTitle": "Loading state",
         "emptyTitle": "Empty state",
@@ -81,7 +82,9 @@
       "form": {
         "title": "Form (Field + Input + Select)",
         "description": "Accessible fields: label, hint and error linked via aria-describedby.",
+        "promptLabel": "Prompt",
         "promptHint": "Describe the image to generate.",
+        "aspectRatioLabel": "Aspect ratio",
         "errorLabel": "With error",
         "errorMessage": "This field is required.",
         "disabledLabel": "Disabled",
@@ -93,6 +96,8 @@
         "title": "Tabs",
         "description": "APG tabs with roving tabindex; panels stay mounted (no state loss on switch).",
         "tabListLabel": "Result example",
+        "previewTab": "Preview",
+        "apiTab": "API",
         "previewContent": "Preview content."
       },
       "mediaKit": {

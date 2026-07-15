@@ -69,6 +69,7 @@
       "card": {
         "title": "Card",
         "description": "Contenedor componible (header, título, contenido) para casos de estudio y resultados.",
+        "sampleTitle": "Caso de estudio",
         "compositionBody": "Composición por children: header, título y contenido.",
         "loadingTitle": "Estado loading",
         "emptyTitle": "Estado vacío",
@@ -81,7 +82,9 @@
       "form": {
         "title": "Formulario (Field + Input + Select)",
         "description": "Campos accesibles: label, hint y error enlazados con aria-describedby.",
+        "promptLabel": "Prompt",
         "promptHint": "Describe la imagen a generar.",
+        "aspectRatioLabel": "Relación de aspecto",
         "errorLabel": "Con error",
         "errorMessage": "Este campo es obligatorio.",
         "disabledLabel": "Deshabilitado",
@@ -93,6 +96,8 @@
         "title": "Tabs",
         "description": "Pestañas APG con roving tabindex; los paneles persisten montados (sin perder estado al cambiar).",
         "tabListLabel": "Ejemplo de resultado",
+        "previewTab": "Vista previa",
+        "apiTab": "API",
         "previewContent": "Contenido del preview."
       },
       "mediaKit": {

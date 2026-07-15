@@ -130,7 +130,7 @@ export default async function ShowcasePage({ params }: Props) {
           <div className="grid gap-4 sm:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Case study</CardTitle>
+                <CardTitle>{t('sections.card.sampleTitle')}</CardTitle>
               </CardHeader>
               <CardContent>{t('sections.card.compositionBody')}</CardContent>
             </Card>
@@ -181,10 +181,14 @@ export default async function ShowcasePage({ params }: Props) {
           description={t('sections.form.description')}
         >
           <div className="grid max-w-md gap-4">
-            <Field label="Prompt" htmlFor="demo-prompt" hint={t('sections.form.promptHint')}>
+            <Field
+              label={t('sections.form.promptLabel')}
+              htmlFor="demo-prompt"
+              hint={t('sections.form.promptHint')}
+            >
               <Input id="demo-prompt" placeholder="A serene mountain landscape" />
             </Field>
-            <Field label="Aspect ratio" htmlFor="demo-ratio">
+            <Field label={t('sections.form.aspectRatioLabel')} htmlFor="demo-ratio">
               <Select
                 id="demo-ratio"
                 options={[
@@ -230,8 +234,8 @@ export default async function ShowcasePage({ params }: Props) {
         >
           <Tabs defaultValue="preview">
             <TabList label={t('sections.tabs.tabListLabel')}>
-              <Tab value="preview">Preview</Tab>
-              <Tab value="api">API</Tab>
+              <Tab value="preview">{t('sections.tabs.previewTab')}</Tab>
+              <Tab value="api">{t('sections.tabs.apiTab')}</Tab>
             </TabList>
             <TabPanel value="preview">
               <Card>
