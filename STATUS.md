@@ -4,37 +4,43 @@
 
 ## Ahora
 
-**Fase 3 con spec escrita y commiteada** (`2026-07-15-phase-3-content-pages-theming-design.md`,
-commits `f39d6af..55d0cf3`): 3 bloques — A contenido+páginas+i18n+SEO · B theming v2 (4 skins,
-3 vistas CV, URL) · C media-kit v2.2 (0.4.0) + ejemplos showcase. **Falta: usuario re-revisa la
-spec (bloque C añadido tras su primera aprobación) → escribir plan → ejecutar.**
+**Fase 3 COMPLETA y mergeada a main** (`27a933d..ecb17b7`, 48 commits, FF + push):
+contenido+páginas+i18n+SEO (A) · media-kit **0.4.0** (C) · theming v2 con 4 skins y 3
+vistas de CV (B). Verificación en vivo (Playwright sobre el export), design review y
+code review final "Ready to merge: Yes" con todos los blockers resueltos.
+**Siguiente fase: F4 (playground) — falta brainstorm/spec y plan.**
 
 ## Hecho
 
-- ✅ Fases 0–2.6 (ver roadmap): fundaciones · design system · media-kit 0.1→0.3.0 · showcase.
-- ✅ Brainstorm F3 completo (2026-07-15): decisiones en la spec §1 — PII fuera del repo
-  (`.gitignore` para `apps/web/content/cv/`, contacto solo LinkedIn/GitHub), 4 skins vía
-  `data-skin`, 3 vistas de CV, query params + localStorage, compare-lightbox (no zoom inline).
-- ✅ Bloque C especificado con paridad clean-room vs Playground `fc_freepik_web`/landings
-  (tabla C5 de la spec); resuelve el botón "Ampliar con zoom" (se elimina, C1 lo absorbe).
+- ✅ Fases 0–3 (ver roadmap). F3: es/en bajo `[locale]`, datos Zod sin PII
+  (`content/cv/` en .gitignore), 3 case studies MDX, SEO completo (hreflang/sitemap/OG),
+  4 skins AA-verificados (8 combos), `lib/appearance.ts` (URL>storage>default),
+  FilterableList + skin-switcher, CV standard/compact(print)/timeline + compartir vista.
+- ✅ media-kit 0.4.0: fix pan con ratón, compare-lightbox (`compare`+`dragTarget`),
+  `MediaSource` (src/fullSrc según pantalla + preload), `expand` por ejemplo,
+  `pauseOnClick`, overlayLabels/objectFit/loading. Sin breaking.
+- ✅ Gate: 333 tests, builds duales export/node, greps de PII/colores limpios.
 
 ## Siguiente acción
 
-1. Usuario re-revisa la spec F3 (bloque C nuevo); ajustar si pide cambios.
-2. Plan con `superpowers:writing-plans` → `docs/superpowers/plans/2026-07-15-phase-3-*.md`
-   (orden sugerido A → C → B; rama `feature/phase-3-content-theming`).
-3. Ejecutar con `superpowers:subagent-driven-development` (TDD, commit por tarea, gate
-   `pnpm run lint && pnpm run typecheck && pnpm run test` por tarea).
+1. Brainstorm F4 (playground) con `superpowers:brainstorming` → spec
+   `docs/superpowers/specs/2026-07-<dd>-phase-4-playground-design.md` (leer antes
+   spec de producto §playground y contratos F3→F4 del roadmap).
+2. Plan con `superpowers:writing-plans` → ejecutar con subagent-driven-development
+   (rama `feature/phase-4-playground`; gate `pnpm run lint && pnpm run typecheck && pnpm run test`).
+3. Incluir en F4 la tarea de limpieza del backlog F3 (ledger `.superpowers/sdd/progress.md`,
+   entrada "F3 Task 26"): sweep `z.url()`, consistencia (props muertas, contacto
+   triplicado, SITE_URL x3), guard `NEXT_PUBLIC_SITE_URL` en build prod.
 
 ## Pendientes del usuario (no bloqueantes)
 
-- Re-revisión de la spec F3 (bloqueante solo para arrancar el plan).
-- Dominio definitivo · publicar `@nicobehm/media-kit` en npm (0.3.0 lista).
-- `apps/web/content/cv/` sigue sin trackear a propósito (PII); F3 lo mete en `.gitignore`.
+- Dominio definitivo + fijar `NEXT_PUBLIC_SITE_URL` (SEO apunta a placeholder).
+- Publicar `@nicobehm/media-kit` en npm (0.4.0 lista).
+- Upgrade Node 22 (retirar pins de `docs/decisions/2026-07-10-dependency-pins.md`).
 
 ## Fuentes de verdad
 
 - Roadmap: [docs/superpowers/plans/2026-07-10-portfolio-roadmap.md](docs/superpowers/plans/2026-07-10-portfolio-roadmap.md)
 - Spec producto: [docs/superpowers/specs/2026-07-10-portfolio-design.md](docs/superpowers/specs/2026-07-10-portfolio-design.md)
-- Spec F3 (activa): [docs/superpowers/specs/2026-07-15-phase-3-content-pages-theming-design.md](docs/superpowers/specs/2026-07-15-phase-3-content-pages-theming-design.md)
+- Plan F3 (hecha): [docs/superpowers/plans/2026-07-15-phase-3-content-theming.md](docs/superpowers/plans/2026-07-15-phase-3-content-theming.md)
 - Ledger SDD: `.superpowers/sdd/progress.md`
