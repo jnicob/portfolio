@@ -79,7 +79,15 @@ afterEach(() => {
   localStorage.clear();
   window.history.replaceState(null, '', '/');
   persistCvView.mockClear();
+  Reflect.deleteProperty(navigator, 'clipboard');
 });
+
+const SHARE_LABELS = { share: 'Share this view', copied: 'Link copied', error: 'Could not copy' };
+
+/** Ver share-view-button.test.tsx: userEvent.setup() pisa su propio stub de clipboard. */
+function stubClipboardAfterSetup(writeText: ReturnType<typeof vi.fn>) {
+  Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+}
 
 describe('CvContent', () => {
   it('con ?view=timeline muestra timeline aunque el AppearanceInit del layout monte antes y limpie la URL', async () => {
@@ -148,5 +156,27 @@ describe('CvContent', () => {
     );
 
     expect(screen.getByRole('button', { name: 'Share' })).toBeInTheDocument();
+  });
+
+  it('con shareLabels, el botón de compartir copia una URL con la vista activa', async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    stubClipboardAfterSetup(writeText);
+    window.history.pushState(null, '', '/en/cv');
+    const { CvContent } = await importFreshComponents();
+
+    render(
+      <CvContent
+        locale="en"
+        strings={STRINGS}
+        switcherLabels={SWITCHER_LABELS}
+        shareLabels={SHARE_LABELS}
+      />,
+    );
+
+    await user.click(screen.getByRole('radio', { name: 'Compact' }));
+    await user.click(screen.getByRole('button', { name: SHARE_LABELS.share }));
+
+    expect(writeText).toHaveBeenCalledWith(expect.stringContaining('view=compact'));
   });
 });

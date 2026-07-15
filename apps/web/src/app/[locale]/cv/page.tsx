@@ -26,6 +26,7 @@ export default async function CvPage({ params }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations('cv');
   const tFooter = await getTranslations('footer');
+  const tShare = await getTranslations('share');
   const categoryLabels = t.raw('categories') as Record<Skill['category'], string>;
 
   const strings: CvStrings = {
@@ -50,7 +51,12 @@ export default async function CvPage({ params }: Props) {
     <main className="mx-auto flex max-w-5xl flex-col gap-10 px-4 py-12">
       <JsonLd data={personJsonLd(locale)} />
       <h1 className="text-3xl font-semibold text-fg">{t('title')}</h1>
-      <CvContent locale={locale} strings={strings} switcherLabels={switcherLabels} />
+      <CvContent
+        locale={locale}
+        strings={strings}
+        switcherLabels={switcherLabels}
+        shareLabels={{ share: tShare('share'), copied: tShare('copied'), error: tShare('error') }}
+      />
     </main>
   );
 }

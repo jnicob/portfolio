@@ -7,6 +7,11 @@
     "showcase": "Showcase"
   },
   "footer": { "github": "GitHub", "linkedin": "LinkedIn" },
+  "share": {
+    "share": "Share this view",
+    "copied": "Link copied",
+    "error": "Could not copy"
+  },
   "switchers": {
     "toEnglish": "Switch to English",
     "toSpanish": "Cambiar a español",

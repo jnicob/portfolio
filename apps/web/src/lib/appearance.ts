@@ -60,13 +60,15 @@ export function applyAppearance(appearance: Appearance): void {
   }
 }
 
-function currentSkin(): Skin {
+/** Skin actualmente aplicado al DOM (dataset ausente = 'dev-tool'), validado. */
+export function currentSkin(): Skin {
   return (
     parseValid(skinSchema, document.documentElement.dataset.skin ?? null) ?? DEFAULT_APPEARANCE.skin
   );
 }
 
-function currentTheme(): Theme {
+/** Theme actualmente aplicado al DOM, validado (fallback al default si el dataset falta). */
+export function currentTheme(): Theme {
   return (
     parseValid(themeSchema, document.documentElement.dataset.theme ?? null) ??
     DEFAULT_APPEARANCE.theme
