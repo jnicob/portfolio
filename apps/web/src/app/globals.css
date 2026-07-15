@@ -19,8 +19,17 @@
   --color-danger-fg: var(--danger-fg);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --radius-card: 0.75rem;
-  --radius-control: 0.5rem;
+  --font-serif: var(--font-source-serif);
+  --radius-card: var(--radius-card-value);
+  --radius-control: var(--radius-control-value);
+}
+
+/* Base: indirección de radios/fuentes que los skins (T21+) pueden redefinir. */
+:root {
+  --radius-card-value: 0.75rem;
+  --radius-control-value: 0.5rem;
+  --font-heading: var(--font-geist-sans);
+  --font-body: var(--font-geist-sans);
 }
 
 /* Tema oscuro (por defecto) — acento violeta eléctrico */
@@ -54,10 +63,138 @@
   --danger-fg: #ffffff;
 }
 
+/* ── Skin: editorial — serif en títulos, radios suaves, cálido para leer el CV ── */
+:root[data-skin='editorial'][data-theme='dark'] {
+  --bg: #1b1712;
+  --surface: #262019;
+  --fg: #ece4d6;
+  --fg-muted: #b3a894;
+  --accent: #d9a05b;
+  --accent-hover: #e4b273;
+  --accent-fg: #1b1712;
+  --border: #3a3227;
+  --ring: #d9a05b;
+  --danger: #f08a75;
+  --danger-fg: #1b1712;
+  --radius-card-value: 1rem;
+  --radius-control-value: 0.625rem;
+  --font-heading: var(--font-serif);
+}
+
+:root[data-skin='editorial'][data-theme='light'] {
+  --bg: #f7f3ec;
+  --surface: #fffdf8;
+  --fg: #211d16;
+  --fg-muted: #5f584a;
+  --accent: #8a3033;
+  --accent-hover: #6d2427;
+  --accent-fg: #fffdf8;
+  --border: #ddd3c2;
+  --ring: #8a3033;
+  --danger: #a02c2c;
+  --danger-fg: #fffdf8;
+  --radius-card-value: 1rem;
+  --radius-control-value: 0.625rem;
+  --font-heading: var(--font-serif);
+}
+
+/* ── Skin: terminal — monospace, alto contraste, radios 0, brutalist ── */
+:root[data-skin='terminal'][data-theme='dark'] {
+  --bg: #050805;
+  --surface: #0c120c;
+  --fg: #4ef14e;
+  --fg-muted: #8fbf8f;
+  --accent: #ffd54e;
+  --accent-hover: #ffe28a;
+  --accent-fg: #050805;
+  --border: #1d2a1d;
+  --ring: #4ef14e;
+  --danger: #ff6b6b;
+  --danger-fg: #050805;
+  --radius-card-value: 0;
+  --radius-control-value: 0;
+  --font-heading: var(--font-geist-mono);
+  --font-body: var(--font-geist-mono);
+}
+
+:root[data-skin='terminal'][data-theme='light'] {
+  --bg: #f4f7f2;
+  --surface: #ffffff;
+  --fg: #0c2b0f;
+  --fg-muted: #3f5d43;
+  --accent: #8a5d00;
+  --accent-hover: #6f4a00;
+  --accent-fg: #ffffff;
+  --border: #cfdccc;
+  --ring: #8a5d00;
+  --danger: #b3261e;
+  --danger-fg: #ffffff;
+  --radius-card-value: 0;
+  --radius-control-value: 0;
+  --font-heading: var(--font-geist-mono);
+  --font-body: var(--font-geist-mono);
+}
+
+/* ── Skin: vibrant — acentos saturados, playful ── */
+:root[data-skin='vibrant'][data-theme='dark'] {
+  --bg: #140a20;
+  --surface: #1f1130;
+  --fg: #f4ecff;
+  --fg-muted: #bda8d6;
+  --accent: #ff5da2;
+  --accent-hover: #ff7ab5;
+  --accent-fg: #140a20;
+  --border: #392153;
+  --ring: #ff5da2;
+  --danger: #ff7a66;
+  --danger-fg: #140a20;
+  --radius-card-value: 1.25rem;
+  --radius-control-value: 0.75rem;
+}
+
+:root[data-skin='vibrant'][data-theme='light'] {
+  --bg: #fff5fb;
+  --surface: #ffffff;
+  --fg: #2a1033;
+  --fg-muted: #6b4a7a;
+  --accent: #b4126b;
+  --accent-hover: #93094f;
+  --accent-fg: #ffffff;
+  --border: #f0d5e7;
+  --ring: #b4126b;
+  --danger: #b3123f;
+  --danger-fg: #ffffff;
+  --radius-card-value: 1.25rem;
+  --radius-control-value: 0.75rem;
+}
+
+/* Swatches para el skin-switcher (T23): único lugar permitido, es definición de tokens. */
+.skin-swatch[data-skin='dev-tool'] {
+  background: #8b7cf7;
+}
+.skin-swatch[data-skin='editorial'] {
+  background: #d9a05b;
+}
+.skin-swatch[data-skin='terminal'] {
+  background: #4ef14e;
+}
+.skin-swatch[data-skin='vibrant'] {
+  background: #ff5da2;
+}
+
 body {
   background-color: var(--bg);
   color: var(--fg);
-  font-family: var(--font-geist-sans);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
 }
 
 /* Mapeo de design tokens del portfolio a la API pública de @nicobehm/media-kit */

@@ -5,6 +5,7 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
+import { Source_Serif_4 } from 'next/font/google';
 import { routing } from '@/i18n/routing';
 import { SITE_URL } from '@/lib/seo';
 import { AppearanceInit } from '@/components/layout/appearance-init';
@@ -12,6 +13,12 @@ import { SiteFooter } from '@/components/layout/footer';
 import { SiteHeader } from '@/components/layout/header';
 import '../globals.css';
 import '@nicobehm/media-kit/styles.css';
+
+const sourceSerif = Source_Serif_4({
+  subsets: ['latin'],
+  variable: '--font-source-serif',
+  display: 'swap',
+});
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -56,7 +63,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html
       lang={locale}
       data-theme="dark"
-      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${sourceSerif.variable}`}
       suppressHydrationWarning
     >
       <head>
