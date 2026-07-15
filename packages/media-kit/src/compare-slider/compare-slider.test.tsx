@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { CompareSlider } from './compare-slider';
@@ -309,5 +309,76 @@ describe('CompareSlider v2.2 — MediaSource (C3)', () => {
     renderSlider();
     expect(screen.getByAltText('Antes')).toBeInTheDocument();
     expect(screen.getByAltText('Después')).toBeInTheDocument();
+  });
+});
+
+function stubScreen(width: number, devicePixelRatio: number) {
+  vi.stubGlobal('screen', { width });
+  vi.stubGlobal('devicePixelRatio', devicePixelRatio);
+}
+
+describe('CompareSlider v2.2 — expand (C1)', () => {
+  it('sin expand no hay botón (regresión)', () => {
+    renderSlider();
+    expect(screen.queryByRole('button', { name: 'Full Screen' })).not.toBeInTheDocument();
+  });
+
+  it('con expand renderiza el botón con icono y label, y abre el compare-lightbox', async () => {
+    render(
+      <CompareSlider
+        before={{ src: '/a.png', alt: 'Antes' }}
+        after={{ src: '/b.png', alt: 'Después' }}
+        expand={{ lightboxLabel: 'Comparar a pantalla completa' }}
+      />,
+    );
+    const button = screen.getByRole('button', { name: 'Full Screen' });
+    expect(button.querySelector('svg[aria-hidden="true"]')).toBeInTheDocument();
+    await userEvent.click(button);
+    const dialog = screen.getByRole('dialog', { name: 'Comparar a pantalla completa' });
+    expect(within(dialog).getByRole('slider')).toBeInTheDocument();
+  });
+
+  it('el hover/focus del botón dispara el preload de los fullSrc', () => {
+    stubScreen(2560, 1);
+    const calls: string[] = [];
+    class FakeImage {
+      set src(value: string) {
+        calls.push(value);
+      }
+    }
+    vi.stubGlobal('Image', FakeImage);
+
+    render(
+      <CompareSlider
+        before={{ src: '/a.png', fullSrc: '/a-full-expand.png', alt: 'Antes' }}
+        after={{ src: '/b.png', fullSrc: '/b-full-expand.png', alt: 'Después' }}
+        expand={{ lightboxLabel: 'Comparar a pantalla completa' }}
+      />,
+    );
+    const button = screen.getByRole('button', { name: 'Full Screen' });
+    fireEvent.pointerEnter(button);
+    expect(calls).toEqual(['/a-full-expand.png', '/b-full-expand.png']);
+  });
+
+  it('el click del botón NO mueve el divisor', async () => {
+    render(
+      <CompareSlider
+        before={<img src="/a.png" alt="Antes" />}
+        after={<img src="/b.png" alt="Después" />}
+        expand={{ lightboxLabel: 'Comparar a pantalla completa' }}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    expect(slider).toHaveAttribute('aria-valuenow', '50');
+    const button = screen.getByRole('button', { name: 'Full Screen' });
+    await userEvent.click(button);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(slider).toHaveAttribute('aria-valuenow', '50');
+  });
+
+  it('humo de import: CompareSlider y MediaLightbox se importan sin romper el ciclo ESM', async () => {
+    const mod = await import('../index');
+    expect(mod.CompareSlider).toBe(CompareSlider);
+    expect(typeof mod.MediaLightbox).toBe('function');
   });
 });

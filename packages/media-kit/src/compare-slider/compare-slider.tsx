@@ -1,7 +1,37 @@
 'use client';
 
 import { useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
-import { isMediaSource, type MediaSource } from '../media-source';
+import { MediaLightbox, type MediaLightboxLabels } from '../media-lightbox';
+import { isMediaSource, preloadFullSources, type MediaSource } from '../media-source';
+
+export type CompareSliderExpand = {
+  /** aria-label del dialog del compare-lightbox. */
+  lightboxLabel: string;
+  /** Texto del botón overlay. Default 'Full Screen'. */
+  buttonLabel?: string;
+  /** Labels del MediaLightbox interno (i18n). */
+  lightboxLabels?: Partial<MediaLightboxLabels>;
+};
+
+// Icono expand (trazo currentColor, patrón F2.6): sin dependencias.
+const EXPAND_ICON = (
+  <svg
+    viewBox="0 0 24 24"
+    width="16"
+    height="16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M15 3h6v6" />
+    <path d="M9 21H3v-6" />
+    <path d="M21 3l-7 7" />
+    <path d="M3 21l7-7" />
+  </svg>
+);
 
 export type CompareSliderProps = {
   /**
@@ -35,6 +65,11 @@ export type CompareSliderProps = {
   dragTarget?: 'surface' | 'handle';
   className?: string;
   onPositionChange?: (position: number) => void;
+  /**
+   * CTA fullscreen por ejemplo (spec C1): con `expand`, el slider renderiza un
+   * botón overlay que abre un `MediaLightbox` interno con este mismo compare.
+   */
+  expand?: CompareSliderExpand;
 };
 
 function clamp(value: number): number {
@@ -56,8 +91,11 @@ export function CompareSlider({
   dragTarget = 'surface',
   className,
   onPositionChange,
+  expand,
 }: CompareSliderProps) {
   const [position, setPosition] = useState(() => clamp(initialPosition));
+  // Declarado incondicional (reglas de hooks) aunque solo se use con `expand`.
+  const [expanded, setExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
   const horizontal = orientation === 'horizontal';
@@ -128,6 +166,10 @@ export function CompareSlider({
     update(positionFromPointer(event));
   }
 
+  function preloadExpandSources() {
+    preloadFullSources([before, after].filter(isMediaSource));
+  }
+
   return (
     <div
       ref={containerRef}
@@ -155,6 +197,29 @@ export function CompareSlider({
         data-mk-drag-exempt=""
         onKeyDown={onKeyDown}
       />
+      {expand ? (
+        <button
+          type="button"
+          className="mk-compare__expand"
+          data-mk-drag-exempt=""
+          onPointerDown={(event) => event.stopPropagation()}
+          onPointerEnter={preloadExpandSources}
+          onFocus={preloadExpandSources}
+          onClick={() => setExpanded(true)}
+        >
+          {EXPAND_ICON}
+          {expand.buttonLabel ?? 'Full Screen'}
+        </button>
+      ) : null}
+      {expand ? (
+        <MediaLightbox
+          open={expanded}
+          onClose={() => setExpanded(false)}
+          label={expand.lightboxLabel}
+          labels={expand.lightboxLabels}
+          compare={{ before, after, label: expand.lightboxLabel }}
+        />
+      ) : null}
     </div>
   );
 }

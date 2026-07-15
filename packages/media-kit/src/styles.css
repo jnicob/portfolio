@@ -147,6 +147,34 @@
     0 0 0 4px var(--mk-focus-ring);
 }
 
+/* C1: CTA fullscreen por ejemplo, overlay dentro de la figura. */
+.mk-compare__expand {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  border: 0;
+  border-radius: var(--mk-radius);
+  background: var(--mk-control-bg);
+  color: var(--mk-control-color);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.mk-compare__expand:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.mk-compare__expand:focus-visible {
+  outline: 2px solid var(--mk-focus-ring);
+  outline-offset: 2px;
+}
+
 /* MediaLightbox */
 .mk-lightbox {
   position: fixed;
