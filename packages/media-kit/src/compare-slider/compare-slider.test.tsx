@@ -376,6 +376,38 @@ describe('CompareSlider v2.2 — expand (C1)', () => {
     expect(slider).toHaveAttribute('aria-valuenow', '50');
   });
 
+  it('un pointerdown dentro del lightbox interno (portal) no captura el puntero de la superficie de fondo', async () => {
+    // Regresión (T26 finding 2): el lightbox de `expand` es hijo de React de este
+    // componente pero monta vía createPortal en document.body. React burbujea sus
+    // eventos de puntero según el árbol de React, no el DOM real: sin guard, un
+    // pointerdown sobre CUALQUIER control del lightbox (p.ej. el toggle de ayuda)
+    // llegaba al onPointerDown de ESTA superficie de fondo y capturaba el puntero
+    // aquí, robando el pointerup/click real de su destino en el navegador.
+    render(
+      <CompareSlider
+        before={<img src="/a.png" alt="Antes" />}
+        after={<img src="/b.png" alt="Después" />}
+        expand={{ lightboxLabel: 'Comparar a pantalla completa' }}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    const captureSpy = vi.spyOn(container, 'setPointerCapture');
+
+    await userEvent.click(screen.getByRole('button', { name: 'Full Screen' }));
+    const dialog = screen.getByRole('dialog');
+    const helpToggle = within(dialog).getByRole('button', { name: 'Keyboard shortcuts' });
+
+    fireEvent.pointerDown(helpToggle, {
+      pointerType: 'mouse',
+      button: 0,
+      isPrimary: true,
+      pointerId: 1,
+    });
+
+    expect(captureSpy).not.toHaveBeenCalled();
+  });
+
   it('humo de import: CompareSlider y MediaLightbox se importan sin romper el ciclo ESM', async () => {
     const mod = await import('../index');
     expect(mod.CompareSlider).toBe(CompareSlider);

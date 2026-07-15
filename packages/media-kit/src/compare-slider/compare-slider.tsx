@@ -232,7 +232,17 @@ export function CompareSlider({
     setPaused(next);
   }
 
+  // El lightbox de `expand` (C1) monta vía createPortal en document.body pero sigue
+  // siendo hijo de React de ESTE componente: sus eventos de puntero burbujean hasta
+  // aquí según el árbol de React, no el DOM real. `currentTarget.contains(target)` usa
+  // el DOM real, así que descarta correctamente los eventos que se originan dentro del
+  // lightbox (ayuda, controles, cerrar…) aunque su nodo no esté bajo containerRef.
+  function originatesOnSurface(event: PointerEvent<HTMLDivElement>): boolean {
+    return event.target instanceof Node && event.currentTarget.contains(event.target);
+  }
+
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
+    if (!originatesOnSurface(event)) return;
     // Se resetea en cada down (incluido el que se descarta más abajo) para que un
     // pointerup posterior nunca reutilice la posición de un down anterior.
     downPosRef.current = null;
@@ -257,6 +267,7 @@ export function CompareSlider({
   }
 
   function onPointerMove(event: PointerEvent<HTMLDivElement>) {
+    if (!originatesOnSurface(event)) return;
     if (downPosRef.current && !draggedSinceDownRef.current) {
       const dx = event.clientX - downPosRef.current.x;
       const dy = event.clientY - downPosRef.current.y;
@@ -270,7 +281,8 @@ export function CompareSlider({
     update(positionFromPointer(event));
   }
 
-  function onPointerUp() {
+  function onPointerUp(event: PointerEvent<HTMLDivElement>) {
+    if (!originatesOnSurface(event)) return;
     const wasDown = downPosRef.current !== null;
     const dragged = draggedSinceDownRef.current;
     downPosRef.current = null;
