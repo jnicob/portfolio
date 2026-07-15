@@ -7,14 +7,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 type ProjectCardProps = {
   project: Project;
   locale: Locale;
+  /** Nivel del heading del título según el contexto (h2 bajo un h1, h3 bajo un h2). */
+  headingLevel?: 'h2' | 'h3';
 };
 
 /** Tarjeta de proyecto: patrón "clickable card" accesible — el link vive en el heading. RSC-compatible. */
-export function ProjectCard({ project, locale }: ProjectCardProps) {
+export function ProjectCard({ project, locale, headingLevel = 'h3' }: ProjectCardProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
+        <CardTitle as={headingLevel}>
           <Link
             href={`/projects/${project.slug}`}
             className="hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
@@ -33,7 +35,7 @@ export function ProjectCard({ project, locale }: ProjectCardProps) {
         {project.metrics.length > 0 && (
           <dl className="flex flex-wrap gap-x-6 gap-y-2">
             {project.metrics.map((metric) => (
-              <div key={metric.label[locale]}>
+              <div key={metric.label.en}>
                 <dt className="text-sm text-fg-muted">{metric.label[locale]}</dt>
                 <dd className="font-mono text-fg">{metric.value}</dd>
               </div>

@@ -18,7 +18,7 @@ export default async function ProjectsPage({ params }: Props) {
       </div>
       <div className="grid gap-6 sm:grid-cols-2">
         {projects.map((project) => (
-          <ProjectCard key={project.slug} project={project} locale={locale} />
+          <ProjectCard key={project.slug} project={project} locale={locale} headingLevel="h2" />
         ))}
       </div>
     </main>
