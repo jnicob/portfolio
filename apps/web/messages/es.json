@@ -63,6 +63,12 @@
       "ai": "IA",
       "platform": "Plataforma",
       "tooling": "Tooling"
+    },
+    "viewsLabel": "Vista del CV",
+    "views": {
+      "standard": "Estándar",
+      "compact": "Compacto",
+      "timeline": "Cronología"
     }
   },
   "showcase": {

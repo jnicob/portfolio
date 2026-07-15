@@ -63,6 +63,12 @@
       "ai": "AI",
       "platform": "Platform",
       "tooling": "Tooling"
+    },
+    "viewsLabel": "CV view",
+    "views": {
+      "standard": "Standard",
+      "compact": "Compact",
+      "timeline": "Timeline"
     }
   },
   "showcase": {

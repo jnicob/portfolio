@@ -182,6 +182,27 @@
   background: #ff5da2;
 }
 
+/* Impresión (T24): oculta chrome interactivo (header/footer/switcher/share, `.no-print`)
+ * y fuerza tinta legible en papel — únicos hex fuera de bloques de tema, es definición
+ * global de impresión, no de un componente. */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  main {
+    max-width: none;
+    padding: 0;
+  }
+}
+
 body {
   background-color: var(--bg);
   color: var(--fg);
