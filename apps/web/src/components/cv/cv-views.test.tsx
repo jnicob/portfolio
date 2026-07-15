@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { experience } from '@/data/experience';
 import type { CvStrings } from './cv-standard';
@@ -31,11 +31,17 @@ const VIEWS = [
 
 describe('las 3 vistas del CV', () => {
   it.each(VIEWS)(
-    '$name renderiza el mismo número de entradas de experiencia que los datos',
+    '$name renderiza exactamente una entrada de experiencia por dato en su sección',
     ({ Component }) => {
       render(<Component locale="en" strings={STRINGS} />);
-      const headings = screen.getAllByRole('heading', { level: 3 });
-      expect(headings.length).toBeGreaterThanOrEqual(experience.length);
+      // Acotado a la sección de experiencia: los h3 de skills/education no pueden
+      // enmascarar una entrada de experiencia ausente.
+      const section = screen
+        .getByRole('heading', { level: 2, name: STRINGS.experienceTitle })
+        .closest('section');
+      expect(section).not.toBeNull();
+      const headings = within(section as HTMLElement).getAllByRole('heading', { level: 3 });
+      expect(headings).toHaveLength(experience.length);
     },
   );
 
