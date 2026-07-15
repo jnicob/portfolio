@@ -10,7 +10,13 @@
   "switchers": { "toEnglish": "Switch to English", "toSpanish": "Cambiar a español" },
   "home": {
     "title": "Nico Behm — portfolio under construction (Phase 3)",
-    "showcaseCta": "View component showcase →"
+    "showcaseCta": "View component showcase →",
+    "cvCta": "View CV",
+    "featuredTitle": "Featured projects",
+    "skillsTitle": "Skills",
+    "skillLevel": "{name}: level {level} of 5",
+    "playgroundTitle": "AI Playground",
+    "playgroundSoon": "Coming in Phase 4"
   },
   "notFound": {
     "title": "Page not found",

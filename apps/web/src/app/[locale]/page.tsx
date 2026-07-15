@@ -1,16 +1,30 @@
 import { setRequestLocale } from 'next-intl/server';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
+import type { Locale } from '@/i18n/routing';
+import { Hero } from '@/components/home/hero';
+import { FeaturedProjects } from '@/components/home/featured-projects';
+import { SkillsSummary } from '@/components/home/skills-summary';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 type Props = { params: Promise<{ locale: string }> };
 
 export default async function HomePage({ params }: Props) {
-  const { locale } = await params;
+  const { locale } = (await params) as { locale: Locale };
   setRequestLocale(locale);
   const t = await getTranslations('home');
+
   return (
-    <main>
-      <h1>{t('title')}</h1>
+    <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4">
+      <Hero locale={locale} cvLabel={t('cvCta')} />
+      <FeaturedProjects locale={locale} title={t('featuredTitle')} />
+      <SkillsSummary locale={locale} title={t('skillsTitle')} levelTemplate={t.raw('skillLevel')} />
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('playgroundTitle')}</CardTitle>
+        </CardHeader>
+        <CardContent>{t('playgroundSoon')}</CardContent>
+      </Card>
       <Link
         href="/showcase"
         className="text-accent underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
