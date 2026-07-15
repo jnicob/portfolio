@@ -21,5 +21,9 @@
   "notFound": {
     "title": "Página no encontrada",
     "backHome": "Volver al inicio →"
+  },
+  "projects": {
+    "title": "Proyectos",
+    "intro": "Trabajo seleccionado de la plataforma de APIs de IA de Freepik."
   }
 }

@@ -21,5 +21,9 @@
   "notFound": {
     "title": "Page not found",
     "backHome": "Back to home →"
+  },
+  "projects": {
+    "title": "Projects",
+    "intro": "Selected work from the Freepik AI API platform."
   }
 }
