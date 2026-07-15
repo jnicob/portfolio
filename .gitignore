@@ -13,3 +13,4 @@ playwright-report/
 
 # CV con PII: fuente local, nunca versionada (spec F3 §1)
 apps/web/content/cv/
+.playwright-mcp/
