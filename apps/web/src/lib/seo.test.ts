@@ -17,6 +17,24 @@ describe('seo', () => {
     expect(meta.openGraph?.locale).toBe('es');
   });
 
+  it('declara la imagen OG y la twitter card por locale', () => {
+    const meta = localizedPageMetadata({
+      locale: 'en',
+      path: '/projects',
+      title: 'Projects',
+      description: 'D',
+    });
+    expect(meta.openGraph?.images).toEqual([
+      { url: `${SITE_URL}/en/opengraph-image`, width: 1200, height: 630 },
+    ]);
+    expect(meta.twitter).toEqual({ card: 'summary_large_image' });
+
+    const metaEs = localizedPageMetadata({ locale: 'es', path: '', title: 'T', description: 'D' });
+    expect(metaEs.openGraph?.images).toEqual([
+      { url: `${SITE_URL}/es/opengraph-image`, width: 1200, height: 630 },
+    ]);
+  });
+
   it('JSON-LD Person con SOLO enlaces públicos', () => {
     const ld = personJsonLd('en');
     expect(ld['@type']).toBe('Person');

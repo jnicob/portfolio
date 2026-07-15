@@ -33,7 +33,14 @@ export function localizedPageMetadata({
       description,
       locale,
       type: 'website',
+      /*
+       * Explícita a propósito: en static export la convención file-based
+       * ([locale]/opengraph-image.tsx) solo inyecta og:image en el segmento
+       * home; las rutas anidadas (cv, projects…) no la heredan.
+       */
+      images: [{ url: `${SITE_URL}/${locale}/opengraph-image`, width: 1200, height: 630 }],
     },
+    twitter: { card: 'summary_large_image' },
   };
 }
 
