@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -24,8 +24,12 @@ describe('content', () => {
 
   it('frontmatter inválido LANZA (build rojo, nunca contenido vacío)', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'content-'));
-    await mkdir(path.join(root, 'en/projects'), { recursive: true });
-    await writeFile(path.join(root, 'en/projects/bad.mdx'), '---\ntitle: Solo título\n---\nX');
-    await expect(compileProject('en', 'bad', root)).rejects.toThrow();
+    try {
+      await mkdir(path.join(root, 'en/projects'), { recursive: true });
+      await writeFile(path.join(root, 'en/projects/bad.mdx'), '---\ntitle: Solo título\n---\nX');
+      await expect(compileProject('en', 'bad', root)).rejects.toThrow();
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
   });
 });
