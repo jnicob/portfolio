@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
-import { setRequestLocale } from 'next-intl/server';
+import type { ReactNode } from 'react';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import type { MediaLightboxLabels } from '@nicobehm/media-kit';
+import type { Locale } from '@/i18n/routing';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,16 +14,13 @@ import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
 import { ThemeSwitcher } from '@/components/layout/theme-switcher';
 import { MediaKitDemo } from '@/components/showcase/media-kit-demo';
 
-export const metadata: Metadata = { title: 'Showcase — UI primitives' };
+type Props = { params: Promise<{ locale: Locale }> };
 
-const TOC = [
-  { id: 'button', label: 'Button' },
-  { id: 'badge', label: 'Badge' },
-  { id: 'card', label: 'Card' },
-  { id: 'form', label: 'Formulario' },
-  { id: 'tabs', label: 'Tabs' },
-  { id: 'media-kit', label: 'Media kit' },
-] as const;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'showcase' });
+  return { title: t('meta.title'), description: t('meta.description') };
+}
 
 function Section({
   id,
@@ -31,7 +31,7 @@ function Section({
   id: string;
   title: string;
   description: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <section id={id} aria-labelledby={`${id}-title`} className="flex scroll-mt-24 flex-col gap-4">
@@ -46,16 +46,25 @@ function Section({
   );
 }
 
-type Props = { params: Promise<{ locale: string }> };
-
 export default async function ShowcasePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations('showcase');
+
+  const toc = [
+    { id: 'button', label: t('toc.button') },
+    { id: 'badge', label: t('toc.badge') },
+    { id: 'card', label: t('toc.card') },
+    { id: 'form', label: t('toc.form') },
+    { id: 'tabs', label: t('toc.tabs') },
+    { id: 'media-kit', label: t('toc.mediaKit') },
+  ] as const;
+
   return (
     <main className="mx-auto max-w-6xl px-6 py-12 lg:grid lg:grid-cols-[10rem_minmax(0,1fr)] lg:items-start lg:gap-12">
-      <nav aria-label="Índice del showcase" className="hidden lg:block">
+      <nav aria-label={t('tocLabel')} className="hidden lg:block">
         <ul className="sticky top-12 flex flex-col gap-2 text-sm">
-          {TOC.map((entry) => (
+          {toc.map((entry) => (
             <li key={entry.id}>
               <a
                 href={`#${entry.id}`}
@@ -70,18 +79,16 @@ export default async function ShowcasePage({ params }: Props) {
       <div className="flex flex-col gap-14">
         <header className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold">UI primitives</h1>
-            <p className="mt-1 text-fg-muted">
-              Kitchen sink del design system — todas las variantes y estados, en ambos temas.
-            </p>
+            <h1 className="text-3xl font-bold">{t('title')}</h1>
+            <p className="mt-1 text-fg-muted">{t('intro')}</p>
           </div>
           <ThemeSwitcher />
         </header>
 
         <Section
           id="button"
-          title="Button"
-          description="Acción principal del sistema: 4 variantes, 3 tamaños y estados deshabilitados."
+          title={t('sections.button.title')}
+          description={t('sections.button.description')}
         >
           <div className="flex flex-wrap items-center gap-3">
             <Button>Primary</Button>
@@ -105,8 +112,8 @@ export default async function ShowcasePage({ params }: Props) {
 
         <Section
           id="badge"
-          title="Badge"
-          description="Etiqueta compacta de estado o metadatos; el color nunca es el único canal."
+          title={t('sections.badge.title')}
+          description={t('sections.badge.description')}
         >
           <div className="flex flex-wrap gap-3">
             <Badge>Neutral</Badge>
@@ -117,19 +124,19 @@ export default async function ShowcasePage({ params }: Props) {
 
         <Section
           id="card"
-          title="Card"
-          description="Contenedor componible (header, título, contenido) para casos de estudio y resultados."
+          title={t('sections.card.title')}
+          description={t('sections.card.description')}
         >
           <div className="grid gap-4 sm:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Case study</CardTitle>
               </CardHeader>
-              <CardContent>Composición por children: header, título y contenido.</CardContent>
+              <CardContent>{t('sections.card.compositionBody')}</CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Estado loading</CardTitle>
+                <CardTitle>{t('sections.card.loadingTitle')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col gap-2">
@@ -141,28 +148,26 @@ export default async function ShowcasePage({ params }: Props) {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Estado vacío</CardTitle>
+                <CardTitle>{t('sections.card.emptyTitle')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col items-start gap-3">
-                  <p>Sin resultados todavía. Genera tu primera imagen para verla aquí.</p>
+                  <p>{t('sections.card.emptyBody')}</p>
                   <Button size="sm" variant="secondary">
-                    Crear imagen
+                    {t('sections.card.emptyCta')}
                   </Button>
                 </div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Estado error</CardTitle>
+                <CardTitle>{t('sections.card.errorTitle')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col items-start gap-3">
-                  <p className="text-danger">
-                    No se pudo cargar el resultado. Comprueba tu conexión.
-                  </p>
+                  <p className="text-danger">{t('sections.card.errorBody')}</p>
                   <Button size="sm" variant="secondary">
-                    Reintentar
+                    {t('sections.card.errorCta')}
                   </Button>
                 </div>
               </CardContent>
@@ -172,11 +177,11 @@ export default async function ShowcasePage({ params }: Props) {
 
         <Section
           id="form"
-          title="Formulario (Field + Input + Select)"
-          description="Campos accesibles: label, hint y error enlazados con aria-describedby."
+          title={t('sections.form.title')}
+          description={t('sections.form.description')}
         >
           <div className="grid max-w-md gap-4">
-            <Field label="Prompt" htmlFor="demo-prompt" hint="Describe la imagen a generar.">
+            <Field label="Prompt" htmlFor="demo-prompt" hint={t('sections.form.promptHint')}>
               <Input id="demo-prompt" placeholder="A serene mountain landscape" />
             </Field>
             <Field label="Aspect ratio" htmlFor="demo-ratio">
@@ -189,7 +194,11 @@ export default async function ShowcasePage({ params }: Props) {
                 ]}
               />
             </Field>
-            <Field label="Con error" htmlFor="demo-error" error="Este campo es obligatorio.">
+            <Field
+              label={t('sections.form.errorLabel')}
+              htmlFor="demo-error"
+              error={t('sections.form.errorMessage')}
+            >
               <Input
                 id="demo-error"
                 aria-invalid
@@ -198,13 +207,13 @@ export default async function ShowcasePage({ params }: Props) {
               />
             </Field>
             <Field
-              label="Deshabilitado"
+              label={t('sections.form.disabledLabel')}
               htmlFor="demo-disabled"
-              hint="Campo no editable en este plan."
+              hint={t('sections.form.disabledHint')}
             >
-              <Input id="demo-disabled" disabled defaultValue="Solo lectura" />
+              <Input id="demo-disabled" disabled defaultValue={t('sections.form.disabledValue')} />
             </Field>
-            <Field label="Select deshabilitado" htmlFor="demo-select-disabled">
+            <Field label={t('sections.form.selectDisabledLabel')} htmlFor="demo-select-disabled">
               <Select
                 id="demo-select-disabled"
                 disabled
@@ -216,17 +225,17 @@ export default async function ShowcasePage({ params }: Props) {
 
         <Section
           id="tabs"
-          title="Tabs"
-          description="Pestañas APG con roving tabindex; los paneles persisten montados (sin perder estado al cambiar)."
+          title={t('sections.tabs.title')}
+          description={t('sections.tabs.description')}
         >
           <Tabs defaultValue="preview">
-            <TabList label="Ejemplo de resultado">
+            <TabList label={t('sections.tabs.tabListLabel')}>
               <Tab value="preview">Preview</Tab>
               <Tab value="api">API</Tab>
             </TabList>
             <TabPanel value="preview">
               <Card>
-                <CardContent className="pt-6">Contenido del preview.</CardContent>
+                <CardContent className="pt-6">{t('sections.tabs.previewContent')}</CardContent>
               </Card>
             </TabPanel>
             <TabPanel value="api">
@@ -239,10 +248,22 @@ export default async function ShowcasePage({ params }: Props) {
 
         <Section
           id="media-kit"
-          title="@nicobehm/media-kit"
-          description="Componentes media del paquete propio: CompareSlider (drag/hover, color/B-N) y MediaLightbox con zoom."
+          title={t('sections.mediaKit.title')}
+          description={t('sections.mediaKit.description')}
         >
-          <MediaKitDemo />
+          <MediaKitDemo
+            labels={t.raw('lightboxLabels') as MediaLightboxLabels}
+            strings={{
+              beforeAfterAlt: t('sections.mediaKit.beforeAfterAlt'),
+              dragCompareLabel: t('sections.mediaKit.dragCompareLabel'),
+              dragCaption: t('sections.mediaKit.dragCaption'),
+              hoverCompareLabel: t('sections.mediaKit.hoverCompareLabel'),
+              hoverCaption: t('sections.mediaKit.hoverCaption'),
+              zoomCta: t('sections.mediaKit.zoomCta'),
+              lightboxLabel: t('sections.mediaKit.lightboxLabel'),
+              resultAlt: t('sections.mediaKit.resultAlt'),
+            }}
+          />
         </Section>
       </div>
     </main>

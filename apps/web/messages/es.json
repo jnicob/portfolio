@@ -40,5 +40,97 @@
       "platform": "Plataforma",
       "tooling": "Tooling"
     }
+  },
+  "showcase": {
+    "meta": {
+      "title": "Showcase — UI primitives",
+      "description": "Catálogo interactivo de los componentes UI del design system, en ambos temas."
+    },
+    "title": "UI primitives",
+    "intro": "Kitchen sink del design system — todas las variantes y estados, en ambos temas.",
+    "tocLabel": "Índice del showcase",
+    "toc": {
+      "button": "Button",
+      "badge": "Badge",
+      "card": "Card",
+      "form": "Formulario",
+      "tabs": "Tabs",
+      "mediaKit": "Media kit"
+    },
+    "sections": {
+      "button": {
+        "title": "Button",
+        "description": "Acción principal del sistema: 4 variantes, 3 tamaños y estados deshabilitados."
+      },
+      "badge": {
+        "title": "Badge",
+        "description": "Etiqueta compacta de estado o metadatos; el color nunca es el único canal."
+      },
+      "card": {
+        "title": "Card",
+        "description": "Contenedor componible (header, título, contenido) para casos de estudio y resultados.",
+        "compositionBody": "Composición por children: header, título y contenido.",
+        "loadingTitle": "Estado loading",
+        "emptyTitle": "Estado vacío",
+        "emptyBody": "Sin resultados todavía. Genera tu primera imagen para verla aquí.",
+        "emptyCta": "Crear imagen",
+        "errorTitle": "Estado error",
+        "errorBody": "No se pudo cargar el resultado. Comprueba tu conexión.",
+        "errorCta": "Reintentar"
+      },
+      "form": {
+        "title": "Formulario (Field + Input + Select)",
+        "description": "Campos accesibles: label, hint y error enlazados con aria-describedby.",
+        "promptHint": "Describe la imagen a generar.",
+        "errorLabel": "Con error",
+        "errorMessage": "Este campo es obligatorio.",
+        "disabledLabel": "Deshabilitado",
+        "disabledHint": "Campo no editable en este plan.",
+        "disabledValue": "Solo lectura",
+        "selectDisabledLabel": "Select deshabilitado"
+      },
+      "tabs": {
+        "title": "Tabs",
+        "description": "Pestañas APG con roving tabindex; los paneles persisten montados (sin perder estado al cambiar).",
+        "tabListLabel": "Ejemplo de resultado",
+        "previewContent": "Contenido del preview."
+      },
+      "mediaKit": {
+        "title": "@nicobehm/media-kit",
+        "description": "Componentes media del paquete propio: CompareSlider (drag/hover, color/B-N) y MediaLightbox con zoom.",
+        "beforeAfterAlt": "Imagen original en baja resolución",
+        "dragCompareLabel": "Comparar antes y después (drag)",
+        "dragCaption": "mode=\"drag\" — arrastra el divisor",
+        "hoverCompareLabel": "Comparar antes y después (hover)",
+        "hoverCaption": "mode=\"hover\" — sigue al ratón sin click",
+        "zoomCta": "Ampliar con zoom",
+        "lightboxLabel": "Resultado a pantalla completa",
+        "resultAlt": "Resultado procesado a pantalla completa"
+      }
+    },
+    "lightboxLabels": {
+      "controls": "Controles",
+      "zoomIn": "Acercar",
+      "zoomOut": "Alejar",
+      "zoomLevel": "Zoom {percent}%",
+      "reset": "Restablecer vista",
+      "fit": "Ajuste: {current}. Cambiar a {next}",
+      "fullscreen": "Pantalla completa",
+      "exitFullscreen": "Salir de pantalla completa",
+      "hideControls": "Ocultar controles",
+      "showControls": "Mostrar controles",
+      "close": "Cerrar",
+      "help": "Atajos de teclado",
+      "helpTitle": "Atajos de teclado",
+      "shortcutZoom": "Acercar / alejar",
+      "shortcutReset": "Restablecer vista",
+      "shortcutPanKeys": "Desplazar",
+      "shortcutPanDrag": "Mantén Espacio y arrastra para desplazar",
+      "shortcutFit": "Cambiar modo de ajuste (toolbar)",
+      "shortcutFullscreen": "Pantalla completa",
+      "shortcutControls": "Mostrar / ocultar controles",
+      "shortcutHelp": "Mostrar esta ayuda",
+      "shortcutClose": "Cerrar"
+    }
   }
 }

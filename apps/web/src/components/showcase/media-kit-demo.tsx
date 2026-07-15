@@ -1,71 +1,60 @@
 'use client';
 
 import { useState } from 'react';
-import { CompareSlider, MediaLightbox } from '@nicobehm/media-kit';
+import { CompareSlider, MediaLightbox, type MediaLightboxLabels } from '@nicobehm/media-kit';
 import { Button } from '@/components/ui/button';
 import { PortraitCompareDemo } from './portrait-compare-demo';
 
-export function MediaKitDemo() {
+export type MediaKitDemoStrings = {
+  beforeAfterAlt: string;
+  dragCompareLabel: string;
+  dragCaption: string;
+  hoverCompareLabel: string;
+  hoverCaption: string;
+  zoomCta: string;
+  lightboxLabel: string;
+  resultAlt: string;
+};
+
+type Props = {
+  labels: MediaLightboxLabels;
+  strings: MediaKitDemoStrings;
+};
+
+export function MediaKitDemo({ labels, strings }: Props) {
   const [open, setOpen] = useState(false);
   return (
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 md:grid-cols-2">
         <figure className="flex flex-col gap-2">
           <CompareSlider
-            before={<img src="/demo/photo-before.svg" alt="Imagen original en baja resolución" />}
+            before={<img src="/demo/photo-before.svg" alt={strings.beforeAfterAlt} />}
             after={<img src="/demo/photo-after.svg" alt="" />}
-            label="Comparar antes y después (drag)"
+            label={strings.dragCompareLabel}
           />
-          <figcaption className="text-sm text-fg-muted">
-            mode=&quot;drag&quot; — arrastra el divisor
-          </figcaption>
+          <figcaption className="text-sm text-fg-muted">{strings.dragCaption}</figcaption>
         </figure>
         <figure className="flex flex-col gap-2">
           <CompareSlider
             mode="hover"
-            before={<img src="/demo/photo-before.svg" alt="Imagen original en baja resolución" />}
+            before={<img src="/demo/photo-before.svg" alt={strings.beforeAfterAlt} />}
             after={<img src="/demo/photo-after.svg" alt="" />}
-            label="Comparar antes y después (hover)"
+            label={strings.hoverCompareLabel}
           />
-          <figcaption className="text-sm text-fg-muted">
-            mode=&quot;hover&quot; — sigue al ratón sin click
-          </figcaption>
+          <figcaption className="text-sm text-fg-muted">{strings.hoverCaption}</figcaption>
         </figure>
       </div>
       <PortraitCompareDemo />
       <Button variant="secondary" className="self-start" onClick={() => setOpen(true)}>
-        Ampliar con zoom
+        {strings.zoomCta}
       </Button>
       <MediaLightbox
         open={open}
         onClose={() => setOpen(false)}
-        label="Resultado a pantalla completa"
-        labels={{
-          controls: 'Controles',
-          zoomIn: 'Acercar',
-          zoomOut: 'Alejar',
-          zoomLevel: 'Zoom {percent}%',
-          reset: 'Restablecer vista',
-          fit: 'Ajuste: {current}. Cambiar a {next}',
-          fullscreen: 'Pantalla completa',
-          exitFullscreen: 'Salir de pantalla completa',
-          hideControls: 'Ocultar controles',
-          showControls: 'Mostrar controles',
-          close: 'Cerrar',
-          help: 'Atajos de teclado',
-          helpTitle: 'Atajos de teclado',
-          shortcutZoom: 'Acercar / alejar',
-          shortcutReset: 'Restablecer vista',
-          shortcutPanKeys: 'Desplazar',
-          shortcutPanDrag: 'Mantén Espacio y arrastra para desplazar',
-          shortcutFit: 'Cambiar modo de ajuste (toolbar)',
-          shortcutFullscreen: 'Pantalla completa',
-          shortcutControls: 'Mostrar / ocultar controles',
-          shortcutHelp: 'Mostrar esta ayuda',
-          shortcutClose: 'Cerrar',
-        }}
+        label={strings.lightboxLabel}
+        labels={labels}
       >
-        <img src="/demo/photo-after.svg" alt="Resultado procesado a pantalla completa" />
+        <img src="/demo/photo-after.svg" alt={strings.resultAlt} />
       </MediaLightbox>
     </div>
   );

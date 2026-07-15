@@ -40,5 +40,97 @@
       "platform": "Platform",
       "tooling": "Tooling"
     }
+  },
+  "showcase": {
+    "meta": {
+      "title": "Showcase — UI primitives",
+      "description": "Interactive catalog of the design system's UI components, in both themes."
+    },
+    "title": "UI primitives",
+    "intro": "Design system kitchen sink — every variant and state, in both themes.",
+    "tocLabel": "Showcase index",
+    "toc": {
+      "button": "Button",
+      "badge": "Badge",
+      "card": "Card",
+      "form": "Form",
+      "tabs": "Tabs",
+      "mediaKit": "Media kit"
+    },
+    "sections": {
+      "button": {
+        "title": "Button",
+        "description": "The system's primary action: 4 variants, 3 sizes and disabled states."
+      },
+      "badge": {
+        "title": "Badge",
+        "description": "Compact status or metadata label; color is never the only channel."
+      },
+      "card": {
+        "title": "Card",
+        "description": "Composable container (header, title, content) for case studies and results.",
+        "compositionBody": "Composition via children: header, title and content.",
+        "loadingTitle": "Loading state",
+        "emptyTitle": "Empty state",
+        "emptyBody": "No results yet. Generate your first image to see it here.",
+        "emptyCta": "Create image",
+        "errorTitle": "Error state",
+        "errorBody": "Couldn't load the result. Check your connection.",
+        "errorCta": "Retry"
+      },
+      "form": {
+        "title": "Form (Field + Input + Select)",
+        "description": "Accessible fields: label, hint and error linked via aria-describedby.",
+        "promptHint": "Describe the image to generate.",
+        "errorLabel": "With error",
+        "errorMessage": "This field is required.",
+        "disabledLabel": "Disabled",
+        "disabledHint": "Field not editable on this plan.",
+        "disabledValue": "Read only",
+        "selectDisabledLabel": "Disabled select"
+      },
+      "tabs": {
+        "title": "Tabs",
+        "description": "APG tabs with roving tabindex; panels stay mounted (no state loss on switch).",
+        "tabListLabel": "Result example",
+        "previewContent": "Preview content."
+      },
+      "mediaKit": {
+        "title": "@nicobehm/media-kit",
+        "description": "Media components from the own package: CompareSlider (drag/hover, color/B&W) and MediaLightbox with zoom.",
+        "beforeAfterAlt": "Original low-resolution image",
+        "dragCompareLabel": "Compare before and after (drag)",
+        "dragCaption": "mode=\"drag\" — drag the divider",
+        "hoverCompareLabel": "Compare before and after (hover)",
+        "hoverCaption": "mode=\"hover\" — follows the pointer without clicking",
+        "zoomCta": "Enlarge with zoom",
+        "lightboxLabel": "Result in fullscreen",
+        "resultAlt": "Processed result in fullscreen"
+      }
+    },
+    "lightboxLabels": {
+      "controls": "Controls",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "zoomLevel": "Zoom {percent}%",
+      "reset": "Reset view",
+      "fit": "Fit: {current}. Switch to {next}",
+      "fullscreen": "Enter fullscreen",
+      "exitFullscreen": "Exit fullscreen",
+      "hideControls": "Hide controls",
+      "showControls": "Show controls",
+      "close": "Close",
+      "help": "Keyboard shortcuts",
+      "helpTitle": "Keyboard shortcuts",
+      "shortcutZoom": "Zoom in / out",
+      "shortcutReset": "Reset view",
+      "shortcutPanKeys": "Pan",
+      "shortcutPanDrag": "Hold Space and drag to pan",
+      "shortcutFit": "Cycle fit mode (toolbar)",
+      "shortcutFullscreen": "Toggle fullscreen",
+      "shortcutControls": "Show / hide controls",
+      "shortcutHelp": "Toggle this help",
+      "shortcutClose": "Close"
+    }
   }
 }
