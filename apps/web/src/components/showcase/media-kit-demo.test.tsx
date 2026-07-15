@@ -35,22 +35,31 @@ const enStrings: MediaKitDemoStrings = {
   dragCaption: 'mode="drag" — drag the divider',
   hoverCompareLabel: 'Compare before and after (hover)',
   hoverCaption: 'mode="hover" — follows the pointer without clicking',
-  zoomCta: 'Enlarge with zoom',
-  lightboxLabel: 'Result in fullscreen',
-  resultAlt: 'Processed result in fullscreen',
+  fullScreen: 'Full Screen',
+  compareLightboxLabel: 'Compare before and after',
+  portraitBeforeAlt: 'Black and white portrait',
+  portraitCompareLabel: 'Compare black and white with color',
+  portraitCaption:
+    'Simulated colorization — a single bitmap; the B&W side is derived with filter: grayscale(1). AI-generated portrait.',
 };
 
 describe('MediaKitDemo', () => {
-  it('uses the passed strings for the lightbox open CTA, not the hardcoded Spanish copy', () => {
+  it('no longer renders the standalone "Enlarge with zoom" button nor a loose lightbox', () => {
     render(<MediaKitDemo labels={enLabels} strings={enStrings} />);
-    expect(screen.getByRole('button', { name: enStrings.zoomCta })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Enlarge with zoom' })).not.toBeInTheDocument();
     expect(screen.queryByText('Ampliar con zoom')).not.toBeInTheDocument();
   });
 
-  it('opens the lightbox showing the passed EN labels, without falling back to Spanish', async () => {
+  it('renders one expand button per CompareSlider demo, using the passed strings', () => {
+    render(<MediaKitDemo labels={enLabels} strings={enStrings} />);
+    expect(screen.getAllByRole('button', { name: enStrings.fullScreen })).toHaveLength(3);
+  });
+
+  it('opens the compare-lightbox showing the passed EN labels, without falling back to Spanish', async () => {
     const user = userEvent.setup();
     render(<MediaKitDemo labels={enLabels} strings={enStrings} />);
-    await user.click(screen.getByRole('button', { name: enStrings.zoomCta }));
+    const [firstExpandButton] = screen.getAllByRole('button', { name: enStrings.fullScreen });
+    await user.click(firstExpandButton as HTMLElement);
     expect(await screen.findByRole('button', { name: enLabels.close })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Cerrar' })).not.toBeInTheDocument();
   });

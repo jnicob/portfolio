@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { CompareSlider, MediaLightbox, type MediaLightboxLabels } from '@nicobehm/media-kit';
-import { Button } from '@/components/ui/button';
+import {
+  CompareSlider,
+  type CompareSliderExpand,
+  type MediaLightboxLabels,
+} from '@nicobehm/media-kit';
 import { PortraitCompareDemo } from './portrait-compare-demo';
 
 export type MediaKitDemoStrings = {
@@ -11,9 +13,11 @@ export type MediaKitDemoStrings = {
   dragCaption: string;
   hoverCompareLabel: string;
   hoverCaption: string;
-  zoomCta: string;
-  lightboxLabel: string;
-  resultAlt: string;
+  fullScreen: string;
+  compareLightboxLabel: string;
+  portraitBeforeAlt: string;
+  portraitCompareLabel: string;
+  portraitCaption: string;
 };
 
 type Props = {
@@ -22,7 +26,12 @@ type Props = {
 };
 
 export function MediaKitDemo({ labels, strings }: Props) {
-  const [open, setOpen] = useState(false);
+  const expand: CompareSliderExpand = {
+    lightboxLabel: strings.compareLightboxLabel,
+    buttonLabel: strings.fullScreen,
+    lightboxLabels: labels,
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 md:grid-cols-2">
@@ -31,6 +40,7 @@ export function MediaKitDemo({ labels, strings }: Props) {
             before={<img src="/demo/photo-before.svg" alt={strings.beforeAfterAlt} />}
             after={<img src="/demo/photo-after.svg" alt="" />}
             label={strings.dragCompareLabel}
+            expand={expand}
           />
           <figcaption className="text-sm text-fg-muted">{strings.dragCaption}</figcaption>
         </figure>
@@ -40,22 +50,17 @@ export function MediaKitDemo({ labels, strings }: Props) {
             before={<img src="/demo/photo-before.svg" alt={strings.beforeAfterAlt} />}
             after={<img src="/demo/photo-after.svg" alt="" />}
             label={strings.hoverCompareLabel}
+            expand={expand}
           />
           <figcaption className="text-sm text-fg-muted">{strings.hoverCaption}</figcaption>
         </figure>
       </div>
-      <PortraitCompareDemo />
-      <Button variant="secondary" className="self-start" onClick={() => setOpen(true)}>
-        {strings.zoomCta}
-      </Button>
-      <MediaLightbox
-        open={open}
-        onClose={() => setOpen(false)}
-        label={strings.lightboxLabel}
-        labels={labels}
-      >
-        <img src="/demo/photo-after.svg" alt={strings.resultAlt} />
-      </MediaLightbox>
+      <PortraitCompareDemo
+        beforeAlt={strings.portraitBeforeAlt}
+        compareLabel={strings.portraitCompareLabel}
+        caption={strings.portraitCaption}
+        expand={expand}
+      />
     </div>
   );
 }

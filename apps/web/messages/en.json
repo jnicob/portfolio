@@ -120,9 +120,11 @@
         "dragCaption": "mode=\"drag\" — drag the divider",
         "hoverCompareLabel": "Compare before and after (hover)",
         "hoverCaption": "mode=\"hover\" — follows the pointer without clicking",
-        "zoomCta": "Enlarge with zoom",
-        "lightboxLabel": "Result in fullscreen",
-        "resultAlt": "Processed result in fullscreen"
+        "fullScreen": "Full Screen",
+        "compareLightboxLabel": "Compare before and after",
+        "portraitBeforeAlt": "Black and white portrait",
+        "portraitCompareLabel": "Compare black and white with color",
+        "portraitCaption": "Simulated colorization — a single bitmap; the B&W side is derived with filter: grayscale(1). AI-generated portrait."
       }
     },
     "lightboxLabels": {

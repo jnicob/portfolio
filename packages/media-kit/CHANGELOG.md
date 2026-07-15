@@ -1,5 +1,57 @@
 # Changelog
 
+## 0.4.0 — 2026-07-15
+
+### Added
+
+- **MediaLightbox:** `compare?: { before, after, label? }` — a before/after `CompareSlider`
+  rendered inside the fullscreen viewer, inheriting its zoom/pan/toolbar (no duplicated gesture
+  engine). `children` is now optional; render priority is `compare` > `media` > `children` (no
+  media renders if none of the three is passed).
+- **CompareSlider:** `dragTarget?: 'surface' | 'handle'` (default `'surface'`) — with `'handle'`,
+  only the divider handle (pointer or keyboard) moves the divider; the rest of the surface ignores
+  `pointerdown`. Used internally when a `CompareSlider` nests inside `MediaLightbox` (via `compare`
+  or `expand`) so the viewer's own pan gesture and the divider drag don't fight over the same
+  pointer. With `dragTarget="handle"`, `mode="hover"` has no effect (hover-follow is fully
+  disabled).
+- **New module `MediaSource`:** `{ src: string; fullSrc?: string; alt: string }`, plus
+  `isMediaSource`, `shouldUseFullSrc(screenWidth, devicePixelRatio)` and `preloadFullSources`.
+  `CompareSlider`'s `before`/`after` and `MediaLightbox`'s new `media`/`compare` props accept a
+  `MediaSource` as an alternative to `ReactNode`: the package then renders its own
+  `<img src alt draggable={false}>`. `shouldUseFullSrc` returns `false` below 1024 CSS px; above
+  that it compares `screenWidth * min(devicePixelRatio, 2)` against a 2000px effective-width
+  threshold to decide whether the fullscreen context deserves `fullSrc`. `preloadFullSources` is
+  idempotent across calls (module-level dedup by URL) and a no-op under SSR.
+- **CompareSlider:** `expand?: CompareSliderExpand` (`{ lightboxLabel, buttonLabel?, lightboxLabels? }`)
+  — renders an overlay button (default text `'Full Screen'`) that opens an internal
+  `MediaLightbox` with the same `before`/`after` compare via `dragTarget="handle"`. Hovering or
+  focusing the button preloads any `fullSrc` the current screen justifies.
+- **CompareSlider:** `pauseOnClick?: boolean` (default `true`, only relevant with `mode="hover"`)
+  — a click (down+up under a 4px move threshold) toggles pausing the hover-follow, so a mouse can
+  be lifted off without losing the compared position; while paused no pointer gesture on the
+  surface repositions the divider (keyboard on the handle keeps working). New `pauseLabel`
+  (default `'Comparison paused'`) and `resumeLabel` (default `'Comparison following pointer'`)
+  announce the toggle via `aria-live`; reflected in a new `data-paused` attribute on the root.
+- **CompareSlider:** `overlayLabels?: { before, after }` — `aria-hidden` badges in the
+  bottom-left/bottom-right corners; `objectFit?: 'cover' | 'contain'` (default `'cover'`) —
+  applies only to the `<img>` the package renders for a `MediaSource` side (a `ReactNode` side is
+  opaque to the component, it controls its own `object-fit`).
+- **CompareSlider:** loading state — a new `data-loading` attribute on the root while any
+  `MediaSource` side hasn't finished loading (tracked per side, idempotent between the `onLoad`
+  event and an already-`complete` node at ref-attach time, for hydration safety under static
+  export). `ReactNode` sides are untracked and never contribute to `data-loading`.
+
+### Fixed
+
+- **CompareSlider / MediaLightbox:** native HTML5 drag on `<img>`/`<video>` (`draggable`, defaults
+  to `true`) was hijacking mouse-drag gestures; both now prevent the native `dragstart` on their
+  internal media and the `MediaLightbox` viewport now exposes a `data-can-pan` attribute (only
+  when the content overflows) purely as a cursor affordance (`grab`/`grabbing`).
+
+No breaking changes: `MediaLightbox.children` becoming optional is a backward-compatible
+widening (every existing call site that always passed `children` keeps working unchanged); every
+other addition above is a new, optional prop with a default that preserves prior behavior.
+
 ## 0.3.0 — 2026-07-14
 
 ### Added

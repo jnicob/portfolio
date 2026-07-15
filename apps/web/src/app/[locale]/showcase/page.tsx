@@ -269,9 +269,11 @@ export default async function ShowcasePage({ params }: Props) {
               dragCaption: t('sections.mediaKit.dragCaption'),
               hoverCompareLabel: t('sections.mediaKit.hoverCompareLabel'),
               hoverCaption: t('sections.mediaKit.hoverCaption'),
-              zoomCta: t('sections.mediaKit.zoomCta'),
-              lightboxLabel: t('sections.mediaKit.lightboxLabel'),
-              resultAlt: t('sections.mediaKit.resultAlt'),
+              fullScreen: t('sections.mediaKit.fullScreen'),
+              compareLightboxLabel: t('sections.mediaKit.compareLightboxLabel'),
+              portraitBeforeAlt: t('sections.mediaKit.portraitBeforeAlt'),
+              portraitCompareLabel: t('sections.mediaKit.portraitCompareLabel'),
+              portraitCaption: t('sections.mediaKit.portraitCaption'),
             }}
           />
         </Section>

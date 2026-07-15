@@ -120,9 +120,11 @@
         "dragCaption": "mode=\"drag\" — arrastra el divisor",
         "hoverCompareLabel": "Comparar antes y después (hover)",
         "hoverCaption": "mode=\"hover\" — sigue al ratón sin click",
-        "zoomCta": "Ampliar con zoom",
-        "lightboxLabel": "Resultado a pantalla completa",
-        "resultAlt": "Resultado procesado a pantalla completa"
+        "fullScreen": "Pantalla completa",
+        "compareLightboxLabel": "Comparar antes y después",
+        "portraitBeforeAlt": "Retrato en blanco y negro",
+        "portraitCompareLabel": "Comparar blanco y negro con color",
+        "portraitCaption": "Colorización simulada — un único bitmap; el B-N se deriva con filter: grayscale(1). Retrato generado con IA."
       }
     },
     "lightboxLabels": {
