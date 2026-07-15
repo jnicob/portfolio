@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { STORAGE_KEYS } from '@/lib/appearance';
 
 /**
  * AppearanceInit cachea la resolución a nivel de módulo (one-shot): cada test necesita
@@ -65,7 +66,7 @@ describe('AppearanceInit', () => {
     expect(window.location.pathname + window.location.search).toBe('/es/cv?utm=x');
   });
 
-  it('una segunda instancia no re-lee location: recibe la vista cacheada aunque la URL ya esté limpia', async () => {
+  it('una segunda instancia recibe la vista del deep link aunque la primera ya limpió la URL', async () => {
     window.history.pushState(null, '', '/es/cv?view=timeline');
     const AppearanceInit = await importFreshAppearanceInit();
 
@@ -77,5 +78,24 @@ describe('AppearanceInit', () => {
     render(<AppearanceInit onView={onView} />);
 
     expect(onView).toHaveBeenCalledWith('timeline');
+  });
+
+  it('la view de la URL se consume una vez: un remount posterior reporta la view persistida, no la del deep link', async () => {
+    window.history.pushState(null, '', '/es/cv?view=timeline');
+    const AppearanceInit = await importFreshAppearanceInit();
+
+    const first = render(<AppearanceInit onView={vi.fn()} />);
+    // La view del deep link quedó persistida como parte del one-shot.
+    expect(localStorage.getItem(STORAGE_KEYS.cvView)).toBe('timeline');
+
+    // El usuario cambia de vista (CvContent persiste) y navega fuera.
+    localStorage.setItem(STORAGE_KEYS.cvView, 'compact');
+    first.unmount();
+
+    // Remount con el MISMO módulo (sin resetModules): storage fresco debe ganar.
+    const onView = vi.fn();
+    render(<AppearanceInit onView={onView} />);
+
+    expect(onView).toHaveBeenCalledWith('compact');
   });
 });

@@ -8,6 +8,9 @@ const { persistCvView } = vi.hoisted(() => ({ persistCvView: vi.fn() }));
 
 vi.mock('@/lib/appearance', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/lib/appearance')>();
+  // Spy write-through: registra llamadas Y escribe a storage, porque AppearanceInit
+  // resuelve la vista leyendo storage fresco en cada montaje.
+  persistCvView.mockImplementation(actual.persistCvView);
   return { ...actual, persistCvView };
 });
 
@@ -96,6 +99,30 @@ describe('CvContent', () => {
     expect(lists.some((list) => list.tagName === 'OL')).toBe(true);
     // La primera instancia limpió la URL; la vista llegó desde la caché, no desde location.
     expect(window.location.search).toBe('');
+  });
+
+  it('la vista elegida por el usuario gana sobre el deep link al remontar (navegar fuera y volver)', async () => {
+    window.history.pushState(null, '', '/en/cv?view=timeline');
+    const user = userEvent.setup();
+    const { CvContent, AppearanceInit } = await importFreshComponents();
+
+    // Primera carga: deep link gana.
+    const first = render(
+      <>
+        <AppearanceInit />
+        <CvContent locale="en" strings={STRINGS} switcherLabels={SWITCHER_LABELS} />
+      </>,
+    );
+    expect(screen.getByRole('radio', { name: 'Timeline' })).toBeChecked();
+
+    // El usuario cambia a Compact (persistida) y navega fuera (unmount de la página).
+    await user.click(screen.getByRole('radio', { name: 'Compact' }));
+    first.unmount();
+
+    // Vuelve a /cv por navegación client: MISMO módulo (sin resetModules), CvContent remonta.
+    render(<CvContent locale="en" strings={STRINGS} switcherLabels={SWITCHER_LABELS} />);
+
+    expect(screen.getByRole('radio', { name: 'Compact' })).toBeChecked();
   });
 
   it('cambiar la vista desde el switcher persiste la elección', async () => {

@@ -1,25 +1,35 @@
 'use client';
 
 import { useEffect } from 'react';
-import { applyAppearance, resolveAppearance, STORAGE_KEYS } from '@/lib/appearance';
+import { applyAppearance, persistCvView, resolveAppearance, STORAGE_KEYS } from '@/lib/appearance';
+import { cvViewSchema } from '@/data/schemas';
 import type { CvView, Skin, Theme } from '@/data/schemas';
 
 type Props = { onView?: (view: CvView) => void };
 
-type ResolvedAppearance = { theme: Theme; skin: Skin; view: CvView };
+type ResolvedAppearance = { theme: Theme; skin: Skin };
 
 /**
  * One-shot a nivel de módulo: el layout monta un AppearanceInit sin `onView` y /cv monta
  * OTRO con `onView`. La primera instancia en montar limpia `?theme/skin/view` de la URL,
  * así que si cada instancia re-leyera `location`, la segunda ya no vería `?view=` y los
- * deep links a una vista del CV se romperían. Resolver UNA vez y cachear el resultado
- * completo (incluido `view`) hace que el orden de montaje deje de importar: todas las
- * instancias leen la misma resolución.
+ * deep links a una vista del CV se romperían. Resolver UNA vez y cachear theme/skin hace
+ * que el orden de montaje deje de importar.
+ *
+ * La `view` NO se cachea: se CONSUME una vez — si la URL traía una view válida, el
+ * one-shot la persiste a storage; después, cada montaje la lee fresca de storage
+ * (storage > default). Así el deep link gana en la primera carga y la elección posterior
+ * del usuario gana al volver a /cv por navegación client (una view cacheada del primer
+ * load taparía la elección persistida al remontar CvContent).
+ *
+ * Tests: cualquier test que monte AppearanceInit (directa o transitivamente, p.ej. vía
+ * CvContent) debe aislar esta caché de módulo con `vi.resetModules()` en beforeEach +
+ * import dinámico por test.
  */
 let resolvedOnce: ResolvedAppearance | null = null;
 
-function resolveAndApplyOnce(): ResolvedAppearance {
-  if (resolvedOnce) return resolvedOnce;
+function resolveAndApplyOnce(): void {
+  if (resolvedOnce) return;
 
   const params = new URLSearchParams(location.search);
   const stored = {
@@ -32,6 +42,12 @@ function resolveAndApplyOnce(): ResolvedAppearance {
   const { theme, skin, view, hadUrlParams } = resolveAppearance({ params, stored, prefersLight });
   applyAppearance({ theme, skin });
 
+  // view del deep link: consumida una vez — persistir aquí; storage manda en adelante.
+  const urlView = params.get('view');
+  if (urlView !== null && cvViewSchema.safeParse(urlView).success) {
+    persistCvView(view);
+  }
+
   if (hadUrlParams) {
     params.delete('theme');
     params.delete('skin');
@@ -41,20 +57,26 @@ function resolveAndApplyOnce(): ResolvedAppearance {
     window.history.replaceState(null, '', url);
   }
 
-  resolvedOnce = { theme, skin, view };
-  return resolvedOnce;
+  resolvedOnce = { theme, skin };
+}
+
+/** View fresca en cada montaje: storage > default (la URL ya fue consumida por el one-shot). */
+function currentView(): CvView {
+  const stored = localStorage.getItem(STORAGE_KEYS.cvView);
+  const parsed = cvViewSchema.safeParse(stored);
+  return parsed.success ? parsed.data : 'standard';
 }
 
 /**
  * Resuelve y aplica la apariencia (URL > storage > default) tras hidratar, y limpia
  * `theme`/`skin`/`view` de la URL cuando venían presentes, conservando el resto de la query.
- * La resolución es one-shot compartida entre instancias (ver `resolveAndApplyOnce`); cada
- * instancia notifica su propio `onView` con el resultado cacheado.
+ * theme/skin se resuelven una sola vez (ver `resolveAndApplyOnce`); la view se lee fresca
+ * de storage en cada montaje y se notifica al `onView` propio de cada instancia.
  */
 export function AppearanceInit({ onView }: Props) {
   useEffect(() => {
-    const resolved = resolveAndApplyOnce();
-    onView?.(resolved.view);
+    resolveAndApplyOnce();
+    onView?.(currentView());
   }, [onView]);
 
   return null;
