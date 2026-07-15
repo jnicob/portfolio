@@ -8,8 +8,8 @@ const entries = [
       en: 'Freepik/Magnific AI API Platform',
     },
     summary: {
-      es: 'Diseño e implementación end-to-end de la plataforma pública de APIs de generación de IA de Freepik: especificación OpenAPI, servidor FastAPI, gateway APISIX (rate limits, costes, API keys) y documentación pública de más de 135 modelos de IA.',
-      en: "End-to-end design and implementation of Freepik's public AI generation API platform: OpenAPI specification, FastAPI server, APISIX gateway (rate limits, cost tracking, API keys) and public documentation for 135+ AI models.",
+      es: 'Diseño e implementación end-to-end de la plataforma pública de APIs de generación de IA de Freepik: especificación OpenAPI, servidor FastAPI, gateway APISIX (rate limits, costes, API keys) y documentación pública de los modelos de generación de imagen y vídeo.',
+      en: "End-to-end design and implementation of Freepik's public AI generation API platform: OpenAPI specification, FastAPI server, APISIX gateway (rate limits, cost tracking, API keys) and public documentation for the image and video generation models.",
     },
     role: { es: 'Ingeniero de plataforma de APIs de IA', en: 'AI API Platform Engineer' },
     stack: ['openapi', 'fastapi', 'python', 'apisix', 'rest-api'],
@@ -17,10 +17,7 @@ const entries = [
       live: 'https://www.freepik.com/api',
       docs: 'https://docs.freepik.com',
     },
-    metrics: [
-      { label: { es: 'Pull requests', en: 'Pull requests' }, value: '779' },
-      { label: { es: 'Modelos de IA soportados', en: 'AI models supported' }, value: '135+' },
-    ],
+    metrics: [{ label: { es: 'Pull requests', en: 'Pull requests' }, value: '779' }],
     featured: true,
     date: '2022-07',
   },
@@ -31,8 +28,8 @@ const entries = [
       en: 'End-to-end AI model onboarding',
     },
     summary: {
-      es: 'Proceso repetible para llevar un modelo de IA (imagen/vídeo) desde la especificación OpenAPI hasta producción: precios, límites de uso, implementación en FastAPI, configuración de gateway y documentación pública. Aplicado a modelos como Kling V2.6, WAN v2.6 y Kling O1.',
-      en: 'Repeatable process to take an AI (image/video) model from OpenAPI spec to production: pricing, rate limits, FastAPI implementation, gateway configuration and public documentation. Applied to models such as Kling V2.6, WAN v2.6 and Kling O1.',
+      es: 'Proceso repetible para llevar un modelo de IA (imagen/vídeo) desde la especificación OpenAPI hasta producción: precios, límites de uso, implementación en FastAPI, configuración de gateway y documentación pública. Aplicado a familias de modelos como Kling y WAN.',
+      en: 'Repeatable process to take an AI (image/video) model from OpenAPI spec to production: pricing, rate limits, FastAPI implementation, gateway configuration and public documentation. Applied to model families such as Kling and WAN.',
     },
     role: {
       es: 'Ingeniero responsable del proceso de onboarding',
@@ -44,11 +41,8 @@ const entries = [
     },
     metrics: [
       {
-        label: {
-          es: 'Modelos onboardeados (ejemplo reciente)',
-          en: 'Models onboarded (recent example)',
-        },
-        value: 'Kling V2.6, WAN v2.6, Kling O1',
+        label: { es: 'Familias de modelos publicadas', en: 'Model families shipped' },
+        value: 'Kling, WAN…',
       },
       {
         label: { es: 'Endpoints por modelo', en: 'Endpoints per model' },
@@ -56,7 +50,8 @@ const entries = [
       },
     ],
     featured: true,
-    date: '2026-01-16',
+    // Sin fecha de proyecto evidenciada públicamente: se usa el inicio de la etapa Freepik.
+    date: '2022-07',
   },
   {
     slug: 'flows-api',
@@ -72,6 +67,7 @@ const entries = [
     },
     metrics: [],
     featured: true,
+    // Sin fecha de proyecto evidenciada públicamente: se usa el inicio de la etapa Freepik.
     date: '2022-07',
   },
 ];

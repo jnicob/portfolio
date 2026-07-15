@@ -16,7 +16,7 @@ const entries = [
     institution: 'Universidad FASTA',
     degree: {
       es: 'Ingeniero en Informática',
-      en: 'Computer Engineering',
+      en: 'Computer Engineer',
     },
     start: '2001',
     end: '2010',
