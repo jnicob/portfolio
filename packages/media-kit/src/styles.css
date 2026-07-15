@@ -187,6 +187,41 @@
   outline-offset: 2px;
 }
 
+/* C5: carga con transición de opacidad (paridad referencia). */
+.mk-compare[data-loading] :is(.mk-compare__before, .mk-compare__after) {
+  opacity: 0;
+}
+
+.mk-compare :is(.mk-compare__before, .mk-compare__after) {
+  transition: opacity 200ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-compare :is(.mk-compare__before, .mk-compare__after) {
+    transition: none;
+  }
+}
+
+.mk-compare__overlay-label {
+  position: absolute;
+  bottom: 0.5rem;
+  z-index: 1;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--mk-radius);
+  background: var(--mk-control-bg);
+  color: var(--mk-control-color);
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+
+.mk-compare__overlay-label--before {
+  left: 0.5rem;
+}
+
+.mk-compare__overlay-label--after {
+  right: 0.5rem;
+}
+
 /* MediaLightbox */
 .mk-lightbox {
   position: fixed;

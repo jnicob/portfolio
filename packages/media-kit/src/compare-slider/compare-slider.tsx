@@ -33,6 +33,13 @@ const EXPAND_ICON = (
   </svg>
 );
 
+export type CompareSliderOverlayLabels = {
+  /** Label superpuesto en el lado `before` (esquina inferior izquierda). */
+  before: string;
+  /** Label superpuesto en el lado `after` (esquina inferior derecha). */
+  after: string;
+};
+
 export type CompareSliderProps = {
   /**
    * Medio original (típicamente <img>). Se muestra a la izquierda / arriba.
@@ -83,6 +90,18 @@ export type CompareSliderProps = {
   pauseLabel?: string;
   /** Anunciado por el aria-live al reanudar. Default `'Comparison following pointer'`. */
   resumeLabel?: string;
+  /**
+   * Badges superpuestos en cada lado (paridad C5), esquina inferior izquierda/derecha.
+   * `aria-hidden`: el nombre accesible del medio ya lo da el `alt` del `<img>` (interno
+   * si el lado es `MediaSource`, o el que ponga el consumidor si es `ReactNode`).
+   */
+  overlayLabels?: CompareSliderOverlayLabels;
+  /**
+   * `object-fit` de los `<img>` internos que el paquete renderiza para un lado
+   * `MediaSource` (T14). Un lado `ReactNode` es opaco al componente — este prop NO le
+   * llega; el consumidor controla su propio `object-fit`. Default `'cover'`.
+   */
+  objectFit?: 'cover' | 'contain';
 };
 
 /** Umbral de movimiento (px) para distinguir click de drag (convención de use-zoom-pan). */
@@ -93,8 +112,29 @@ function clamp(value: number): number {
   return Math.min(100, Math.max(0, value));
 }
 
-function renderSide(side: ReactNode | MediaSource): ReactNode {
-  return isMediaSource(side) ? <img src={side.src} alt={side.alt} draggable={false} /> : side;
+function renderSide(
+  side: ReactNode | MediaSource,
+  objectFit: 'cover' | 'contain',
+  onLoad: () => void,
+): ReactNode {
+  return isMediaSource(side) ? (
+    <img src={side.src} alt={side.alt} draggable={false} style={{ objectFit }} onLoad={onLoad} />
+  ) : (
+    side
+  );
+}
+
+/**
+ * Cuántos lados son `MediaSource` (los únicos cuya carga el paquete puede rastrear).
+ * Se usa solo como valor inicial del contador de cargas pendientes (C5): si `before`/
+ * `after` cambian de identidad tras el montaje, el contador NO se recalcula — límite
+ * documentado, ver JSDoc de `data-loading` en el componente.
+ */
+function countMediaSourceSides(
+  before: ReactNode | MediaSource,
+  after: ReactNode | MediaSource,
+): number {
+  return [before, after].filter(isMediaSource).length;
 }
 
 export function CompareSlider({
@@ -111,6 +151,8 @@ export function CompareSlider({
   pauseOnClick = true,
   pauseLabel = 'Comparison paused',
   resumeLabel = 'Comparison following pointer',
+  overlayLabels,
+  objectFit = 'cover',
 }: CompareSliderProps) {
   const [position, setPosition] = useState(() => clamp(initialPosition));
   // Declarado incondicional (reglas de hooks) aunque solo se use con `expand`.
@@ -119,6 +161,10 @@ export function CompareSlider({
   // labels para que el aria-live re-anuncie cada toggle.
   const [paused, setPaused] = useState(false);
   const [announcement, setAnnouncement] = useState('');
+  // C5: cuenta regresiva de cargas pendientes de los <img> internos (MediaSource).
+  // 0 lados MediaSource → arranca en 0 → `data-loading` nunca se activa (ReactNode
+  // es opaco, su carga no se puede rastrear desde aquí).
+  const [pendingLoads, setPendingLoads] = useState(() => countMediaSourceSides(before, after));
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
   // Posición del pointerdown y si hubo arrastre desde entonces (umbral 4px, misma
@@ -234,22 +280,45 @@ export function CompareSlider({
     preloadFullSources([before, after].filter(isMediaSource));
   }
 
+  // C5: cada <img> interno (MediaSource) descuenta su propia carga; no distingue
+  // cuál de los dos disparó `load` porque el conteo inicial ya fija cuántos habrá.
+  function handleMediaLoad() {
+    setPendingLoads((count) => Math.max(0, count - 1));
+  }
+
   return (
     <div
       ref={containerRef}
       className={['mk-compare', className].filter(Boolean).join(' ')}
       data-orientation={orientation}
       data-paused={paused ? '' : undefined}
+      data-loading={pendingLoads > 0 ? '' : undefined}
       style={{ ['--mk-compare-pos' as string]: `${position}%` }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
     >
-      <div className="mk-compare__before">{renderSide(before)}</div>
+      <div className="mk-compare__before">{renderSide(before, objectFit, handleMediaLoad)}</div>
       <div className="mk-compare__after" aria-hidden="true">
-        {renderSide(after)}
+        {renderSide(after, objectFit, handleMediaLoad)}
       </div>
       <div className="mk-compare__divider" aria-hidden="true" />
+      {overlayLabels ? (
+        <>
+          <span
+            className="mk-compare__overlay-label mk-compare__overlay-label--before"
+            aria-hidden="true"
+          >
+            {overlayLabels.before}
+          </span>
+          <span
+            className="mk-compare__overlay-label mk-compare__overlay-label--after"
+            aria-hidden="true"
+          >
+            {overlayLabels.after}
+          </span>
+        </>
+      ) : null}
       <div
         ref={handleRef}
         role="slider"

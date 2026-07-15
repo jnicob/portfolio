@@ -630,3 +630,99 @@ describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
     expect(container).not.toHaveAttribute('data-paused');
   });
 });
+
+describe('CompareSlider v2.2 — paridad C5', () => {
+  it('overlayLabels renderiza badges Before/After ocultos a lectores', () => {
+    renderSlider({ overlayLabels: { before: 'Antes', after: 'Después' } });
+    const badges = document.querySelectorAll('.mk-compare__overlay-label');
+    expect(badges).toHaveLength(2);
+    expect(badges[0]).toHaveAttribute('aria-hidden', 'true');
+    expect(badges[0]).toHaveClass('mk-compare__overlay-label--before');
+    expect(badges[0]).toHaveTextContent('Antes');
+    expect(badges[1]).toHaveAttribute('aria-hidden', 'true');
+    expect(badges[1]).toHaveClass('mk-compare__overlay-label--after');
+    expect(badges[1]).toHaveTextContent('Después');
+  });
+
+  it('sin overlayLabels no hay badges (regresión)', () => {
+    renderSlider();
+    expect(document.querySelectorAll('.mk-compare__overlay-label')).toHaveLength(0);
+  });
+
+  it('objectFit contain llega al img interno', () => {
+    render(
+      <CompareSlider
+        before={{ src: '/a.png', alt: 'Antes' }}
+        after={{ src: '/b.png', alt: 'Después' }}
+        objectFit="contain"
+      />,
+    );
+    expect(screen.getByAltText('Antes')).toHaveStyle({ objectFit: 'contain' });
+    expect(screen.getByAltText('Después')).toHaveStyle({ objectFit: 'contain' });
+  });
+
+  it('objectFit por defecto es cover', () => {
+    render(
+      <CompareSlider
+        before={{ src: '/a.png', alt: 'Antes' }}
+        after={{ src: '/b.png', alt: 'Después' }}
+      />,
+    );
+    expect(screen.getByAltText('Antes')).toHaveStyle({ objectFit: 'cover' });
+  });
+
+  it('data-loading desaparece cuando ambos img internos cargan', () => {
+    render(
+      <CompareSlider
+        before={{ src: '/a.png', alt: 'Antes' }}
+        after={{ src: '/b.png', alt: 'Después' }}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    expect(container).toHaveAttribute('data-loading');
+
+    fireEvent.load(screen.getByAltText('Antes'));
+    expect(container).toHaveAttribute('data-loading');
+
+    fireEvent.load(screen.getByAltText('Después'));
+    expect(container).not.toHaveAttribute('data-loading');
+  });
+
+  it('sin ningún lado MediaSource nunca hay data-loading (ReactNode no se puede rastrear)', () => {
+    renderSlider();
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    expect(container).not.toHaveAttribute('data-loading');
+  });
+
+  it('touch: pointerdown+move con pointerType touch mueve el divisor (paridad, sin regresión)', () => {
+    render(
+      <CompareSlider before={<img src="/b.png" alt="b" />} after={<img src="/a.png" alt="" />} />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+    // jsdom no rastrea pointer capture real (ver vitest.setup.ts); se simula aquí
+    // para poder ejercitar el camino de pointermove con capture también en touch.
+    vi.spyOn(container, 'hasPointerCapture').mockReturnValue(true);
+
+    fireEvent.pointerDown(container, {
+      clientX: 100,
+      clientY: 50,
+      pointerType: 'touch',
+      button: 0,
+      isPrimary: true,
+      pointerId: 3,
+    });
+    expect(slider).toHaveAttribute('aria-valuenow', '50');
+
+    fireEvent.pointerMove(container, {
+      clientX: 160,
+      clientY: 50,
+      pointerType: 'touch',
+      pointerId: 3,
+    });
+    expect(slider).toHaveAttribute('aria-valuenow', '80');
+  });
+});
