@@ -382,3 +382,165 @@ describe('CompareSlider v2.2 — expand (C1)', () => {
     expect(typeof mod.MediaLightbox).toBe('function');
   });
 });
+
+function click(container: HTMLElement, position: { clientX: number; clientY: number }) {
+  fireEvent.pointerDown(container, {
+    ...position,
+    pointerType: 'mouse',
+    button: 0,
+    isPrimary: true,
+    pointerId: 1,
+  });
+  fireEvent.pointerUp(container, {
+    ...position,
+    pointerType: 'mouse',
+    button: 0,
+    isPrimary: true,
+    pointerId: 1,
+  });
+}
+
+describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
+  it('en hover, click pausa el seguimiento y otro click lo reanuda', () => {
+    render(
+      <CompareSlider
+        mode="hover"
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+
+    fireEvent.pointerMove(container, { clientX: 120, clientY: 50, pointerType: 'mouse' });
+    expect(slider).toHaveAttribute('aria-valuenow', '60');
+
+    click(container, { clientX: 120, clientY: 50 });
+    expect(container).toHaveAttribute('data-paused');
+
+    fireEvent.pointerMove(container, { clientX: 60, clientY: 50, pointerType: 'mouse' });
+    expect(slider).toHaveAttribute('aria-valuenow', '60');
+
+    click(container, { clientX: 120, clientY: 50 });
+    expect(container).not.toHaveAttribute('data-paused');
+
+    fireEvent.pointerMove(container, { clientX: 60, clientY: 50, pointerType: 'mouse' });
+    expect(slider).toHaveAttribute('aria-valuenow', '30');
+  });
+
+  it('el estado se anuncia por aria-live con los labels', () => {
+    render(
+      <CompareSlider
+        mode="hover"
+        pauseLabel="Pausado"
+        resumeLabel="Siguiendo el puntero"
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+
+    const live = container.querySelector('[aria-live="polite"]') as HTMLElement;
+    expect(live).toBeInTheDocument();
+    expect(live).toHaveTextContent('');
+
+    click(container, { clientX: 100, clientY: 50 });
+    expect(live).toHaveTextContent('Pausado');
+
+    click(container, { clientX: 100, clientY: 50 });
+    expect(live).toHaveTextContent('Siguiendo el puntero');
+  });
+
+  it('pauseOnClick={false} desactiva la pausa', () => {
+    render(
+      <CompareSlider
+        mode="hover"
+        pauseOnClick={false}
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+
+    click(container, { clientX: 100, clientY: 50 });
+    expect(container).not.toHaveAttribute('data-paused');
+
+    fireEvent.pointerMove(container, { clientX: 150, clientY: 50, pointerType: 'mouse' });
+    expect(slider).toHaveAttribute('aria-valuenow', '75');
+  });
+
+  it('en mode="drag" el click no pausa (sin data-paused)', () => {
+    render(
+      <CompareSlider before={<img src="/b.png" alt="b" />} after={<img src="/a.png" alt="" />} />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+
+    click(container, { clientX: 100, clientY: 50 });
+    expect(container).not.toHaveAttribute('data-paused');
+  });
+
+  it('un click en el botón expand no pausa el hover (su pointerdown detiene la propagación)', async () => {
+    render(
+      <CompareSlider
+        mode="hover"
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+        expand={{ lightboxLabel: 'Comparar a pantalla completa' }}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+    const button = screen.getByRole('button', { name: 'Full Screen' });
+
+    await userEvent.click(button);
+
+    expect(container).not.toHaveAttribute('data-paused');
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  it('un drag táctil (≥4px) en modo hover no alterna la pausa', () => {
+    render(
+      <CompareSlider
+        mode="hover"
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+
+    fireEvent.pointerDown(container, {
+      clientX: 100,
+      clientY: 50,
+      pointerType: 'touch',
+      button: 0,
+      isPrimary: true,
+      pointerId: 2,
+    });
+    fireEvent.pointerMove(container, {
+      clientX: 120,
+      clientY: 50,
+      pointerType: 'touch',
+      pointerId: 2,
+    });
+    fireEvent.pointerUp(container, {
+      clientX: 120,
+      clientY: 50,
+      pointerType: 'touch',
+      button: 0,
+      isPrimary: true,
+      pointerId: 2,
+    });
+
+    expect(container).not.toHaveAttribute('data-paused');
+  });
+});

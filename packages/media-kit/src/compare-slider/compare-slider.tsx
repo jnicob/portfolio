@@ -70,7 +70,20 @@ export type CompareSliderProps = {
    * botón overlay que abre un `MediaLightbox` interno con este mismo compare.
    */
   expand?: CompareSliderExpand;
+  /**
+   * Solo aplica con `mode="hover"` (spec C6): un click (down+up sin arrastre) alterna
+   * pausar el seguimiento del ratón, para poder soltar el puntero sin perder la
+   * posición comparada. Default `true`.
+   */
+  pauseOnClick?: boolean;
+  /** Anunciado por el aria-live al pausar. Default `'Comparison paused'`. */
+  pauseLabel?: string;
+  /** Anunciado por el aria-live al reanudar. Default `'Comparison following pointer'`. */
+  resumeLabel?: string;
 };
+
+/** Umbral de movimiento (px) para distinguir click de drag (convención de use-zoom-pan). */
+const CLICK_MOVE_THRESHOLD = 4;
 
 function clamp(value: number): number {
   if (!Number.isFinite(value)) return 50;
@@ -92,12 +105,23 @@ export function CompareSlider({
   className,
   onPositionChange,
   expand,
+  pauseOnClick = true,
+  pauseLabel = 'Comparison paused',
+  resumeLabel = 'Comparison following pointer',
 }: CompareSliderProps) {
   const [position, setPosition] = useState(() => clamp(initialPosition));
   // Declarado incondicional (reglas de hooks) aunque solo se use con `expand`.
   const [expanded, setExpanded] = useState(false);
+  // C6: pausa del hover-follow por click; `announcement` alterna entre los dos
+  // labels para que el aria-live re-anuncie cada toggle.
+  const [paused, setPaused] = useState(false);
+  const [announcement, setAnnouncement] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
+  // Posición del pointerdown y si hubo arrastre desde entonces (umbral 4px, misma
+  // convención que draggedRef en use-zoom-pan) para distinguir click de drag.
+  const downPosRef = useRef<{ x: number; y: number } | null>(null);
+  const draggedSinceDownRef = useRef(false);
   const horizontal = orientation === 'horizontal';
 
   function update(next: number) {
@@ -139,10 +163,23 @@ export function CompareSlider({
   function followsHover(event: PointerEvent<HTMLDivElement>): boolean {
     // Con dragTarget='handle' el hover-follow queda desactivado por completo: la
     // superficie no responde al puntero, solo el handle (puntero o teclado).
-    return dragTarget === 'surface' && mode === 'hover' && event.pointerType === 'mouse';
+    // En pausa (C6) el seguimiento se suspende: el divisor se queda donde estaba.
+    return dragTarget === 'surface' && mode === 'hover' && event.pointerType === 'mouse' && !paused;
+  }
+
+  function togglePaused() {
+    setPaused((prev) => {
+      const next = !prev;
+      setAnnouncement(next ? pauseLabel : resumeLabel);
+      return next;
+    });
   }
 
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
+    // Se resetea en cada down (incluido el que se descarta más abajo) para que un
+    // pointerup posterior nunca reutilice la posición de un down anterior.
+    downPosRef.current = null;
+    draggedSinceDownRef.current = false;
     if (!event.isPrimary || event.button !== 0) return;
     if (
       dragTarget === 'handle' &&
@@ -151,6 +188,7 @@ export function CompareSlider({
       return;
     }
     handleRef.current?.focus({ preventScroll: true });
+    downPosRef.current = { x: event.clientX, y: event.clientY };
     // Con hover activo el ratón ya sigue al puntero; el down solo aplica a touch/pen.
     if (followsHover(event)) return;
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -158,12 +196,29 @@ export function CompareSlider({
   }
 
   function onPointerMove(event: PointerEvent<HTMLDivElement>) {
+    if (downPosRef.current && !draggedSinceDownRef.current) {
+      const dx = event.clientX - downPosRef.current.x;
+      const dy = event.clientY - downPosRef.current.y;
+      if (Math.hypot(dx, dy) > CLICK_MOVE_THRESHOLD) draggedSinceDownRef.current = true;
+    }
     if (followsHover(event)) {
       update(positionFromPointer(event));
       return;
     }
     if (!event.currentTarget.hasPointerCapture(event.pointerId)) return;
     update(positionFromPointer(event));
+  }
+
+  function onPointerUp() {
+    const wasDown = downPosRef.current !== null;
+    const dragged = draggedSinceDownRef.current;
+    downPosRef.current = null;
+    draggedSinceDownRef.current = false;
+    // Click = down+up sin arrastre; solo pausa/reanuda en mode="hover" con pauseOnClick.
+    // wasDown descarta clicks cuyo down fue absorbido por otro elemento (p.ej. el botón
+    // expand, que hace stopPropagation en su propio pointerdown).
+    if (!wasDown || dragged || mode !== 'hover' || !pauseOnClick) return;
+    togglePaused();
   }
 
   function preloadExpandSources() {
@@ -175,9 +230,11 @@ export function CompareSlider({
       ref={containerRef}
       className={['mk-compare', className].filter(Boolean).join(' ')}
       data-orientation={orientation}
+      data-paused={paused ? '' : undefined}
       style={{ ['--mk-compare-pos' as string]: `${position}%` }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
     >
       <div className="mk-compare__before">{renderSide(before)}</div>
       <div className="mk-compare__after" aria-hidden="true">
@@ -197,6 +254,11 @@ export function CompareSlider({
         data-mk-drag-exempt=""
         onKeyDown={onKeyDown}
       />
+      {mode === 'hover' && pauseOnClick ? (
+        <span className="mk-visually-hidden" aria-live="polite">
+          {announcement}
+        </span>
+      ) : null}
       {expand ? (
         <button
           type="button"

@@ -121,6 +121,18 @@
   cursor: row-resize;
 }
 
+/*
+ * C6: cue visual de pausa (hover-follow suspendido). Sutil y no es la única señal:
+ * el aria-live del componente es la fuente accesible del cambio de estado.
+ */
+.mk-compare[data-paused] .mk-compare__divider {
+  opacity: 0.85;
+}
+
+.mk-compare[data-paused] .mk-compare__handle {
+  box-shadow: 0 0 0 3px var(--mk-handle-ring);
+}
+
 .mk-compare__handle::after {
   content: '◂ ▸';
 }
