@@ -10,3 +10,6 @@ coverage/
 test-results/
 playwright-report/
 .superpowers/
+
+# CV con PII: fuente local, nunca versionada (spec F3 §1)
+apps/web/content/cv/

@@ -1,0 +1,7 @@
+{
+  "nav": { "home": "Inicio", "cv": "CV", "projects": "Proyectos", "showcase": "Showcase" },
+  "home": {
+    "title": "Nico Behm — portfolio en construcción (Fase 3)",
+    "showcaseCta": "Ver showcase de componentes →"
+  }
+}

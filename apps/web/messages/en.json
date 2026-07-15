@@ -1,0 +1,7 @@
+{
+  "nav": { "home": "Home", "cv": "CV", "projects": "Projects", "showcase": "Showcase" },
+  "home": {
+    "title": "Nico Behm — portfolio under construction (Phase 3)",
+    "showcaseCta": "View component showcase →"
+  }
+}
