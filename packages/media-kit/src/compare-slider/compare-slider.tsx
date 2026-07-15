@@ -112,29 +112,32 @@ function clamp(value: number): number {
   return Math.min(100, Math.max(0, value));
 }
 
+type CompareSide = 'before' | 'after';
+
 function renderSide(
   side: ReactNode | MediaSource,
+  sideKey: CompareSide,
   objectFit: 'cover' | 'contain',
-  onLoad: () => void,
+  onSideLoaded: (side: CompareSide) => void,
 ): ReactNode {
-  return isMediaSource(side) ? (
-    <img src={side.src} alt={side.alt} draggable={false} style={{ objectFit }} onLoad={onLoad} />
-  ) : (
-    side
+  if (!isMediaSource(side)) return side;
+  return (
+    <img
+      // Hidratación (static export): el `load` nativo puede dispararse ANTES de que
+      // React adjunte onLoad; sin este check el lado quedaría pendiente para siempre
+      // (data-loading permanente, opacidad 0). Un nodo ya completo al adjuntar el ref
+      // se marca cargado directamente. naturalWidth>0 distingue carga OK de error
+      // (un img roto también reporta complete=true, pero con naturalWidth 0).
+      ref={(node) => {
+        if (node?.complete && node.naturalWidth > 0) onSideLoaded(sideKey);
+      }}
+      src={side.src}
+      alt={side.alt}
+      draggable={false}
+      style={{ objectFit }}
+      onLoad={() => onSideLoaded(sideKey)}
+    />
   );
-}
-
-/**
- * Cuántos lados son `MediaSource` (los únicos cuya carga el paquete puede rastrear).
- * Se usa solo como valor inicial del contador de cargas pendientes (C5): si `before`/
- * `after` cambian de identidad tras el montaje, el contador NO se recalcula — límite
- * documentado, ver JSDoc de `data-loading` en el componente.
- */
-function countMediaSourceSides(
-  before: ReactNode | MediaSource,
-  after: ReactNode | MediaSource,
-): number {
-  return [before, after].filter(isMediaSource).length;
 }
 
 export function CompareSlider({
@@ -161,10 +164,11 @@ export function CompareSlider({
   // labels para que el aria-live re-anuncie cada toggle.
   const [paused, setPaused] = useState(false);
   const [announcement, setAnnouncement] = useState('');
-  // C5: cuenta regresiva de cargas pendientes de los <img> internos (MediaSource).
-  // 0 lados MediaSource → arranca en 0 → `data-loading` nunca se activa (ReactNode
-  // es opaco, su carga no se puede rastrear desde aquí).
-  const [pendingLoads, setPendingLoads] = useState(() => countMediaSourceSides(before, after));
+  // C5: carga por lado, idempotente (ref de nodo ya completo + onLoad pueden
+  // solaparse tras la hidratación: dos señales, un solo "cargado" por lado).
+  // Limitación documentada: si el src de un lado cambia tras el montaje, su flag
+  // NO se resetea (data-loading no reaparece para la nueva fuente).
+  const [loadedSides, setLoadedSides] = useState({ before: false, after: false });
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
   // Posición del pointerdown y si hubo arrastre desde entonces (umbral 4px, misma
@@ -172,6 +176,11 @@ export function CompareSlider({
   const downPosRef = useRef<{ x: number; y: number } | null>(null);
   const draggedSinceDownRef = useRef(false);
   const horizontal = orientation === 'horizontal';
+  // Derivado en render: solo los lados MediaSource son rastreables; sin ninguno,
+  // `data-loading` nunca se activa (ReactNode es opaco, su carga no se puede
+  // observar desde aquí — documentado en el JSDoc de objectFit/overlayLabels).
+  const loading =
+    (isMediaSource(before) && !loadedSides.before) || (isMediaSource(after) && !loadedSides.after);
 
   function update(next: number) {
     const clamped = clamp(next);
@@ -280,10 +289,10 @@ export function CompareSlider({
     preloadFullSources([before, after].filter(isMediaSource));
   }
 
-  // C5: cada <img> interno (MediaSource) descuenta su propia carga; no distingue
-  // cuál de los dos disparó `load` porque el conteo inicial ya fija cuántos habrá.
-  function handleMediaLoad() {
-    setPendingLoads((count) => Math.max(0, count - 1));
+  // C5: marca un lado como cargado. Idempotente: si ya estaba, devuelve el MISMO
+  // objeto de estado (sin re-render), así el doble disparo complete+onLoad es inocuo.
+  function markSideLoaded(side: CompareSide) {
+    setLoadedSides((prev) => (prev[side] ? prev : { ...prev, [side]: true }));
   }
 
   return (
@@ -292,15 +301,17 @@ export function CompareSlider({
       className={['mk-compare', className].filter(Boolean).join(' ')}
       data-orientation={orientation}
       data-paused={paused ? '' : undefined}
-      data-loading={pendingLoads > 0 ? '' : undefined}
+      data-loading={loading ? '' : undefined}
       style={{ ['--mk-compare-pos' as string]: `${position}%` }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
     >
-      <div className="mk-compare__before">{renderSide(before, objectFit, handleMediaLoad)}</div>
+      <div className="mk-compare__before">
+        {renderSide(before, 'before', objectFit, markSideLoaded)}
+      </div>
       <div className="mk-compare__after" aria-hidden="true">
-        {renderSide(after, objectFit, handleMediaLoad)}
+        {renderSide(after, 'after', objectFit, markSideLoaded)}
       </div>
       <div className="mk-compare__divider" aria-hidden="true" />
       {overlayLabels ? (

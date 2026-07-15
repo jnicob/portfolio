@@ -1,4 +1,9 @@
-export { CompareSlider, type CompareSliderProps, type CompareSliderExpand } from './compare-slider';
+export {
+  CompareSlider,
+  type CompareSliderProps,
+  type CompareSliderExpand,
+  type CompareSliderOverlayLabels,
+} from './compare-slider';
 export {
   MediaLightbox,
   type MediaLightboxProps,

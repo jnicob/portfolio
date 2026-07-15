@@ -689,6 +689,68 @@ describe('CompareSlider v2.2 — paridad C5', () => {
     expect(container).not.toHaveAttribute('data-loading');
   });
 
+  it('un load duplicado en el mismo img NO descuenta de más (idempotente por lado)', () => {
+    render(
+      <CompareSlider
+        before={{ src: '/a.png', alt: 'Antes' }}
+        after={{ src: '/b.png', alt: 'Después' }}
+      />,
+    );
+    const container = screen.getByRole('slider').closest('.mk-compare') as HTMLElement;
+    expect(container).toHaveAttribute('data-loading');
+
+    // Doble disparo en el MISMO lado (complete + onLoad pueden solaparse tras
+    // hidratación): el otro lado sigue pendiente → data-loading debe persistir.
+    fireEvent.load(screen.getByAltText('Antes'));
+    fireEvent.load(screen.getByAltText('Antes'));
+    expect(container).toHaveAttribute('data-loading');
+
+    fireEvent.load(screen.getByAltText('Después'));
+    expect(container).not.toHaveAttribute('data-loading');
+  });
+
+  it('un img ya completo al adjuntar el ref se marca cargado (hidratación: load previo a onLoad)', () => {
+    const { rerender } = render(
+      <CompareSlider
+        before={{ src: '/a.png', alt: 'Antes' }}
+        after={{ src: '/b.png', alt: 'Después' }}
+      />,
+    );
+    const container = screen.getByRole('slider').closest('.mk-compare') as HTMLElement;
+    expect(container).toHaveAttribute('data-loading');
+
+    // Simula imgs que ya dispararon su `load` nativo antes de que React adjuntara
+    // handlers (static export + hidratación): complete=true y naturalWidth>0.
+    for (const alt of ['Antes', 'Después']) {
+      const img = screen.getByAltText(alt);
+      Object.defineProperty(img, 'complete', { value: true, configurable: true });
+      Object.defineProperty(img, 'naturalWidth', { value: 800, configurable: true });
+    }
+    // El ref callback es inline (identidad nueva por render): un re-render lo
+    // re-adjunta y debe detectar los nodos ya completos sin esperar onLoad.
+    rerender(
+      <CompareSlider
+        before={{ src: '/a.png', alt: 'Antes' }}
+        after={{ src: '/b.png', alt: 'Después' }}
+      />,
+    );
+    expect(container).not.toHaveAttribute('data-loading');
+  });
+
+  it('con un solo lado MediaSource, data-loading se limpia al cargar ese único img (mezcla)', () => {
+    render(
+      <CompareSlider
+        before={<img src="/a.png" alt="Antes" />}
+        after={{ src: '/b.png', alt: 'Después' }}
+      />,
+    );
+    const container = screen.getByRole('slider').closest('.mk-compare') as HTMLElement;
+    expect(container).toHaveAttribute('data-loading');
+
+    fireEvent.load(screen.getByAltText('Después'));
+    expect(container).not.toHaveAttribute('data-loading');
+  });
+
   it('sin ningún lado MediaSource nunca hay data-loading (ReactNode no se puede rastrear)', () => {
     renderSlider();
     const slider = screen.getByRole('slider');
