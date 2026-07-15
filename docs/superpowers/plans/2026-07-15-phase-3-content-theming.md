@@ -369,7 +369,7 @@ Expected: rutas `/es`, `/en`, `/es/showcase`, `/en/showcase`, `/`, `/showcase` e
 Run: `grep -o 'url=/en' apps/web/out/index.html && grep -o 'url=/en/showcase' apps/web/out/showcase.html`
 Expected: ambos matches (meta refresh presente). Contingencia: si `redirect()` fallara en export (no debería: patrón documentado de next-intl), PARAR y consultar al orquestador — no improvisar.
 
-> **ENMIENDA (ejecución T1, 2026-07-15):** Next 16.2 ya NO emite meta refresh para `redirect()` en export (solo shell hidratado por JS). Se ejecutó la contingencia: ambas páginas de redirect son páginas renderizadas que emiten `<meta httpEquiv="refresh">` + `<link rel="alternate" hreflang>` (izados por React 19) + `location.replace` + enlace visible. El `export const metadata` con `robots: noindex` se perdió en el cambio → **T11 debe añadir `<meta name="robots" content="noindex">` a ambas páginas de redirect.**
+> **ENMIENDA (ejecución T1, 2026-07-15):** Next 16.2 ya NO emite meta refresh para `redirect()` en export (solo shell hidratado por JS). Se ejecutó la contingencia: ambas páginas de redirect son páginas renderizadas que emiten `<meta httpEquiv="refresh">` + `<link rel="alternate" hreflang>` (izados por React 19) + `location.replace` + enlace visible. El `noindex` se restauró como `<meta name="robots" content="noindex">` izado en ambas páginas (fix `4e1d2d8`, dentro de T1) — T11 NO tiene que tocar las páginas de redirect.
 
 - [ ] **Step 7: Gate y commit**
 
