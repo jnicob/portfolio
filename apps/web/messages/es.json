@@ -9,6 +9,10 @@
   "footer": { "github": "GitHub", "linkedin": "LinkedIn" },
   "switchers": { "toEnglish": "Switch to English", "toSpanish": "Cambiar a español" },
   "home": {
+    "meta": {
+      "title": "Nico Behm — Ingeniero full-stack",
+      "description": "Ingeniero full-stack construyendo plataformas de API de IA end-to-end en Freepik/Magnific."
+    },
     "title": "Nico Behm — portfolio en construcción (Fase 3)",
     "showcaseCta": "Ver showcase de componentes →",
     "cvCta": "Ver CV",
@@ -23,10 +27,18 @@
     "backHome": "Volver al inicio →"
   },
   "projects": {
+    "meta": {
+      "title": "Proyectos — Nico Behm",
+      "description": "Trabajo seleccionado de la plataforma de APIs de IA de Freepik."
+    },
     "title": "Proyectos",
     "intro": "Trabajo seleccionado de la plataforma de APIs de IA de Freepik."
   },
   "cv": {
+    "meta": {
+      "title": "CV — Nico Behm",
+      "description": "Experiencia, skills y formación de Nico Behm, ingeniero full-stack."
+    },
     "title": "CV",
     "experienceTitle": "Experiencia",
     "educationTitle": "Formación",

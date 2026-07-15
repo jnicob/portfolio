@@ -6,6 +6,7 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import { routing } from '@/i18n/routing';
+import { SITE_URL } from '@/lib/seo';
 import { SiteFooter } from '@/components/layout/footer';
 import { SiteHeader } from '@/components/layout/header';
 import '../globals.css';
@@ -15,11 +16,8 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-// T11 sustituye esto por generateMetadata con hreflang.
-export const metadata: Metadata = {
-  title: 'Nico Behm — Full-stack engineer',
-  description: 'Portfolio (en construcción). Fase 3.',
-};
+// Solo metadataBase: título/descripción por página vía generateMetadata (T11).
+export const metadata: Metadata = { metadataBase: new URL(SITE_URL) };
 
 /*
  * Se ejecuta antes de la hidratación para evitar flash de tema:

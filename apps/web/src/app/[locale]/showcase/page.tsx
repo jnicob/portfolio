@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { MediaLightboxLabels } from '@nicobehm/media-kit';
 import type { Locale } from '@/i18n/routing';
+import { localizedPageMetadata } from '@/lib/seo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,7 +20,12 @@ type Props = { params: Promise<{ locale: Locale }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'showcase' });
-  return { title: t('meta.title'), description: t('meta.description') };
+  return localizedPageMetadata({
+    locale,
+    path: '/showcase',
+    title: t('meta.title'),
+    description: t('meta.description'),
+  });
 }
 
 function Section({

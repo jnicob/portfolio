@@ -1,7 +1,9 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { routing, type Locale } from '@/i18n/routing';
 import { compileProject, getProjectSlugs } from '@/lib/content';
+import { localizedPageMetadata } from '@/lib/seo';
 
 type Props = { params: Promise<{ locale: Locale; slug: string }> };
 
@@ -11,6 +13,18 @@ export async function generateStaticParams() {
     for (const slug of await getProjectSlugs(locale)) params.push({ locale, slug });
   }
   return params;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const project = await compileProject(locale, slug);
+  if (!project) return {};
+  return localizedPageMetadata({
+    locale,
+    path: `/projects/${slug}`,
+    title: project.frontmatter.title,
+    description: project.frontmatter.summary,
+  });
 }
 
 export default async function ProjectPage({ params }: Props) {

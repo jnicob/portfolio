@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Locale } from '@/i18n/routing';
 import { SKILL_CATEGORIES, type Skill } from '@/data/schemas';
@@ -8,8 +9,21 @@ import { skills } from '@/data/skills';
 import { ExperienceEntryBlock } from '@/components/cv/experience-entry';
 import { SkillGroup } from '@/components/cv/skill-group';
 import { EducationList } from '@/components/cv/education-list';
+import { JsonLd } from '@/components/seo/json-ld';
+import { localizedPageMetadata, personJsonLd } from '@/lib/seo';
 
 type Props = { params: Promise<{ locale: Locale }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'cv' });
+  return localizedPageMetadata({
+    locale,
+    path: '/cv',
+    title: t('meta.title'),
+    description: t('meta.description'),
+  });
+}
 
 export default async function CvPage({ params }: Props) {
   const { locale } = await params;
@@ -20,6 +34,7 @@ export default async function CvPage({ params }: Props) {
 
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-10 px-4 py-12">
+      <JsonLd data={personJsonLd(locale)} />
       <h1 className="text-3xl font-semibold text-fg">{t('title')}</h1>
 
       <section className="flex flex-col gap-6">
