@@ -26,7 +26,7 @@
 | 2   | `@nicobehm/media-kit` (CompareSlider, MediaLightbox)                             | `2026-07-10-phase-2-media-kit.md`        | ✅ hecha  | 0 (1 solo para la demo en showcase) |
 | 2.5 | media-kit v2 (zoom/pan, controles, fit modes, slider hover)                      | `2026-07-13-phase-2.5-media-kit-v2.md`   | ✅ hecha  | 2                                   |
 | 2.6 | media-kit v2.1 (espacio-pan, help, ojo/tooltips, demo retrato) + showcase polish | `2026-07-14-phase-2.6-media-kit-v2.1.md` | ✅ hecha  | 2.5                                 |
-| 3   | Contenido + páginas (Zod, datos CV, MDX case studies, i18n, SEO)                 | just-in-time                             | pendiente | 1                                   |
+| 3   | Contenido + páginas + theming v2 + media-kit v2.2 (Zod, CV, MDX, i18n, SEO, skins) | `2026-07-15-phase-3-content-theming.md`  | ✅ hecha  | 1                                   |
 | 4   | Playground (adaptadores mock/pollinations/proxy, UI, estados)                    | just-in-time                             | pendiente | 1, 2, 3 (layout/i18n)               |
 | 5   | Runtime dual + deploys (3 targets, workflows, proxy PHP)                         | just-in-time                             | pendiente | 0–4                                 |
 | 6   | QA final (e2e, visual, axe, Lighthouse, README final)                            | just-in-time                             | pendiente | todas                               |
