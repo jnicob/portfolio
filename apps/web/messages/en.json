@@ -1,5 +1,13 @@
 {
-  "nav": { "home": "Home", "cv": "CV", "projects": "Projects", "showcase": "Showcase" },
+  "nav": {
+    "label": "Main navigation",
+    "home": "Home",
+    "cv": "CV",
+    "projects": "Projects",
+    "showcase": "Showcase"
+  },
+  "footer": { "github": "GitHub", "linkedin": "LinkedIn" },
+  "switchers": { "toEnglish": "Switch to English", "toSpanish": "Cambiar a español" },
   "home": {
     "title": "Nico Behm — portfolio under construction (Phase 3)",
     "showcaseCta": "View component showcase →"

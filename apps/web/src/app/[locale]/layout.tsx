@@ -6,6 +6,8 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import { routing } from '@/i18n/routing';
+import { SiteFooter } from '@/components/layout/footer';
+import { SiteHeader } from '@/components/layout/header';
 import '../globals.css';
 import '@nicobehm/media-kit/styles.css';
 
@@ -44,7 +46,11 @@ export default async function LocaleLayout({ children, params }: Props) {
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body>
-        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider messages={messages}>
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </NextIntlClientProvider>
       </body>
     </html>
   );
