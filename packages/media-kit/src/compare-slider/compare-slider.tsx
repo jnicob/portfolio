@@ -73,7 +73,10 @@ export type CompareSliderProps = {
   /**
    * Solo aplica con `mode="hover"` (spec C6): un click (down+up sin arrastre) alterna
    * pausar el seguimiento del ratón, para poder soltar el puntero sin perder la
-   * posición comparada. Default `true`.
+   * posición comparada. Mientras está en pausa, NINGÚN gesto de puntero sobre la
+   * superficie reposiciona el divisor (el click que reanuda tampoco: el divisor se
+   * queda donde estaba congelado); el teclado sobre el handle sigue funcionando.
+   * Default `true`.
    */
   pauseOnClick?: boolean;
   /** Anunciado por el aria-live al pausar. Default `'Comparison paused'`. */
@@ -168,11 +171,10 @@ export function CompareSlider({
   }
 
   function togglePaused() {
-    setPaused((prev) => {
-      const next = !prev;
-      setAnnouncement(next ? pauseLabel : resumeLabel);
-      return next;
-    });
+    // Fuera del updater de setPaused: los updaters deben ser puros (sin side effects).
+    const next = !paused;
+    setAnnouncement(next ? pauseLabel : resumeLabel);
+    setPaused(next);
   }
 
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
@@ -191,6 +193,10 @@ export function CompareSlider({
     downPosRef.current = { x: event.clientX, y: event.clientY };
     // Con hover activo el ratón ya sigue al puntero; el down solo aplica a touch/pen.
     if (followsHover(event)) return;
+    // En pausa (C6), la superficie no reposiciona el divisor con ningún puntero: el
+    // down queda registrado SOLO para clasificar en pointerup el click que reanuda
+    // (sin capture ni update, el divisor no salta a la posición del click).
+    if (paused) return;
     event.currentTarget.setPointerCapture(event.pointerId);
     update(positionFromPointer(event));
   }
@@ -214,10 +220,13 @@ export function CompareSlider({
     const dragged = draggedSinceDownRef.current;
     downPosRef.current = null;
     draggedSinceDownRef.current = false;
-    // Click = down+up sin arrastre; solo pausa/reanuda en mode="hover" con pauseOnClick.
+    // Click = down+up sin arrastre; solo pausa/reanuda en mode="hover" con pauseOnClick
+    // y dragTarget='surface' (con dragTarget='handle' no hay hover-follow que pausar).
     // wasDown descarta clicks cuyo down fue absorbido por otro elemento (p.ej. el botón
     // expand, que hace stopPropagation en su propio pointerdown).
-    if (!wasDown || dragged || mode !== 'hover' || !pauseOnClick) return;
+    if (!wasDown || dragged || mode !== 'hover' || !pauseOnClick || dragTarget !== 'surface') {
+      return;
+    }
     togglePaused();
   }
 

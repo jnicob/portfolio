@@ -506,6 +506,92 @@ describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
+  it('en pausa, el click de reanudar NO reposiciona el divisor (ni en el down ni en el up)', () => {
+    render(
+      <CompareSlider
+        mode="hover"
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+
+    fireEvent.pointerMove(container, { clientX: 160, clientY: 50, pointerType: 'mouse' });
+    expect(slider).toHaveAttribute('aria-valuenow', '80');
+
+    click(container, { clientX: 160, clientY: 50 });
+    expect(container).toHaveAttribute('data-paused');
+
+    // Click de reanudar en OTRA posición: el divisor no debe saltar al 20 en el down…
+    fireEvent.pointerDown(container, {
+      clientX: 40,
+      clientY: 50,
+      pointerType: 'mouse',
+      button: 0,
+      isPrimary: true,
+      pointerId: 1,
+    });
+    expect(slider).toHaveAttribute('aria-valuenow', '80');
+    // …ni tras el up que reanuda: se queda donde estaba congelado.
+    fireEvent.pointerUp(container, {
+      clientX: 40,
+      clientY: 50,
+      pointerType: 'mouse',
+      button: 0,
+      isPrimary: true,
+      pointerId: 1,
+    });
+    expect(container).not.toHaveAttribute('data-paused');
+    expect(slider).toHaveAttribute('aria-valuenow', '80');
+
+    // Reanudado: el hover vuelve a seguir al puntero.
+    fireEvent.pointerMove(container, { clientX: 60, clientY: 50, pointerType: 'mouse' });
+    expect(slider).toHaveAttribute('aria-valuenow', '30');
+  });
+
+  it('en pausa, las flechas del teclado siguen moviendo el divisor', async () => {
+    render(
+      <CompareSlider
+        mode="hover"
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+
+    fireEvent.pointerMove(container, { clientX: 120, clientY: 50, pointerType: 'mouse' });
+    click(container, { clientX: 120, clientY: 50 });
+    expect(container).toHaveAttribute('data-paused');
+    expect(slider).toHaveAttribute('aria-valuenow', '60');
+
+    slider.focus();
+    await userEvent.keyboard('{ArrowRight}');
+    expect(slider).toHaveAttribute('aria-valuenow', '61');
+    await userEvent.keyboard('{PageDown}');
+    expect(slider).toHaveAttribute('aria-valuenow', '51');
+  });
+
+  it("con dragTarget='handle' un click en el handle no pausa (no hay hover-follow que pausar)", () => {
+    render(
+      <CompareSlider
+        mode="hover"
+        dragTarget="handle"
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+
+    click(slider, { clientX: 100, clientY: 50 });
+    expect(container).not.toHaveAttribute('data-paused');
+  });
+
   it('un drag táctil (≥4px) en modo hover no alterna la pausa', () => {
     render(
       <CompareSlider
