@@ -7,6 +7,7 @@ const TARGET = `/${routing.defaultLocale}`;
 export default function RootRedirect() {
   return (
     <>
+      <meta name="robots" content="noindex" />
       <meta httpEquiv="refresh" content={`0;url=${TARGET}`} />
       {routing.locales.map((locale) => (
         <link key={locale} rel="alternate" hrefLang={locale} href={`${SITE_URL}/${locale}`} />

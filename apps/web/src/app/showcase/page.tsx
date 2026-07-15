@@ -7,6 +7,7 @@ const TARGET = `/${routing.defaultLocale}/showcase`;
 export default function ShowcaseRedirect() {
   return (
     <>
+      <meta name="robots" content="noindex" />
       <meta httpEquiv="refresh" content={`0;url=${TARGET}`} />
       {routing.locales.map((locale) => (
         <link
