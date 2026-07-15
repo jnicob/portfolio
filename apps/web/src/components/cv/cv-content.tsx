@@ -46,7 +46,7 @@ export function CvContent({
   return (
     <>
       <AppearanceInit onView={setView} />
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <CvViewSwitcher view={view} onChange={handleChange} labels={switcherLabels} />
         <div className="flex items-center gap-3">
           {shareLabels && <ShareViewButton view={view} labels={shareLabels} />}

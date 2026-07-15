@@ -19,7 +19,7 @@ export function CvTimeline({ locale, strings }: CvViewProps) {
     <div className="flex flex-col gap-10">
       <section className="flex flex-col gap-6">
         <h2 className="text-2xl font-semibold text-fg">{strings.experienceTitle}</h2>
-        <ol className="flex flex-col gap-8 border-l border-border pl-6">
+        <ol className="flex flex-col gap-8 border-l border-fg-muted pl-6">
           {experience.map((entry) => (
             <li key={entry.id} className="relative">
               <span

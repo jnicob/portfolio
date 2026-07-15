@@ -13,7 +13,6 @@ import { Select } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
 import { ShareViewButton } from '@/components/layout/share-view-button';
-import { ThemeSwitcher } from '@/components/layout/theme-switcher';
 import { MediaKitDemo } from '@/components/showcase/media-kit-demo';
 import { ShowcaseIndex } from '@/components/showcase/showcase-index';
 
@@ -77,25 +76,23 @@ export default async function ShowcasePage({ params }: Props) {
             items={toc}
             inputLabel={t('filterLabel')}
             emptyMessage={t('filterEmpty')}
+            placeholder={t('filterPlaceholder')}
           />
         </div>
       </nav>
       <div className="flex flex-col gap-14">
-        <header className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">{t('title')}</h1>
-            <p className="mt-1 text-fg-muted">{t('intro')}</p>
-            <div className="mt-3">
-              <ShareViewButton
-                labels={{
-                  share: tShare('share'),
-                  copied: tShare('copied'),
-                  error: tShare('error'),
-                }}
-              />
-            </div>
+        <header>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
+          <p className="mt-1 text-fg-muted">{t('intro')}</p>
+          <div className="mt-3">
+            <ShareViewButton
+              labels={{
+                share: tShare('share'),
+                copied: tShare('copied'),
+                error: tShare('error'),
+              }}
+            />
           </div>
-          <ThemeSwitcher />
         </header>
 
         <Section

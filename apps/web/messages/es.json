@@ -17,6 +17,7 @@
     "toSpanish": "Cambiar a español",
     "skinButton": "Skin",
     "skinInputLabel": "Filtrar skins",
+    "skinPlaceholder": "Filtrar skins…",
     "skinEmpty": "Ningún skin coincide",
     "skins": {
       "devTool": "Dev tool",
@@ -37,7 +38,7 @@
     "skillsTitle": "Skills",
     "skillLevel": "{name}: nivel {level} de 5",
     "playgroundTitle": "Playground de IA",
-    "playgroundSoon": "Llega en la Fase 4"
+    "playgroundSoon": "Próximamente"
   },
   "notFound": {
     "title": "Página no encontrada",
@@ -85,6 +86,7 @@
     "intro": "Kitchen sink del design system — todas las variantes y estados, en ambos temas.",
     "tocLabel": "Índice del showcase",
     "filterLabel": "Filtrar secciones",
+    "filterPlaceholder": "Filtrar secciones…",
     "filterEmpty": "Ninguna sección coincide",
     "toc": {
       "button": "Button",

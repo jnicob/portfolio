@@ -17,7 +17,7 @@ const entries = [
     tags: ['python', 'fastapi', 'openapi'],
   },
   {
-    name: 'Diseño de plataformas de API de IA',
+    name: 'AI API platform design',
     level: 4,
     category: 'ai',
     tags: ['openapi', 'ai-models', 'api-design'],
@@ -30,7 +30,7 @@ const entries = [
     tags: ['apisix', 'gateway', 'rate-limiting'],
   },
   {
-    name: 'Administración de servidores Linux',
+    name: 'Linux server administration',
     level: 4,
     category: 'platform',
     tags: ['linux', 'apache', 'server-admin'],

@@ -17,6 +17,7 @@
     "toSpanish": "Cambiar a español",
     "skinButton": "Skin",
     "skinInputLabel": "Filter skins",
+    "skinPlaceholder": "Filter skins…",
     "skinEmpty": "No skins match",
     "skins": {
       "devTool": "Dev tool",
@@ -37,7 +38,7 @@
     "skillsTitle": "Skills",
     "skillLevel": "{name}: level {level} of 5",
     "playgroundTitle": "AI Playground",
-    "playgroundSoon": "Coming in Phase 4"
+    "playgroundSoon": "Coming soon"
   },
   "notFound": {
     "title": "Page not found",
@@ -85,6 +86,7 @@
     "intro": "Design system kitchen sink — every variant and state, in both themes.",
     "tocLabel": "Showcase index",
     "filterLabel": "Filter sections",
+    "filterPlaceholder": "Filter sections…",
     "filterEmpty": "No sections match",
     "toc": {
       "button": "Button",

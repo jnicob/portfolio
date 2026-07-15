@@ -19,6 +19,7 @@ const SKIN_KEYWORDS: Record<Skin, readonly string[]> = {
 export type SkinSwitcherLabels = {
   button: string;
   inputLabel: string;
+  placeholder?: string;
   emptyMessage: string;
   skinNames: Record<Skin, string>;
 };
@@ -100,6 +101,7 @@ export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
           <FilterableList
             items={items}
             inputLabel={labels.inputLabel}
+            placeholder={labels.placeholder}
             emptyMessage={labels.emptyMessage}
             onSelect={handleSelect}
             renderItem={(item) => (
