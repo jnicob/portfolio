@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { applyTheme, type Theme } from '@/lib/theme';
+import { applyTheme } from '@/lib/appearance';
+import type { Theme } from '@/data/schemas';
 
 /** Botón de cambio de tema. El estado inicial se lee del DOM (fijado por themeInitScript). */
 export function ThemeSwitcher() {

@@ -7,6 +7,7 @@ import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import { routing } from '@/i18n/routing';
 import { SITE_URL } from '@/lib/seo';
+import { AppearanceInit } from '@/components/layout/appearance-init';
 import { SiteFooter } from '@/components/layout/footer';
 import { SiteHeader } from '@/components/layout/header';
 import '../globals.css';
@@ -20,11 +21,29 @@ export function generateStaticParams() {
 export const metadata: Metadata = { metadataBase: new URL(SITE_URL) };
 
 /*
- * Se ejecuta antes de la hidratación para evitar flash de tema:
- * stored > preferencia del sistema > dark (por defecto).
- * Mantener en sincronía con resolveInitialTheme (theme.ts).
+ * Se ejecuta antes de la hidratación para evitar flash de tema Y skin:
+ * URL > stored > preferencia del sistema > default ('dark'/'dev-tool').
+ * Mantener en sincronía con lib/appearance.ts (resolveAppearance/DEFAULT_APPEARANCE).
  */
-const themeInitScript = `(function(){try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme='dark';}})();`;
+const themeInitScript = `(function () {
+  try {
+    var q = new URLSearchParams(location.search);
+    function pick(k, valid) {
+      var u = q.get(k);
+      if (valid.indexOf(u) > -1) return u;
+      var s = localStorage.getItem(k);
+      return valid.indexOf(s) > -1 ? s : null;
+    }
+    var t =
+      pick('theme', ['dark', 'light']) ||
+      (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    var sk = pick('skin', ['dev-tool', 'editorial', 'terminal', 'vibrant']) || 'dev-tool';
+    document.documentElement.dataset.theme = t;
+    if (sk !== 'dev-tool') document.documentElement.dataset.skin = sk;
+  } catch (e) {
+    document.documentElement.dataset.theme = 'dark';
+  }
+})();`;
 
 type Props = { children: ReactNode; params: Promise<{ locale: string }> };
 
@@ -45,6 +64,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       </head>
       <body>
         <NextIntlClientProvider messages={messages}>
+          <AppearanceInit />
           <SiteHeader />
           {children}
           <SiteFooter />
