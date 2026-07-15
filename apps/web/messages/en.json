@@ -3,5 +3,9 @@
   "home": {
     "title": "Nico Behm — portfolio under construction (Phase 3)",
     "showcaseCta": "View component showcase →"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "backHome": "Back to home →"
   }
 }

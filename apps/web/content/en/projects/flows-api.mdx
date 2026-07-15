@@ -1,0 +1,50 @@
+---
+title: Flows API
+summary: Orchestration API for multi-step generation flows, chaining several image and video models behind a single request on the production AI API platform.
+role: Platform engineer — flow orchestration, specs, server
+stack: [python, fastapi, openapi]
+links:
+  live: https://www.freepik.com/api
+  docs: https://docs.freepik.com
+metrics: []
+date: '2026-07'
+---
+
+## Context
+
+Some products need more than a single generation call: a user might want
+to upscale an image and then generate a video from it, or run several
+models in sequence as one logical action. Doing this client-side means
+every integrator re-implements the same chaining logic, and pays for
+round-trips between steps.
+
+## What I built
+
+Flows API is the platform component that lets several AI models be
+combined into a single API call: a flow describes a sequence of steps
+(e.g. generate → upscale → convert to video), and the platform runs it as
+one task, returning progress and a final result through the same webhook
+mechanism used elsewhere on the platform.
+
+## Architecture
+
+Flows API is built on the same foundation as the rest of the platform:
+
+- **Specification** — flow definitions and their inputs/outputs are
+  described in the same OpenAPI contract as single-model endpoints, so
+  client code generation and validation work identically.
+- **Server** — the FastAPI server resolves a flow's steps, calls the
+  appropriate model services in order, and tracks the flow as a single
+  task.
+- **Gateway & billing** — usage is metered per step, so cost tracks the
+  models actually invoked, not a flat per-flow price.
+
+Because it reuses the same spec → server → gateway → docs pipeline,
+adding a new step type to a flow follows the same process as onboarding
+any other model.
+
+## Outcome
+
+An orchestration layer for multi-step generation flows, live as part of
+the [production API platform](https://www.freepik.com/api), with
+reference docs at [docs.freepik.com](https://docs.freepik.com).

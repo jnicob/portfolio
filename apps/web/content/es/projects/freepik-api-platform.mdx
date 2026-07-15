@@ -1,0 +1,69 @@
+---
+title: Plataforma de APIs de IA de Freepik
+summary: Plataforma pública de APIs de IA que sirve modelos de generación de imagen y vídeo a escala.
+role: Ingeniero de plataforma — specs, servidor, gateway, facturación, docs
+stack: [python, fastapi, openapi, apisix, php]
+links:
+  live: https://www.freepik.com/api
+  docs: https://docs.freepik.com
+metrics:
+  - label: Pull requests
+    value: '779+'
+date: '2026-07'
+---
+
+## Contexto
+
+Freepik/Magnific opera una plataforma pública de APIs de IA que expone
+modelos de generación de imagen y vídeo a desarrolladores que construyen
+productos sobre la pila de IA de Freepik. A medida que la plataforma
+creció de un puñado de endpoints a decenas de modelos de IA, el proceso
+subyacente — desde una especificación OpenAPI hasta un endpoint en
+producción, con facturación y documentación pública — necesitaba un
+camino consistente y repetible en lugar de trabajo puntual por endpoint.
+
+## Qué construí
+
+Trabajé en todo el ciclo de vida de esta plataforma: redactar y
+evolucionar la especificación OpenAPI que define los parámetros y
+respuestas de cada endpoint, implementar el servidor FastAPI que convierte
+esas specs en endpoints funcionando, conectar límites de uso y facturación
+por modelo en el gateway, y publicar la referencia pública de API que
+usan los desarrolladores para integrarse.
+
+Esto incluye la superficie de API keys y facturación: generar y revocar
+claves, medir el uso por plan (free / pro / enterprise), y traducir el
+precio específico de cada modelo (por generación, por segundo de vídeo,
+por resolución) en reglas de coste a nivel de gateway.
+
+## Arquitectura
+
+El pipeline tiene cuatro etapas que mapean directamente a cuatro
+responsabilidades:
+
+1. **Especificación** — un contrato OpenAPI define la forma de
+   petición/respuesta de cada endpoint, mantenido en sync a medida que se
+   añaden nuevos modelos y parámetros.
+2. **Servidor** — una aplicación FastAPI implementa el contrato:
+   validación de peticiones, orquestación de tareas y entrega de webhooks
+   para generaciones de larga duración.
+3. **Gateway** — un gateway de API open-source (Apache APISIX) se sitúa
+   delante del servidor, aplicando límites de uso por plan y calculando
+   el coste por petición según el uso real.
+4. **Docs** — la referencia pública de API se genera desde la misma
+   spec, así la documentación nunca se desincroniza de lo que el gateway
+   realmente acepta.
+
+Un servicio de facturación (implementado en PHP) lee los datos de uso del
+gateway y las definiciones de producto para facturar a los clientes según
+su plan, manteniendo el modelo de precios desacoplado del camino de
+petición.
+
+## Resultado
+
+El resultado es una plataforma pública de APIs de IA que sirve modelos de
+generación de imagen y vídeo a escala, con un proceso documentado y
+repetible para añadir capacidad nueva sin tocar a mano el código de
+facturación o gateway. La [versión en producción](https://www.freepik.com/api)
+está viva, con documentación de referencia completa en
+[docs.freepik.com](https://docs.freepik.com).

@@ -1,0 +1,63 @@
+---
+title: Freepik AI API Platform
+summary: Public AI API platform serving image and video generation models at scale.
+role: Platform engineer — specs, server, gateway, billing, docs
+stack: [python, fastapi, openapi, apisix, php]
+links:
+  live: https://www.freepik.com/api
+  docs: https://docs.freepik.com
+metrics:
+  - label: Pull requests
+    value: '779+'
+date: '2026-07'
+---
+
+## Context
+
+Freepik/Magnific runs a public AI API platform that exposes image and video
+generation models to developers building products on top of Freepik's AI
+stack. As the platform grew from a handful of endpoints to dozens of AI
+models, the underlying process — from an OpenAPI spec to a production
+endpoint, with billing and public docs — needed a consistent, repeatable
+path instead of one-off work per endpoint.
+
+## What I built
+
+I worked across the full lifecycle of this platform: authoring and evolving
+the OpenAPI specification that defines every endpoint's parameters and
+responses, implementing the FastAPI server that turns specs into working
+endpoints, wiring rate limits and per-model billing into the gateway, and
+shipping the public API reference that developers use to integrate.
+
+This includes the API keys and billing surface: generating and revoking
+keys, tracking usage per plan (free / pro / enterprise), and translating
+model-specific pricing (per generation, per second of video, per
+resolution) into gateway-level cost rules.
+
+## Architecture
+
+The pipeline has four stages that map cleanly to four concerns:
+
+1. **Specification** — an OpenAPI contract defines each endpoint's
+   request/response shape, kept in sync as new models and parameters are
+   added.
+2. **Server** — a FastAPI application implements the contract: request
+   validation, task orchestration and webhook delivery for long-running
+   generations.
+3. **Gateway** — an open-source API gateway (Apache APISIX) sits in front
+   of the server, enforcing per-tier rate limits and computing
+   usage-based cost per request.
+4. **Docs** — the public API reference is generated from the same spec,
+   so documentation never drifts from what the gateway actually accepts.
+
+A billing service (implemented in PHP) reads gateway usage data and
+product definitions to bill customers per plan, keeping the pricing model
+decoupled from the request-handling path.
+
+## Outcome
+
+The result is a public AI API platform serving image and video generation
+models at scale, with a documented, repeatable process for adding new
+capability without touching billing or gateway code by hand. The
+[production version](https://www.freepik.com/api) is live, with full
+reference docs at [docs.freepik.com](https://docs.freepik.com).

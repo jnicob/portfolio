@@ -1,0 +1,56 @@
+---
+title: End-to-end AI model onboarding
+summary: Repeatable process to take an AI (image/video) model from OpenAPI spec to production, applied to public model families such as Kling and WAN.
+role: Engineer owning the onboarding process
+stack: [openapi, fastapi, apisix]
+links:
+  docs: https://docs.freepik.com
+metrics:
+  - label: Models onboarded
+    value: 'Kling · WAN · more'
+date: '2026-07'
+---
+
+## Context
+
+Adding a new AI model — a new image or video generator — to the platform
+touches every layer described in the platform case study: the OpenAPI
+spec, the FastAPI server, gateway configuration and public docs. Doing
+this well once is one thing; doing it repeatedly, for fast-moving public
+model families such as Kling and WAN, needs a defined process rather than
+ad-hoc work each time.
+
+## What I built
+
+I own the end-to-end onboarding process for new AI models on the
+platform: from confirming pricing and rate limits, through implementing
+the model-specific request/response schema and controller, to
+configuring the gateway route and publishing the docs page. The process
+is designed so each new onboarding follows the same checklist, cutting
+the time and risk of shipping a new capability.
+
+## Architecture
+
+Each onboarding follows the same four steps, aligned with the wider
+platform pipeline:
+
+1. **Research & pricing** — compare against public reference pricing,
+   confirm per-generation or per-duration cost and rate limits per plan.
+2. **Spec & server** — add the model's parameters to the OpenAPI schema,
+   implement the controller and use case in the FastAPI server, and wire
+   task management for async completion via webhook.
+3. **Gateway** — add the route, cost rule and per-tier rate limit to the
+   gateway configuration.
+4. **Docs** — publish the endpoint reference and a changelog entry so the
+   new model is discoverable.
+
+Applied to public model families like Kling (video) and WAN (video), this
+process has become the default way the platform grows: adding capability
+without re-deriving the pipeline every time.
+
+## Outcome
+
+A repeatable, checklist-driven path from an OpenAPI spec to a production
+endpoint — pricing, rate limits, implementation, gateway config and
+public docs — applied across multiple model families. Reference docs at
+[docs.freepik.com](https://docs.freepik.com).
