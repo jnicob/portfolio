@@ -184,12 +184,20 @@ export function useZoomPan(
       }
     };
 
+    // C4 (auditoría pan con ratón): el drag nativo HTML5 de <img>/<video> (draggable
+    // por defecto) cancela a mitad de gesto los pointermove del pan con ratón real —
+    // el mecanismo de pan en sí funciona (ver tests), el drag nativo lo interrumpe.
+    const onDragStart = (event: DragEvent) => {
+      event.preventDefault();
+    };
+
     vp.addEventListener('wheel', onWheel, { passive: false });
     vp.addEventListener('dblclick', onDblClick);
     vp.addEventListener('pointerdown', onPointerDown);
     vp.addEventListener('pointermove', onPointerMove);
     vp.addEventListener('pointerup', onPointerEnd);
     vp.addEventListener('pointercancel', onPointerEnd);
+    vp.addEventListener('dragstart', onDragStart);
     return () => {
       vp.removeEventListener('wheel', onWheel);
       vp.removeEventListener('dblclick', onDblClick);
@@ -197,16 +205,29 @@ export function useZoomPan(
       vp.removeEventListener('pointermove', onPointerMove);
       vp.removeEventListener('pointerup', onPointerEnd);
       vp.removeEventListener('pointercancel', onPointerEnd);
+      vp.removeEventListener('dragstart', onDragStart);
     };
   }, [panBy, reset, viewportRef, zoomTo]);
 
   const { maxTx, maxTy } = bounds(state.scale);
+  const canPan = maxTx > 0 || maxTy > 0;
+
+  // Affordance del cursor grab/grabbing (CSS) y ancla para T13: solo cuando hay
+  // desborde real. Se limpia al desmontar para no dejar el atributo huérfano.
+  useEffect(() => {
+    const vp = viewportRef.current;
+    if (!vp) return;
+    vp.toggleAttribute('data-can-pan', canPan);
+    return () => {
+      vp.removeAttribute('data-can-pan');
+    };
+  }, [canPan, viewportRef]);
 
   return {
     scale: state.scale,
     minZoom,
     maxZoom,
-    canPan: maxTx > 0 || maxTy > 0,
+    canPan,
     style: { transform: `translate(${state.tx}px, ${state.ty}px) scale(${state.scale})` },
     zoomIn,
     zoomOut,

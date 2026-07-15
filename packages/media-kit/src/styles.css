@@ -182,6 +182,20 @@
   display: block;
 }
 
+/* C4: pan con ratón — el drag nativo de img está prevenido en JS; affordance solo si hay desborde. */
+.mk-lightbox__viewport[data-can-pan] {
+  cursor: grab;
+}
+
+.mk-lightbox__viewport[data-can-pan]:active {
+  cursor: grabbing;
+}
+
+.mk-lightbox__media :is(img, video) {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
 /* B1: Espacio mantenido = modo pan. Solo affordance de cursor; el pan lo hace JS. */
 .mk-lightbox[data-space-pan] .mk-lightbox__viewport {
   cursor: grab;

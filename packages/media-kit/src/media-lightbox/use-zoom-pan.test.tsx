@@ -202,3 +202,47 @@ describe('useZoomPan gestos', () => {
     expect(latest().scale).toBeCloseTo(2, 1);
   });
 });
+
+describe('useZoomPan v2.2 — auditoría pan con ratón (C4)', () => {
+  function setupProbe() {
+    let latest: UseZoomPanResult | undefined;
+    const utils = render(<GestureProbe onRender={(r) => (latest = r)} />);
+    const viewport = utils.getByTestId('viewport');
+    const content = utils.getByTestId('content');
+    mockSizes(viewport, 800, 600);
+    mockSizes(content, 800, 600);
+    return { viewport, content, latest: () => latest! };
+  }
+
+  it('el dragstart nativo sobre el media queda prevenido (el drag de img no mata el pan)', () => {
+    const { viewport } = setupProbe();
+    const event = new Event('dragstart', { bubbles: true, cancelable: true });
+    viewport.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+  });
+
+  it('con zoom > 1 el arrastre de ratón panea y clampa en los límites', () => {
+    const { viewport, latest } = setupProbe();
+    act(() => latest().zoomTo(2));
+    expect(latest().scale).toBe(2);
+    fireEvent.pointerDown(viewport, {
+      pointerId: 1,
+      clientX: 400,
+      clientY: 300,
+      button: 0,
+      pointerType: 'mouse',
+    });
+    fireEvent.pointerMove(viewport, { pointerId: 1, clientX: 300, clientY: 300 });
+    expect(latest().style.transform).toContain('translate(-100px, 0px)');
+    // sigue moviendo más allá del límite: maxTx = (800·2−800)/2 = 400 → clampa ahí.
+    fireEvent.pointerMove(viewport, { pointerId: 1, clientX: -5000, clientY: 300 });
+    expect(latest().style.transform).toContain('translate(-400px, 0px)');
+  });
+
+  it('expone data-can-pan en el viewport solo cuando hay desborde', () => {
+    const { viewport, latest } = setupProbe();
+    expect(viewport).not.toHaveAttribute('data-can-pan');
+    act(() => latest().zoomTo(2));
+    expect(viewport).toHaveAttribute('data-can-pan');
+  });
+});
