@@ -444,3 +444,107 @@ describe('MediaLightbox v2.1 — toggle ojo y tooltips (B3)', () => {
     );
   });
 });
+
+describe('MediaLightbox v2.2 — compare (C2)', () => {
+  it('con compare renderiza el slider dentro del viewport con toolbar completa', () => {
+    render(
+      <MediaLightbox
+        open
+        onClose={() => {}}
+        label="Compare"
+        compare={{
+          before: <img src="/before.png" alt="antes" />,
+          after: <img src="/after.png" alt="después" />,
+        }}
+      />,
+    );
+    const media = document.querySelector('.mk-lightbox__media') as HTMLElement;
+    const slider = screen.getByRole('slider', { name: 'Compare' });
+    expect(media.contains(slider)).toBe(true);
+    expect(screen.getByRole('button', { name: 'Zoom in' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Zoom out' })).toBeInTheDocument();
+  });
+
+  it('las flechas con el handle enfocado mueven el divisor y NO panean', async () => {
+    render(
+      <MediaLightbox
+        open
+        onClose={() => {}}
+        label="Compare"
+        fit="actual"
+        compare={{
+          before: <img src="/before.png" alt="antes" />,
+          after: <img src="/after.png" alt="después" />,
+        }}
+      />,
+    );
+    const viewport = document.querySelector('.mk-lightbox__viewport') as HTMLElement;
+    const media = document.querySelector('.mk-lightbox__media') as HTMLElement;
+    mockSizes(viewport, 800, 600);
+    mockSizes(media, 1600, 1200);
+    const slider = screen.getByRole('slider', { name: 'Compare' });
+    const transformBefore = media.style.transform;
+    slider.focus();
+    await userEvent.keyboard('{ArrowRight}');
+    expect(slider).toHaveAttribute('aria-valuenow', '51');
+    expect(media.style.transform).toBe(transformBefore);
+  });
+
+  it('los gestos de pointer sobre el handle no arrancan el pan del visor', () => {
+    render(
+      <MediaLightbox
+        open
+        onClose={() => {}}
+        label="Compare"
+        fit="actual"
+        compare={{
+          before: <img src="/before.png" alt="antes" />,
+          after: <img src="/after.png" alt="después" />,
+        }}
+      />,
+    );
+    const viewport = document.querySelector('.mk-lightbox__viewport') as HTMLElement;
+    const media = document.querySelector('.mk-lightbox__media') as HTMLElement;
+    mockSizes(viewport, 800, 600);
+    mockSizes(media, 1600, 1200);
+    const zoomIn = screen.getByRole('button', { name: 'Zoom in' });
+    fireEvent.click(zoomIn);
+    fireEvent.click(zoomIn);
+    const transformBefore = media.style.transform;
+    expect(media.style.transform).not.toBe('translate(0px, 0px) scale(1)');
+    const slider = screen.getByRole('slider', { name: 'Compare' });
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    vi.spyOn(container, 'getBoundingClientRect').mockReturnValue({
+      x: 0,
+      y: 0,
+      top: 0,
+      left: 0,
+      right: 200,
+      bottom: 100,
+      width: 200,
+      height: 100,
+      toJSON: () => ({}),
+    } as DOMRect);
+    fireEvent.pointerDown(slider, {
+      clientX: 160,
+      clientY: 50,
+      pointerType: 'mouse',
+      button: 0,
+      isPrimary: true,
+      pointerId: 1,
+    });
+    fireEvent.pointerMove(slider, { clientX: 170, clientY: 50, pointerType: 'mouse' });
+    expect(slider).toHaveAttribute('aria-valuenow', '80');
+    expect(media.style.transform).toBe(transformBefore);
+  });
+
+  it('sin compare, children sigue funcionando (regresión v2)', () => {
+    render(
+      <MediaLightbox open onClose={() => {}} label="V">
+        <img src="/a.png" alt="contenido" />
+      </MediaLightbox>,
+    );
+    expect(screen.getByAltText('contenido')).toBeInTheDocument();
+    expect(screen.queryByRole('slider')).not.toBeInTheDocument();
+  });
+});

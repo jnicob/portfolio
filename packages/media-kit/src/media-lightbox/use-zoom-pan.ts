@@ -135,6 +135,13 @@ export function useZoomPan(
 
     const onPointerDown = (event: PointerEvent) => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
+      // T13: escape hatch genérico — gestos originados en un elemento marcado (p.ej. el
+      // handle del compare-slider dentro del lightbox) no deben iniciar el pan del visor.
+      // Estos listeners son NATIVOS (addEventListener), por lo que el stopPropagation de
+      // React en el handler del elemento hijo NO los frena; el filtro debe vivir aquí.
+      if (event.target instanceof Element && event.target.closest('[data-mk-drag-exempt]')) {
+        return;
+      }
       pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
       vp.setPointerCapture?.(event.pointerId);
       if (pointers.size === 2) {

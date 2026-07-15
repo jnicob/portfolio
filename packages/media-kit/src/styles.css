@@ -182,6 +182,14 @@
   display: block;
 }
 
+/* T13: compare dentro del lightbox — respeta el mismo tope de tamaño que el media
+   suelto (el slider dimensiona por su propio contenido; data-fit del dialog decide
+   el tamaño del <img>/<video> antes/después dentro de él). */
+.mk-lightbox__media .mk-compare {
+  max-width: 100%;
+  max-height: 100%;
+}
+
 /* C4: pan con ratón — el drag nativo de img está prevenido en JS; affordance solo si hay desborde. */
 .mk-lightbox__viewport[data-can-pan] {
   cursor: grab;

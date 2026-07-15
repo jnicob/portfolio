@@ -180,3 +180,82 @@ describe('CompareSlider v2', () => {
     expect(slider).toHaveFocus();
   });
 });
+
+describe('CompareSlider v2.2 — dragTarget handle (C2)', () => {
+  it("con dragTarget='handle' el drag sobre la superficie NO mueve el divisor", () => {
+    render(
+      <CompareSlider
+        dragTarget="handle"
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+    fireEvent.pointerDown(container, {
+      clientX: 150,
+      clientY: 50,
+      pointerType: 'mouse',
+      button: 0,
+      isPrimary: true,
+      pointerId: 1,
+    });
+    expect(slider).toHaveAttribute('aria-valuenow', '50');
+  });
+
+  it("con dragTarget='handle' arrastrar el handle SÍ mueve el divisor", () => {
+    render(
+      <CompareSlider
+        dragTarget="handle"
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+    fireEvent.pointerDown(slider, {
+      clientX: 150,
+      clientY: 50,
+      pointerType: 'mouse',
+      button: 0,
+      isPrimary: true,
+      pointerId: 1,
+    });
+    expect(slider).toHaveAttribute('aria-valuenow', '75');
+  });
+
+  it('el handle expone data-mk-drag-exempt en ambos modos', () => {
+    const { rerender } = render(
+      <CompareSlider before={<img src="/b.png" alt="b" />} after={<img src="/a.png" alt="" />} />,
+    );
+    expect(screen.getByRole('slider')).toHaveAttribute('data-mk-drag-exempt', '');
+    rerender(
+      <CompareSlider
+        dragTarget="handle"
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+      />,
+    );
+    expect(screen.getByRole('slider')).toHaveAttribute('data-mk-drag-exempt', '');
+  });
+
+  it("dragTarget por defecto ('surface') conserva el drag actual", () => {
+    render(
+      <CompareSlider before={<img src="/b.png" alt="b" />} after={<img src="/a.png" alt="" />} />,
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+    fireEvent.pointerDown(container, {
+      clientX: 150,
+      clientY: 50,
+      pointerType: 'mouse',
+      button: 0,
+      isPrimary: true,
+      pointerId: 1,
+    });
+    expect(slider).toHaveAttribute('aria-valuenow', '75');
+  });
+});

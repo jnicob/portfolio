@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { CompareSlider } from '../compare-slider';
 import { LightboxControls, template } from './lightbox-controls';
 import { LightboxHelp } from './lightbox-help';
 import { useAutoHide } from './use-auto-hide';
@@ -67,8 +68,17 @@ export type MediaLightboxProps = {
   autoHideDelay?: number | null;
   /** Textos de los botones (i18n); cada clave tiene default en inglés. */
   labels?: Partial<MediaLightboxLabels>;
-  /** Contenido a pantalla completa: <img>, <video> o composición. */
-  children: ReactNode;
+  /**
+   * Contenido a pantalla completa: <img>, <video> o composición. Ignorado si
+   * `compare` está presente.
+   */
+  children?: ReactNode;
+  /**
+   * Compare (before/after) dentro del visor: hereda zoom/pan/toolbar del lightbox
+   * sin duplicar el motor de gestos (spec C2). Si está presente, gana sobre
+   * `children`. Sin ninguno de los dos, el visor no renderiza media.
+   */
+  compare?: { before: ReactNode; after: ReactNode; label?: string };
 };
 
 const FOCUSABLE =
@@ -168,6 +178,7 @@ function MediaLightboxContent({
   autoHideDelay = 3000,
   labels: labelOverrides,
   children,
+  compare,
 }: MediaLightboxProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -404,7 +415,16 @@ function MediaLightboxContent({
     >
       <div ref={viewportRef} className="mk-lightbox__viewport">
         <div ref={contentRef} className="mk-lightbox__media" style={zoomPan.style}>
-          {children}
+          {compare ? (
+            <CompareSlider
+              before={compare.before}
+              after={compare.after}
+              label={compare.label ?? 'Compare'}
+              dragTarget="handle"
+            />
+          ) : (
+            children
+          )}
         </div>
       </div>
       {/* Anuncio de zoom: vive en el root del dialog, FUERA de la región auto-ocultable,

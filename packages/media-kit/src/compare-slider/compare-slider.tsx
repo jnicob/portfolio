@@ -18,6 +18,17 @@ export type CompareSliderProps = {
    * donde estaba); touch/pen usan el camino drag. Teclado idéntico en ambos.
    */
   mode?: 'drag' | 'hover';
+  /**
+   * 'surface' (default): arrastrar en cualquier punto de la superficie mueve el
+   * divisor (comportamiento v1/v2, cero regresión).
+   * 'handle': el divisor SOLO se mueve arrastrando el handle (o con flechas cuando
+   * el handle tiene el foco); el resto de la superficie ignora el pointerdown. Pensado
+   * para cuando el compare vive dentro de un visor con su propio pan (T13/MediaLightbox):
+   * el gesto de pan del visor y el drag del divisor no deben pelear por el mismo puntero.
+   * No se combina con `mode="hover"` (el hover sobre superficie no tendría sentido si
+   * la superficie no responde al puntero).
+   */
+  dragTarget?: 'surface' | 'handle';
   className?: string;
   onPositionChange?: (position: number) => void;
 };
@@ -34,6 +45,7 @@ export function CompareSlider({
   initialPosition = 50,
   orientation = 'horizontal',
   mode = 'drag',
+  dragTarget = 'surface',
   className,
   onPositionChange,
 }: CompareSliderProps) {
@@ -54,12 +66,18 @@ export function CompareSlider({
       : { ArrowUp: 1, ArrowDown: -1, PageUp: 10, PageDown: -10 };
     if (event.key === 'Home') {
       event.preventDefault();
+      // El keydown del lightbox es un handler de React en el root del dialog (no un
+      // listener nativo), así que stopPropagation sí lo frena: con foco en el handle,
+      // Home/End/flechas mueven el divisor y NO llegan al pan/zoom por teclado del visor.
+      event.stopPropagation();
       update(0);
     } else if (event.key === 'End') {
       event.preventDefault();
+      event.stopPropagation();
       update(100);
     } else if (event.key in step) {
       event.preventDefault();
+      event.stopPropagation();
       update(position + (step[event.key] ?? 0));
     }
   }
@@ -78,6 +96,9 @@ export function CompareSlider({
 
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
     if (!event.isPrimary || event.button !== 0) return;
+    if (dragTarget === 'handle' && !(event.target as Element).closest('.mk-compare__handle')) {
+      return;
+    }
     handleRef.current?.focus({ preventScroll: true });
     // Con hover activo el ratón ya sigue al puntero; el down solo aplica a touch/pen.
     if (followsHover(event)) return;
@@ -118,6 +139,7 @@ export function CompareSlider({
         aria-valuenow={Math.round(position)}
         aria-orientation={orientation}
         className="mk-compare__handle"
+        data-mk-drag-exempt=""
         onKeyDown={onKeyDown}
       />
     </div>
