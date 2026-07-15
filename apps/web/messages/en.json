@@ -7,7 +7,19 @@
     "showcase": "Showcase"
   },
   "footer": { "github": "GitHub", "linkedin": "LinkedIn" },
-  "switchers": { "toEnglish": "Switch to English", "toSpanish": "Cambiar a español" },
+  "switchers": {
+    "toEnglish": "Switch to English",
+    "toSpanish": "Cambiar a español",
+    "skinButton": "Skin",
+    "skinInputLabel": "Filter skins",
+    "skinEmpty": "No skins match",
+    "skins": {
+      "devTool": "Dev tool",
+      "editorial": "Editorial",
+      "terminal": "Terminal",
+      "vibrant": "Vibrant"
+    }
+  },
   "home": {
     "meta": {
       "title": "Nico Behm — Full-stack engineer",
@@ -61,6 +73,8 @@
     "title": "UI primitives",
     "intro": "Design system kitchen sink — every variant and state, in both themes.",
     "tocLabel": "Showcase index",
+    "filterLabel": "Filter sections",
+    "filterEmpty": "No sections match",
     "toc": {
       "button": "Button",
       "badge": "Badge",

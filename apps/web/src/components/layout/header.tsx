@@ -1,11 +1,13 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { LocaleSwitcher } from './locale-switcher';
+import { SkinSwitcher } from './skin-switcher';
 import { ThemeSwitcher } from './theme-switcher';
 
-/** Header compartido: navegación principal + cambio de tema/idioma. RSC-compatible. */
+/** Header compartido: navegación principal + cambio de tema/skin/idioma. RSC-compatible. */
 export function SiteHeader() {
   const t = useTranslations('nav');
+  const tSwitchers = useTranslations('switchers');
 
   return (
     <header className="no-print border-b border-border">
@@ -17,6 +19,19 @@ export function SiteHeader() {
           <Link href="/showcase">{t('showcase')}</Link>
         </nav>
         <div className="flex items-center gap-2">
+          <SkinSwitcher
+            labels={{
+              button: tSwitchers('skinButton'),
+              inputLabel: tSwitchers('skinInputLabel'),
+              emptyMessage: tSwitchers('skinEmpty'),
+              skinNames: {
+                'dev-tool': tSwitchers('skins.devTool'),
+                editorial: tSwitchers('skins.editorial'),
+                terminal: tSwitchers('skins.terminal'),
+                vibrant: tSwitchers('skins.vibrant'),
+              },
+            }}
+          />
           <ThemeSwitcher />
           <LocaleSwitcher />
         </div>

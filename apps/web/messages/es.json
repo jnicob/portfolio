@@ -7,7 +7,19 @@
     "showcase": "Showcase"
   },
   "footer": { "github": "GitHub", "linkedin": "LinkedIn" },
-  "switchers": { "toEnglish": "Switch to English", "toSpanish": "Cambiar a español" },
+  "switchers": {
+    "toEnglish": "Switch to English",
+    "toSpanish": "Cambiar a español",
+    "skinButton": "Skin",
+    "skinInputLabel": "Filtrar skins",
+    "skinEmpty": "Ningún skin coincide",
+    "skins": {
+      "devTool": "Dev tool",
+      "editorial": "Editorial",
+      "terminal": "Terminal",
+      "vibrant": "Vibrant"
+    }
+  },
   "home": {
     "meta": {
       "title": "Nico Behm — Ingeniero full-stack",
@@ -61,6 +73,8 @@
     "title": "UI primitives",
     "intro": "Kitchen sink del design system — todas las variantes y estados, en ambos temas.",
     "tocLabel": "Índice del showcase",
+    "filterLabel": "Filtrar secciones",
+    "filterEmpty": "Ninguna sección coincide",
     "toc": {
       "button": "Button",
       "badge": "Badge",

@@ -14,6 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
 import { ThemeSwitcher } from '@/components/layout/theme-switcher';
 import { MediaKitDemo } from '@/components/showcase/media-kit-demo';
+import { ShowcaseIndex } from '@/components/showcase/showcase-index';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -64,23 +65,18 @@ export default async function ShowcasePage({ params }: Props) {
     { id: 'form', label: t('toc.form') },
     { id: 'tabs', label: t('toc.tabs') },
     { id: 'media-kit', label: t('toc.mediaKit') },
-  ] as const;
+  ];
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-12 lg:grid lg:grid-cols-[10rem_minmax(0,1fr)] lg:items-start lg:gap-12">
       <nav aria-label={t('tocLabel')} className="hidden lg:block">
-        <ul className="sticky top-12 flex flex-col gap-2 text-sm">
-          {toc.map((entry) => (
-            <li key={entry.id}>
-              <a
-                href={`#${entry.id}`}
-                className="text-fg-muted transition-colors hover:text-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-              >
-                {entry.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div className="sticky top-12">
+          <ShowcaseIndex
+            items={toc}
+            inputLabel={t('filterLabel')}
+            emptyMessage={t('filterEmpty')}
+          />
+        </div>
       </nav>
       <div className="flex flex-col gap-14">
         <header className="flex items-start justify-between gap-4">
