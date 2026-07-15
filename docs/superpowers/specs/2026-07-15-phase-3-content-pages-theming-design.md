@@ -173,8 +173,8 @@ spec de producto: se igualan **comportamientos**, nunca se copia código de empr
   referencia) para que la entrada a fullscreen no muestre un salto de calidad tardío.
 - La API actual por `ReactNode` sigue funcionando (sin breaking); el modelo estructurado es
   la vía recomendada y lo que usan los ejemplos del showcase.
-- Detectar pantalla del usuario para elegir imagen adecuada (resolucion/calidad). 
-En un movil no abriremos una imagen 4k, si lo podemos hacer en un monitor grande 4k.
+- Detectar pantalla del usuario para elegir imagen adecuada (resolucion/calidad).
+  En un movil no abriremos una imagen 4k, si lo podemos hacer en un monitor grande 4k.
 
 ### C4 — Verificación del panning con ratón
 

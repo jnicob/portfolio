@@ -206,7 +206,10 @@ export default withNextIntl(nextConfig);
 ```json
 {
   "nav": { "home": "Home", "cv": "CV", "projects": "Projects", "showcase": "Showcase" },
-  "home": { "title": "Nico Behm — portfolio under construction (Phase 3)", "showcaseCta": "View component showcase →" }
+  "home": {
+    "title": "Nico Behm — portfolio under construction (Phase 3)",
+    "showcaseCta": "View component showcase →"
+  }
 }
 ```
 
@@ -215,7 +218,10 @@ export default withNextIntl(nextConfig);
 ```json
 {
   "nav": { "home": "Inicio", "cv": "CV", "projects": "Proyectos", "showcase": "Showcase" },
-  "home": { "title": "Nico Behm — portfolio en construcción (Fase 3)", "showcaseCta": "Ver showcase de componentes →" }
+  "home": {
+    "title": "Nico Behm — portfolio en construcción (Fase 3)",
+    "showcaseCta": "Ver showcase de componentes →"
+  }
 }
 ```
 
@@ -362,6 +368,8 @@ Run: `pnpm --filter web build`
 Expected: rutas `/es`, `/en`, `/es/showcase`, `/en/showcase`, `/`, `/showcase` estáticas.
 Run: `grep -o 'url=/en' apps/web/out/index.html && grep -o 'url=/en/showcase' apps/web/out/showcase.html`
 Expected: ambos matches (meta refresh presente). Contingencia: si `redirect()` fallara en export (no debería: patrón documentado de next-intl), PARAR y consultar al orquestador — no improvisar.
+
+> **ENMIENDA (ejecución T1, 2026-07-15):** Next 16.2 ya NO emite meta refresh para `redirect()` en export (solo shell hidratado por JS). Se ejecutó la contingencia: ambas páginas de redirect son páginas renderizadas que emiten `<meta httpEquiv="refresh">` + `<link rel="alternate" hreflang>` (izados por React 19) + `location.replace` + enlace visible. El `export const metadata` con `robots: noindex` se perdió en el cambio → **T11 debe añadir `<meta name="robots" content="noindex">` a ambas páginas de redirect.**
 
 - [ ] **Step 7: Gate y commit**
 
@@ -510,9 +518,7 @@ export const profileSchema = z
     headline: localizedStringSchema,
     summary: localizedStringSchema,
     location: localizedStringSchema,
-    links: z
-      .object({ github: z.string().url(), linkedin: z.string().url() })
-      .strict(),
+    links: z.object({ github: z.string().url(), linkedin: z.string().url() }).strict(),
   })
   .strict();
 export type Profile = z.infer<typeof profileSchema>;
@@ -537,7 +543,10 @@ export const educationEntrySchema = z
     institution: z.string().min(1),
     degree: localizedStringSchema,
     start: z.string().regex(/^\d{4}$/),
-    end: z.string().regex(/^\d{4}$/).nullable(),
+    end: z
+      .string()
+      .regex(/^\d{4}$/)
+      .nullable(),
   })
   .strict();
 export type EducationEntry = z.infer<typeof educationEntrySchema>;
@@ -1400,6 +1409,7 @@ Run → FAIL.
 - [ ] **Step 2: Implementación.**
 
 `compare-slider.tsx`:
+
 - Prop `dragTarget = 'surface'`. En `onPointerDown` del contenedor: si `dragTarget === 'handle'` y `!(event.target as Element).closest('.mk-compare__handle')` → return (no capture, no update). En modo handle además `event.stopPropagation()` NO hace falta para el hook (filtro nativo del hook), pero SÍ conservar `handleRef.current?.focus(...)` solo cuando el down es válido.
 - `followsHover` en modo handle: sin cambios (el compare-lightbox usa mode drag por defecto; hover+handle no se combina — documentar en JSDoc).
 - Handle: añadir `data-mk-drag-exempt=""` y en su `onKeyDown` existente añadir `event.stopPropagation()` tras el `preventDefault` de cada tecla gestionada (solo las flechas/Home/End/PageUp/Down ya capturadas).
@@ -1411,6 +1421,7 @@ if (event.target instanceof Element && event.target.closest('[data-mk-drag-exemp
 ```
 
 `media-lightbox.tsx`:
+
 - Tipo: `children?: ReactNode;` + `compare?: { before: ReactNode; after: ReactNode; label?: string };` (JSDoc: compare gana sobre children).
 - En el JSX del wrapper media: `{compare ? <CompareSlider before={compare.before} after={compare.after} label={compare.label ?? 'Compare'} dragTarget="handle" /> : children}`.
 - Import de `CompareSlider` desde `../compare-slider` (dependencia interna del paquete, sin ciclo: compare-slider no importa lightbox — T15 invierte la relación con lazy import, ver esa task).
@@ -1524,7 +1535,17 @@ Run → FAIL.
 
 ```tsx
 const EXPAND_ICON = (
-  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg
+    viewBox="0 0 24 24"
+    width="16"
+    height="16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
     <path d="M15 3h6v6" />
     <path d="M9 21H3v-6" />
     <path d="M21 3l-7 7" />
@@ -1533,7 +1554,7 @@ const EXPAND_ICON = (
 );
 ```
 
-Import del lightbox: `import { MediaLightbox } from '../media-lightbox';` — **ciclo de imports** compare-slider ↔ media-lightbox (T13 importó slider en lightbox). Romperlo: el lightbox NO importa el slider directamente — `media-lightbox.tsx` recibe el slider por render (revisar T13: mover el render del compare a un subcomponente `LightboxCompare` que importa el slider — el ciclo es slider → lightbox → LightboxCompare → slider… sigue). **Solución cerrada:** extraer el render interno del compare del lightbox a inyección: `MediaLightbox` acepta `compare` y usa `CompareSlider` importado — y `compare-slider.tsx` importa `MediaLightbox`. ESM tolera ciclos si no hay side-effects en carga (ambos son funciones puras) y tsup los compila bien; AÑADIR test de humo de import (`import { CompareSlider, MediaLightbox } from '../index'` en un test) y verificar `pnpm --filter @nicobehm/media-kit build` sin warnings de circular deps. Si tsup avisara: mover el botón+estado expand a un subcomponente `compare-expand.tsx` que importa ambos y se inyecta — anotar en ledger. 
+Import del lightbox: `import { MediaLightbox } from '../media-lightbox';` — **ciclo de imports** compare-slider ↔ media-lightbox (T13 importó slider en lightbox). Romperlo: el lightbox NO importa el slider directamente — `media-lightbox.tsx` recibe el slider por render (revisar T13: mover el render del compare a un subcomponente `LightboxCompare` que importa el slider — el ciclo es slider → lightbox → LightboxCompare → slider… sigue). **Solución cerrada:** extraer el render interno del compare del lightbox a inyección: `MediaLightbox` acepta `compare` y usa `CompareSlider` importado — y `compare-slider.tsx` importa `MediaLightbox`. ESM tolera ciclos si no hay side-effects en carga (ambos son funciones puras) y tsup los compila bien; AÑADIR test de humo de import (`import { CompareSlider, MediaLightbox } from '../index'` en un test) y verificar `pnpm --filter @nicobehm/media-kit build` sin warnings de circular deps. Si tsup avisara: mover el botón+estado expand a un subcomponente `compare-expand.tsx` que importa ambos y se inyecta — anotar en ledger.
 
 `styles.css`:
 
@@ -1808,8 +1829,16 @@ function resolve(search: string, stored: Partial<Record<'theme' | 'skin' | 'view
 
 describe('resolveAppearance — precedencia URL > storage > default', () => {
   it('URL válida gana a storage', () => {
-    const r = resolve('?theme=light&skin=terminal&view=timeline', { theme: 'dark', skin: 'vibrant' });
-    expect(r).toMatchObject({ theme: 'light', skin: 'terminal', view: 'timeline', hadUrlParams: true });
+    const r = resolve('?theme=light&skin=terminal&view=timeline', {
+      theme: 'dark',
+      skin: 'vibrant',
+    });
+    expect(r).toMatchObject({
+      theme: 'light',
+      skin: 'terminal',
+      view: 'timeline',
+      hadUrlParams: true,
+    });
   });
   it('URL inválida cae a storage; storage inválido cae a default', () => {
     expect(resolve('?skin=neon', { skin: 'editorial' }).skin).toBe('editorial');
@@ -1853,10 +1882,21 @@ describe('applyAppearance / applyTheme', () => {
 describe('buildShareUrl', () => {
   it('incluye theme y skin siempre, view solo si se pasa', () => {
     expect(
-      buildShareUrl({ origin: 'https://x.dev', pathname: '/es/cv', theme: 'light', skin: 'terminal', view: 'compact' }),
+      buildShareUrl({
+        origin: 'https://x.dev',
+        pathname: '/es/cv',
+        theme: 'light',
+        skin: 'terminal',
+        view: 'compact',
+      }),
     ).toBe('https://x.dev/es/cv?theme=light&skin=terminal&view=compact');
     expect(
-      buildShareUrl({ origin: 'https://x.dev', pathname: '/en/showcase', theme: 'dark', skin: 'dev-tool' }),
+      buildShareUrl({
+        origin: 'https://x.dev',
+        pathname: '/en/showcase',
+        theme: 'dark',
+        skin: 'dev-tool',
+      }),
     ).toBe('https://x.dev/en/showcase?theme=dark&skin=dev-tool');
   });
 });
@@ -1873,7 +1913,25 @@ Migrar `theme-switcher.tsx`: `import { applyTheme } from '@/lib/appearance';` (A
 Ampliar `themeInitScript` en `[locale]/layout.tsx` (anti-flash de tema Y skin; comentario "mantener en sincronía con lib/appearance.ts"):
 
 ```js
-(function(){try{var q=new URLSearchParams(location.search);function pick(k,valid){var u=q.get(k);if(valid.indexOf(u)>-1)return u;var s=localStorage.getItem(k);return valid.indexOf(s)>-1?s:null;}var t=pick('theme',['dark','light'])||(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');var sk=pick('skin',['dev-tool','editorial','terminal','vibrant'])||'dev-tool';document.documentElement.dataset.theme=t;if(sk!=='dev-tool')document.documentElement.dataset.skin=sk;}catch(e){document.documentElement.dataset.theme='dark';}})();
+(function () {
+  try {
+    var q = new URLSearchParams(location.search);
+    function pick(k, valid) {
+      var u = q.get(k);
+      if (valid.indexOf(u) > -1) return u;
+      var s = localStorage.getItem(k);
+      return valid.indexOf(s) > -1 ? s : null;
+    }
+    var t =
+      pick('theme', ['dark', 'light']) ||
+      (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    var sk = pick('skin', ['dev-tool', 'editorial', 'terminal', 'vibrant']) || 'dev-tool';
+    document.documentElement.dataset.theme = t;
+    if (sk !== 'dev-tool') document.documentElement.dataset.skin = sk;
+  } catch (e) {
+    document.documentElement.dataset.theme = 'dark';
+  }
+})();
 ```
 
 Montar `<AppearanceInit />` en el body del layout de locale (sin `onView`; T24 monta el suyo en /cv — `AppearanceInit` es idempotente: aplicar dos veces es inocuo; la limpieza de URL solo ocurre una vez porque la segunda ya no ve params).
@@ -1927,58 +1985,122 @@ Run → FAIL (skins inexistentes: el parser encuentra 2 combos, el test exige 8 
 ```css
 /* ── Skin: editorial — serif en títulos, radios suaves, cálido para leer el CV ── */
 :root[data-skin='editorial'][data-theme='dark'] {
-  --bg: #1b1712; --surface: #262019; --fg: #ece4d6; --fg-muted: #b3a894;
-  --accent: #d9a05b; --accent-hover: #e4b273; --accent-fg: #1b1712;
-  --border: #3a3227; --ring: #d9a05b; --danger: #f08a75; --danger-fg: #1b1712;
-  --radius-card-value: 1rem; --radius-control-value: 0.625rem;
+  --bg: #1b1712;
+  --surface: #262019;
+  --fg: #ece4d6;
+  --fg-muted: #b3a894;
+  --accent: #d9a05b;
+  --accent-hover: #e4b273;
+  --accent-fg: #1b1712;
+  --border: #3a3227;
+  --ring: #d9a05b;
+  --danger: #f08a75;
+  --danger-fg: #1b1712;
+  --radius-card-value: 1rem;
+  --radius-control-value: 0.625rem;
   --font-heading: var(--font-serif);
 }
 
 :root[data-skin='editorial'][data-theme='light'] {
-  --bg: #f7f3ec; --surface: #fffdf8; --fg: #211d16; --fg-muted: #5f584a;
-  --accent: #8a3033; --accent-hover: #6d2427; --accent-fg: #fffdf8;
-  --border: #ddd3c2; --ring: #8a3033; --danger: #a02c2c; --danger-fg: #fffdf8;
-  --radius-card-value: 1rem; --radius-control-value: 0.625rem;
+  --bg: #f7f3ec;
+  --surface: #fffdf8;
+  --fg: #211d16;
+  --fg-muted: #5f584a;
+  --accent: #8a3033;
+  --accent-hover: #6d2427;
+  --accent-fg: #fffdf8;
+  --border: #ddd3c2;
+  --ring: #8a3033;
+  --danger: #a02c2c;
+  --danger-fg: #fffdf8;
+  --radius-card-value: 1rem;
+  --radius-control-value: 0.625rem;
   --font-heading: var(--font-serif);
 }
 
 /* ── Skin: terminal — monospace, alto contraste, radios 0, brutalist ── */
 :root[data-skin='terminal'][data-theme='dark'] {
-  --bg: #050805; --surface: #0c120c; --fg: #4ef14e; --fg-muted: #8fbf8f;
-  --accent: #ffd54e; --accent-hover: #ffe28a; --accent-fg: #050805;
-  --border: #1d2a1d; --ring: #4ef14e; --danger: #ff6b6b; --danger-fg: #050805;
-  --radius-card-value: 0; --radius-control-value: 0;
-  --font-heading: var(--font-geist-mono); --font-body: var(--font-geist-mono);
+  --bg: #050805;
+  --surface: #0c120c;
+  --fg: #4ef14e;
+  --fg-muted: #8fbf8f;
+  --accent: #ffd54e;
+  --accent-hover: #ffe28a;
+  --accent-fg: #050805;
+  --border: #1d2a1d;
+  --ring: #4ef14e;
+  --danger: #ff6b6b;
+  --danger-fg: #050805;
+  --radius-card-value: 0;
+  --radius-control-value: 0;
+  --font-heading: var(--font-geist-mono);
+  --font-body: var(--font-geist-mono);
 }
 
 :root[data-skin='terminal'][data-theme='light'] {
-  --bg: #f4f7f2; --surface: #ffffff; --fg: #0c2b0f; --fg-muted: #3f5d43;
-  --accent: #8a5d00; --accent-hover: #6f4a00; --accent-fg: #ffffff;
-  --border: #cfdccc; --ring: #8a5d00; --danger: #b3261e; --danger-fg: #ffffff;
-  --radius-card-value: 0; --radius-control-value: 0;
-  --font-heading: var(--font-geist-mono); --font-body: var(--font-geist-mono);
+  --bg: #f4f7f2;
+  --surface: #ffffff;
+  --fg: #0c2b0f;
+  --fg-muted: #3f5d43;
+  --accent: #8a5d00;
+  --accent-hover: #6f4a00;
+  --accent-fg: #ffffff;
+  --border: #cfdccc;
+  --ring: #8a5d00;
+  --danger: #b3261e;
+  --danger-fg: #ffffff;
+  --radius-card-value: 0;
+  --radius-control-value: 0;
+  --font-heading: var(--font-geist-mono);
+  --font-body: var(--font-geist-mono);
 }
 
 /* ── Skin: vibrant — acentos saturados, playful ── */
 :root[data-skin='vibrant'][data-theme='dark'] {
-  --bg: #140a20; --surface: #1f1130; --fg: #f4ecff; --fg-muted: #bda8d6;
-  --accent: #ff5da2; --accent-hover: #ff7ab5; --accent-fg: #140a20;
-  --border: #392153; --ring: #ff5da2; --danger: #ff7a66; --danger-fg: #140a20;
-  --radius-card-value: 1.25rem; --radius-control-value: 0.75rem;
+  --bg: #140a20;
+  --surface: #1f1130;
+  --fg: #f4ecff;
+  --fg-muted: #bda8d6;
+  --accent: #ff5da2;
+  --accent-hover: #ff7ab5;
+  --accent-fg: #140a20;
+  --border: #392153;
+  --ring: #ff5da2;
+  --danger: #ff7a66;
+  --danger-fg: #140a20;
+  --radius-card-value: 1.25rem;
+  --radius-control-value: 0.75rem;
 }
 
 :root[data-skin='vibrant'][data-theme='light'] {
-  --bg: #fff5fb; --surface: #ffffff; --fg: #2a1033; --fg-muted: #6b4a7a;
-  --accent: #b4126b; --accent-hover: #93094f; --accent-fg: #ffffff;
-  --border: #f0d5e7; --ring: #b4126b; --danger: #b3123f; --danger-fg: #ffffff;
-  --radius-card-value: 1.25rem; --radius-control-value: 0.75rem;
+  --bg: #fff5fb;
+  --surface: #ffffff;
+  --fg: #2a1033;
+  --fg-muted: #6b4a7a;
+  --accent: #b4126b;
+  --accent-hover: #93094f;
+  --accent-fg: #ffffff;
+  --border: #f0d5e7;
+  --ring: #b4126b;
+  --danger: #b3123f;
+  --danger-fg: #ffffff;
+  --radius-card-value: 1.25rem;
+  --radius-control-value: 0.75rem;
 }
 
 /* Swatches para el skin-switcher (T23): único lugar permitido, es definición de tokens. */
-.skin-swatch[data-skin='dev-tool'] { background: #8b7cf7; }
-.skin-swatch[data-skin='editorial'] { background: #d9a05b; }
-.skin-swatch[data-skin='terminal'] { background: #4ef14e; }
-.skin-swatch[data-skin='vibrant'] { background: #ff5da2; }
+.skin-swatch[data-skin='dev-tool'] {
+  background: #8b7cf7;
+}
+.skin-swatch[data-skin='editorial'] {
+  background: #d9a05b;
+}
+.skin-swatch[data-skin='terminal'] {
+  background: #4ef14e;
+}
+.skin-swatch[data-skin='vibrant'] {
+  background: #ff5da2;
+}
 ```
 
 - [ ] **Step 4: GREEN AA** — `pnpm --filter web exec vitest run src/app/globals-contrast` → PASS los 8 combos × 8 pares. Iterar valores (solo luminosidad) hasta verde.
@@ -2129,10 +2251,21 @@ Print en `globals.css`:
 
 ```css
 @media print {
-  .no-print { display: none !important; }
-  body { background: #fff; color: #000; }
-  a { text-decoration: none; color: inherit; }
-  main { max-width: none; padding: 0; }
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  main {
+    max-width: none;
+    padding: 0;
+  }
 }
 ```
 
@@ -2227,6 +2360,3 @@ git push origin main
 3. **Los valores hex de los skins (T21) son de partida:** el test AA es la fuente de verdad; ajustar luminosidad conservando matiz.
 4. **`NextIntlClientProvider` y RSC en tests:** los componentes se diseñan presentacionales (datos por props) para testearse sin request context; las páginas se verifican por build. No pelearse con mocks de `next-intl/server`.
 5. **Rebuild del paquete:** cualquier verificación de la app tras tocar media-kit exige `pnpm --filter @nicobehm/media-kit build` previo (la app consume `dist/`).
-
-
-
