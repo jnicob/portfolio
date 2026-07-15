@@ -5,9 +5,23 @@ import { skills } from '@/data/skills';
 import { SkillsSummary } from './skills-summary';
 
 const LEVEL_TEMPLATE = '{name}: level {level} of 5';
+const CATEGORY_LABELS = {
+  backend: 'Backend',
+  frontend: 'Frontend',
+  ai: 'AI',
+  platform: 'Platform',
+  tooling: 'Tooling',
+} as const;
 
 function renderSkillsSummary() {
-  render(<SkillsSummary locale="en" title="Skills" levelTemplate={LEVEL_TEMPLATE} />);
+  render(
+    <SkillsSummary
+      locale="en"
+      title="Skills"
+      levelTemplate={LEVEL_TEMPLATE}
+      categoryLabels={CATEGORY_LABELS}
+    />,
+  );
 }
 
 describe('SkillsSummary', () => {

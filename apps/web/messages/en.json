@@ -25,5 +25,20 @@
   "projects": {
     "title": "Projects",
     "intro": "Selected work from the Freepik AI API platform."
+  },
+  "cv": {
+    "title": "CV",
+    "experienceTitle": "Experience",
+    "educationTitle": "Education",
+    "skillsTitle": "Skills",
+    "present": "Present",
+    "contactTitle": "Contact",
+    "categories": {
+      "backend": "Backend",
+      "frontend": "Frontend",
+      "ai": "AI",
+      "platform": "Platform",
+      "tooling": "Tooling"
+    }
   }
 }
