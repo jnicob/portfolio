@@ -890,12 +890,13 @@ links:
   docs: https://docs.freepik.com
 metrics:
   - { label: Pull requests, value: 779+ }
-  - { label: AI models served, value: 135+ }
 date: 2026-07
 ---
 ```
 
-`ai-model-onboarding.mdx`: title "End-to-end AI model onboarding", metrics `{ label: Models onboarded, value: "Kling · WAN · more" }`, `{ label: Repos touched per model, value: "9" }`, stack `[openapi, fastapi, apisix, chargebee]`, links docs.
+> **ENMIENDA (review T3):** cifras/fechas internas (p.ej. "135+ modelos", versiones exactas, fechas de lanzamiento internas) NO van en contenido público: solo hechos de la spec de producto o públicamente verificables (docs.freepik.com lista las familias de modelos Kling/WAN). Aplica a datos (T3) y a los MDX (T4).
+
+`ai-model-onboarding.mdx`: title "End-to-end AI model onboarding", metrics `{ label: Models onboarded, value: "Kling · WAN · more" }` (SOLO familias públicas, sin versiones ni cifras internas — enmienda T3), stack `[openapi, fastapi, apisix]`, links docs.
 `flows-api.mdx`: title "Flows API", summary sobre orquestación de generación multi-paso, stack `[python, fastapi, openapi]`, links live/docs.
 
 Cuerpo de cada MDX (~40-70 líneas): secciones `## Context`, `## What I built`, `## Architecture`, `## Outcome`, redactadas desde la spec de producto y el CLAUDE.md público del workspace de la plataforma (proceso specs → server → gateway → docs). Enlazar la web real como "production version". SIN información interna no publicada (nombres de repos privados internos NO — describir el pipeline genéricamente), SIN email/teléfono.
