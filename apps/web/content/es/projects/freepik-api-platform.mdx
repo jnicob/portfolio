@@ -1,14 +1,12 @@
 ---
 title: Plataforma de APIs de IA de Freepik
-summary: Plataforma pública de APIs de IA que sirve modelos de generación de imagen y vídeo a escala.
+summary: 'Diseño e implementación end-to-end de la plataforma pública de APIs de Freepik: generación de IA (imagen, vídeo, audio), stock, estado de tareas y cuenta. Especificación OpenAPI, servidor FastAPI, gateway APISIX (rate limits, costes, API keys), facturación y documentación pública.'
 role: Ingeniero de plataforma — specs, servidor, gateway, facturación, docs
 stack: [python, fastapi, openapi, apisix, php]
 links:
   live: https://www.freepik.com/api
   docs: https://docs.freepik.com
-metrics:
-  - label: Pull requests
-    value: '779'
+metrics: []
 # Sin fecha de proyecto evidenciada públicamente: inicio de la etapa Freepik (= projects.ts)
 date: '2022-07'
 ---
@@ -59,6 +57,17 @@ Un servicio de facturación (implementado en PHP) lee los datos de uso del
 gateway y las definiciones de producto para facturar a los clientes según
 su plan, manteniendo el modelo de precios desacoplado del camino de
 petición.
+
+## Integraciones: más allá de un modelo por llamada
+
+La plataforma no expone solo modelos de generación de IA. Sobre el mismo
+pipeline spec → servidor → gateway → docs viven también APIs de stock
+(búsqueda y descarga de recursos), endpoints de estado de tareas y
+utilidades de cuenta — y **Flows API**, la capa de orquestación que
+permite encadenar varios modelos en una sola llamada: un flow describe
+una secuencia de pasos (p. ej. generar → upscale → convertir a vídeo) y
+la plataforma lo ejecuta como una sola tarea, midiendo el uso por paso
+para que el coste refleje los modelos realmente invocados.
 
 ## Resultado
 

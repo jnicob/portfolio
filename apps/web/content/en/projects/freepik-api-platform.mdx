@@ -1,14 +1,12 @@
 ---
 title: Freepik AI API Platform
-summary: Public AI API platform serving image and video generation models at scale.
+summary: "End-to-end design and implementation of Freepik's public API platform: AI generation (image, video, audio), stock content, task status and account APIs. OpenAPI specification, FastAPI server, APISIX gateway (rate limits, cost tracking, API keys), billing and public documentation."
 role: Platform engineer — specs, server, gateway, billing, docs
 stack: [python, fastapi, openapi, apisix, php]
 links:
   live: https://www.freepik.com/api
   docs: https://docs.freepik.com
-metrics:
-  - label: Pull requests
-    value: '779'
+metrics: []
 # No publicly evidenced project date: start of the Freepik period (= projects.ts)
 date: '2022-07'
 ---
@@ -54,6 +52,17 @@ The pipeline has four stages that map cleanly to four concerns:
 A billing service (implemented in PHP) reads gateway usage data and
 product definitions to bill customers per plan, keeping the pricing model
 decoupled from the request-handling path.
+
+## Integrations: beyond one model per call
+
+The platform exposes more than AI generation models. On the same
+spec → server → gateway → docs pipeline it also serves stock content
+APIs (search and download), task-status endpoints and account
+utilities — plus the **Flows API**, the orchestration layer that chains
+multiple models behind a single call: a flow describes a sequence of
+steps (e.g. generate → upscale → convert to video) and the platform runs
+it as a single task, metering usage per step so cost reflects the models
+actually invoked.
 
 ## Outcome
 
