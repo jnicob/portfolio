@@ -357,30 +357,56 @@
   outline-offset: 2px;
 }
 
-/* B3: tooltip ligero CSS. Complementa (nunca sustituye) al aria-label. */
-.mk-lightbox__corner button[data-mk-tooltip] {
+/* v0.5: tooltip ligero CSS para todo botón del lightbox (toolbar + esquina).
+   Complementa (nunca sustituye) al aria-label. Delay 600ms al hover; sin delay
+   con foco (teclado). Posición default 'below'; data-mk-tooltip-pos='above'
+   la invierte (toolbar, para no taparse con el propio botón). */
+.mk-lightbox [data-mk-tooltip] {
   position: relative;
 }
-
-.mk-lightbox__corner button[data-mk-tooltip]::after {
+.mk-lightbox [data-mk-tooltip]::after {
   content: attr(data-mk-tooltip);
   position: absolute;
-  top: calc(100% + 0.5rem);
-  right: 0;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.375rem;
+  left: 50%;
+  top: calc(100% + 8px);
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  border-radius: 4px;
   background: var(--mk-control-bg);
   color: var(--mk-control-color);
   box-shadow: 0 0 0 1px var(--mk-handle-ring);
-  font-size: 0.75rem;
+  font-size: 12px;
+  line-height: 1.2;
   white-space: nowrap;
-  pointer-events: none;
   opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease-out;
+  transition-delay: 0ms;
 }
-
-.mk-lightbox__corner button[data-mk-tooltip]:hover::after,
-.mk-lightbox__corner button[data-mk-tooltip]:focus-visible::after {
+.mk-lightbox [data-mk-tooltip][data-mk-tooltip-pos='above']::after {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+/* Los botones de la esquina (close/ayuda/ojo) están pegados a right:1rem: un
+   tooltip centrado se recortaría contra el borde del viewport. Ancla a la
+   derecha como el CSS anterior (v0.3.0), conservando delay y pos 'below'. */
+.mk-lightbox__corner [data-mk-tooltip]::after {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+.mk-lightbox [data-mk-tooltip]:hover::after {
   opacity: 1;
+  transition-delay: 600ms;
+}
+.mk-lightbox [data-mk-tooltip]:focus-visible::after {
+  opacity: 1;
+  transition-delay: 0ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mk-lightbox [data-mk-tooltip]::after {
+    transition-duration: 0ms;
+  }
 }
 
 /* Con el panel de ayuda abierto, su título ya nombra al botón: el tooltip sobraría

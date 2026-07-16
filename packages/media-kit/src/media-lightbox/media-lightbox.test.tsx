@@ -678,3 +678,29 @@ describe('fullscreen focus (v0.5)', () => {
     expect(dialog).toHaveFocus();
   });
 });
+
+describe('tooltips (v0.5)', () => {
+  it('el botón close lleva tooltip', () => {
+    render(
+      <MediaLightbox open onClose={() => {}} label="V">
+        <img alt="" src="/x.png" />
+      </MediaLightbox>,
+    );
+    const close = screen.getByRole('button', { name: 'Close' });
+    expect(close).toHaveAttribute('data-mk-tooltip', 'Close');
+  });
+
+  it('los botones de la esquina (close/ayuda/ojo) no llevan data-mk-tooltip-pos="above" (contrato esquina=below+right)', () => {
+    render(
+      <MediaLightbox open onClose={() => {}} label="V">
+        <img alt="" src="/x.png" />
+      </MediaLightbox>,
+    );
+    const close = screen.getByRole('button', { name: 'Close' });
+    const help = screen.getByRole('button', { name: 'Keyboard shortcuts' });
+    const toggle = screen.getByRole('button', { name: 'Hide controls' });
+    for (const button of [close, help, toggle]) {
+      expect(button).not.toHaveAttribute('data-mk-tooltip-pos', 'above');
+    }
+  });
+});

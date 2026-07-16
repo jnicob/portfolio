@@ -46,21 +46,43 @@ export function LightboxControls({
 }: LightboxControlsProps) {
   return (
     <div className="mk-lightbox__controls" role="group" aria-label={labels.controls}>
-      <button type="button" aria-label={labels.zoomOut} disabled={atMin} onClick={onZoomOut}>
+      <button
+        type="button"
+        aria-label={labels.zoomOut}
+        data-mk-tooltip={labels.zoomOut}
+        data-mk-tooltip-pos="above"
+        disabled={atMin}
+        onClick={onZoomOut}
+      >
         −
       </button>
       <span className="mk-lightbox__zoom-level" aria-hidden="true">
         {percent}%
       </span>
-      <button type="button" aria-label={labels.zoomIn} disabled={atMax} onClick={onZoomIn}>
+      <button
+        type="button"
+        aria-label={labels.zoomIn}
+        data-mk-tooltip={labels.zoomIn}
+        data-mk-tooltip-pos="above"
+        disabled={atMax}
+        onClick={onZoomIn}
+      >
         +
       </button>
-      <button type="button" aria-label={labels.reset} onClick={onReset}>
+      <button
+        type="button"
+        aria-label={labels.reset}
+        data-mk-tooltip={labels.reset}
+        data-mk-tooltip-pos="above"
+        onClick={onReset}
+      >
         ↺
       </button>
       <button
         type="button"
         aria-label={template(labels.fit, { current: fit, next: nextFit })}
+        data-mk-tooltip={template(labels.fit, { current: fit, next: nextFit })}
+        data-mk-tooltip-pos="above"
         onClick={onCycleFit}
       >
         {/* Glifo de ancho fijo: el significado (fit actual → siguiente) vive en el
@@ -72,6 +94,8 @@ export function LightboxControls({
         <button
           type="button"
           aria-label={fullscreenActive ? labels.exitFullscreen : labels.fullscreen}
+          data-mk-tooltip={fullscreenActive ? labels.exitFullscreen : labels.fullscreen}
+          data-mk-tooltip-pos="above"
           onClick={onToggleFullscreen}
         >
           ⤢

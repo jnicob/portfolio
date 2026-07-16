@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { LightboxControls, type MediaLightboxLabels } from './lightbox-controls';
+import { LightboxControls, template, type MediaLightboxLabels } from './lightbox-controls';
 
 const LABELS: MediaLightboxLabels = {
   controls: 'Controls',
@@ -53,6 +53,12 @@ function renderControls(overrides: Record<string, unknown> = {}) {
   return handlers;
 }
 
+// Defaults de renderControls(): fit='contain', nextFit='cover' (fit lleva plantilla).
+function expectedLabel(key: 'zoomOut' | 'zoomIn' | 'reset' | 'fit' | 'fullscreen'): string {
+  if (key === 'fit') return template(LABELS.fit, { current: 'contain', next: 'cover' });
+  return LABELS[key];
+}
+
 describe('LightboxControls', () => {
   it('grupo etiquetado con todos los comandos', () => {
     // El cierre ya no vive en la toolbar (ahora es persistente en la esquina, en
@@ -94,4 +100,16 @@ describe('LightboxControls', () => {
     expect(handlers.onZoomOut).toHaveBeenCalledOnce();
     expect(handlers.onCycleFit).toHaveBeenCalledOnce();
   });
+});
+
+describe('tooltips (v0.5)', () => {
+  it.each(['zoomOut', 'zoomIn', 'reset', 'fit', 'fullscreen'] as const)(
+    'el botón %s lleva tooltip con su mismo label, posicionado arriba',
+    (key) => {
+      renderControls();
+      const button = screen.getByRole('button', { name: expectedLabel(key) });
+      expect(button).toHaveAttribute('data-mk-tooltip', expectedLabel(key));
+      expect(button).toHaveAttribute('data-mk-tooltip-pos', 'above');
+    },
+  );
 });

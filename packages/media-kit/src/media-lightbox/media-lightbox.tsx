@@ -495,6 +495,7 @@ function MediaLightboxContent({
           type="button"
           aria-label={labels.close}
           data-mk-close
+          data-mk-tooltip={labels.close}
           className="mk-lightbox__close"
           onClick={onClose}
         >
