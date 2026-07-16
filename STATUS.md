@@ -24,11 +24,13 @@ aria-label nav-card, test de paridad es/en).
 
 ## Siguiente acción
 
-1. Plan F3.6 con `superpowers:writing-plans` desde spec maestro §2.1 (Showcase UX v2 +
-   media-kit 0.5: SpotlightReveal, modos CompareSlider, FilterGallery, VideoScrubPreview,
-   ApiRequestPlayer, TiltCard/GlowCard, AnimatedMetric, hero canvas; bug mouse-follow
-   fullscreen, tooltips con delay, nueva colorización 2 primeros ejemplos).
-2. Ejecutar con subagent-driven-development (rama `feature/phase-3.6-showcase-mediakit`).
+1. ✅ Spec F3.6 (`docs/superpowers/specs/2026-07-16-phase-3.6-showcase-mediakit-design.md`)
+   y plan F3.6 (`docs/superpowers/plans/2026-07-17-phase-3.6-showcase-mediakit.md`, 21
+   tareas en 3 bloques) escritos. Diagnósticos clave dentro: fullscreen mouse-follow =
+   foco en botón ⤢ + bounds sin re-clamp; tabs saltan porque `hidden` no reserva altura;
+   el índice del showcase navega por hash en vez de filtrar.
+2. Ejecutar F3.6 con subagent-driven-development (rama `feature/phase-3.6-showcase-mediakit`;
+   la Task 10 la hace el orquestador: genera assets con Magnific MCP).
 3. Después: brainstorm F4 (playground) → spec → plan.
 
 ## Pendientes del usuario (no bloqueantes)
