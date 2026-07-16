@@ -34,10 +34,10 @@
     "showcaseCta": "Ver showcase de componentes →",
     "cvCta": "Ver CV",
     "featuredTitle": "Proyectos destacados",
+    "featuredMoreTitle": "Todos los proyectos",
+    "featuredMoreCta": "Ver todos →",
     "skillsTitle": "Skills",
-    "skillLevel": "{name}: nivel {level} de 5",
-    "playgroundTitle": "Playground de IA",
-    "playgroundSoon": "Próximamente"
+    "skillLevel": "{name}: nivel {level} de 5"
   },
   "notFound": {
     "title": "Página no encontrada",
@@ -46,10 +46,10 @@
   "projects": {
     "meta": {
       "title": "Proyectos — Nico Behm",
-      "description": "Trabajo seleccionado de la plataforma de APIs de IA de Freepik."
+      "description": "De la plataforma de APIs de Freepik al backoffice, la web pública y proyectos anteriores."
     },
     "title": "Proyectos",
-    "intro": "Trabajo seleccionado de la plataforma de APIs de IA de Freepik."
+    "intro": "De la plataforma de APIs de Freepik al backoffice, la web pública y proyectos anteriores."
   },
   "cv": {
     "meta": {

@@ -10,7 +10,12 @@ const featured = projects.filter((p) => p.featured);
 function renderFeaturedProjects() {
   render(
     <NextIntlClientProvider locale="en" messages={en}>
-      <FeaturedProjects locale="en" title="Featured projects" />
+      <FeaturedProjects
+        locale="en"
+        title="Featured projects"
+        moreTitle="All projects"
+        moreCta="View all →"
+      />
     </NextIntlClientProvider>,
   );
 }
@@ -25,7 +30,8 @@ describe('FeaturedProjects', () => {
   it('renderiza un heading y un link por proyecto destacado, interno si tiene case study y externo si no', () => {
     renderFeaturedProjects();
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Featured projects');
-    expect(screen.getAllByRole('link')).toHaveLength(featured.length);
+    // +1 por el link de la MoreProjectsCard ("All projects" → /projects).
+    expect(screen.getAllByRole('link')).toHaveLength(featured.length + 1);
     for (const project of featured) {
       const expectedHref = project.caseStudy
         ? `/en/projects/${project.slug}`
@@ -35,6 +41,15 @@ describe('FeaturedProjects', () => {
         expectedHref,
       );
     }
+  });
+
+  it('renderiza la MoreProjectsCard como última celda del grid, enlazando a /projects', () => {
+    renderFeaturedProjects();
+    // localePrefix: 'always' (i18n/routing.ts) antepone el locale a cualquier href de <Link>.
+    expect(screen.getByRole('link', { name: /all projects/i })).toHaveAttribute(
+      'href',
+      '/en/projects',
+    );
   });
 
   it('ningún proyecto tiene una métrica con label "Pull requests"', () => {

@@ -7,7 +7,6 @@ import type { Skill } from '@/data/schemas';
 import { Hero } from '@/components/home/hero';
 import { FeaturedProjects } from '@/components/home/featured-projects';
 import { SkillsSummary } from '@/components/home/skills-summary';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { JsonLd } from '@/components/seo/json-ld';
 import { localizedPageMetadata, personJsonLd } from '@/lib/seo';
 
@@ -35,19 +34,18 @@ export default async function HomePage({ params }: Props) {
     <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4">
       <JsonLd data={personJsonLd(locale)} />
       <Hero locale={locale} cvLabel={t('cvCta')} />
-      <FeaturedProjects locale={locale} title={t('featuredTitle')} />
       <SkillsSummary
         locale={locale}
         title={t('skillsTitle')}
         levelTemplate={t.raw('skillLevel')}
         categoryLabels={categoryLabels}
       />
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('playgroundTitle')}</CardTitle>
-        </CardHeader>
-        <CardContent>{t('playgroundSoon')}</CardContent>
-      </Card>
+      <FeaturedProjects
+        locale={locale}
+        title={t('featuredTitle')}
+        moreTitle={t('featuredMoreTitle')}
+        moreCta={t('featuredMoreCta')}
+      />
       <Link
         href="/showcase"
         className="text-accent underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"

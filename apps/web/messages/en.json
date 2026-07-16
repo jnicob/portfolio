@@ -34,10 +34,10 @@
     "showcaseCta": "View component showcase →",
     "cvCta": "View CV",
     "featuredTitle": "Featured projects",
+    "featuredMoreTitle": "All projects",
+    "featuredMoreCta": "View all →",
     "skillsTitle": "Skills",
-    "skillLevel": "{name}: level {level} of 5",
-    "playgroundTitle": "AI Playground",
-    "playgroundSoon": "Coming soon"
+    "skillLevel": "{name}: level {level} of 5"
   },
   "notFound": {
     "title": "Page not found",
@@ -46,10 +46,10 @@
   "projects": {
     "meta": {
       "title": "Projects — Nico Behm",
-      "description": "Selected work from the Freepik AI API platform."
+      "description": "From Freepik's API platform to the backoffice, public web and earlier work."
     },
     "title": "Projects",
-    "intro": "Selected work from the Freepik AI API platform."
+    "intro": "From Freepik's API platform to the backoffice, public web and earlier work."
   },
   "cv": {
     "meta": {

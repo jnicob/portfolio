@@ -1,14 +1,17 @@
 import { projects } from '@/data/projects';
 import type { Locale } from '@/i18n/routing';
 import { ProjectCard } from '@/components/projects/project-card';
+import { MoreProjectsCard } from '@/components/home/more-projects-card';
 
 type FeaturedProjectsProps = {
   locale: Locale;
   title: string;
+  moreTitle: string;
+  moreCta: string;
 };
 
-/** Grid de proyectos destacados. RSC-compatible: datos importados, sin hooks. */
-export function FeaturedProjects({ locale, title }: FeaturedProjectsProps) {
+/** Grid de proyectos destacados + link-card final a /projects. RSC-compatible: sin hooks. */
+export function FeaturedProjects({ locale, title, moreTitle, moreCta }: FeaturedProjectsProps) {
   const featured = projects.filter((project) => project.featured);
 
   return (
@@ -18,6 +21,7 @@ export function FeaturedProjects({ locale, title }: FeaturedProjectsProps) {
         {featured.map((project) => (
           <ProjectCard key={project.slug} project={project} locale={locale} />
         ))}
+        <MoreProjectsCard locale={locale} title={moreTitle} cta={moreCta} />
       </div>
     </section>
   );
