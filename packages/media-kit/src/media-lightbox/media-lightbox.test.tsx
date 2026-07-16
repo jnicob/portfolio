@@ -642,3 +642,39 @@ describe('MediaLightbox v2.2 — MediaSource (C3)', () => {
     expect(screen.getByAltText('después')).toHaveAttribute('src', '/after-full.png');
   });
 });
+
+describe('fullscreen focus (v0.5)', () => {
+  afterEach(() => {
+    Object.defineProperty(document, 'fullscreenEnabled', { value: undefined, configurable: true });
+    Object.defineProperty(document, 'fullscreenElement', { value: null, configurable: true });
+  });
+
+  it('devuelve el foco al dialog al entrar en fullscreen', () => {
+    Object.defineProperty(document, 'fullscreenEnabled', { value: true, configurable: true });
+    render(
+      <MediaLightbox open onClose={() => {}} label="Viewer">
+        <img alt="" src="/x.png" />
+      </MediaLightbox>,
+    );
+    const dialog = screen.getByRole('dialog');
+    screen.getByRole('button', { name: 'Enter fullscreen' }).focus();
+    Object.defineProperty(document, 'fullscreenElement', { value: dialog, configurable: true });
+    fireEvent(document, new Event('fullscreenchange'));
+    expect(dialog).toHaveFocus();
+  });
+
+  it('devuelve el foco al dialog al salir de fullscreen', () => {
+    Object.defineProperty(document, 'fullscreenEnabled', { value: true, configurable: true });
+    render(
+      <MediaLightbox open onClose={() => {}} label="Viewer">
+        <img alt="" src="/x.png" />
+      </MediaLightbox>,
+    );
+    const dialog = screen.getByRole('dialog');
+    Object.defineProperty(document, 'fullscreenElement', { value: dialog, configurable: true });
+    fireEvent(document, new Event('fullscreenchange'));
+    Object.defineProperty(document, 'fullscreenElement', { value: null, configurable: true });
+    fireEvent(document, new Event('fullscreenchange'));
+    expect(dialog).toHaveFocus();
+  });
+});

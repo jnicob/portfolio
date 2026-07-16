@@ -286,6 +286,15 @@ function MediaLightboxContent({
     if (helpOpen) dialogRef.current?.querySelector<HTMLElement>('[data-mk-help]')?.focus();
   }, [helpOpen]);
 
+  // Al alternar fullscreen el foco queda en el botón ⤢, y Espacio sobre un botón
+  // no activa el space-pan (:354). Devolver el foco al root restablece el follow.
+  const fullscreenWasActive = useRef(fullscreen.active);
+  useEffect(() => {
+    if (fullscreenWasActive.current === fullscreen.active) return;
+    fullscreenWasActive.current = fullscreen.active;
+    dialogRef.current?.focus();
+  }, [fullscreen.active]);
+
   const nextFit = FIT_ORDER[(FIT_ORDER.indexOf(fit) + 1) % FIT_ORDER.length] ?? 'contain';
 
   function cycleFit() {
