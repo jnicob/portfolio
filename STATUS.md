@@ -25,8 +25,7 @@ Freepik (Backoffice + fc_freepik_web) hecha con resúmenes clean-room.
 
 ## Siguiente acción
 
-1. Usuario elige los componentes de impacto visual de la lista de candidatas de §2.1
-   (spec maestro) para acotar F3.6.
+1. ✅ Usuario eligió TODOS los componentes de impacto visual (2026-07-16) — F3.6 acotada.
 2. Plan F3.5 (Contenido v2) con `superpowers:writing-plans` desde spec maestro §2.1 +
    notas de exploración en `apps/web/content/cv/` → ejecutar con
    subagent-driven-development (rama `feature/phase-3.5-content-v2`; gate
