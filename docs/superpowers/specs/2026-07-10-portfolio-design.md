@@ -26,9 +26,44 @@ Portfolio profesional bilingüe (es/en) de Nicolás Behm (full-stack, Freepik Co
 | Imagen live (modo Node) | Proxy → **Cloudflare Workers AI** (FLUX.1-schnell, 10k neurons/día ≈ 200 img/día gratis, sin tarjeta)                                                                                                                                                                                                                                |
 | Paquete npm             | **`@nicobehm/media-kit`**                                                                                                                                                                                                                                                                                                            |
 | Dominio                 | Aún no existe → `SITE_URL` configurable por env con placeholder claro                                                                                                                                                                                                                                                                |
-| CV                      | Etapa Freepik redactada desde los 779 PRs reales (GitHub `jnicob`) + titular público de LinkedIn. Experiencia previa y formación: **placeholders tipados** hasta que el usuario entregue el export PDF de LinkedIn (pendiente, no bloqueante)                                                                                        |
-| Case studies            | ① Plataforma web API Freepik/Magnific · ② Onboarding end-to-end de modelos IA · ③ Flows API. API keys/billing como sección del ①; Freepik Manager como entrada de experiencia, no case study. Los case studies enlazan la web real de Freepik/Magnific API                                                                           |
+| CV                      | Etapa Freepik redactada desde los 779 PRs reales (GitHub `jnicob`) + titular público de LinkedIn. Experiencia previa y formación: **placeholders tipados** hasta que el usuario entregue el export PDF de LinkedIn (pendiente, no bloqueante). **AMENDED 2026-07-16 — ver §2.1:** LinkedIn ya entregado (`content/cv/linkedin*.pdf`); métrica global "+1.000 PRs" (GitHub + Bitbucket)                                                        |
+| Case studies            | ① Plataforma web API Freepik/Magnific · ② Onboarding end-to-end de modelos IA · ③ Flows API. API keys/billing como sección del ①; Freepik Manager como entrada de experiencia, no case study. Los case studies enlazan la web real de Freepik/Magnific API. **AMENDED 2026-07-16 — ver §2.1:** Flows API sale de destacados; entran Playground y Backoffice; proyectos ampliados con todo el CV de LinkedIn                                   |
 | Config agentes          | **Agnóstica a cualquier agente** (patrón `fc_freepik_web`): fuentes de verdad en raíz (`AGENTS.md`, `skills/`, `agents/`); adaptación por herramienta solo vía symlinks (`CLAUDE.md`, `GEMINI.md`, `.claude/`, `.cursor/`, `.codex/`, `.github/`) + `scripts/setup-agents.sh` que los crea/valida y genera `copilot-instructions.md` |
+
+### 2.1 Enmiendas 2026-07-16 — revisión de contenido (feedback del usuario tras F3)
+
+Decisiones nuevas a partir de la revisión del sitio publicado por F3. Se implementan en la **fase 3.5** del roadmap (antes de F4).
+
+**Home**
+
+- Orden de secciones: hero → **Skills** → **Proyectos destacados** (Skills sube por delante de destacados).
+- **Eliminar** la card "Playground de IA — Próximamente" (`home.playgroundTitle/playgroundSoon`).
+- En Proyectos destacados: añadir un **box-enlace a `/projects`** con el mismo estilo de card que los proyectos, adelantando algunos títulos ("y además: Backoffice, Cadi, HIS municipal…").
+- Destacados quedan: ① Plataforma API Freepik/Magnific · ② Onboarding de modelos IA · ③ **Playground** (⚠️ PENDIENTE CONFIRMAR: se interpreta como el playground web de la API de Freepik construido en `fc_freepik_web`, enlazando la versión live — la exploración 2026-07-16 confirma ownership de facto: 20+ feat / 11 fix, integración continua de modelos, fixes SSRF; alternativa: el playground propio del portfolio cuando exista F4). **Flows API sale de destacados** (⚠️ CONFIRMAR si su case study MDX se conserva como proyecto no destacado o se elimina).
+
+**Métrica de PRs**
+
+- Los 779 PRs son solo GitHub; los ~2 primeros años el equipo trabajó en **Bitbucket** (sin registro público) → la métrica pasa a "**+1.000 PRs**" y se muestra **solo a nivel general** (hero/summary del perfil). **Se eliminan los contadores de PRs por proyecto** en `projects.ts`.
+
+**Skills**
+
+- Ampliar `skills.ts` con el CV de LinkedIn y la exploración de repos (curado, no exhaustivo). Confirmadas por LinkedIn: **HL7 (V2 Messaging, Infobuttons) / interoperabilidad sanitaria**, SNOMED CT / LOINC / CIE-10, Mirth Connect, CodeIgniter, MySQL / SQL Server, WordPress / Moodle / Joomla, Salesforce Lightning/Aura, Material UI, SCRUM/gestión de proyectos. Confirmadas por la exploración de repos (2026-07-16): **Vue 2/3 + TypeScript** (tasks_web, tax_center, flaticon_manager, admin_web, freepik-manager), Laravel Nova, Slim 4 + DDD/hexagonal, Radix UI / vanilla-extract / cva, React Query, Zod, Docker + Kubernetes (Helm/Skaffold), extensiones Chrome MV3, MongoDB, BigQuery.
+- Quitar cualquier skill/mención "Playground de IA" como skill.
+
+**Proyectos (`/projects` + `projects.ts`)**
+
+- Añadir **Backoffice Freepik**. Exploración hecha (2026-07-16, informes en `apps/web/content/cv/research-freepik-repos.md`, gitignored): freepik-manager (**680 commits, 2º contribuidor**), tasks_web (**495, 5º**), admin_web (275), tax_center (36), flaticon_manager (27), factotum (14), autologin (2); en `fc_freepik_web` (714 commits): Playground de la API, landings de API y dashboard dev-hub (usage/billing/limits). División propuesta (cerrar en el plan F3.5): ① Backoffice de contenido Freepik/Flaticon (manager + admin_web + tasks_web + flaticon_manager + factotum + autologin, con Tax Center como sub-bullet o entrada menor) · ② Playground de la API como proyecto destacado propio · ③ dev-hub (panel de desarrollador y estadísticas) como entrada propia o sección del case study de la plataforma.
+- Añadir **todos los proyectos del CV de LinkedIn**: AccelOne (Cadi, GDS, Deal.me, Candidate Viewer, The Crane Club, DevelopIntelligence), Fares Taie (gestión del conocimiento en salud, CDSS), Municipalidad de Gral. Pueyrredon (HIS municipal, HL7), IAC (procesador ELISA, FONTAR).
+- Los resúmenes de repos internos son **clean-room**: descripción funcional de alto nivel + stack, sin código ni datos internos. Notas de investigación en `apps/web/content/cv/` (gitignored), nunca en el repo público.
+
+**CV**
+
+- Mejorar la redacción de la experiencia Freepik/Magnific con la evidencia de la exploración de repos: tres frentes — plataforma API (specs/servidor/gateway/docs), web pública de la API (Playground, landings, dev-hub con usage/billing/limits) y backoffice de contenido/colaboradores — y sumar las skills nuevas. Experiencia previa desde LinkedIn: AccelOne (2020-2022), Fares Taie (2012-2021), Municipalidad Gral. Pueyrredon (2012-2021, HIS + HL7), IAC (2013-2017), docencia ISET, Lauquen; educación: Ing. Informática (U. FASTA), Especialista en Gestión de la Tecnología y la Innovación (UNMdP).
+
+**Fixes UI (mismos criterios AA de siempre)**
+
+- Header: `cursor: pointer` en hover de los switchers de skin/modo/idioma.
+- Showcase: ⚠️ comentario del usuario llegó truncado ("sigue habiendo…") — PENDIENTE de detalle antes de actuar.
 
 ## 3. Restricciones globales
 

@@ -1,14 +1,16 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-15 · por /checkpoint
+> Actualizado: 2026-07-16 · tras feedback de contenido del usuario
 
 ## Ahora
 
-**Fase 3 COMPLETA y mergeada a main** (`27a933d..ecb17b7`, 48 commits, FF + push):
-contenido+páginas+i18n+SEO (A) · media-kit **0.4.0** (C) · theming v2 con 4 skins y 3
-vistas de CV (B). Verificación en vivo (Playwright sobre el export), design review y
-code review final "Ready to merge: Yes" con todos los blockers resueltos.
-**Siguiente fase: F4 (playground) — falta brainstorm/spec y plan.**
+**Fase 3 COMPLETA y mergeada a main**. El usuario revisó el sitio (2026-07-16) y dio
+feedback de contenido → **nueva fase 3.5 (Contenido v2) antes de F4**, decisiones
+registradas en el spec maestro §2.1 (home reordenada, +1.000 PRs solo a nivel global,
+proyectos Backoffice + todo el CV de LinkedIn, skills ampliadas, fixes UI del header).
+LinkedIn ya entregado en `apps/web/content/cv/linkedin*.pdf`. Exploración de repos
+Freepik (Backoffice + fc_freepik_web) hecha con resúmenes clean-room.
+**Siguiente fase: F3.5 (plan just-in-time con writing-plans) → luego F4 (playground).**
 
 ## Hecho
 
@@ -23,14 +25,16 @@ code review final "Ready to merge: Yes" con todos los blockers resueltos.
 
 ## Siguiente acción
 
-1. Brainstorm F4 (playground) con `superpowers:brainstorming` → spec
-   `docs/superpowers/specs/2026-07-<dd>-phase-4-playground-design.md` (leer antes
-   spec de producto §playground y contratos F3→F4 del roadmap).
-2. Plan con `superpowers:writing-plans` → ejecutar con subagent-driven-development
-   (rama `feature/phase-4-playground`; gate `pnpm run lint && pnpm run typecheck && pnpm run test`).
-3. Incluir en F4 la tarea de limpieza del backlog F3 (ledger `.superpowers/sdd/progress.md`,
-   entrada "F3 Task 26"): sweep `z.url()`, consistencia (props muertas, contacto
-   triplicado, SITE_URL x3), guard `NEXT_PUBLIC_SITE_URL` en build prod.
+1. Resolver con el usuario las 2 dudas abiertas de §2.1 del spec maestro: qué es
+   "Playground" en destacados (¿el de fc_freepik_web live o el propio de F4?) y el
+   comentario truncado de Showcase ("sigue habiendo…").
+2. Plan F3.5 con `superpowers:writing-plans` desde spec maestro §2.1 + notas de
+   exploración en `apps/web/content/cv/` → ejecutar con subagent-driven-development
+   (rama `feature/phase-3.5-content-v2`; gate `pnpm run lint && pnpm run typecheck && pnpm run test`).
+3. Incluir en F3.5 la limpieza del backlog F3 (ledger `.superpowers/sdd/progress.md`,
+   "F3 Task 26"): sweep `z.url()`, consistencia (props muertas, contacto triplicado,
+   SITE_URL x3), guard `NEXT_PUBLIC_SITE_URL` en build prod.
+4. Después: brainstorm F4 (playground) → spec → plan, como estaba previsto.
 
 ## Pendientes del usuario (no bloqueantes)
 
