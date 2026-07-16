@@ -16,14 +16,17 @@ function renderFeaturedProjects() {
 }
 
 describe('FeaturedProjects', () => {
-  it('renderiza un heading y un link por proyecto destacado apuntando a /en/projects/<slug>', () => {
+  it('renderiza un heading y un link por proyecto destacado, interno si tiene case study y externo si no', () => {
     renderFeaturedProjects();
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Featured projects');
     expect(screen.getAllByRole('link')).toHaveLength(featured.length);
     for (const project of featured) {
+      const expectedHref = project.caseStudy
+        ? `/en/projects/${project.slug}`
+        : (project.links.live ?? project.links.docs ?? project.links.repo);
       expect(screen.getByRole('link', { name: project.title.en })).toHaveAttribute(
         'href',
-        `/en/projects/${project.slug}`,
+        expectedHref,
       );
     }
   });

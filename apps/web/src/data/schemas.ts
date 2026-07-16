@@ -78,6 +78,7 @@ export const projectSchema = z
     links: projectLinksSchema,
     metrics: z.array(z.object({ label: localizedStringSchema, value: z.string().min(1) }).strict()),
     featured: z.boolean(),
+    caseStudy: z.boolean().default(false),
     date: dateish,
   })
   .strict();

@@ -275,6 +275,21 @@ describe('projectSchema y frontmatter', () => {
     ).toBe(false);
   });
 
+  it('caseStudy es false por defecto', () => {
+    const parsed = projectSchema.parse({
+      slug: 'test',
+      title: LOC,
+      summary: LOC,
+      role: LOC,
+      stack: ['node'],
+      links: {},
+      metrics: [],
+      featured: false,
+      date: '2026-07',
+    });
+    expect(parsed.caseStudy).toBe(false);
+  });
+
   it('rechaza claves extra en project', () => {
     expect(
       projectSchema.safeParse({

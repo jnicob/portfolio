@@ -11,18 +11,39 @@ type ProjectCardProps = {
   headingLevel?: 'h2' | 'h3';
 };
 
+const titleLinkClassName =
+  'hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
+
+/**
+ * Título de la tarjeta: enlace interno al case study si existe (`caseStudy`),
+ * si no al primer enlace externo disponible (live > docs > repo), o texto plano.
+ */
+function TitleLink({ project, locale }: { project: Project; locale: Locale }) {
+  if (project.caseStudy) {
+    return (
+      <Link href={`/projects/${project.slug}`} className={titleLinkClassName}>
+        {project.title[locale]}
+      </Link>
+    );
+  }
+  const external = project.links.live ?? project.links.docs ?? project.links.repo;
+  if (external) {
+    return (
+      <a href={external} rel="noreferrer" className={titleLinkClassName}>
+        {project.title[locale]}
+      </a>
+    );
+  }
+  return <span>{project.title[locale]}</span>;
+}
+
 /** Tarjeta de proyecto: patrón "clickable card" accesible — el link vive en el heading. RSC-compatible. */
 export function ProjectCard({ project, locale, headingLevel = 'h3' }: ProjectCardProps) {
   return (
     <Card>
       <CardHeader>
         <CardTitle as={headingLevel}>
-          <Link
-            href={`/projects/${project.slug}`}
-            className="hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-          >
-            {project.title[locale]}
-          </Link>
+          <TitleLink project={project} locale={locale} />
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">

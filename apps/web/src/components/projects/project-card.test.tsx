@@ -18,15 +18,42 @@ function renderProjectCard(props: ComponentProps<typeof ProjectCard>) {
 }
 
 describe('ProjectCard', () => {
-  it('renderiza título ES enlazado al case study, summary ES y un badge por item de stack', () => {
+  it('renderiza título ES enlazado externamente (sin case study), summary ES y un badge por item de stack', () => {
     renderProjectCard({ project: flowsApi, locale: 'es' });
 
     const link = screen.getByRole('link', { name: flowsApi.title.es });
-    expect(link).toHaveAttribute('href', '/es/projects/flows-api');
+    expect(link).toHaveAttribute('href', flowsApi.links.docs);
     expect(screen.getByText(flowsApi.summary.es)).toBeInTheDocument();
     for (const item of flowsApi.stack) {
       expect(screen.getByText(item)).toBeInTheDocument();
     }
+  });
+
+  it('enlaza al case study interno cuando caseStudy=true', () => {
+    renderProjectCard({ project: { ...flowsApi, caseStudy: true, slug: 'x' }, locale: 'es' });
+
+    expect(screen.getByRole('link', { name: flowsApi.title.es })).toHaveAttribute(
+      'href',
+      '/es/projects/x',
+    );
+  });
+
+  it('enlaza al live externo cuando no hay case study', () => {
+    renderProjectCard({
+      project: { ...flowsApi, caseStudy: false, links: { live: 'https://example.com' } },
+      locale: 'es',
+    });
+
+    expect(screen.getByRole('link', { name: flowsApi.title.es })).toHaveAttribute(
+      'href',
+      'https://example.com',
+    );
+  });
+
+  it('sin case study ni enlaces, el título no es un enlace', () => {
+    renderProjectCard({ project: { ...flowsApi, caseStudy: false, links: {} }, locale: 'es' });
+
+    expect(screen.queryByRole('link', { name: flowsApi.title.es })).toBeNull();
   });
 
   it('renderiza las métricas como dl con label localizado y su valor', () => {
