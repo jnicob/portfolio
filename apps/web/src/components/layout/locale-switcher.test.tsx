@@ -26,4 +26,9 @@ describe('LocaleSwitcher', () => {
     await userEvent.click(button);
     expect(replace).toHaveBeenCalledWith('/projects', { locale: 'en' });
   });
+
+  it('muestra cursor pointer en el botón disparador', () => {
+    renderAt('es');
+    expect(screen.getByRole('button', { name: 'Switch to English' })).toHaveClass('cursor-pointer');
+  });
 });

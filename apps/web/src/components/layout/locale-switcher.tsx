@@ -17,7 +17,7 @@ export function LocaleSwitcher() {
     <button
       type="button"
       aria-label={label}
-      className="inline-flex h-9 items-center justify-center rounded-control border border-border px-3 text-sm text-fg transition-colors hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      className="inline-flex h-9 cursor-pointer items-center justify-center rounded-control border border-border px-3 text-sm text-fg transition-colors hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       onClick={() => router.replace(pathname, { locale: other })}
     >
       {other.toUpperCase()}

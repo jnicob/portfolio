@@ -84,4 +84,9 @@ describe('SkinSwitcher', () => {
     expect(screen.queryByRole('combobox', { name: 'Filter skins' })).not.toBeInTheDocument();
     expect(button).toHaveFocus();
   });
+
+  it('muestra cursor pointer en el botón disparador', () => {
+    render(<SkinSwitcher labels={LABELS} />);
+    expect(screen.getByRole('button', { name: 'Skin' })).toHaveClass('cursor-pointer');
+  });
 });

@@ -86,7 +86,7 @@ export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
-        className="inline-flex h-9 items-center justify-center rounded-control border border-border px-3 text-sm text-fg transition-colors hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        className="inline-flex h-9 cursor-pointer items-center justify-center rounded-control border border-border px-3 text-sm text-fg transition-colors hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         onClick={() => setOpen((value) => !value)}
       >
         {labels.button}

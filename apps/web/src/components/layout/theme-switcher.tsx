@@ -22,7 +22,7 @@ export function ThemeSwitcher() {
     <button
       type="button"
       aria-label={`Switch to ${next} theme`}
-      className="inline-flex size-9 items-center justify-center rounded-control border border-border text-fg transition-colors hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      className="inline-flex size-9 cursor-pointer items-center justify-center rounded-control border border-border text-fg transition-colors hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       onClick={() => {
         applyTheme(next);
         setTheme(next);
