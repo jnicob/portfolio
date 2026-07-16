@@ -23,6 +23,7 @@ function TitleLink({ project, locale }: { project: Project; locale: Locale }) {
     return (
       <Link href={`/projects/${project.slug}`} className={titleLinkClassName}>
         {project.title[locale]}
+        <span aria-hidden>{' →'}</span>
       </Link>
     );
   }
@@ -31,6 +32,7 @@ function TitleLink({ project, locale }: { project: Project; locale: Locale }) {
     return (
       <a href={external} rel="noreferrer" className={titleLinkClassName}>
         {project.title[locale]}
+        <span aria-hidden>{' ↗'}</span>
       </a>
     );
   }

@@ -14,7 +14,7 @@ function renderFeaturedProjects() {
         locale="en"
         title="Featured projects"
         moreTitle="All projects"
-        moreCta="View all →"
+        moreCountTemplate="and {count} more projects"
       />
     </NextIntlClientProvider>,
   );

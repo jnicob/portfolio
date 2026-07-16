@@ -44,7 +44,7 @@ const entries = [
     metrics: [
       {
         label: { es: 'Familias de modelos publicadas', en: 'Model families shipped' },
-        value: 'Kling, WAN…',
+        value: 'Kling, WAN',
       },
       {
         label: { es: 'Endpoints por modelo', en: 'Endpoints per model' },

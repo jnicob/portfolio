@@ -44,7 +44,7 @@ export default async function HomePage({ params }: Props) {
         locale={locale}
         title={t('featuredTitle')}
         moreTitle={t('featuredMoreTitle')}
-        moreCta={t('featuredMoreCta')}
+        moreCountTemplate={t.raw('featuredMoreCount')}
       />
       <Link
         href="/showcase"

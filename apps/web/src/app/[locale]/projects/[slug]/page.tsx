@@ -37,14 +37,16 @@ export default async function ProjectPage({ params }: Props) {
     <main className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="text-3xl font-semibold">{frontmatter.title}</h1>
       <p className="mt-2 text-fg-muted">{frontmatter.summary}</p>
-      <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-2">
-        {frontmatter.metrics.map((metric) => (
-          <div key={metric.label}>
-            <dt className="text-sm text-fg-muted">{metric.label}</dt>
-            <dd className="font-mono">{metric.value}</dd>
-          </div>
-        ))}
-      </dl>
+      {frontmatter.metrics.length > 0 && (
+        <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-2">
+          {frontmatter.metrics.map((metric) => (
+            <div key={metric.label}>
+              <dt className="text-sm text-fg-muted">{metric.label}</dt>
+              <dd className="font-mono">{metric.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
       <article className="prose-portfolio mt-10">{content}</article>
     </main>
   );

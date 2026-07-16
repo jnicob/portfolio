@@ -35,7 +35,7 @@
     "cvCta": "Ver CV",
     "featuredTitle": "Proyectos destacados",
     "featuredMoreTitle": "Todos los proyectos",
-    "featuredMoreCta": "Ver todos →",
+    "featuredMoreCount": "y {count} proyectos más",
     "skillsTitle": "Skills",
     "skillLevel": "{name}: nivel {level} de 5"
   },

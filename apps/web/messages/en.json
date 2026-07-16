@@ -35,7 +35,7 @@
     "cvCta": "View CV",
     "featuredTitle": "Featured projects",
     "featuredMoreTitle": "All projects",
-    "featuredMoreCta": "View all →",
+    "featuredMoreCount": "and {count} more projects",
     "skillsTitle": "Skills",
     "skillLevel": "{name}: level {level} of 5"
   },

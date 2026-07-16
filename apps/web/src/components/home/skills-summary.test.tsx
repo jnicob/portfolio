@@ -14,7 +14,7 @@ const CATEGORY_LABELS = {
 } as const;
 
 function renderSkillsSummary() {
-  render(
+  return render(
     <SkillsSummary
       locale="en"
       title="Skills"
@@ -44,5 +44,15 @@ describe('SkillsSummary', () => {
     expect(group).toBeInTheDocument();
     const dots = group.querySelectorAll('[aria-hidden="true"]');
     expect(dots).toHaveLength(5);
+  });
+
+  it('agrupa las categorías en un grid multi-columna compacto (no una fila por skill a ancho completo)', () => {
+    const { container } = renderSkillsSummary();
+    const heading = screen.getByRole('heading', { level: 2 });
+    const grid = heading.nextElementSibling;
+    expect(grid?.className).toContain('grid');
+    expect(grid?.className).toContain('sm:grid-cols-2');
+    expect(grid?.className).toContain('lg:grid-cols-3');
+    expect(container.querySelectorAll('h3').length).toBeGreaterThan(0);
   });
 });

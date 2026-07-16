@@ -90,4 +90,30 @@ describe('ProjectCard', () => {
       screen.getByRole('heading', { level: 2, name: withMetrics.title.es }),
     ).toBeInTheDocument();
   });
+
+  it('el título con case study termina en → (affordance de enlace interno), sin cambiar el nombre accesible', () => {
+    renderProjectCard({ project: withMetrics, locale: 'es' });
+    expect(withMetrics.caseStudy).toBe(true);
+    const heading = screen.getByRole('heading', { name: withMetrics.title.es });
+    expect(heading.textContent).toBe(`${withMetrics.title.es}\u2009→`);
+    expect(screen.getByRole('link', { name: withMetrics.title.es })).toBeInTheDocument();
+  });
+
+  it('el título con enlace externo (sin case study) termina en ↗', () => {
+    renderProjectCard({
+      project: { ...withoutCaseStudy, caseStudy: false, links: { live: 'https://example.com' } },
+      locale: 'es',
+    });
+    const heading = screen.getByRole('heading', { name: withoutCaseStudy.title.es });
+    expect(heading.textContent).toBe(`${withoutCaseStudy.title.es}\u2009↗`);
+  });
+
+  it('el título en texto plano (sin case study ni enlaces) no lleva sufijo', () => {
+    renderProjectCard({
+      project: { ...withoutCaseStudy, caseStudy: false, links: {} },
+      locale: 'es',
+    });
+    const heading = screen.getByRole('heading', { name: withoutCaseStudy.title.es });
+    expect(heading.textContent).toBe(withoutCaseStudy.title.es);
+  });
 });
