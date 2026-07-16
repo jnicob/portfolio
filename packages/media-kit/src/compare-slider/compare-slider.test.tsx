@@ -1,7 +1,20 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CompareSlider } from './compare-slider';
+
+function stubReducedMotion(matches: boolean) {
+  vi.stubGlobal('matchMedia', (query: string) => ({
+    matches,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  }));
+}
 
 function renderSlider(props = {}) {
   return render(
@@ -863,5 +876,120 @@ describe('compareMode (v0.5)', () => {
       'data-compare-mode',
       'wipe',
     );
+  });
+});
+
+describe('CompareSlider — compareMode blink (T5)', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('blink alterna los lados cada 800ms y el switch pausa', () => {
+    vi.useFakeTimers();
+    render(
+      <CompareSlider
+        before={<img alt="" src="/a.png" />}
+        after={<img alt="" src="/b.png" />}
+        compareMode="blink"
+        label="C"
+      />,
+    );
+    const root = document.querySelector('.mk-compare')!;
+    expect(root).toHaveAttribute('data-blink-side', 'before');
+    act(() => vi.advanceTimersByTime(800));
+    expect(root).toHaveAttribute('data-blink-side', 'after');
+    fireEvent.click(screen.getByRole('switch'));
+    act(() => vi.advanceTimersByTime(1600));
+    expect(root).toHaveAttribute('data-blink-side', 'after'); // pausado
+    vi.useRealTimers();
+  });
+
+  it('blink arranca pausado con prefers-reduced-motion', () => {
+    stubReducedMotion(true);
+    render(
+      <CompareSlider
+        before={<img alt="" src="/a.png" />}
+        after={<img alt="" src="/b.png" />}
+        compareMode="blink"
+        label="C"
+      />,
+    );
+    expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'false');
+  });
+
+  it('sin blink no hay switch (regresión)', () => {
+    render(
+      <CompareSlider
+        before={<img alt="" src="/a.png" />}
+        after={<img alt="" src="/b.png" />}
+        label="C"
+      />,
+    );
+    expect(screen.queryByRole('switch')).not.toBeInTheDocument();
+  });
+
+  it('blink no tiene slider ni divisor (extiende el gate de side-by-side)', () => {
+    render(
+      <CompareSlider
+        before={<img alt="a" src="/a.png" />}
+        after={<img alt="b" src="/b.png" />}
+        compareMode="blink"
+        label="C"
+      />,
+    );
+    expect(screen.queryByRole('slider')).toBeNull();
+    expect(document.querySelector('.mk-compare__divider')).toBeNull();
+  });
+
+  it('el switch usa pauseLabel/resumeLabel como texto según el estado', () => {
+    render(
+      <CompareSlider
+        before={<img alt="" src="/a.png" />}
+        after={<img alt="" src="/b.png" />}
+        compareMode="blink"
+        pauseLabel="Pausar"
+        resumeLabel="Reanudar"
+        label="C"
+      />,
+    );
+    const toggle = screen.getByRole('switch');
+    expect(toggle).toHaveAttribute('aria-checked', 'true');
+    expect(toggle).toHaveTextContent('Pausar');
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-checked', 'false');
+    expect(toggle).toHaveTextContent('Reanudar');
+  });
+
+  it('limpia el interval al desmontar', () => {
+    vi.useFakeTimers();
+    const clearSpy = vi.spyOn(window, 'clearInterval');
+    const { unmount } = render(
+      <CompareSlider
+        before={<img alt="" src="/a.png" />}
+        after={<img alt="" src="/b.png" />}
+        compareMode="blink"
+        label="C"
+      />,
+    );
+    unmount();
+    expect(clearSpy).toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+});
+
+describe('CompareSlider — expand reenvía compareMode al lightbox interno (fix T4→T5)', () => {
+  it('con compareMode="side-by-side" el compare del lightbox abre en side-by-side, no en wipe', async () => {
+    render(
+      <CompareSlider
+        before={{ src: '/a.png', alt: 'Antes' }}
+        after={{ src: '/b.png', alt: 'Después' }}
+        compareMode="side-by-side"
+        expand={{ lightboxLabel: 'Comparar a pantalla completa' }}
+      />,
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Full Screen' }));
+    const dialog = screen.getByRole('dialog', { name: 'Comparar a pantalla completa' });
+    const innerCompare = within(dialog).getByRole('img', { name: 'Antes' }).closest('.mk-compare');
+    expect(innerCompare).toHaveAttribute('data-compare-mode', 'side-by-side');
   });
 });

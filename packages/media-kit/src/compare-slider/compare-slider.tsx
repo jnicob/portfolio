@@ -1,8 +1,19 @@
 'use client';
 
-import { useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+  type ReactNode,
+} from 'react';
+import { prefersReducedMotion } from '../internal/prefers-reduced-motion';
 import { MediaLightbox, type MediaLightboxLabels } from '../media-lightbox';
 import { isMediaSource, preloadFullSources, type MediaSource } from '../media-source';
+
+/** Cadencia del alterno before/after en `compareMode="blink"` (spec A3). */
+const BLINK_INTERVAL_MS = 800;
 
 export type CompareSliderExpand = {
   /** aria-label del dialog del compare-lightbox. */
@@ -35,8 +46,8 @@ const EXPAND_ICON = (
 
 /**
  * Eje de comparación (spec A3, F3.6). Default `'wipe'` = comportamiento actual
- * (clip-path + divisor), cero cambios. `'blink'` declara el tipo desde ya pero
- * se implementa en la Task 5 (alterna before/after con timer, sin slider).
+ * (clip-path + divisor), cero cambios. `'blink'` alterna before/after con un
+ * timer (sin slider); ver `data-blink-side` y el switch de pausa en el componente.
  */
 export type CompareSliderMode = 'wipe' | 'onion' | 'blink' | 'side-by-side';
 
@@ -113,7 +124,8 @@ export type CompareSliderProps = {
    * Eje de comparación (spec A3, F3.6). Default `'wipe'` (comportamiento actual).
    * `'onion'` conserva el mismo handle/teclado pero gobierna opacidad en vez de
    * posición del divisor. `'side-by-side'` no tiene slider ni handle: ambos lados
-   * se muestran completos (grid). `'blink'` se implementa en la Task 5.
+   * se muestran completos (grid). `'blink'` tampoco tiene slider: alterna
+   * before/after cada 800ms con un switch de pausa (reutiliza `pauseLabel`/`resumeLabel`).
    */
   compareMode?: CompareSliderMode;
 };
@@ -184,6 +196,13 @@ export function CompareSlider({
   // Limitación documentada: si el src de un lado cambia tras el montaje, su flag
   // NO se resetea (data-loading no reaparece para la nueva fuente).
   const [loadedSides, setLoadedSides] = useState({ before: false, after: false });
+  // Blink (spec A3): lado mostrado por el timer y si sigue corriendo. Arranca
+  // pausado si el usuario prefiere menos movimiento (lazy initializer: se lee
+  // una sola vez al montar, no reactivo a que la preferencia cambie en vivo).
+  const [blinkShowsAfter, setBlinkShowsAfter] = useState(false);
+  const [blinkRunning, setBlinkRunning] = useState(
+    () => compareMode === 'blink' && !prefersReducedMotion(),
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
   // Posición del pointerdown y si hubo arrastre desde entonces (umbral 4px, misma
@@ -196,9 +215,18 @@ export function CompareSlider({
   // observar desde aquí — documentado en el JSDoc de objectFit/overlayLabels).
   const loading =
     (isMediaSource(before) && !loadedSides.before) || (isMediaSource(after) && !loadedSides.after);
-  // `side-by-side` (y `blink`, Task 5) no tienen divisor ni handle: el gesto de
+  // `side-by-side` y `blink` no tienen divisor ni handle: el gesto de
   // puntero/teclado de esta superficie no aplica y hace early-return.
   const hasSlider = compareMode === 'wipe' || compareMode === 'onion';
+
+  // Timer de blink: solo corre en compareMode="blink" y con blinkRunning=true;
+  // el switch de pausa (más abajo) alterna blinkRunning y este effect limpia el
+  // interval anterior antes de crear uno nuevo (o al desmontar).
+  useEffect(() => {
+    if (compareMode !== 'blink' || !blinkRunning) return;
+    const id = window.setInterval(() => setBlinkShowsAfter((v) => !v), BLINK_INTERVAL_MS);
+    return () => window.clearInterval(id);
+  }, [compareMode, blinkRunning]);
 
   function update(next: number) {
     const clamped = clamp(next);
@@ -251,6 +279,14 @@ export function CompareSlider({
     const next = !paused;
     setAnnouncement(next ? pauseLabel : resumeLabel);
     setPaused(next);
+  }
+
+  function toggleBlinkRunning() {
+    // Mismo patrón que togglePaused: reutiliza pauseLabel/resumeLabel para el
+    // aria-live aunque el switch de blink gobierne "running", no "paused".
+    const next = !blinkRunning;
+    setAnnouncement(next ? resumeLabel : pauseLabel);
+    setBlinkRunning(next);
   }
 
   // El lightbox de `expand` (C1) monta vía createPortal en document.body pero sigue
@@ -337,6 +373,7 @@ export function CompareSlider({
       className={['mk-compare', className].filter(Boolean).join(' ')}
       data-orientation={orientation}
       data-compare-mode={compareMode}
+      data-blink-side={compareMode === 'blink' ? (blinkShowsAfter ? 'after' : 'before') : undefined}
       data-paused={paused ? '' : undefined}
       data-loading={loading ? '' : undefined}
       style={{ ['--mk-compare-pos' as string]: `${position}%` }}
@@ -391,10 +428,22 @@ export function CompareSlider({
           onKeyDown={onKeyDown}
         />
       ) : null}
-      {mode === 'hover' && pauseOnClick ? (
+      {(mode === 'hover' && pauseOnClick) || compareMode === 'blink' ? (
         <span className="mk-visually-hidden" aria-live="polite">
           {announcement}
         </span>
+      ) : null}
+      {compareMode === 'blink' ? (
+        <button
+          type="button"
+          role="switch"
+          aria-checked={blinkRunning}
+          className="mk-compare__blink-toggle"
+          data-mk-drag-exempt=""
+          onClick={toggleBlinkRunning}
+        >
+          {blinkRunning ? pauseLabel : resumeLabel}
+        </button>
       ) : null}
       {expand ? (
         <button
@@ -416,7 +465,9 @@ export function CompareSlider({
           onClose={() => setExpanded(false)}
           label={expand.lightboxLabel}
           labels={expand.lightboxLabels}
-          compare={{ before, after, label: expand.lightboxLabel }}
+          // Fix T4→T5: sin compareMode aquí, el lightbox interno abriría siempre
+          // en 'wipe' aunque el slider de fondo esté en onion/side-by-side/blink.
+          compare={{ before, after, label: expand.lightboxLabel, compareMode }}
         />
       ) : null}
     </div>

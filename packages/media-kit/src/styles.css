@@ -250,6 +250,46 @@
   display: none;
 }
 
+/* blink: alterna before/after por opacidad (data-blink-side, timer en JS); sin
+   divisor ni handle, igual que side-by-side (defensivo: JSX ya no los renderiza). */
+.mk-compare[data-compare-mode='blink'] .mk-compare__after {
+  clip-path: none;
+  opacity: 0;
+}
+.mk-compare[data-compare-mode='blink'][data-blink-side='after'] .mk-compare__after {
+  opacity: 1;
+}
+.mk-compare[data-compare-mode='blink'] .mk-compare__divider,
+.mk-compare[data-compare-mode='blink'] .mk-compare__handle {
+  display: none;
+}
+
+/* Switch de pausa de blink: mismo look de control flotante que .mk-compare__expand,
+   en la esquina opuesta para no chocar con el CTA de `expand` (top-right). */
+.mk-compare__blink-toggle {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1;
+  padding: 0.375rem 0.625rem;
+  border: 0;
+  border-radius: var(--mk-radius);
+  background: var(--mk-control-bg);
+  color: var(--mk-control-color);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.mk-compare__blink-toggle:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.mk-compare__blink-toggle:focus-visible {
+  outline: 2px solid var(--mk-focus-ring);
+  outline-offset: 2px;
+}
+
 /* MediaLightbox */
 .mk-lightbox {
   position: fixed;
