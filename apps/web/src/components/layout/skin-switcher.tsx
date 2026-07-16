@@ -44,10 +44,8 @@ export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
   }));
 
   // Foco al abrir: FilterableList no expone ref, así que se busca el combobox montado.
-  // Se aprovecha el mismo efecto para leer la skin aplicada y marcarla como seleccionada.
   useEffect(() => {
     if (!open) return;
-    setSelectedSkin(currentSkin());
     findComboboxInput(panelRef.current)?.focus();
   }, [open]);
 
@@ -90,7 +88,14 @@ export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
         aria-expanded={open}
         aria-controls={panelId}
         className="inline-flex h-9 cursor-pointer items-center justify-center rounded-control border border-border px-3 text-sm text-fg transition-colors hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => {
+          // Se lee la skin aplicada de forma síncrona, en el mismo batch que
+          // setOpen: FilterableList monta con el selectedId correcto desde su
+          // primer render (su activeIndex inicial es un useState perezoso que
+          // solo se calcula una vez, al montar).
+          setSelectedSkin(currentSkin());
+          setOpen((value) => !value);
+        }}
       >
         {labels.button}
       </button>

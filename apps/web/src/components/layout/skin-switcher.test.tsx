@@ -94,8 +94,12 @@ describe('SkinSwitcher', () => {
     document.documentElement.dataset.skin = 'terminal';
     render(<SkinSwitcher labels={LABELS} />);
     fireEvent.click(screen.getByRole('button', { name: LABELS.button }));
-    expect(
-      screen.getByRole('option', { name: new RegExp(LABELS.skinNames.terminal) }),
-    ).toHaveAttribute('aria-current', 'true');
+    const option = screen.getByRole('option', { name: new RegExp(LABELS.skinNames.terminal) });
+    expect(option).toHaveAttribute('aria-current', 'true');
+    // El resaltado activo (teclado/ratón) debe coincidir con la skin marcada desde
+    // el primer render, no solo el aria-current: si selectedSkin llegara tarde
+    // (p.ej. via useEffect tras montar FilterableList), aria-activedescendant se
+    // quedaría en el primer item de la lista en vez de la skin real.
+    expect(screen.getByRole('combobox')).toHaveAttribute('aria-activedescendant', option.id);
   });
 });
