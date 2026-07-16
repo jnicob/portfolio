@@ -16,6 +16,8 @@ export type FilterableListProps<T extends FilterableItem> = {
   /** Contenido custom del item (swatches…); default: item.label. */
   renderItem?: (item: T, active: boolean) => ReactNode;
   className?: string;
+  /** Id del item actualmente aplicado: se marca con aria-current + ✓ y arranca activo. */
+  selectedId?: string;
 };
 
 function matchesQuery(item: FilterableItem, query: string): boolean {
@@ -33,11 +35,15 @@ export function FilterableList<T extends FilterableItem>({
   placeholder,
   renderItem,
   className,
+  selectedId,
 }: FilterableListProps<T>): ReactNode {
   const baseId = useId();
   const listboxId = `${baseId}-listbox`;
   const [query, setQuery] = useState('');
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(() => {
+    const index = items.findIndex((item) => item.id === selectedId);
+    return index >= 0 ? index : 0;
+  });
 
   const filtered = useMemo(() => items.filter((item) => matchesQuery(item, query)), [items, query]);
 
@@ -88,19 +94,31 @@ export function FilterableList<T extends FilterableItem>({
       <ul id={listboxId} role="listbox" aria-label={inputLabel} className="flex flex-col gap-1">
         {filtered.map((item, index) => {
           const active = index === clampedActiveIndex;
+          const selected = item.id === selectedId;
           return (
             <li
               key={item.id}
               id={`${baseId}-option-${item.id}`}
               role="option"
               aria-selected={active}
+              aria-current={selected || undefined}
               onClick={() => onSelect(item)}
+              onMouseMove={() => setActiveIndex(index)}
               className={cn(
-                'cursor-pointer rounded-control px-3 py-2 text-sm text-fg',
+                'cursor-pointer rounded-control px-3 py-2 text-sm text-fg transition-colors hover:bg-surface',
                 active && 'bg-surface outline outline-2 outline-ring',
               )}
             >
-              {renderItem ? renderItem(item, active) : item.label}
+              <span className="flex items-center justify-between gap-2">
+                <span className="flex min-w-0 items-center gap-2">
+                  {renderItem ? renderItem(item, active) : item.label}
+                </span>
+                {selected && (
+                  <span aria-hidden className="text-accent">
+                    ✓
+                  </span>
+                )}
+              </span>
             </li>
           );
         })}

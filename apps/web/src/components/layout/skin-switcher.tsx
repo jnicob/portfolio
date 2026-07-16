@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
 import { FilterableList, type FilterableItem } from '@/components/ui/filterable-list';
-import { applySkin } from '@/lib/appearance';
+import { applySkin, currentSkin } from '@/lib/appearance';
 import { SKINS } from '@/data/schemas';
 import type { Skin } from '@/data/schemas';
 
@@ -32,6 +32,7 @@ function findComboboxInput(container: HTMLElement | null): HTMLInputElement | nu
 export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
   const panelId = useId();
   const [open, setOpen] = useState(false);
+  const [selectedSkin, setSelectedSkin] = useState<Skin | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -43,8 +44,10 @@ export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
   }));
 
   // Foco al abrir: FilterableList no expone ref, así que se busca el combobox montado.
+  // Se aprovecha el mismo efecto para leer la skin aplicada y marcarla como seleccionada.
   useEffect(() => {
     if (!open) return;
+    setSelectedSkin(currentSkin());
     findComboboxInput(panelRef.current)?.focus();
   }, [open]);
 
@@ -104,6 +107,7 @@ export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
             placeholder={labels.placeholder}
             emptyMessage={labels.emptyMessage}
             onSelect={handleSelect}
+            selectedId={selectedSkin ?? undefined}
             renderItem={(item) => (
               <span className="flex items-center gap-2">
                 <span

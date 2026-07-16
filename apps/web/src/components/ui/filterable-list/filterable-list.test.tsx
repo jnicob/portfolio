@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { FilterableList, type FilterableItem } from './filterable-list';
@@ -8,6 +8,7 @@ const ITEMS: readonly FilterableItem[] = [
   { id: 'badge', label: 'Badge' },
   { id: 'tabs', label: 'Tabs' },
 ];
+const noop = () => {};
 
 describe('FilterableList', () => {
   it('filtra en vivo por label y keywords', async () => {
@@ -109,5 +110,37 @@ describe('FilterableList', () => {
     expect(option.id).toMatch(/-option-button$/);
     // El id se mantiene estable entre renders (misma instancia montada).
     expect(screen.getByRole('option', { name: 'Button' }).id).toBe(option.id);
+  });
+
+  it('marca el item selectedId con aria-current y ✓, y arranca como opción activa', () => {
+    render(
+      <FilterableList
+        items={ITEMS}
+        inputLabel="Filtrar"
+        emptyMessage="Nada"
+        onSelect={noop}
+        selectedId={ITEMS[1]!.id}
+      />,
+    );
+    const option = screen.getByRole('option', { name: new RegExp(ITEMS[1]!.label) });
+    expect(option).toHaveAttribute('aria-current', 'true');
+    expect(option).toHaveTextContent('✓');
+    expect(screen.getByRole('combobox')).toHaveAttribute('aria-activedescendant', option.id);
+  });
+
+  it('mover el ratón sobre una opción la convierte en la activa', () => {
+    render(
+      <FilterableList items={ITEMS} inputLabel="Filtrar" emptyMessage="Nada" onSelect={noop} />,
+    );
+    const target = screen.getByRole('option', { name: new RegExp(ITEMS[2]!.label) });
+    fireEvent.mouseMove(target);
+    expect(screen.getByRole('combobox')).toHaveAttribute('aria-activedescendant', target.id);
+  });
+
+  it('las opciones tienen efecto hover', () => {
+    render(
+      <FilterableList items={ITEMS} inputLabel="Filtrar" emptyMessage="Nada" onSelect={noop} />,
+    );
+    expect(screen.getAllByRole('option')[0]).toHaveClass('hover:bg-surface');
   });
 });

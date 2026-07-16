@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import { SkinSwitcher, type SkinSwitcherLabels } from './skin-switcher';
@@ -88,5 +88,14 @@ describe('SkinSwitcher', () => {
   it('muestra cursor pointer en el botón disparador', () => {
     render(<SkinSwitcher labels={LABELS} />);
     expect(screen.getByRole('button', { name: 'Skin' })).toHaveClass('cursor-pointer');
+  });
+
+  it('al abrir, la skin actual aparece marcada como seleccionada', () => {
+    document.documentElement.dataset.skin = 'terminal';
+    render(<SkinSwitcher labels={LABELS} />);
+    fireEvent.click(screen.getByRole('button', { name: LABELS.button }));
+    expect(
+      screen.getByRole('option', { name: new RegExp(LABELS.skinNames.terminal) }),
+    ).toHaveAttribute('aria-current', 'true');
   });
 });
