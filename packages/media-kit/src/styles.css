@@ -222,6 +222,34 @@
   right: 0.5rem;
 }
 
+/* compareMode (v0.5, spec A3): wipe (default) no cambia; onion y side-by-side
+   reemplazan el eje clip-path/divisor por opacidad o por un grid de dos medios
+   completos, respectivamente. */
+.mk-compare[data-compare-mode='onion'] .mk-compare__after {
+  clip-path: none;
+  opacity: calc(var(--mk-compare-pos) / 100);
+}
+.mk-compare[data-compare-mode='onion'] .mk-compare__divider {
+  display: none;
+}
+.mk-compare[data-compare-mode='side-by-side'] {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+.mk-compare[data-compare-mode='side-by-side'][data-orientation='vertical'] {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+.mk-compare[data-compare-mode='side-by-side'] .mk-compare__after {
+  position: static;
+  clip-path: none;
+}
+.mk-compare[data-compare-mode='side-by-side'] .mk-compare__divider,
+.mk-compare[data-compare-mode='side-by-side'] .mk-compare__handle {
+  display: none;
+}
+
 /* MediaLightbox */
 .mk-lightbox {
   position: fixed;

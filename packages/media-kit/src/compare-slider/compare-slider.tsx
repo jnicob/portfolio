@@ -33,6 +33,13 @@ const EXPAND_ICON = (
   </svg>
 );
 
+/**
+ * Eje de comparación (spec A3, F3.6). Default `'wipe'` = comportamiento actual
+ * (clip-path + divisor), cero cambios. `'blink'` declara el tipo desde ya pero
+ * se implementa en la Task 5 (alterna before/after con timer, sin slider).
+ */
+export type CompareSliderMode = 'wipe' | 'onion' | 'blink' | 'side-by-side';
+
 export type CompareSliderOverlayLabels = {
   /** Label superpuesto en el lado `before` (esquina inferior izquierda). */
   before: string;
@@ -102,6 +109,13 @@ export type CompareSliderProps = {
    * llega; el consumidor controla su propio `object-fit`. Default `'cover'`.
    */
   objectFit?: 'cover' | 'contain';
+  /**
+   * Eje de comparación (spec A3, F3.6). Default `'wipe'` (comportamiento actual).
+   * `'onion'` conserva el mismo handle/teclado pero gobierna opacidad en vez de
+   * posición del divisor. `'side-by-side'` no tiene slider ni handle: ambos lados
+   * se muestran completos (grid). `'blink'` se implementa en la Task 5.
+   */
+  compareMode?: CompareSliderMode;
 };
 
 /** Umbral de movimiento (px) para distinguir click de drag (convención de use-zoom-pan). */
@@ -156,6 +170,7 @@ export function CompareSlider({
   resumeLabel = 'Comparison following pointer',
   overlayLabels,
   objectFit = 'cover',
+  compareMode = 'wipe',
 }: CompareSliderProps) {
   const [position, setPosition] = useState(() => clamp(initialPosition));
   // Declarado incondicional (reglas de hooks) aunque solo se use con `expand`.
@@ -181,6 +196,9 @@ export function CompareSlider({
   // observar desde aquí — documentado en el JSDoc de objectFit/overlayLabels).
   const loading =
     (isMediaSource(before) && !loadedSides.before) || (isMediaSource(after) && !loadedSides.after);
+  // `side-by-side` (y `blink`, Task 5) no tienen divisor ni handle: el gesto de
+  // puntero/teclado de esta superficie no aplica y hace early-return.
+  const hasSlider = compareMode === 'wipe' || compareMode === 'onion';
 
   function update(next: number) {
     const clamped = clamp(next);
@@ -189,6 +207,9 @@ export function CompareSlider({
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    // Sin handle no hay teclado que gobernar (side-by-side/blink): el handle ni
+    // siquiera se renderiza, pero el guard documenta la invariante.
+    if (!hasSlider) return;
     const step: Record<string, number> = horizontal
       ? { ArrowRight: 1, ArrowLeft: -1, PageUp: 10, PageDown: -10 }
       : { ArrowUp: 1, ArrowDown: -1, PageUp: 10, PageDown: -10 };
@@ -242,6 +263,7 @@ export function CompareSlider({
   }
 
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
+    if (!hasSlider) return;
     if (!originatesOnSurface(event)) return;
     // Se resetea en cada down (incluido el que se descarta más abajo) para que un
     // pointerup posterior nunca reutilice la posición de un down anterior.
@@ -267,6 +289,7 @@ export function CompareSlider({
   }
 
   function onPointerMove(event: PointerEvent<HTMLDivElement>) {
+    if (!hasSlider) return;
     if (!originatesOnSurface(event)) return;
     if (downPosRef.current && !draggedSinceDownRef.current) {
       const dx = event.clientX - downPosRef.current.x;
@@ -282,6 +305,7 @@ export function CompareSlider({
   }
 
   function onPointerUp(event: PointerEvent<HTMLDivElement>) {
+    if (!hasSlider) return;
     if (!originatesOnSurface(event)) return;
     const wasDown = downPosRef.current !== null;
     const dragged = draggedSinceDownRef.current;
@@ -312,6 +336,7 @@ export function CompareSlider({
       ref={containerRef}
       className={['mk-compare', className].filter(Boolean).join(' ')}
       data-orientation={orientation}
+      data-compare-mode={compareMode}
       data-paused={paused ? '' : undefined}
       data-loading={loading ? '' : undefined}
       style={{ ['--mk-compare-pos' as string]: `${position}%` }}
@@ -322,10 +347,16 @@ export function CompareSlider({
       <div className="mk-compare__before">
         {renderSide(before, 'before', objectFit, markSideLoaded)}
       </div>
-      <div className="mk-compare__after" aria-hidden="true">
+      <div
+        className="mk-compare__after"
+        // side-by-side muestra dos medios completos e independientes (ambos con
+        // su propio nombre accesible); en el resto de modos `after` es un efecto
+        // de revelado sobre `before` y se oculta a lectores de pantalla.
+        aria-hidden={compareMode === 'side-by-side' ? undefined : 'true'}
+      >
         {renderSide(after, 'after', objectFit, markSideLoaded)}
       </div>
-      <div className="mk-compare__divider" aria-hidden="true" />
+      {hasSlider ? <div className="mk-compare__divider" aria-hidden="true" /> : null}
       {overlayLabels ? (
         <>
           <span
@@ -342,19 +373,24 @@ export function CompareSlider({
           </span>
         </>
       ) : null}
-      <div
-        ref={handleRef}
-        role="slider"
-        tabIndex={0}
-        aria-label={label}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(position)}
-        aria-orientation={orientation}
-        className="mk-compare__handle"
-        data-mk-drag-exempt=""
-        onKeyDown={onKeyDown}
-      />
+      {hasSlider ? (
+        <div
+          ref={handleRef}
+          role="slider"
+          tabIndex={0}
+          aria-label={label}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(position)}
+          // onion gobierna opacidad, no la posición del divisor: el valuetext
+          // anuncia lo que realmente cambia con el handle en ese modo.
+          aria-valuetext={compareMode === 'onion' ? `${Math.round(position)}% after` : undefined}
+          aria-orientation={orientation}
+          className="mk-compare__handle"
+          data-mk-drag-exempt=""
+          onKeyDown={onKeyDown}
+        />
+      ) : null}
       {mode === 'hover' && pauseOnClick ? (
         <span className="mk-visually-hidden" aria-live="polite">
           {announcement}

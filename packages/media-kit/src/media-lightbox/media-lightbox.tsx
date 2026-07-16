@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { CompareSlider } from '../compare-slider';
+import { CompareSlider, type CompareSliderMode } from '../compare-slider';
 import { isMediaSource, pickFullscreenSrc, type MediaSource } from '../media-source';
 import { LightboxControls, template } from './lightbox-controls';
 import { LightboxHelp } from './lightbox-help';
@@ -87,7 +87,18 @@ export type MediaLightboxProps = {
    * `MediaSource` el lado se resuelve con `pickFullscreenSrc` (fullscreen = contexto HD).
    * Sin ninguno de los tres, el visor no renderiza media.
    */
-  compare?: { before: ReactNode | MediaSource; after: ReactNode | MediaSource; label?: string };
+  compare?: {
+    before: ReactNode | MediaSource;
+    after: ReactNode | MediaSource;
+    label?: string;
+    /**
+     * Passthrough del eje de comparación (spec A3, F3.6). `side-by-side` dentro
+     * del lightbox hereda el zoom/pan del visor gratis: el transform de
+     * `.mk-lightbox__media` envuelve el compare entero, así que ambos lados se
+     * zoomean/panean sincronizados sin lógica extra aquí.
+     */
+    compareMode?: CompareSliderMode;
+  };
 };
 
 const FOCUSABLE =
@@ -450,6 +461,7 @@ function MediaLightboxContent({
               after={renderFullscreenSide(compare.after)}
               label={compare.label ?? 'Compare'}
               dragTarget="handle"
+              compareMode={compare.compareMode}
             />
           ) : media ? (
             renderFullscreenSide(media)

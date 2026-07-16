@@ -820,3 +820,48 @@ describe('CompareSlider v2.2 — paridad C5', () => {
     expect(slider).toHaveAttribute('aria-valuenow', '80');
   });
 });
+
+describe('compareMode (v0.5)', () => {
+  it('onion: sin divisor, la posición gobierna la opacidad y el handle anuncia aria-valuetext', () => {
+    render(
+      <CompareSlider
+        before={<img alt="" src="/a.png" />}
+        after={<img alt="" src="/b.png" />}
+        compareMode="onion"
+        initialPosition={30}
+        label="C"
+      />,
+    );
+    const root = screen.getByRole('slider').closest('.mk-compare')!;
+    expect(root).toHaveAttribute('data-compare-mode', 'onion');
+    expect(screen.getByRole('slider')).toHaveAttribute('aria-valuetext', '30% after');
+  });
+
+  it('side-by-side: sin slider ni handle, ambos lados visibles', () => {
+    render(
+      <CompareSlider
+        before={<img alt="a" src="/a.png" />}
+        after={<img alt="b" src="/b.png" />}
+        compareMode="side-by-side"
+        label="C"
+      />,
+    );
+    expect(screen.queryByRole('slider')).toBeNull();
+    expect(screen.getByRole('img', { name: 'a' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'b' })).toBeInTheDocument();
+  });
+
+  it('default wipe: comportamiento actual intacto', () => {
+    render(
+      <CompareSlider
+        before={<img alt="" src="/a.png" />}
+        after={<img alt="" src="/b.png" />}
+        label="C"
+      />,
+    );
+    expect(screen.getByRole('slider').closest('.mk-compare')).toHaveAttribute(
+      'data-compare-mode',
+      'wipe',
+    );
+  });
+});
