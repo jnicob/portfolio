@@ -1,6 +1,7 @@
 import { routing } from '@/i18n/routing';
+import { siteUrl } from '@/lib/site-url';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://example-placeholder.dev';
+const SITE_URL = siteUrl();
 const TARGET = `/${routing.defaultLocale}`;
 
 // Redirect estático raíz: meta refresh (izado por React 19) + JS + enlace visible.

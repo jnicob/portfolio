@@ -5,6 +5,11 @@ import { resolveOutputMode } from './src/lib/output-mode';
 
 const mode = resolveOutputMode(process.env);
 
+// Dominio propio pendiente: avisa en build de producción sin romperlo (SEO cae al placeholder).
+if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_SITE_URL) {
+  console.warn('[build] NEXT_PUBLIC_SITE_URL no definido: el SEO apunta al placeholder');
+}
+
 const nextConfig: NextConfig = {
   // Modo 'export': estático puro (hosting compartido). Modo 'node': SSR + route handlers.
   ...(mode === 'export' ? { output: 'export' as const } : {}),

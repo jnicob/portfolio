@@ -16,7 +16,7 @@ export const profileSchema = z
     headline: localizedStringSchema,
     summary: localizedStringSchema,
     location: localizedStringSchema,
-    links: z.object({ github: z.string().url(), linkedin: z.string().url() }).strict(),
+    links: z.object({ github: z.url(), linkedin: z.url() }).strict(),
   })
   .strict();
 export type Profile = z.infer<typeof profileSchema>;
@@ -62,9 +62,9 @@ export type Skill = z.infer<typeof skillSchema>;
 
 const projectLinksSchema = z
   .object({
-    live: z.string().url().optional(),
-    docs: z.string().url().optional(),
-    repo: z.string().url().optional(),
+    live: z.url().optional(),
+    docs: z.url().optional(),
+    repo: z.url().optional(),
   })
   .strict();
 

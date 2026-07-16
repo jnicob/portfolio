@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { profile } from '@/data/profile';
 import { routing, type Locale } from '@/i18n/routing';
+import { siteUrl } from '@/lib/site-url';
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://example-placeholder.dev';
+export const SITE_URL = siteUrl();
 
 type LocalizedPageMetadataInput = {
   locale: Locale;
