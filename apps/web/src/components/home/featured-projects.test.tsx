@@ -16,6 +16,12 @@ function renderFeaturedProjects() {
 }
 
 describe('FeaturedProjects', () => {
+  it('destaca freepik-api-platform, ai-model-onboarding y freepik-api-playground', () => {
+    expect(featured.map((p) => p.slug).sort()).toEqual(
+      ['freepik-api-platform', 'ai-model-onboarding', 'freepik-api-playground'].sort(),
+    );
+  });
+
   it('renderiza un heading y un link por proyecto destacado, interno si tiene case study y externo si no', () => {
     renderFeaturedProjects();
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Featured projects');
@@ -29,5 +35,15 @@ describe('FeaturedProjects', () => {
         expectedHref,
       );
     }
+  });
+
+  it('ningún proyecto tiene una métrica con label "Pull requests"', () => {
+    for (const project of projects) {
+      expect(project.metrics.some((m) => m.label.en === 'Pull requests')).toBe(false);
+    }
+  });
+
+  it('hay 14 proyectos en total', () => {
+    expect(projects).toHaveLength(14);
   });
 });

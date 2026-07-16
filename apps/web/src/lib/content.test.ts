@@ -17,7 +17,7 @@ describe('content', () => {
   });
 
   it('compila frontmatter tipado y contenido', async () => {
-    const result = await compileProject('en', 'flows-api');
+    const result = await compileProject('en', 'freepik-api-platform');
     expect(result?.frontmatter.title.length).toBeGreaterThan(0);
     expect(result?.frontmatter.stack.length).toBeGreaterThan(0);
   });

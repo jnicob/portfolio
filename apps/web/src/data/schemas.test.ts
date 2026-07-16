@@ -319,10 +319,22 @@ describe('datos reales', () => {
     expect(experience.length).toBeGreaterThanOrEqual(2);
     expect(education.length).toBeGreaterThanOrEqual(1);
     expect(skills.length).toBeGreaterThanOrEqual(8);
+    expect(projects).toHaveLength(14);
     expect(projects.map((p) => p.slug)).toEqual([
       'freepik-api-platform',
       'ai-model-onboarding',
-      'flows-api',
+      'freepik-api-playground',
+      'freepik-dev-hub',
+      'freepik-backoffice',
+      'cadi',
+      'gds',
+      'deal-me',
+      'candidate-viewer',
+      'the-crane-club',
+      'develop-intelligence',
+      'his-municipal',
+      'fares-taie-salud',
+      'elisa-processor',
     ]);
   });
 });

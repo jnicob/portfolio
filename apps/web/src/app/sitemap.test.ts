@@ -12,7 +12,7 @@ describe('sitemap', () => {
     expect(urls).toContain(`${SITE_URL}/es`);
     expect(urls).toContain(`${SITE_URL}/en`);
     expect(urls).toContain(`${SITE_URL}/en/cv`);
-    expect(urls).toContain(`${SITE_URL}/en/projects/flows-api`);
+    expect(urls).toContain(`${SITE_URL}/en/projects/freepik-api-platform`);
 
     const slugCounts = await Promise.all(
       routing.locales.map(async (locale) => (await getProjectSlugs(locale)).length),

@@ -12,10 +12,13 @@ const EMAIL = /[\w.+-]+@[\w-]+\.[a-z]{2,}/i;
 const PHONE = /\+?(?:\d[\s().-]?){9,}/;
 
 describe('validate-content', () => {
-  it('slugs de datos y MDX coinciden en ambos locales', async () => {
-    const dataSlugs = projects.map((p) => p.slug).sort();
+  it('slugs de case studies y MDX coinciden en ambos locales (solo los proyectos con caseStudy tienen página propia)', async () => {
+    const caseStudySlugs = projects
+      .filter((p) => p.caseStudy)
+      .map((p) => p.slug)
+      .sort();
     for (const locale of routing.locales) {
-      expect(await getProjectSlugs(locale)).toEqual(dataSlugs);
+      expect(await getProjectSlugs(locale)).toEqual(caseStudySlugs);
     }
   });
 

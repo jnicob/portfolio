@@ -6,8 +6,8 @@ import { projects } from '@/data/projects';
 import es from '../../../messages/es.json';
 import { ProjectCard } from './project-card';
 
-const flowsApi = projects.find((p) => p.slug === 'flows-api')!;
-const apiPlatform = projects.find((p) => p.slug === 'freepik-api-platform')!;
+const withoutCaseStudy = projects.find((p) => p.slug === 'freepik-api-playground')!;
+const withMetrics = projects.find((p) => p.slug === 'ai-model-onboarding')!;
 
 function renderProjectCard(props: ComponentProps<typeof ProjectCard>) {
   return render(
@@ -19,20 +19,23 @@ function renderProjectCard(props: ComponentProps<typeof ProjectCard>) {
 
 describe('ProjectCard', () => {
   it('renderiza título ES enlazado externamente (sin case study), summary ES y un badge por item de stack', () => {
-    renderProjectCard({ project: flowsApi, locale: 'es' });
+    renderProjectCard({ project: withoutCaseStudy, locale: 'es' });
 
-    const link = screen.getByRole('link', { name: flowsApi.title.es });
-    expect(link).toHaveAttribute('href', flowsApi.links.docs);
-    expect(screen.getByText(flowsApi.summary.es)).toBeInTheDocument();
-    for (const item of flowsApi.stack) {
+    const link = screen.getByRole('link', { name: withoutCaseStudy.title.es });
+    expect(link).toHaveAttribute('href', withoutCaseStudy.links.live);
+    expect(screen.getByText(withoutCaseStudy.summary.es)).toBeInTheDocument();
+    for (const item of withoutCaseStudy.stack) {
       expect(screen.getByText(item)).toBeInTheDocument();
     }
   });
 
   it('enlaza al case study interno cuando caseStudy=true', () => {
-    renderProjectCard({ project: { ...flowsApi, caseStudy: true, slug: 'x' }, locale: 'es' });
+    renderProjectCard({
+      project: { ...withoutCaseStudy, caseStudy: true, slug: 'x' },
+      locale: 'es',
+    });
 
-    expect(screen.getByRole('link', { name: flowsApi.title.es })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: withoutCaseStudy.title.es })).toHaveAttribute(
       'href',
       '/es/projects/x',
     );
@@ -40,46 +43,51 @@ describe('ProjectCard', () => {
 
   it('enlaza al live externo cuando no hay case study', () => {
     renderProjectCard({
-      project: { ...flowsApi, caseStudy: false, links: { live: 'https://example.com' } },
+      project: { ...withoutCaseStudy, caseStudy: false, links: { live: 'https://example.com' } },
       locale: 'es',
     });
 
-    expect(screen.getByRole('link', { name: flowsApi.title.es })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: withoutCaseStudy.title.es })).toHaveAttribute(
       'href',
       'https://example.com',
     );
   });
 
   it('sin case study ni enlaces, el título no es un enlace', () => {
-    renderProjectCard({ project: { ...flowsApi, caseStudy: false, links: {} }, locale: 'es' });
+    renderProjectCard({
+      project: { ...withoutCaseStudy, caseStudy: false, links: {} },
+      locale: 'es',
+    });
 
-    expect(screen.queryByRole('link', { name: flowsApi.title.es })).toBeNull();
+    expect(screen.queryByRole('link', { name: withoutCaseStudy.title.es })).toBeNull();
   });
 
   it('renderiza las métricas como dl con label localizado y su valor', () => {
-    const { container } = renderProjectCard({ project: apiPlatform, locale: 'es' });
+    const { container } = renderProjectCard({ project: withMetrics, locale: 'es' });
 
     expect(container.querySelector('dl')).toBeInTheDocument();
-    for (const metric of apiPlatform.metrics) {
+    for (const metric of withMetrics.metrics) {
       expect(screen.getByText(metric.label.es)).toBeInTheDocument();
       expect(screen.getByText(metric.value)).toBeInTheDocument();
     }
   });
 
   it('no renderiza dl cuando el proyecto no tiene métricas', () => {
-    const { container } = renderProjectCard({ project: flowsApi, locale: 'es' });
+    const { container } = renderProjectCard({ project: withoutCaseStudy, locale: 'es' });
 
-    expect(flowsApi.metrics).toHaveLength(0);
+    expect(withoutCaseStudy.metrics).toHaveLength(0);
     expect(container.querySelector('dl')).not.toBeInTheDocument();
   });
 
   it('usa heading h3 por defecto y h2 cuando headingLevel="h2"', () => {
-    renderProjectCard({ project: flowsApi, locale: 'es' });
-    expect(screen.getByRole('heading', { level: 3, name: flowsApi.title.es })).toBeInTheDocument();
-
-    renderProjectCard({ project: apiPlatform, locale: 'es', headingLevel: 'h2' });
+    renderProjectCard({ project: withoutCaseStudy, locale: 'es' });
     expect(
-      screen.getByRole('heading', { level: 2, name: apiPlatform.title.es }),
+      screen.getByRole('heading', { level: 3, name: withoutCaseStudy.title.es }),
+    ).toBeInTheDocument();
+
+    renderProjectCard({ project: withMetrics, locale: 'es', headingLevel: 'h2' });
+    expect(
+      screen.getByRole('heading', { level: 2, name: withMetrics.title.es }),
     ).toBeInTheDocument();
   });
 });
