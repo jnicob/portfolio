@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Favicon: monograma "nb" sobre el violeta de acento del design system (dark #8b7cf7).
+       Asset estático: los tokens CSS no aplican aquí; el glifo oscuro sobre violeta
+       replica el par accent/accent-fg AA del tema dark. -->
+  <rect width="64" height="64" rx="14" fill="#8b7cf7" />
+  <text
+    x="32"
+    y="44"
+    font-family="ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace"
+    font-size="32"
+    font-weight="700"
+    text-anchor="middle"
+    fill="#1c1832"
+  >nb</text>
+</svg>

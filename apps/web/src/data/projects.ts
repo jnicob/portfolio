@@ -18,7 +18,10 @@ const entries = [
       live: 'https://www.freepik.com/api',
       docs: 'https://docs.freepik.com',
     },
-    metrics: [],
+    metrics: [
+      { label: { es: 'Modelos de IA servidos', en: 'AI models served' }, value: '25+' },
+      { label: { es: 'Endpoints públicos', en: 'Public endpoints' }, value: '40+' },
+    ],
     featured: true,
     caseStudy: true,
     date: '2022-07',
@@ -76,10 +79,10 @@ const entries = [
     date: '2022-07',
   },
   {
-    slug: 'freepik-dev-hub',
+    slug: 'freepik-developer-dashboard',
     title: {
-      es: 'Panel de desarrollador de la API (dev-hub)',
-      en: 'API developer dashboard (dev-hub)',
+      es: 'Panel de desarrollador de la API',
+      en: 'API developer dashboard',
     },
     summary: {
       es: 'Dashboard del desarrollador de la Freepik API: uso y presupuesto con gráficos de consumo, límites de peticiones, facturación y gestión de API keys, incluidas reglas para miembros enterprise.',

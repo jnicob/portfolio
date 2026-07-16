@@ -33,9 +33,6 @@ aria-label nav-card, test de paridad es/en).
 
 ## Pendientes del usuario (no bloqueantes)
 
-- Confirmar si "dev-hub" es nombre público o renombrar la entrada (review final, Minor).
-- Decidir métricas para la card destacada de Plataforma (design review, Polish).
-- Favicon del sitio (404 actual, preexistente a F3.5).
 - Dominio definitivo + `NEXT_PUBLIC_SITE_URL` (el build ya avisa si falta).
 - Publicar `@nicobehm/media-kit` en npm (0.4.0 lista).
 - Upgrade Node 22 (retirar pins de `docs/decisions/2026-07-10-dependency-pins.md`).

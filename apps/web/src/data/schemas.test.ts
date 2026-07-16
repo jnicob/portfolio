@@ -324,7 +324,7 @@ describe('datos reales', () => {
       'freepik-api-platform',
       'ai-model-onboarding',
       'freepik-api-playground',
-      'freepik-dev-hub',
+      'freepik-developer-dashboard',
       'freepik-backoffice',
       'cadi',
       'gds',
