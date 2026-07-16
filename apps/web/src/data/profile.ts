@@ -7,8 +7,8 @@ export const profile = profileSchema.parse({
     en: 'Full-stack engineer — end-to-end AI API platforms',
   },
   summary: {
-    es: 'Ingeniero en Informática con más de 10 años desarrollando aplicaciones web full-stack. Desde 2022 construye la plataforma pública de APIs de IA de Freepik/Magnific: especificación OpenAPI, servidor FastAPI, gateway y documentación de generación de imagen y vídeo, con 779 PRs en el ecosistema de la plataforma.',
-    en: 'Computer engineer with 10+ years building full-stack web applications. Since 2022 he has been building the Freepik/Magnific public AI API platform: OpenAPI specification, FastAPI server, gateway and documentation for image and video generation, with 779 PRs across the platform ecosystem.',
+    es: 'Ingeniero en Informática con más de 10 años desarrollando aplicaciones web full-stack. Desde 2022 construye la plataforma pública de APIs de Freepik/Magnific — generación de IA, stock y estado de tareas — de la especificación OpenAPI al gateway, la documentación, el Playground web y el panel de desarrollador, con más de 1.000 PRs entre GitHub y Bitbucket.',
+    en: 'Computer engineer with 10+ years building full-stack web applications. Since 2022 he has been building the Freepik/Magnific public API platform — AI generation, stock and task-status APIs — from the OpenAPI spec to the gateway, documentation, web Playground and developer dashboard, with 1,000+ PRs across GitHub and Bitbucket.',
   },
   location: { es: 'España', en: 'Spain' },
   links: {

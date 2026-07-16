@@ -192,7 +192,7 @@ describe('projectSchema y frontmatter', () => {
         role: LOC,
         stack: ['nextjs'],
         links: { live: 'https://www.freepik.com/api' },
-        metrics: [{ label: LOC, value: '779 PRs' }],
+        metrics: [{ label: LOC, value: '1,000+ PRs' }],
         featured: true,
         date: '2026-07',
       }).success,
@@ -205,7 +205,7 @@ describe('projectSchema y frontmatter', () => {
         role: 'Z',
         stack: ['a'],
         links: {},
-        metrics: [{ label: 'PRs', value: '779' }],
+        metrics: [{ label: 'PRs', value: '1,000+' }],
         date: '2026-07',
       }).success,
     ).toBe(true);

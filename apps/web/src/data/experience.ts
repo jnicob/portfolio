@@ -4,32 +4,36 @@ const entries = [
   {
     id: 'freepik',
     company: 'Freepik',
-    role: { es: 'Ingeniero de plataforma de APIs de IA', en: 'AI API Platform Engineer' },
+    role: { es: 'Ingeniero full-stack — plataforma de APIs', en: 'Full-stack engineer — API platform' },
     start: '2022-07',
     end: null,
     summary: {
-      es: 'Plataforma pública de APIs de IA de Freepik/Magnific: especificación, implementación, gateway, billing y documentación de endpoints de generación.',
-      en: 'Freepik/Magnific public AI API platform: specification, implementation, gateway, billing and documentation of generation endpoints.',
+      es: 'Plataforma pública de APIs de Freepik/Magnific (IA, stock, estado de tareas) y su web: specs, servidor, gateway, facturación, documentación, Playground y panel de desarrollador. Antes, backoffice de contenido y colaboradores.',
+      en: 'Freepik/Magnific public API platform (AI, stock, task status) and its web: specs, server, gateway, billing, documentation, Playground and developer dashboard. Previously, content and contributor backoffice.',
     },
     highlights: [
       {
-        es: '779 PRs en el ecosistema de la plataforma (specs OpenAPI, servidor FastAPI, gateway, docs).',
-        en: '779 PRs across the platform ecosystem (OpenAPI specs, FastAPI server, gateway, docs).',
+        es: 'Más de 1.000 PRs entre GitHub y Bitbucket en el ecosistema de la plataforma y el backoffice.',
+        en: '1,000+ PRs across GitHub and Bitbucket in the platform and backoffice ecosystem.',
       },
       {
-        es: 'Onboarding end-to-end de modelos de IA (Kling, WAN…): del spec OpenAPI a producción.',
-        en: 'End-to-end AI model onboarding (Kling, WAN…): from OpenAPI spec to production.',
+        es: 'APIs públicas de generación de IA, stock y estado de tareas: del spec OpenAPI a producción (FastAPI, gateway APISIX, docs), incluida Flows API para encadenar modelos.',
+        en: 'Public AI generation, stock and task-status APIs: from OpenAPI spec to production (FastAPI, APISIX gateway, docs), including the Flows API for chaining models.',
       },
       {
-        es: 'Configuración del gateway APISIX: rutas, límites de uso y costes por producto y tier.',
-        en: 'APISIX gateway configuration: routes, rate limits and cost tracking per product and tier.',
+        es: 'Onboarding end-to-end de modelos de IA (Kling, WAN…): precios, límites, implementación y documentación.',
+        en: 'End-to-end AI model onboarding (Kling, WAN…): pricing, limits, implementation and documentation.',
       },
       {
-        es: 'Contribución a Flows API, la capa de la plataforma para encadenar generación multi-modelo.',
-        en: 'Contribution to Flows API, the platform layer for chaining multi-model generation.',
+        es: 'Playground web de la API y panel de desarrollador (uso, presupuesto, límites, facturación y API keys).',
+        en: 'API web Playground and developer dashboard (usage, budget, limits, billing and API keys).',
+      },
+      {
+        es: 'Backoffice de contenido Freepik/Flaticon: catalogación, moderación, workflow de producción y portal fiscal (Laravel/Nova, Vue, Slim).',
+        en: 'Freepik/Flaticon content backoffice: cataloguing, moderation, production workflow and tax portal (Laravel/Nova, Vue, Slim).',
       },
     ],
-    tags: ['python', 'fastapi', 'openapi', 'apisix', 'ai'],
+    tags: ['python', 'fastapi', 'openapi', 'apisix', 'nextjs', 'vue', 'ai'],
   },
   {
     id: 'accelone',
