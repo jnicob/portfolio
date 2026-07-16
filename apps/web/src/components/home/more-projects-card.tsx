@@ -29,6 +29,7 @@ export function MoreProjectsCard({ locale, title, countTemplate }: MoreProjectsC
   return (
     <Link
       href="/projects"
+      aria-label={title}
       className="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:col-span-2 lg:col-span-3"
     >
       <Card className="border-dashed transition-colors hover:border-accent">

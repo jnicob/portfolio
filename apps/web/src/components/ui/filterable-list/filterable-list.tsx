@@ -100,6 +100,9 @@ export function FilterableList<T extends FilterableItem>({
               key={item.id}
               id={`${baseId}-option-${item.id}`}
               role="option"
+              // aria-selected = opción activa del combobox (patrón APG, navegación con flechas).
+              // aria-current = valor actualmente aplicado (selectedId). Ambos pueden diferir:
+              // se puede navegar sobre otras opciones sin cambiar la selección aplicada.
               aria-selected={active}
               aria-current={selected || undefined}
               onClick={() => onSelect(item)}

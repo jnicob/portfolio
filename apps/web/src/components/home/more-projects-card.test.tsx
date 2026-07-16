@@ -24,7 +24,7 @@ describe('MoreProjectsCard', () => {
     expect(links).toHaveLength(1);
     // localePrefix: 'always' (i18n/routing.ts) antepone el locale a cualquier href de <Link>.
     expect(links[0]).toHaveAttribute('href', '/es/projects');
-    expect(links[0]).toHaveAccessibleName(/todos los proyectos/i);
+    expect(links[0]).toHaveAccessibleName('Todos los proyectos');
     expect(screen.getByText(/Backoffice de contenido Freepik\/Flaticon/)).toBeInTheDocument();
   });
 
