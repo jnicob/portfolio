@@ -64,6 +64,7 @@ Decisiones nuevas a partir de la revisión del sitio publicado por F3. Se implem
 **Fixes UI (mismos criterios AA de siempre)**
 
 - Header: `cursor: pointer` en hover de los switchers de skin/modo/idioma. (→ F3.5)
+- Selector de skin (feedback 2026-07-16): al abrirlo, la skin actual debe aparecer **marcada como seleccionada** (`aria-current` + ✓) y ser la opción activa inicial; las opciones deben tener **efecto hover**, y el resaltado debe seguir tanto el ratón como el teclado (mover el ratón actualiza la opción activa). (→ F3.5)
 
 **Showcase + media-kit — UX v2 (detallado por el usuario 2026-07-16 → fase 3.6)**
 
