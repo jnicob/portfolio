@@ -25,16 +25,21 @@ Freepik (Backoffice + fc_freepik_web) hecha con resúmenes clean-room.
 
 ## Siguiente acción
 
-1. Resolver con el usuario las 2 dudas abiertas de §2.1 del spec maestro: qué es
-   "Playground" en destacados (¿el de fc_freepik_web live o el propio de F4?) y el
-   comentario truncado de Showcase ("sigue habiendo…").
-2. Plan F3.5 con `superpowers:writing-plans` desde spec maestro §2.1 + notas de
-   exploración en `apps/web/content/cv/` → ejecutar con subagent-driven-development
-   (rama `feature/phase-3.5-content-v2`; gate `pnpm run lint && pnpm run typecheck && pnpm run test`).
+1. Usuario elige los componentes de impacto visual de la lista de candidatas de §2.1
+   (spec maestro) para acotar F3.6.
+2. Plan F3.5 (Contenido v2) con `superpowers:writing-plans` desde spec maestro §2.1 +
+   notas de exploración en `apps/web/content/cv/` → ejecutar con
+   subagent-driven-development (rama `feature/phase-3.5-content-v2`; gate
+   `pnpm run lint && pnpm run typecheck && pnpm run test`).
 3. Incluir en F3.5 la limpieza del backlog F3 (ledger `.superpowers/sdd/progress.md`,
    "F3 Task 26"): sweep `z.url()`, consistencia (props muertas, contacto triplicado,
    SITE_URL x3), guard `NEXT_PUBLIC_SITE_URL` en build prod.
-4. Después: brainstorm F4 (playground) → spec → plan, como estaba previsto.
+4. Plan F3.6 (Showcase UX v2 + media-kit 0.5) tras cerrar la selección de componentes.
+5. Después: brainstorm F4 (playground) → spec → plan, como estaba previsto.
+
+Dudas 2026-07-16 resueltas por el usuario: Playground destacado = el de fc_freepik_web
+(independiente o parte destacada del case study API); Flows API → sección "integración"
+del case study de la plataforma; alcance API incluye stock/estado, no solo IA.
 
 ## Pendientes del usuario (no bloqueantes)
 

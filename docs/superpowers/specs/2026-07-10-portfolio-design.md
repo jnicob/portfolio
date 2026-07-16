@@ -39,7 +39,8 @@ Decisiones nuevas a partir de la revisión del sitio publicado por F3. Se implem
 - Orden de secciones: hero → **Skills** → **Proyectos destacados** (Skills sube por delante de destacados).
 - **Eliminar** la card "Playground de IA — Próximamente" (`home.playgroundTitle/playgroundSoon`).
 - En Proyectos destacados: añadir un **box-enlace a `/projects`** con el mismo estilo de card que los proyectos, adelantando algunos títulos ("y además: Backoffice, Cadi, HIS municipal…").
-- Destacados quedan: ① Plataforma API Freepik/Magnific · ② Onboarding de modelos IA · ③ **Playground** (⚠️ PENDIENTE CONFIRMAR: se interpreta como el playground web de la API de Freepik construido en `fc_freepik_web`, enlazando la versión live — la exploración 2026-07-16 confirma ownership de facto: 20+ feat / 11 fix, integración continua de modelos, fixes SSRF; alternativa: el playground propio del portfolio cuando exista F4). **Flows API sale de destacados** (⚠️ CONFIRMAR si su case study MDX se conserva como proyecto no destacado o se elimina).
+- Destacados quedan: ① Plataforma API Freepik/Magnific · ② Onboarding de modelos IA · ③ **Playground de la web de API** (CONFIRMADO por el usuario 2026-07-16: el playground de `fc_freepik_web` que Nico construyó, enlazando la versión live; puede ir como proyecto independiente o como parte destacada del case study global de API — decidir en el plan F3.5 con la evidencia). **Flows API sale de destacados** (CONFIRMADO): su contenido se integra como sección de "integración con la API" dentro del case study de la plataforma; desaparece como entrada/case study propio.
+- **Alcance de la plataforma API** (corrección del usuario 2026-07-16): el trabajo del equipo de API **no es solo APIs de IA** — también APIs de stock, estado de tareas y otras. Reflejarlo en el copy del case study ①, el CV y el hero/summary de la home (sin perder el hilo narrativo de IA como especialidad).
 
 **Métrica de PRs**
 
@@ -62,8 +63,13 @@ Decisiones nuevas a partir de la revisión del sitio publicado por F3. Se implem
 
 **Fixes UI (mismos criterios AA de siempre)**
 
-- Header: `cursor: pointer` en hover de los switchers de skin/modo/idioma.
-- Showcase: ⚠️ comentario del usuario llegó truncado ("sigue habiendo…") — PENDIENTE de detalle antes de actuar.
+- Header: `cursor: pointer` en hover de los switchers de skin/modo/idioma. (→ F3.5)
+
+**Showcase + media-kit — UX v2 (detallado por el usuario 2026-07-16 → fase 3.6)**
+
+- Showcase, UX pobre a mejorar: transiciones suaves entre estados; el menú de filtrar debe **filtrar** (no desplazar el contenido); bordes redondeados coherentes; cambiar de tab **no debe desplazar el contenido de debajo** (reservar altura / layout estable); revisar otras mejoras de UX modernas (micro-interacciones, focus states, scroll).
+- media-kit: **bug** — "seguir el mouse" no funciona en fullscreen; los comandos/controles deben tener **helpText (tooltip) que se active con delay**; usar otra "**Colorización simulada**" para los 2 primeros ejemplos de demo.
+- Nuevos **componentes reutilizables de gran impacto visual** para destacar el trabajo frontend (candidatas propuestas 2026-07-16, pendiente selección del usuario): SpotlightReveal (lupa/linterna before-after), modos extra de CompareSlider (onion-skin, diff-blink, side-by-side con zoom sincronizado), galería con filtrado animado FLIP/View Transitions, VideoScrubPreview (hover-scrub), ApiRequestPlayer (request/response animado estilo API reference), TiltCard/GlowCard para cards de proyecto, AnimatedMetric para las métricas del hero, fondo de hero con canvas reactivo al puntero. Todas: tokens semánticos, AA, `prefers-reduced-motion`, sin dependencias pesadas.
 
 ## 3. Restricciones globales
 

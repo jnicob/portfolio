@@ -27,7 +27,8 @@
 | 2.5 | media-kit v2 (zoom/pan, controles, fit modes, slider hover)                      | `2026-07-13-phase-2.5-media-kit-v2.md`   | ✅ hecha  | 2                                   |
 | 2.6 | media-kit v2.1 (espacio-pan, help, ojo/tooltips, demo retrato) + showcase polish | `2026-07-14-phase-2.6-media-kit-v2.1.md` | ✅ hecha  | 2.5                                 |
 | 3   | Contenido + páginas + theming v2 + media-kit v2.2 (Zod, CV, MDX, i18n, SEO, skins) | `2026-07-15-phase-3-content-theming.md`  | ✅ hecha  | 1                                   |
-| 3.5 | Contenido v2 — feedback usuario 2026-07-16 (proyectos Backoffice + LinkedIn, skills ampliadas, home reordenada, métrica +1.000 PRs, fixes UI header/showcase) | just-in-time (spec §2.1 del spec maestro) | pendiente | 3                                   |
+| 3.5 | Contenido v2 — feedback usuario 2026-07-16 (proyectos Backoffice + LinkedIn, skills ampliadas, home reordenada, métrica +1.000 PRs, fix cursor header) | just-in-time (spec §2.1 del spec maestro) | pendiente | 3                                   |
+| 3.6 | Showcase UX v2 + media-kit 0.5 (transiciones, filtro real, tabs estables, fix mouse-follow fullscreen, tooltips con delay, nueva colorización, componentes de impacto visual seleccionados) | just-in-time (spec §2.1 del spec maestro) | pendiente | 2.6, 3                              |
 | 4   | Playground (adaptadores mock/pollinations/proxy, UI, estados)                    | just-in-time                             | pendiente | 1, 2, 3, 3.5 (contenido estable)    |
 | 5   | Runtime dual + deploys (3 targets, workflows, proxy PHP)                         | just-in-time                             | pendiente | 0–4                                 |
 | 6   | QA final (e2e, visual, axe, Lighthouse, README final)                            | just-in-time                             | pendiente | todas                               |
