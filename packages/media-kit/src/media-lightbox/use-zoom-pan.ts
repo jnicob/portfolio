@@ -198,6 +198,13 @@ export function useZoomPan(
       event.preventDefault();
     };
 
+    // El viewport puede cambiar de tamaño sin remontar el hook (entrar/salir de
+    // fullscreen, resize de ventana): re-clampamos el estado a los límites vivos
+    // para que tx/ty y canPan no queden obsoletos tras el cambio.
+    const onViewportResize = () => {
+      setState((current) => clampState(current));
+    };
+
     vp.addEventListener('wheel', onWheel, { passive: false });
     vp.addEventListener('dblclick', onDblClick);
     vp.addEventListener('pointerdown', onPointerDown);
@@ -205,6 +212,8 @@ export function useZoomPan(
     vp.addEventListener('pointerup', onPointerEnd);
     vp.addEventListener('pointercancel', onPointerEnd);
     vp.addEventListener('dragstart', onDragStart);
+    window.addEventListener('resize', onViewportResize);
+    document.addEventListener('fullscreenchange', onViewportResize);
     return () => {
       vp.removeEventListener('wheel', onWheel);
       vp.removeEventListener('dblclick', onDblClick);
@@ -213,8 +222,10 @@ export function useZoomPan(
       vp.removeEventListener('pointerup', onPointerEnd);
       vp.removeEventListener('pointercancel', onPointerEnd);
       vp.removeEventListener('dragstart', onDragStart);
+      window.removeEventListener('resize', onViewportResize);
+      document.removeEventListener('fullscreenchange', onViewportResize);
     };
-  }, [panBy, reset, viewportRef, zoomTo]);
+  }, [clampState, panBy, reset, viewportRef, zoomTo]);
 
   const { maxTx, maxTy } = bounds(state.scale);
   const canPan = maxTx > 0 || maxTy > 0;

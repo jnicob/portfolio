@@ -246,3 +246,45 @@ describe('useZoomPan v2.2 — auditoría pan con ratón (C4)', () => {
     expect(viewport).toHaveAttribute('data-can-pan');
   });
 });
+
+describe('useZoomPan — re-clamp del pan al cambiar el viewport', () => {
+  function growViewport(viewport: HTMLElement, width: number, height: number) {
+    Object.defineProperty(viewport, 'clientWidth', { value: width, configurable: true });
+    Object.defineProperty(viewport, 'clientHeight', { value: height, configurable: true });
+  }
+
+  it('re-clampa tx/ty al disparar resize cuando el viewport crece', () => {
+    const { result, viewport } = setup(400, 300, 800, 600);
+    act(() => {
+      result.current.zoomTo(2);
+      result.current.panBy(10_000, 10_000); // clampa al máximo actual
+    });
+    expect(result.current.style.transform).toBe('translate(600px, 450px) scale(2)');
+
+    // el viewport crece (p.ej. al entrar en fullscreen): el desborde desaparece.
+    growViewport(viewport, 1600, 1200);
+    act(() => {
+      window.dispatchEvent(new Event('resize'));
+    });
+
+    expect(result.current.style.transform).toBe('translate(0px, 0px) scale(2)');
+    expect(result.current.canPan).toBe(false);
+  });
+
+  it('re-clampa tx/ty al disparar fullscreenchange cuando el viewport crece', () => {
+    const { result, viewport } = setup(400, 300, 800, 600);
+    act(() => {
+      result.current.zoomTo(2);
+      result.current.panBy(10_000, 10_000);
+    });
+    expect(result.current.style.transform).toBe('translate(600px, 450px) scale(2)');
+
+    growViewport(viewport, 1600, 1200);
+    act(() => {
+      document.dispatchEvent(new Event('fullscreenchange'));
+    });
+
+    expect(result.current.style.transform).toBe('translate(0px, 0px) scale(2)');
+    expect(result.current.canPan).toBe(false);
+  });
+});
