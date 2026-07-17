@@ -69,11 +69,11 @@ export default async function LocaleLayout({ children, params }: Props) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body>
+      <body className="flex min-h-dvh flex-col">
         <NextIntlClientProvider messages={messages}>
           <AppearanceInit />
           <SiteHeader />
-          {children}
+          <div className="flex-1">{children}</div>
           <SiteFooter />
         </NextIntlClientProvider>
       </body>
