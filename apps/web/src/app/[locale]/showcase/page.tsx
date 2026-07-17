@@ -14,9 +14,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
 import { ShareViewButton } from '@/components/layout/share-view-button';
 import { CompareModesDemo } from '@/components/showcase/compare-modes-demo';
+import { FilterGalleryDemo } from '@/components/showcase/filter-gallery-demo';
 import { MediaKitDemo } from '@/components/showcase/media-kit-demo';
 import { ShowcaseView } from '@/components/showcase/showcase-view';
 import { SpotlightDemo } from '@/components/showcase/spotlight-demo';
+import { VideoScrubDemo } from '@/components/showcase/video-scrub-demo';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -323,6 +325,48 @@ export default async function ShowcasePage({ params }: Props) {
                 baseBadge: t('sections.mediaKit.spotlightBaseBadge'),
                 revealBadge: t('sections.mediaKit.spotlightRevealBadge'),
                 caption: t('sections.mediaKit.spotlightCaption'),
+              }}
+            />
+          </div>
+          <div className="flex flex-col gap-4 border-t border-border pt-6">
+            <div className="flex flex-col gap-1">
+              <h3 className="text-lg font-semibold">{t('sections.mediaKit.filterGalleryTitle')}</h3>
+              <p className="text-sm text-fg-muted">
+                {t('sections.mediaKit.filterGalleryDescription')}
+              </p>
+            </div>
+            <FilterGalleryDemo
+              strings={{
+                label: t('sections.mediaKit.filterGalleryLabel'),
+                allLabel: t('sections.mediaKit.filterGalleryAllLabel'),
+                categoryLabels: {
+                  image: t('sections.mediaKit.filterGalleryCategoryImageLabel'),
+                  video: t('sections.mediaKit.filterGalleryCategoryVideoLabel'),
+                  audio: t('sections.mediaKit.filterGalleryCategoryAudioLabel'),
+                },
+                tileLabels: [
+                  t('sections.mediaKit.tileImage1Label'),
+                  t('sections.mediaKit.tileImage2Label'),
+                  t('sections.mediaKit.tileImage3Label'),
+                  t('sections.mediaKit.tileVideo1Label'),
+                  t('sections.mediaKit.tileVideo2Label'),
+                  t('sections.mediaKit.tileVideo3Label'),
+                  t('sections.mediaKit.tileAudio1Label'),
+                  t('sections.mediaKit.tileAudio2Label'),
+                ],
+                caption: t('sections.mediaKit.filterGalleryCaption'),
+              }}
+            />
+          </div>
+          <div className="flex flex-col gap-4 border-t border-border pt-6">
+            <div className="flex flex-col gap-1">
+              <h3 className="text-lg font-semibold">{t('sections.mediaKit.scrubTitle')}</h3>
+              <p className="text-sm text-fg-muted">{t('sections.mediaKit.scrubDescription')}</p>
+            </div>
+            <VideoScrubDemo
+              strings={{
+                label: t('sections.mediaKit.scrubLabel'),
+                caption: t('sections.mediaKit.scrubCaption'),
               }}
             />
           </div>

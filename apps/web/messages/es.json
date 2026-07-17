@@ -169,7 +169,27 @@
         "spotlightBaseAlt": "Versión en blanco y negro de la foto del paisaje",
         "spotlightBaseBadge": "B/N",
         "spotlightRevealBadge": "Color",
-        "spotlightCaption": "SpotlightReveal — mueve el puntero (o usa las flechas) para revelar el color bajo la lupa."
+        "spotlightCaption": "SpotlightReveal — mueve el puntero (o usa las flechas) para revelar el color bajo la lupa.",
+        "filterGalleryTitle": "Galería filtrable",
+        "filterGalleryDescription": "FilterGallery agrupa items en categorías y los recoloca con una animación FLIP manual (WAAPI) al cambiar el filtro, respetando prefers-reduced-motion.",
+        "filterGalleryLabel": "Categorías de contenido",
+        "filterGalleryAllLabel": "Todas",
+        "filterGalleryCategoryImageLabel": "Imagen",
+        "filterGalleryCategoryVideoLabel": "Vídeo",
+        "filterGalleryCategoryAudioLabel": "Audio",
+        "tileImage1Label": "Foto 1",
+        "tileImage2Label": "Foto 2",
+        "tileImage3Label": "Foto 3",
+        "tileVideo1Label": "Clip 1",
+        "tileVideo2Label": "Clip 2",
+        "tileVideo3Label": "Clip 3",
+        "tileAudio1Label": "Pista 1",
+        "tileAudio2Label": "Pista 2",
+        "filterGalleryCaption": "FilterGallery — filtra por categoría para ver la animación FLIP de recolocación.",
+        "scrubTitle": "Vista previa con scrub de vídeo",
+        "scrubDescription": "Mueve el puntero sobre el vídeo (o enfócalo y usa las flechas) para recorrer el clip, como las miniaturas de YouTube.",
+        "scrubLabel": "Vista previa con scrub de un clip corto",
+        "scrubCaption": "VideoScrubPreview — mueve el puntero, o enfócalo y pulsa las flechas, Inicio o Fin."
       }
     },
     "lightboxLabels": {
