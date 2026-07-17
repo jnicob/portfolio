@@ -190,6 +190,7 @@
         "scrubTitle": "Video scrub preview",
         "scrubDescription": "Move the pointer over the video (or focus it and use the arrow keys) to scrub through the clip, like YouTube thumbnail previews.",
         "scrubLabel": "Scrub preview of a short clip",
+        "scrubHint": "Move the pointer to scrub the video",
         "scrubCaption": "VideoScrubPreview — move the pointer, or focus it and press the arrow keys, Home or End."
       },
       "apiPlayer": {

@@ -369,6 +369,7 @@ export default async function ShowcasePage({ params }: Props) {
             <VideoScrubDemo
               strings={{
                 label: t('sections.mediaKit.scrubLabel'),
+                hint: t('sections.mediaKit.scrubHint'),
                 caption: t('sections.mediaKit.scrubCaption'),
               }}
             />

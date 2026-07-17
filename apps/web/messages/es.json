@@ -190,6 +190,7 @@
         "scrubTitle": "Vista previa con scrub de vídeo",
         "scrubDescription": "Mueve el puntero sobre el vídeo (o enfócalo y usa las flechas) para recorrer el clip, como las miniaturas de YouTube.",
         "scrubLabel": "Vista previa con scrub de un clip corto",
+        "scrubHint": "Mueve el puntero para recorrer el vídeo",
         "scrubCaption": "VideoScrubPreview — mueve el puntero, o enfócalo y pulsa las flechas, Inicio o Fin."
       },
       "apiPlayer": {
