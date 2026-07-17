@@ -67,3 +67,13 @@ if (typeof globalThis.PointerEvent === 'undefined') {
 
   globalThis.PointerEvent = PointerEventPolyfill;
 }
+
+// jsdom no implementa el contexto 2D de canvas: cada llamada a
+// `canvas.getContext('2d')` loggea un error "not implemented" por consola
+// (vía su virtual console) y devuelve undefined. Desde HeroCanvas, que
+// comprueba `if (!ctx) return` de forma defensiva, alcanza con silenciar ese
+// ruido devolviendo null directamente. Tests que necesiten un contexto real
+// (pintado, animación) lo sobreescriben localmente con `vi.spyOn` — ver
+// `hero-canvas.test.tsx`.
+HTMLCanvasElement.prototype.getContext = (() =>
+  null) as typeof HTMLCanvasElement.prototype.getContext;
