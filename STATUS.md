@@ -14,7 +14,12 @@
   617 kB + póster), colorización real, tabs sin salto (grid apilado), índice que FILTRA
   (ShowcaseView + hash deep-link), radii/estados coherentes, 4 demos nuevas.
 Gate verde: media-kit 173 tests · web 256 · lint/typecheck · build estático.
-**Siguiente tarea: T17 (AnimatedMetric)** — bloque C (T17-T20) + T21 cierre.
+**Feedback de Nico (2026-07-17) registrado** en
+[docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md](docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md):
+sección A (bugs/polish del showcase, incl. onion roto y spotlight lento) va ANTES
+del merge; secciones B-E (menú, inicio, CV, proyectos) → fase F3.7.
+**Siguiente tarea: T17 (AnimatedMetric)** — bloque C (T17-T20), luego fixes de
+feedback A, luego T21 cierre.
 
 ## Hecho
 
@@ -25,10 +30,15 @@ Gate verde: media-kit 173 tests · web 256 · lint/typecheck · build estático.
 
 1. Ejecutar bloque C por el plan: T17 AnimatedMetric → T18 TiltCard →
    T19 ApiRequestPlayer → T20 HeroCanvas (subagentes sonnet + review por tarea).
-2. T21 cierre: gate + builds duales + export servido, verificación viva (Playwright),
+2. Fixes del feedback sección A (showcase) como tareas nuevas antes de T21
+   (enmendar plan F3.6; el ítem 6 "galería ampliada" puede diferirse a F3.7).
+3. T21 cierre: gate + builds duales + export servido, verificación viva (Playwright),
    design review + qa-a11y-perf, review final (modelo top), roadmap/STATUS,
    merge FF a main + push. Notas acumuladas para T21 en el ledger (deriva spec
    120/150 ms de Tabs, tooltip del ojo pre-existente, Minors por tarea).
+4. Tras el merge: planificar F3.7 (feedback B-E: menú activo/hamburguesa, intro de
+   perfil, skills con estrellas, timeline CV, proyectos: naming Freepik/Magnific,
+   URLs, proyecto de integración automatizada, métricas reales) con brainstorm + plan.
 
 ## Pendientes del usuario (no bloqueantes)
 
