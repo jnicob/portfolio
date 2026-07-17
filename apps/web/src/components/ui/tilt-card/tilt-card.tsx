@@ -27,6 +27,7 @@ type TiltCardProps = {
  */
 export function TiltCard({ children, maxTilt = DEFAULT_MAX_TILT_DEG, className }: TiltCardProps) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<number | null>(null);
   const [pointerFine, setPointerFine] = useState(false);
   const [tiltEnabled, setTiltEnabled] = useState(false);
   const [hovering, setHovering] = useState(false);
@@ -37,6 +38,14 @@ export function TiltCard({ children, maxTilt = DEFAULT_MAX_TILT_DEG, className }
     setTiltEnabled(fine && !prefersReducedMotion());
   }, []);
 
+  // Cancela un frame en vuelo si el componente se desmonta antes de que corra
+  // (p.ej. navegación mientras el puntero seguía sobre la card).
+  useEffect(() => {
+    return () => {
+      if (frameRef.current != null) cancelAnimationFrame(frameRef.current);
+    };
+  }, []);
+
   function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
     setHovering(true);
     if (!tiltEnabled) return;
@@ -45,14 +54,25 @@ export function TiltCard({ children, maxTilt = DEFAULT_MAX_TILT_DEG, className }
     if (!root || !rect || rect.width === 0 || rect.height === 0) return;
     const px = (event.clientX - rect.left) / rect.width;
     const py = (event.clientY - rect.top) / rect.height;
-    root.style.setProperty('--tilt-rx', `${((0.5 - py) * maxTilt * 2).toFixed(2)}deg`);
-    root.style.setProperty('--tilt-ry', `${((px - 0.5) * maxTilt * 2).toFixed(2)}deg`);
-    root.style.setProperty('--tilt-gx', `${(px * 100).toFixed(1)}%`);
-    root.style.setProperty('--tilt-gy', `${(py * 100).toFixed(1)}%`);
+    // Batchea los 4 writes en un único rAF: cancela el frame anterior si todavía
+    // no corrió (moves más rápidos que el refresh del navegador) para que solo se
+    // aplique la posición más reciente.
+    if (frameRef.current != null) cancelAnimationFrame(frameRef.current);
+    frameRef.current = requestAnimationFrame(() => {
+      frameRef.current = null;
+      root.style.setProperty('--tilt-rx', `${((0.5 - py) * maxTilt * 2).toFixed(2)}deg`);
+      root.style.setProperty('--tilt-ry', `${((px - 0.5) * maxTilt * 2).toFixed(2)}deg`);
+      root.style.setProperty('--tilt-gx', `${(px * 100).toFixed(1)}%`);
+      root.style.setProperty('--tilt-gy', `${(py * 100).toFixed(1)}%`);
+    });
   }
 
   function handlePointerLeave() {
     setHovering(false);
+    if (frameRef.current != null) {
+      cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+    }
     const root = rootRef.current;
     if (!root) return;
     root.style.setProperty('--tilt-rx', '0deg');
