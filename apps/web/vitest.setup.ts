@@ -75,5 +75,14 @@ if (typeof globalThis.PointerEvent === 'undefined') {
 // ruido devolviendo null directamente. Tests que necesiten un contexto real
 // (pintado, animación) lo sobreescriben localmente con `vi.spyOn` — ver
 // `hero-canvas.test.tsx`.
-HTMLCanvasElement.prototype.getContext = (() =>
-  null) as typeof HTMLCanvasElement.prototype.getContext;
+//
+// Guard de entorno, no de feature: no hay forma de comprobar "¿ya da un
+// contexto real?" sin invocar el método (lo que dispararía el mismo log que
+// queremos evitar). La única vía por la que jsdom devolvería un contexto real
+// es el paquete opcional `canvas`, que este repo no instala (cero
+// dependencias nuevas), así que el reemplazo es correcto siempre que
+// `HTMLCanvasElement` exista (jsdom real, no un entorno sin DOM).
+if (typeof HTMLCanvasElement !== 'undefined') {
+  HTMLCanvasElement.prototype.getContext = (() =>
+    null) as typeof HTMLCanvasElement.prototype.getContext;
+}

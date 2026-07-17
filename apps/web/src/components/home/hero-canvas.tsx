@@ -50,6 +50,10 @@ export function HeroCanvas() {
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
+      // Sin `--color-accent` resuelto todavía (o en medio de una transición de
+      // tema) dejamos el frame vacío en vez de pintar con un color por
+      // defecto: cero fallbacks de color hardcodeados.
+      if (!accent) return;
       ctx.fillStyle = accent;
       for (let gy = GRID_STEP_PX / 2; gy < height; gy += GRID_STEP_PX) {
         for (let gx = GRID_STEP_PX / 2; gx < width; gx += GRID_STEP_PX) {
@@ -71,6 +75,15 @@ export function HeroCanvas() {
       height = rect.height;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
+      // <canvas> es un elemento reemplazado: sin tamaño CSS explícito, su caja
+      // de layout toma el tamaño INTRÍNSECO de los atributos width/height de
+      // arriba — que ya vienen escalados por dpr. Con dpr > 1 (cualquier
+      // pantalla HiDPI) eso deja la caja del canvas más grande que el
+      // contenedor real y, con overflow-hidden en el Hero, el grid solo llena
+      // el cuadrante superior-izquierdo, desalineado del puntero. Fijamos el
+      // tamaño CSS al tamaño real medido, independiente del backing buffer.
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       draw();
     };

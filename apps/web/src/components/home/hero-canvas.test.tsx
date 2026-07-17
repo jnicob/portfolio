@@ -114,6 +114,20 @@ function getContainer() {
   return document.querySelector('canvas')!.parentElement as HTMLElement;
 }
 
+/**
+ * Sin este stub, `getComputedStyle` en jsdom devuelve `''` para
+ * `--color-accent` (no hay stylesheet real resuelta), y con el guard de
+ * "sin accent no pinta" (ver `hero-canvas.tsx`) eso dejaría el canvas vacío en
+ * TODOS los tests que verifican repintado vía `ctx.fill`. Se aplica solo en
+ * los tests que necesitan un color real para observar el pintado; los que
+ * verifican `clearRect` (que corre siempre, con o sin accent) no lo necesitan.
+ */
+function stubAccentColor(value: string) {
+  vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+    getPropertyValue: () => value,
+  } as unknown as CSSStyleDeclaration);
+}
+
 describe('HeroCanvas', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
@@ -158,6 +172,7 @@ describe('HeroCanvas', () => {
   it('con reduced-motion, mover el puntero no arranca el bucle pero repinta un frame estático', () => {
     stubReducedMotion(true);
     const ctx = stubContext2D();
+    stubAccentColor('#336699');
     stubContainerRect({ width: 200, height: 100 });
     const frame = stubAnimationFrame();
     render(<HeroCanvas />);
@@ -171,6 +186,7 @@ describe('HeroCanvas', () => {
   it('sacar el puntero del contenedor detiene el bucle y pinta un último frame de reposo', () => {
     stubReducedMotion(false);
     const ctx = stubContext2D();
+    stubAccentColor('#336699');
     stubContainerRect({ width: 200, height: 100 });
     const frame = stubAnimationFrame();
     render(<HeroCanvas />);
@@ -254,5 +270,36 @@ describe('HeroCanvas', () => {
     const canvas = document.querySelector('canvas') as HTMLCanvasElement;
     expect(canvas.width).toBe(200); // 100 * min(4, 2)
     expect(canvas.height).toBe(100); // 50 * min(4, 2)
+  });
+
+  it('fija el tamaño CSS del canvas al del contenedor (independiente del backing buffer escalado por DPR)', () => {
+    stubReducedMotion(false);
+    stubContext2D();
+    stubContainerRect({ width: 800, height: 300 });
+    vi.stubGlobal('devicePixelRatio', 2);
+
+    render(<HeroCanvas />);
+    const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+    // El backing buffer (atributos width/height) va escalado por DPR...
+    expect(canvas.width).toBe(1600);
+    expect(canvas.height).toBe(600);
+    // ...pero la caja CSS debe quedarse en el tamaño real del contenedor: un
+    // <canvas> es un elemento reemplazado — sin tamaño CSS explícito, su caja
+    // usa los atributos width/height (ya escalados), no el tamaño intrínseco
+    // del contenedor, y en HiDPI el grid solo llenaría el cuadrante superior
+    // izquierdo del hero.
+    expect(canvas.style.width).toBe('800px');
+    expect(canvas.style.height).toBe('300px');
+  });
+
+  it('con --color-accent vacío (aún no resuelto), no pinta ningún dot en vez de un color por defecto', () => {
+    stubReducedMotion(false);
+    const ctx = stubContext2D();
+    stubAccentColor('');
+    stubContainerRect({ width: 200, height: 100 });
+
+    render(<HeroCanvas />);
+    expect(ctx.clearRect).toHaveBeenCalled(); // el frame se limpia igual...
+    expect(ctx.fill).not.toHaveBeenCalled(); // ...pero no rellena con negro/color por defecto.
   });
 });
