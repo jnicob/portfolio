@@ -1,39 +1,39 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-17 · por /checkpoint (F3.6 en curso)
+> Actualizado: 2026-07-17 · por /checkpoint (F3.6 bloques A+B hechos)
 
 ## Ahora
 
 **F3.6 (Showcase UX v2 + media-kit 0.5) EN EJECUCIÓN** en rama
-`feature/phase-3.6-showcase-mediakit` con subagent-driven-development.
-**Hechas T1-T5 de 21** (commits `c64fd51..9ac7089`, cada una con review aprobada):
-fix foco fullscreen (el space-pan ya funciona tras ⤢), re-clamp del pan en
-resize/fullscreenchange, tooltips con delay en todos los controles, `compareMode`
-completo (wipe/onion/blink/side-by-side + passthrough en `expand`).
-Gate verde: media-kit 151 tests · web 228 · lint/typecheck.
-**Siguiente tarea: T6 (SpotlightReveal)** — luego T7-T9 cierran el bloque A.
+`feature/phase-3.6-showcase-mediakit` (sin pushear) con subagent-driven-development.
+**Hechas T1-T16 de 21** (commits `c64fd51..fd4fe3f`, cada una con review aprobada):
+- **Bloque A completo (T1-T9):** media-kit **0.5.0** — fix foco fullscreen, re-clamp pan,
+  tooltips con delay, `compareMode` (wipe/onion/blink/side-by-side), `SpotlightReveal`,
+  `FilterGallery`, `VideoScrubPreview`, release con README/CHANGELOG verificados 1:1.
+- **Bloque B completo (T10-T16):** assets IA reales (landscape.webp 113 kB, scrub.mp4
+  617 kB + póster), colorización real, tabs sin salto (grid apilado), índice que FILTRA
+  (ShowcaseView + hash deep-link), radii/estados coherentes, 4 demos nuevas.
+Gate verde: media-kit 173 tests · web 256 · lint/typecheck · build estático.
+**Siguiente tarea: T17 (AnimatedMetric)** — bloque C (T17-T20) + T21 cierre.
 
 ## Hecho
 
-- ✅ Fases 0–3.5 (ver roadmap). F3.5: 14 proyectos, +1.000 PRs global, Flows API
-  integrado, skills ampliadas, home reordenada, skin picker con selección/hover.
-- ✅ Métricas plataforma (25+/40+ verificadas), entrada dev-hub renombrada, favicon `nb`.
-- ✅ F3.6: spec propia + plan de 21 tareas + T1-T5 (bloque A parcial).
+- ✅ Fases 0–3.5 (ver roadmap) · media-kit 0.2.0→0.4.0 en fases previas.
+- ✅ F3.6 bloques A y B (arriba). Ledger tarea a tarea: `.superpowers/sdd/progress.md`.
 
 ## Siguiente acción
 
-1. Continuar F3.6 por el plan: T6 SpotlightReveal → T7 FilterGallery → T8
-   VideoScrubPreview → T9 release 0.5.0 (fin bloque A; checkpoint si contexto grande).
-2. Bloque B (T10-T16): T10 assets la hace el ORQUESTADOR con Magnific MCP
-   (paisaje ≤200 kB + clip ≤1.5 MB); OJO T15: montar la demo de modos con
-   `key={mode}` (blink inicializa su estado al montar — nota en ledger).
-3. Bloque C (T17-T20) → T21 cierre (gate, verificación viva, design review +
-   qa-a11y-perf, review final, roadmap/STATUS, merge FF + push).
+1. Ejecutar bloque C por el plan: T17 AnimatedMetric → T18 TiltCard →
+   T19 ApiRequestPlayer → T20 HeroCanvas (subagentes sonnet + review por tarea).
+2. T21 cierre: gate + builds duales + export servido, verificación viva (Playwright),
+   design review + qa-a11y-perf, review final (modelo top), roadmap/STATUS,
+   merge FF a main + push. Notas acumuladas para T21 en el ledger (deriva spec
+   120/150 ms de Tabs, tooltip del ojo pre-existente, Minors por tarea).
 
 ## Pendientes del usuario (no bloqueantes)
 
 - Dominio definitivo + `NEXT_PUBLIC_SITE_URL` (el build avisa si falta).
-- Publicar `@nicobehm/media-kit` en npm (0.5.0 quedará lista al cerrar F3.6).
+- Publicar `@nicobehm/media-kit` en npm (0.5.0 lista en la rama al cerrar F3.6).
 - Upgrade Node 22 (retirar pins de `docs/decisions/2026-07-10-dependency-pins.md`).
 
 ## Fuentes de verdad
