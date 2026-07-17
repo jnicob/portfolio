@@ -14,7 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
 import { ShareViewButton } from '@/components/layout/share-view-button';
 import { MediaKitDemo } from '@/components/showcase/media-kit-demo';
-import { ShowcaseIndex } from '@/components/showcase/showcase-index';
+import { ShowcaseView } from '@/components/showcase/showcase-view';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -68,33 +68,20 @@ export default async function ShowcasePage({ params }: Props) {
     { id: 'media-kit', label: t('toc.mediaKit') },
   ];
 
-  return (
-    <main className="mx-auto max-w-6xl px-6 py-12 lg:grid lg:grid-cols-[10rem_minmax(0,1fr)] lg:items-start lg:gap-12">
-      <nav aria-label={t('tocLabel')} className="hidden lg:block">
-        <div className="sticky top-12">
-          <ShowcaseIndex
-            items={toc}
-            inputLabel={t('filterLabel')}
-            emptyMessage={t('filterEmpty')}
-            placeholder={t('filterPlaceholder')}
-          />
-        </div>
-      </nav>
-      <div className="flex flex-col gap-14">
-        <header>
-          <h1 className="text-3xl font-bold">{t('title')}</h1>
-          <p className="mt-1 text-fg-muted">{t('intro')}</p>
-          <div className="mt-3">
-            <ShareViewButton
-              labels={{
-                share: tShare('share'),
-                copied: tShare('copied'),
-                error: tShare('error'),
-              }}
-            />
-          </div>
-        </header>
+  const labels = {
+    navLabel: t('tocLabel'),
+    inputLabel: t('filterLabel'),
+    emptyMessage: t('filterEmpty'),
+    placeholder: t('filterPlaceholder'),
+    all: t('index.all'),
+    showing: t('index.showing'),
+    showingAll: t('index.showingAll'),
+  };
 
+  const sections = [
+    {
+      id: 'button',
+      node: (
         <Section
           id="button"
           title={t('sections.button.title')}
@@ -119,7 +106,11 @@ export default async function ShowcasePage({ params }: Props) {
             <Button size="lg">Large</Button>
           </div>
         </Section>
-
+      ),
+    },
+    {
+      id: 'badge',
+      node: (
         <Section
           id="badge"
           title={t('sections.badge.title')}
@@ -131,7 +122,11 @@ export default async function ShowcasePage({ params }: Props) {
             <Badge variant="danger">Danger</Badge>
           </div>
         </Section>
-
+      ),
+    },
+    {
+      id: 'card',
+      node: (
         <Section
           id="card"
           title={t('sections.card.title')}
@@ -184,7 +179,11 @@ export default async function ShowcasePage({ params }: Props) {
             </Card>
           </div>
         </Section>
-
+      ),
+    },
+    {
+      id: 'form',
+      node: (
         <Section
           id="form"
           title={t('sections.form.title')}
@@ -236,7 +235,11 @@ export default async function ShowcasePage({ params }: Props) {
             </Field>
           </div>
         </Section>
-
+      ),
+    },
+    {
+      id: 'tabs',
+      node: (
         <Section
           id="tabs"
           title={t('sections.tabs.title')}
@@ -259,7 +262,11 @@ export default async function ShowcasePage({ params }: Props) {
             </TabPanel>
           </Tabs>
         </Section>
-
+      ),
+    },
+    {
+      id: 'media-kit',
+      node: (
         <Section
           id="media-kit"
           title={t('sections.mediaKit.title')}
@@ -281,7 +288,27 @@ export default async function ShowcasePage({ params }: Props) {
             }}
           />
         </Section>
-      </div>
+      ),
+    },
+  ];
+
+  return (
+    <main className="mx-auto max-w-6xl px-6 py-12 lg:grid lg:grid-cols-[10rem_minmax(0,1fr)] lg:items-start lg:gap-12">
+      <ShowcaseView toc={toc} labels={labels} sections={sections}>
+        <header>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
+          <p className="mt-1 text-fg-muted">{t('intro')}</p>
+          <div className="mt-3">
+            <ShareViewButton
+              labels={{
+                share: tShare('share'),
+                copied: tShare('copied'),
+                error: tShare('error'),
+              }}
+            />
+          </div>
+        </header>
+      </ShowcaseView>
     </main>
   );
 }

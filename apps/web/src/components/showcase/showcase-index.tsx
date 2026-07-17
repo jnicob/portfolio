@@ -7,14 +7,20 @@ export type ShowcaseIndexProps = {
   inputLabel: string;
   emptyMessage: string;
   placeholder?: string;
+  /** Invocado con el id del item elegido; no toca `location.hash` (lo hace quien filtra, ShowcaseView). */
+  onSelect: (id: string) => void;
+  /** Id del item actualmente aplicado (marca la opción activa en la lista). */
+  selectedId?: string;
 };
 
-/** Índice filtrable del showcase (T23): sustituye la lista fija de anclas del TOC. */
+/** Índice filtrable del showcase (T23): la selección se delega vía `onSelect` (B1 — filtra, no hace scroll). */
 export function ShowcaseIndex({
   items,
   inputLabel,
   emptyMessage,
   placeholder,
+  onSelect,
+  selectedId,
 }: ShowcaseIndexProps) {
   return (
     <FilterableList
@@ -22,9 +28,8 @@ export function ShowcaseIndex({
       inputLabel={inputLabel}
       emptyMessage={emptyMessage}
       placeholder={placeholder}
-      onSelect={(item) => {
-        window.location.hash = item.id;
-      }}
+      selectedId={selectedId}
+      onSelect={(item) => onSelect(item.id)}
     />
   );
 }

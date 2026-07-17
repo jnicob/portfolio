@@ -176,6 +176,11 @@
       "shortcutControls": "Show / hide controls",
       "shortcutHelp": "Toggle this help",
       "shortcutClose": "Close"
+    },
+    "index": {
+      "all": "All",
+      "showing": "Showing: {section}",
+      "showingAll": "Showing all sections"
     }
   }
 }
