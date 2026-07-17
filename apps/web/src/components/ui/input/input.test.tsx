@@ -9,4 +9,9 @@ describe('Input', () => {
     await userEvent.type(screen.getByRole('textbox', { name: 'Nombre' }), 'Nico');
     expect(screen.getByRole('textbox')).toHaveValue('Nico');
   });
+
+  it('tiene transición de color y hover coherente con Button', () => {
+    render(<Input aria-label="Nombre" />);
+    expect(screen.getByRole('textbox')).toHaveClass('transition-colors', 'hover:border-fg-muted');
+  });
 });

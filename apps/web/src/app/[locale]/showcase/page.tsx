@@ -256,7 +256,7 @@ export default async function ShowcasePage({ params }: Props) {
               </Card>
             </TabPanel>
             <TabPanel value="api">
-              <pre className="overflow-x-auto rounded-card border border-border bg-surface p-4 font-mono text-sm text-fg">
+              <pre className="overflow-x-auto rounded-control border border-border bg-surface p-4 font-mono text-sm text-fg">
                 {`{ "status": "ok" }`}
               </pre>
             </TabPanel>

@@ -15,4 +15,12 @@ describe('Select', () => {
     await userEvent.selectOptions(select, '16_9');
     expect(select).toHaveValue('16_9');
   });
+
+  it('tiene transición de color y hover coherente con Button', () => {
+    render(<Select aria-label="Aspect ratio" options={options} />);
+    expect(screen.getByRole('combobox', { name: 'Aspect ratio' })).toHaveClass(
+      'transition-colors',
+      'hover:border-fg-muted',
+    );
+  });
 });
