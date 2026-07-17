@@ -61,4 +61,17 @@ describe('FeaturedProjects', () => {
   it('hay 14 proyectos en total', () => {
     expect(projects).toHaveLength(14);
   });
+
+  it('envuelve cada celda del grid (proyectos destacados + MoreProjectsCard) con TiltCard', () => {
+    renderFeaturedProjects();
+    expect(document.querySelectorAll('[data-tilt]')).toHaveLength(featured.length + 1);
+  });
+
+  it('la celda de MoreProjectsCard conserva su column-span del grid al envolverla en TiltCard', () => {
+    renderFeaturedProjects();
+    const moreLink = screen.getByRole('link', { name: /all projects/i });
+    const tiltWrapper = moreLink.closest('[data-tilt]') as HTMLElement;
+    expect(tiltWrapper.className).toContain('sm:col-span-2');
+    expect(tiltWrapper.className).toContain('lg:col-span-3');
+  });
 });
