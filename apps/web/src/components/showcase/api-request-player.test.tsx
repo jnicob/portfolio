@@ -156,20 +156,23 @@ describe('ApiRequestPlayer', () => {
     expect(() => fireEvent.click(screen.getByRole('button', { name: labels.copy }))).not.toThrow();
   });
 
-  it('desmontar durante pending limpia el timeout: el callback no dispara tras desmontar', () => {
+  it('desmontar durante pending cancela el timeout pendiente (mecanismo, no solo ausencia de crash)', () => {
+    // React 19 vuelve un no-op silencioso el setState post-unmount (ya no hay warning
+    // "state update on an unmounted component"), así que "no lanza / no hace
+    // console.error" NO discrimina si el cleanup deja de llamar clearTimeout. La
+    // aserción real es sobre el motor de fake timers: `getTimerCount()` cuenta los
+    // timers (`setTimeout`) todavía pendientes — debe pasar de 1 a 0 al desmontar.
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
-    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     stubReducedMotion(true);
     const { unmount } = renderPlayer();
 
     fireEvent.click(screen.getByRole('button', { name: labels.run }));
     expect(screen.getByRole('button', { name: labels.running })).toBeInTheDocument();
+    expect(vi.getTimerCount()).toBe(1);
 
     // Desmonta ANTES de que el setTimeout de 600ms llegue a disparar.
     unmount();
-    expect(() => act(() => vi.advanceTimersByTime(600))).not.toThrow();
-    expect(consoleError).not.toHaveBeenCalled();
-    consoleError.mockRestore();
+    expect(vi.getTimerCount()).toBe(0);
   });
 
   it('si el portapapeles rechaza, no crashea, no deja unhandled rejection y no queda "copied"', async () => {
