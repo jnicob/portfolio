@@ -9,9 +9,20 @@ const strings: VideoScrubDemoStrings = {
 };
 
 describe('VideoScrubDemo', () => {
-  it('renders VideoScrubPreview with the real clip source and poster', () => {
+  it('no monta el <video> (ni descarga el clip) antes de interactuar — muestra el poster como imagen lazy', () => {
     const { container } = render(<VideoScrubDemo strings={strings} />);
     expect(screen.getByLabelText(strings.label)).toBeInTheDocument();
+    expect(container.querySelector('video')).not.toBeInTheDocument();
+    const poster = container.querySelector('img');
+    expect(poster).toHaveAttribute('src', '/demo/scrub-poster.webp');
+    expect(poster).toHaveAttribute('loading', 'lazy');
+    expect(poster).toHaveAttribute('width', '864');
+    expect(poster).toHaveAttribute('height', '486');
+  });
+
+  it('monta VideoScrubPreview con el clip real y el poster tras la primera interacción', () => {
+    const { container } = render(<VideoScrubDemo strings={strings} />);
+    fireEvent.pointerEnter(screen.getByLabelText(strings.label));
     const video = container.querySelector('video');
     expect(video).toHaveAttribute('src', '/demo/scrub.mp4');
     expect(video).toHaveAttribute('poster', '/demo/scrub-poster.webp');
@@ -56,5 +67,21 @@ describe('VideoScrubDemo — hint de affordance', () => {
     fireEvent.pointerEnter(scrubArea);
     fireEvent.pointerLeave(scrubArea);
     expect(screen.queryByText(strings.hint)).not.toBeInTheDocument();
+  });
+});
+
+/**
+ * Task 27 (perf, F3.6): el placeholder (poster + botón) se desmonta al
+ * activarse el widget real — sin reclamar el foco a mano, un usuario de
+ * teclado que llega con Tab perdería el foco (se iría a `<body>`) justo en
+ * el momento de activar la demo.
+ */
+describe('VideoScrubDemo — foco tras activación por teclado', () => {
+  it('reenvía el foco al widget real cuando la activación viene de foco (teclado)', () => {
+    const { container } = render(<VideoScrubDemo strings={strings} />);
+    fireEvent.focus(screen.getByLabelText(strings.label));
+    const scrubRoot = container.querySelector('[tabindex]');
+    expect(scrubRoot).not.toBeNull();
+    expect(document.activeElement).toBe(scrubRoot);
   });
 });
