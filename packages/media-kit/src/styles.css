@@ -733,3 +733,29 @@
   margin: 0;
   padding: 0;
 }
+
+/* VideoScrubPreview */
+.mk-scrub {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--mk-radius);
+  cursor: ew-resize;
+}
+.mk-scrub:focus-visible {
+  outline: 2px solid var(--mk-focus-ring);
+  outline-offset: 2px;
+}
+.mk-scrub video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.mk-scrub__bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: var(--mk-scrub-pos);
+  background: var(--mk-handle-color);
+  transition: width 60ms linear;
+}
