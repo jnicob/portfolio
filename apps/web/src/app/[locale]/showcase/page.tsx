@@ -13,8 +13,10 @@ import { Select } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
 import { ShareViewButton } from '@/components/layout/share-view-button';
+import { CompareModesDemo } from '@/components/showcase/compare-modes-demo';
 import { MediaKitDemo } from '@/components/showcase/media-kit-demo';
 import { ShowcaseView } from '@/components/showcase/showcase-view';
+import { SpotlightDemo } from '@/components/showcase/spotlight-demo';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -287,6 +289,43 @@ export default async function ShowcasePage({ params }: Props) {
               portraitCaption: t('sections.mediaKit.portraitCaption'),
             }}
           />
+          <div className="flex flex-col gap-4 border-t border-border pt-6">
+            <div className="flex flex-col gap-1">
+              <h3 className="text-lg font-semibold">{t('sections.mediaKit.modesTitle')}</h3>
+              <p className="text-sm text-fg-muted">{t('sections.mediaKit.modesDescription')}</p>
+            </div>
+            <CompareModesDemo
+              strings={{
+                groupLabel: t('sections.mediaKit.modesGroupLabel'),
+                modeLabels: {
+                  wipe: t('sections.mediaKit.modesWipeLabel'),
+                  onion: t('sections.mediaKit.modesOnionLabel'),
+                  blink: t('sections.mediaKit.modesBlinkLabel'),
+                  'side-by-side': t('sections.mediaKit.modesSideBySideLabel'),
+                },
+                beforeAlt: t('sections.mediaKit.modesBeforeAlt'),
+                compareLabel: t('sections.mediaKit.modesCompareLabel'),
+                pauseLabel: t('sections.mediaKit.modesPauseLabel'),
+                resumeLabel: t('sections.mediaKit.modesResumeLabel'),
+                caption: t('sections.mediaKit.modesCaption'),
+              }}
+            />
+          </div>
+          <div className="flex flex-col gap-4 border-t border-border pt-6">
+            <div className="flex flex-col gap-1">
+              <h3 className="text-lg font-semibold">{t('sections.mediaKit.spotlightTitle')}</h3>
+              <p className="text-sm text-fg-muted">{t('sections.mediaKit.spotlightDescription')}</p>
+            </div>
+            <SpotlightDemo
+              strings={{
+                label: t('sections.mediaKit.spotlightLabel'),
+                baseAlt: t('sections.mediaKit.spotlightBaseAlt'),
+                baseBadge: t('sections.mediaKit.spotlightBaseBadge'),
+                revealBadge: t('sections.mediaKit.spotlightRevealBadge'),
+                caption: t('sections.mediaKit.spotlightCaption'),
+              }}
+            />
+          </div>
         </Section>
       ),
     },

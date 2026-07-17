@@ -150,7 +150,26 @@
         "compareLightboxLabel": "Comparar antes y después",
         "portraitBeforeAlt": "Retrato en blanco y negro",
         "portraitCompareLabel": "Comparar blanco y negro con color",
-        "portraitCaption": "Colorización simulada — un único bitmap; el B-N se deriva con filter: grayscale(1). Retrato generado con IA."
+        "portraitCaption": "Colorización simulada — un único bitmap; el B-N se deriva con filter: grayscale(1). Retrato generado con IA.",
+        "modesTitle": "Modos de comparación",
+        "modesDescription": "La misma prop compareMode que hay detrás de las dos demos de arriba añade tres ejes de comparación más: onion skin, parpadeo y lado a lado.",
+        "modesGroupLabel": "Modo de comparación",
+        "modesWipeLabel": "Deslizar",
+        "modesOnionLabel": "Onion skin",
+        "modesBlinkLabel": "Parpadeo",
+        "modesSideBySideLabel": "Lado a lado",
+        "modesBeforeAlt": "Versión desaturada de la foto del paisaje",
+        "modesCompareLabel": "Comparar antes y después (selector de modo)",
+        "modesPauseLabel": "Comparación en pausa",
+        "modesResumeLabel": "Comparación siguiendo el puntero",
+        "modesCaption": "compareMode=\"wipe\" | \"onion\" | \"blink\" | \"side-by-side\" — la misma foto de paisaje, cuatro formas de compararla.",
+        "spotlightTitle": "Revelado con foco (spotlight)",
+        "spotlightDescription": "Una lupa que revela el color bajo el puntero — el mismo truco que las comparaciones de arriba: un único bitmap, un filtro CSS para el lado en blanco y negro.",
+        "spotlightLabel": "Revelar color bajo el foco",
+        "spotlightBaseAlt": "Versión en blanco y negro de la foto del paisaje",
+        "spotlightBaseBadge": "B/N",
+        "spotlightRevealBadge": "Color",
+        "spotlightCaption": "SpotlightReveal — mueve el puntero (o usa las flechas) para revelar el color bajo la lupa."
       }
     },
     "lightboxLabels": {

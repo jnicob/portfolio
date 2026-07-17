@@ -150,7 +150,26 @@
         "compareLightboxLabel": "Compare before and after",
         "portraitBeforeAlt": "Black and white portrait",
         "portraitCompareLabel": "Compare black and white with color",
-        "portraitCaption": "Simulated colorization — a single bitmap; the B&W side is derived with filter: grayscale(1). AI-generated portrait."
+        "portraitCaption": "Simulated colorization — a single bitmap; the B&W side is derived with filter: grayscale(1). AI-generated portrait.",
+        "modesTitle": "Comparison modes",
+        "modesDescription": "The same compareMode prop behind the two demos above adds three more comparison axes: onion skin, blink and side-by-side.",
+        "modesGroupLabel": "Comparison mode",
+        "modesWipeLabel": "Wipe",
+        "modesOnionLabel": "Onion skin",
+        "modesBlinkLabel": "Blink",
+        "modesSideBySideLabel": "Side by side",
+        "modesBeforeAlt": "Desaturated version of the landscape photo",
+        "modesCompareLabel": "Compare before and after (mode switcher)",
+        "modesPauseLabel": "Comparison paused",
+        "modesResumeLabel": "Comparison following pointer",
+        "modesCaption": "compareMode=\"wipe\" | \"onion\" | \"blink\" | \"side-by-side\" — same landscape photo, four ways to compare it.",
+        "spotlightTitle": "Spotlight reveal",
+        "spotlightDescription": "A lens that reveals color under the pointer — same trick as the comparisons above: one bitmap, one CSS filter for the black & white side.",
+        "spotlightLabel": "Reveal color under the spotlight",
+        "spotlightBaseAlt": "Black and white version of the landscape photo",
+        "spotlightBaseBadge": "B&W",
+        "spotlightRevealBadge": "Color",
+        "spotlightCaption": "SpotlightReveal — move the pointer (or use the arrow keys) to reveal color under the lens."
       }
     },
     "lightboxLabels": {
