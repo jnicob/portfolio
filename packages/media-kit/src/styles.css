@@ -15,6 +15,7 @@
   --mk-z-lightbox: 50;
   --mk-control-bg: rgb(24 24 27 / 0.85);
   --mk-control-color: #fafafa;
+  --mk-spot-ring: rgb(255 255 255 / 0.9);
 }
 
 /* CompareSlider */
@@ -665,7 +666,7 @@
   width: calc(var(--mk-spot-radius) * 2);
   height: calc(var(--mk-spot-radius) * 2);
   transform: translate(-50%, -50%);
-  border: 2px solid var(--mk-spot-ring, rgba(255, 255, 255, 0.9));
+  border: 2px solid var(--mk-spot-ring);
   border-radius: 50%;
   opacity: 0;
   pointer-events: none;

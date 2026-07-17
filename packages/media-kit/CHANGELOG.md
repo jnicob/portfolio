@@ -1,5 +1,62 @@
 # Changelog
 
+## 0.5.0 — 2026-07-17
+
+### Added
+
+- **New component `SpotlightReveal`:** a magnifier/flashlight that reveals a `reveal` layer over
+  a `base` layer under the pointer (`clip-path: circle(...)`, positioned via `--mk-spot-x`/
+  `--mk-spot-y`/`--mk-spot-radius`). Props: `base`, `reveal`, `label` (required), `radius`
+  (default `110`), `defaultPosition` (default `{ x: 50, y: 50 }`, uncontrolled), `overlayLabels`,
+  `className`. Pointer positions the lens; keyboard (`tabIndex={0}`,
+  `aria-roledescription="spotlight"`) moves it with arrow keys (5% steps, `Shift` = 1%), centers
+  with `Home`, and hides it with `Escape` without losing focus. `prefers-reduced-motion` removes
+  the lens's own transitions (appearance is instant; pointer tracking is unaffected). New public
+  custom property `--mk-spot-ring` (lens border color, default `rgb(255 255 255 / 0.9)`),
+  declared in `:root` alongside the package's other public tokens.
+- **New component `FilterGallery`:** a filterable grid with animated reflow — manual FLIP
+  (First-Last-Invert-Play) via WAAPI `element.animate`, no dependencies, no View Transitions API.
+  Props: `items`, `label` (required), `filter`/`defaultFilter`/`onFilterChange` (controlled or
+  uncontrolled), `categories` (renders an "All" + per-category `role="group"` button bar with
+  `aria-pressed`), `allLabel` (default `'All'`), `duration` (default `240`ms), `className`. Items
+  entering fade+scale in from `0.96`; items leaving are removed immediately (no exit animation in
+  this version). `prefers-reduced-motion` skips `element.animate` entirely. SSR-safe: the first
+  render never measures or animates.
+- **New component `VideoScrubPreview`:** hover-scrub of a video (YouTube-thumbnail pattern) via a
+  muted, posterized `<video>`. Props: `src`, `label` (required), `poster`, `scrubOnFocus` (default
+  `true`). Pointer move sets `currentTime` proportionally (throttled with
+  `requestAnimationFrame`); pointer leave resets to the poster. Keyboard: arrow keys ±5% of
+  duration, `Home`/`End`. A no-op (no error) before `loadedmetadata` fires. Internal
+  `--mk-scrub-pos` CSS variable drives the progress bar (implementation detail, not a public
+  token).
+- **CompareSlider:** `compareMode?: 'wipe' | 'onion' | 'blink' | 'side-by-side'` (default `'wipe'`
+  = current clip-path/divider behavior, zero changes). `'onion'` keeps the same handle/keyboard
+  but drives the `after` layer's opacity instead of divider position. `'blink'` and
+  `'side-by-side'` render no slider/handle: `'blink'` alternates `before`/`after` every 800ms
+  behind a `role="switch"` pause/resume button (reuses `pauseLabel`/`resumeLabel`, starts paused
+  under `prefers-reduced-motion`); `'side-by-side'` shows both sides in full via a two-column (or
+  two-row, `orientation="vertical"`) grid — nested inside `MediaLightbox` it inherits the viewer's
+  zoom/pan for free. `MediaLightbox`'s `compare` prop gained a matching optional `compareMode`
+  passthrough.
+- **MediaLightbox:** every toolbar button (zoom −/+, reset, fit, fullscreen) now carries
+  `data-mk-tooltip`/`data-mk-tooltip-pos` — the CSS-only delayed tooltip infrastructure
+  (previously scoped to the corner buttons) now covers every control. Appearance has a 600ms hover
+  delay; disappearance and `:focus-visible` have none. `prefers-reduced-motion` keeps the delay
+  (it's timing) but drops the fade's transition duration.
+
+### Fixed
+
+- **MediaLightbox:** toggling native fullscreen from the toolbar left focus on the toggle button,
+  so `Space` (mouse-follow pan) never reactivated afterwards. Focus now returns to the dialog root
+  on both entering and exiting fullscreen.
+- **MediaLightbox:** the pan/zoom state wasn't re-clamped on a viewport size change (window
+  `resize` or `fullscreenchange`), so panning past the new bounds silently did nothing. The zoom/
+  pan hook now listens for both events while mounted and re-clamps the current state (and
+  recomputes `canPan`) on each.
+
+No breaking changes; every new prop above is optional with a default that preserves prior
+behavior, and every existing prop, default, and CSS variable is unchanged.
+
 ## 0.4.0 — 2026-07-15
 
 ### Added

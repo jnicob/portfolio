@@ -71,8 +71,15 @@ keyboard. Implements the [ARIA slider pattern](https://www.w3.org/WAI/ARIA/apg/p
 | `resumeLabel`      | `string`                     | `'Comparison following pointer'` | Announced via `aria-live` when `pauseOnClick` resumes the hover-follow.                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `overlayLabels`    | `CompareSliderOverlayLabels` | `undefined`                      | `aria-hidden` text badges in the bottom-left (`before`) / bottom-right (`after`) corners — the accessible name of each side already comes from its `alt` (internal, for a `MediaSource` side, or the consumer's own for a `ReactNode` side). See [`CompareSliderOverlayLabels`](#compareslideroverlaylabels) below.                                                                                                                                                                                                          |
 | `objectFit`        | `'cover' \| 'contain'`       | `'cover'`                        | `object-fit` of the `<img>` the package renders for a `MediaSource` side. A `ReactNode` side is opaque to the component — this prop never reaches it; the consumer controls its own `object-fit`.                                                                                                                                                                                                                                                                                                                            |
+| `compareMode`      | `CompareSliderMode`          | `'wipe'`                         | Comparison axis. `'wipe'`: current `clip-path`/divider behavior, zero changes. `'onion'`: same handle/keyboard, but drives the `after` layer's opacity instead of the divider position (no visible divider; `aria-valuetext` announces `"{n}% after"`). `'blink'`: no slider/handle — alternates `before`/`after` every 800ms behind a `role="switch"` pause/resume button (reuses `pauseLabel`/`resumeLabel` and their `aria-live` region; starts paused under `prefers-reduced-motion`). `'side-by-side'`: no slider/handle — both sides render in full via a two-column grid (two-row when `orientation="vertical"`) with `overlayLabels`; nested inside `MediaLightbox` it inherits the viewer's zoom/pan for free (the transform wraps the whole compare). See `CompareSliderMode` below. |
 
 `before`/`after` have no default — they are required props.
+
+#### `CompareSliderMode`
+
+```ts
+type CompareSliderMode = 'wipe' | 'onion' | 'blink' | 'side-by-side';
+```
 
 #### `CompareSliderExpand`
 
@@ -114,7 +121,7 @@ focus trap.
 | `labels`                 | `Partial<MediaLightboxLabels>`                                                          | `undefined`          | Overrides for the toolbar/close button text (i18n). Each key falls back to the English default listed below.                                                                                                                                                                                                                                                                                                    |
 | `children`               | `ReactNode`                                                                             | `undefined`          | Fullscreen content: `<img>`, `<video>`, or a composition of either. **Optional** — ignored if `compare` or `media` is present; without any of the three, the viewer renders no media.                                                                                                                                                                                                                           |
 | `media`                  | `MediaSource`                                                                           | `undefined`          | Single media as a [`MediaSource`](#mediasource) (alternative to `children`): the lightbox renders its own `<img>`, picking `src` or `fullSrc` for the current screen via `pickFullscreenSrc`. Ignored if `compare` is present.                                                                                                                                                                                  |
-| `compare`                | `{ before: ReactNode \| MediaSource; after: ReactNode \| MediaSource; label?: string }` | `undefined`          | A before/after compare rendered inside the viewer (internally a `CompareSlider` with `dragTarget="handle"`, inheriting the lightbox's zoom/pan/toolbar without duplicating the gesture engine). Wins over `media` and `children` when present. Each side accepts `ReactNode` or `MediaSource`; a `MediaSource` side resolves through `pickFullscreenSrc`.                                                       |
+| `compare`                | `{ before: ReactNode \| MediaSource; after: ReactNode \| MediaSource; label?: string; compareMode?: CompareSliderMode }` | `undefined`          | A before/after compare rendered inside the viewer (internally a `CompareSlider` with `dragTarget="handle"`, inheriting the lightbox's zoom/pan/toolbar without duplicating the gesture engine). Wins over `media` and `children` when present. Each side accepts `ReactNode` or `MediaSource`; a `MediaSource` side resolves through `pickFullscreenSrc`. `compareMode` is an optional passthrough to the internal `CompareSlider` (see [`compareMode`](#compareslider) above) — `'side-by-side'` inherits the lightbox's own zoom/pan for free, since its transform wraps the whole compare.                                                       |
 
 `open`, `onClose`, and `label` have no default — they are required props. Render priority when
 more than one of `compare` / `media` / `children` is passed: **`compare` > `media` > `children`**.
@@ -147,6 +154,105 @@ All keys are optional (`Partial<MediaLightboxLabels>`) and merge over these Engl
 | `shortcutControls`   | `'Show / hide controls'`             | Help panel row describing `c`                                                                                  |
 | `shortcutHelp`       | `'Toggle this help'`                 | Help panel row describing `?`                                                                                  |
 | `shortcutClose`      | `'Close'`                            | Help panel row describing `Esc`                                                                                |
+
+### SpotlightReveal
+
+A magnifier/flashlight that reveals `reveal` over `base` under the pointer — the highest-impact
+sibling of `CompareSlider`.
+
+| Prop              | Type                                 | Default            | Description                                                                                                                                                                                                          |
+| ----------------- | ------------------------------------ | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `base`            | `ReactNode \| MediaSource`           | —                    | Always-visible layer. Same `ReactNode`/`MediaSource` rules as `CompareSlider`'s `before`/`after` — a `MediaSource` renders the package's own `<img src alt draggable={false}>`.                                                                                                                                                    |
+| `reveal`          | `ReactNode \| MediaSource`           | —                    | Layer revealed under the lens, clipped with `clip-path: circle(...)`. Rendered `aria-hidden` — same reasoning as `CompareSlider`'s `after`: its accessible name would duplicate `base`'s.                                                                                                                                          |
+| `label`           | `string`                             | —                    | Accessible name of the interactive area (`aria-label`).                                                                                                                                                                                                                                                                             |
+| `radius`          | `number`                             | `110`                | Lens radius in px.                                                                                                                                                                                                                                                                                                                   |
+| `defaultPosition` | `{ x: number; y: number }`           | `{ x: 50, y: 50 }`   | Initial lens position, `%` `0`–`100` on each axis. **Uncontrolled**: read once at mount into internal state.                                                                                                                                                                                                                        |
+| `overlayLabels`   | `{ base?: string; reveal?: string }` | `undefined`          | `aria-hidden` badges, top-left (`base`) / top-right (`reveal`).                                                                                                                                                                                                                                                                     |
+| `className`       | `string`                             | `undefined`          | Extra class name appended to the root element.                                                                                                                                                                                                                                                                                      |
+
+`base`, `reveal`, and `label` have no default — they are required props.
+
+Pointer: `pointermove` positions the lens (coordinates relative to the container, same math as
+`CompareSlider`'s position tracking); `pointerleave` hides it. Keyboard: the root is
+`tabIndex={0}` with `aria-roledescription="spotlight"`; arrow keys move the lens in 5% steps
+(`Shift` = 1% steps), `Home` centers it (`{50, 50}`) and shows it, `Escape` hides it without
+losing focus. While focused, the lens stays visible at its last position.
+`prefers-reduced-motion`: the lens's radius/opacity transitions are removed (appearance is
+instant); pointer tracking is unaffected — it's direct positioning, not an animation.
+
+New custom property `--mk-spot-ring` (default `rgb(255 255 255 / 0.9)`, declared in `:root`
+alongside the other public tokens) controls the lens's border color — see
+[Styling](#styling) below.
+
+### FilterGallery
+
+A filterable grid with animated reflow — manual FLIP (First-Last-Invert-Play) via WAAPI
+`element.animate`, no dependencies, no View Transitions API.
+
+| Prop             | Type                                    | Default     | Description                                                                                                                    |
+| ---------------- | --------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `items`          | `readonly FilterGalleryItem[]`          | —           | Items to render.                                                                                                                                                                                       |
+| `filter`         | `string \| null`                        | `undefined` | Controlled filter; `null` means "all". Omit for uncontrolled mode.                                                                                                                                     |
+| `defaultFilter`  | `string \| null`                        | `null`      | Initial filter in uncontrolled mode.                                                                                                                                                                   |
+| `onFilterChange` | `(filter: string \| null) => void`      | `undefined` | Called on every selection, in both controlled and uncontrolled mode.                                                                                                                                   |
+| `categories`     | `readonly FilterGalleryCategory[]`      | `undefined` | If passed, renders the filter button group (`role="group"`, toggle buttons with `aria-pressed`) — always includes an "All" button regardless of this list.                                            |
+| `allLabel`       | `string`                                | `'All'`     | Label of the "all" button.                                                                                                                                                                             |
+| `label`          | `string`                                | —           | Accessible name (`aria-label`) of both the filter button group and the grid.                                                                                                                           |
+| `duration`       | `number`                                | `240`       | Milliseconds of the FLIP repositioning animation.                                                                                                                                                      |
+| `className`      | `string`                                | `undefined` | Extra class name appended to the root element.                                                                                                                                                        |
+
+`items` and `label` have no default — they are required props.
+
+#### `FilterGalleryItem`
+
+| Key          | Type                    | Description                                                                          |
+| ------------ | ----------------------- | ------------------------------------------------------------------------------------- |
+| `id`         | `string`                | Stable identity used for FLIP tracking (`data-fg-id`) and the React `key`.             |
+| `categories` | `readonly string[]`     | Category ids the item belongs to; matched against `filter`.                           |
+| `node`       | `ReactNode`             | Rendered content, wrapped in an `<li>`.                                                |
+
+#### `FilterGalleryCategory`
+
+| Key     | Type     | Description                                                          |
+| ------- | -------- | ---------------------------------------------------------------------- |
+| `id`    | `string` | Value passed to `filter`/`onFilterChange` when its button is pressed. |
+| `label` | `string` | Visible button text.                                                  |
+
+Filtering hides items whose `categories` don't include the active filter; the items that stay
+visible are repositioned with FLIP — rects measured before the change, then animated from their
+previous position to identity via `element.animate`. Items newly entering fade+scale in from
+`0.96`; items leaving are removed immediately (no exit animation in this version — deferred
+unmount would be required, documented as a known extension point, not implemented — YAGNI).
+`prefers-reduced-motion` (checked in JS) skips `element.animate` entirely: filter changes are
+instant. SSR-safe: the first render never measures or animates, it only captures positions for
+the next filter change.
+
+### VideoScrubPreview
+
+Hover-scrub of a video, the YouTube-thumbnail pattern.
+
+| Prop           | Type      | Default     | Description                                                                          |
+| -------------- | --------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `src`          | `string`  | —           | Video URL (same-origin, or CORS-enabled).                                                                                     |
+| `poster`       | `string`  | `undefined` | Image shown before interaction and while metadata is still loading.                                                          |
+| `label`        | `string`  | —           | Accessible name of the interactive area (`aria-label`).                                                                      |
+| `scrubOnFocus` | `boolean` | `true`      | Enables keyboard scrubbing (arrow keys ±5%, `Home`/`End`).                                                                    |
+| `className`    | `string`  | `undefined` | Extra class name appended to the root element.                                                                               |
+
+`src` and `label` have no default — they are required props.
+
+Renders `<video muted playsInline preload="metadata" aria-hidden>`. `pointermove` over the area
+sets `currentTime = (x / width) * duration` (throttled with `requestAnimationFrame`);
+`pointerleave` pauses and resets to `currentTime = 0` (back to the poster). Keyboard:
+`ArrowRight`/`ArrowLeft` step ±5% of `duration`, `Home`/`End` jump to start/end — all gated on
+`scrubOnFocus` (default `true`). Until the browser fires `loadedmetadata`, `video.duration` is
+`NaN` and any scrub attempt is a no-op (no errors thrown). No autoplay, no sound;
+`prefers-reduced-motion` doesn't apply here — scrubbing is direct user interaction, not an
+animation the component runs on its own.
+
+A thin bottom progress bar reflects position through an internal `--mk-scrub-pos` CSS variable —
+an implementation detail (analogous to `CompareSlider`'s internal `--mk-compare-pos`), not a
+public token meant to be set by consumers.
 
 ### `MediaSource`
 
@@ -229,6 +335,7 @@ properties (`--mk-overlay-bg`, `--mk-z-lightbox`, close-button vars) on `:root` 
 | `--mk-z-lightbox`        | `50`                   | `z-index` of the MediaLightbox overlay.                                                                                                                                                                                   |
 | `--mk-control-bg`        | `rgb(24 24 27 / 0.85)` | Background of the MediaLightbox command toolbar.                                                                                                                                                                          |
 | `--mk-control-color`     | `#fafafa`              | Text/icon color inside the MediaLightbox command toolbar.                                                                                                                                                                 |
+| `--mk-spot-ring`         | `rgb(255 255 255 / 0.9)` | Border color of the SpotlightReveal lens ring.                                                                                                                                                                          |
 
 ## Recipes
 
@@ -564,8 +671,14 @@ was a pan drag (a drag ending over the overlay never closes the dialog).
 - The fit-cycle button shows a fixed glyph `▣`; its meaning (current fit and next fit) lives in the
   `aria-label` (`labels.fit` template), keeping the UI language-neutral. Every toolbar button and the
   top-right close/toggle/help meet the 44px touch-target minimum.
-- Both the visibility toggle and the `?` help button show a CSS-only tooltip (`data-mk-tooltip`)
-  mirroring their current `aria-label`, visible on hover and on `:focus-visible`.
+- Every toolbar button (zoom −/+, reset, fit, fullscreen) plus the persistent close, help `?`, and
+  visibility-toggle buttons show a CSS-only tooltip (`data-mk-tooltip`) mirroring their current
+  `aria-label`. A `data-mk-tooltip-pos` attribute picks the tooltip's side: `'below'` (default,
+  used by the corner buttons) or `'above'` (used by every toolbar button, so the tooltip never
+  covers the button it belongs to). On hover, the tooltip fades in after a 600ms delay
+  (`transition-delay`); it disappears without delay, and `:focus-visible` shows it immediately too
+  — keyboard users never wait. `prefers-reduced-motion` removes the fade's transition duration but
+  keeps the delay (it's timing, not motion).
 
 **Keyboard-shortcuts help panel:**
 

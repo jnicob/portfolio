@@ -17,3 +17,17 @@ export {
   shouldUseFullSrc,
   type MediaSource,
 } from './media-source';
+export {
+  SpotlightReveal,
+  type SpotlightRevealProps,
+} from './spotlight-reveal/spotlight-reveal';
+export {
+  FilterGallery,
+  type FilterGalleryProps,
+  type FilterGalleryItem,
+  type FilterGalleryCategory,
+} from './filter-gallery/filter-gallery';
+export {
+  VideoScrubPreview,
+  type VideoScrubPreviewProps,
+} from './video-scrub-preview/video-scrub-preview';
