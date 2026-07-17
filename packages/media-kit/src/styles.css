@@ -696,3 +696,40 @@
     transition: none;
   }
 }
+
+/* FilterGallery */
+.mk-filter-gallery__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.mk-filter-gallery__filters button {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--mk-control-bg);
+  color: var(--mk-control-color);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.2;
+}
+.mk-filter-gallery__filters button:hover:not([aria-pressed='true']) {
+  background: rgb(255 255 255 / 0.12);
+}
+.mk-filter-gallery__filters button[aria-pressed='true'] {
+  background: var(--mk-handle-color);
+  color: var(--mk-handle-icon-color);
+}
+.mk-filter-gallery__filters button:focus-visible {
+  outline: 2px solid var(--mk-focus-ring);
+  outline-offset: 2px;
+}
+.mk-filter-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
