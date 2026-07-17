@@ -59,6 +59,16 @@
   keeps the percentage type through that division (`50% / 100` = `0.5%`, not `0.5`), so real
   opacity topped out around `1%`. Dividing by `100%` instead cancels the percentage type and
   yields the intended `0`–`1` fraction.
+- **SpotlightReveal:** pointer tracking felt laggy on large images — the lens visibly trailed the
+  cursor instead of following it 1:1 (measured in a real browser: an instantaneous jump took
+  ~160ms to reach its target position). `clip-path`'s 160ms transition packed position (`x`/`y`)
+  and radius into one value, so every `pointermove` (which only changes position) got caught in
+  the same transition meant for the show/hide animation; since pointer moves fire far more often
+  than 160ms, the browser kept re-targeting an in-flight interpolation and the circle never caught
+  up. The transition now lives on a new, separately-animatable `--mk-spot-active-radius` (an
+  `@property`-registered custom property, `0` when hidden / the configured radius when shown) —
+  position is always applied instantly, and only the show/hide radius animates, matching the
+  documented behavior ("pointer tracking is not an animation, it's direct positioning").
 
 No breaking changes; every new prop above is optional with a default that preserves prior
 behavior, and every existing prop, default, and CSS variable is unchanged.

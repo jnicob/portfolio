@@ -100,6 +100,10 @@ export function SpotlightReveal({
     '--mk-spot-x': `${position.x}%`,
     '--mk-spot-y': `${position.y}%`,
     '--mk-spot-radius': `${radius}px`,
+    // Radio "efectivo" del recorte: 0 cuando está inactivo, el radio configurado
+    // cuando está activo. Solo ESTA variable transiciona (ver styles.css) — x/y e
+    // incluso --mk-spot-radius (usado por el anillo) se aplican siempre al instante.
+    '--mk-spot-active-radius': active ? `${radius}px` : '0px',
   } as CSSProperties;
 
   return (

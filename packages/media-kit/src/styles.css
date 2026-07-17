@@ -636,6 +636,34 @@
   border: 0;
 }
 
+/*
+ * Bug reportado (feedback de Nico, F3.6 bloque D): el seguimiento del puntero se
+ * sentía "lento". Causa raíz confirmada en navegador real: `transition: clip-path`
+ * vivía en `.mk-spotlight__reveal` sin condición — `clip-path` empaqueta posición
+ * (x/y) Y radio en un solo valor, así que CADA `pointermove` (que solo cambia x/y)
+ * también quedaba atrapado en la transición de 160ms, y como pointermove dispara
+ * mucho más rápido que eso, el navegador reapunta la interpolación en cada evento:
+ * el círculo queda persiguiendo al cursor en vez de seguirlo 1:1 (medido: un salto
+ * instantáneo de posición tardaba ~160ms en reflejarse en el clip-path real).
+ * Spec (A4) exige lo contrario: "el seguimiento del puntero no es animación (es
+ * posición directa)" — solo la aparición/desaparición (radio 0 ↔ full) debe animar.
+ *
+ * Fix: `--mk-spot-active-radius` es una custom property REGISTRADA (`@property`,
+ * animable) que JS fija a `0px` (inactivo) o al radio configurado (activo). La
+ * transición vive en `--mk-spot-active-radius` (declarada en `.mk-spotlight`, el
+ * elemento donde JS escribe el valor inline), NO en `clip-path`. `clip-path` deja de
+ * ser la propiedad transicionada: su valor se recalcula al instante en cada frame a
+ * partir de x/y (siempre directos) + el radio (posiblemente aún interpolando) — así
+ * el radio puede crecer/encogerse suave en la entrada/salida sin que la posición
+ * arrastre ningún retraso. `--mk-spot-radius` (SIN cambios) sigue siendo el radio
+ * fijo configurado, usado tal cual por el anillo (`.mk-spotlight__lens`).
+ */
+@property --mk-spot-active-radius {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
 /* SpotlightReveal */
 .mk-spotlight {
   position: relative;
@@ -643,6 +671,7 @@
   border-radius: var(--mk-radius);
   touch-action: none;
   cursor: crosshair;
+  transition: --mk-spot-active-radius 160ms ease-out;
 }
 .mk-spotlight:focus-visible {
   outline: 2px solid var(--mk-focus-ring);
@@ -657,11 +686,7 @@
 .mk-spotlight__reveal {
   position: absolute;
   inset: 0;
-  clip-path: circle(0px at var(--mk-spot-x) var(--mk-spot-y));
-  transition: clip-path 160ms ease-out;
-}
-.mk-spotlight[data-active] .mk-spotlight__reveal {
-  clip-path: circle(var(--mk-spot-radius) at var(--mk-spot-x) var(--mk-spot-y));
+  clip-path: circle(var(--mk-spot-active-radius) at var(--mk-spot-x) var(--mk-spot-y));
 }
 .mk-spotlight__lens {
   position: absolute;
@@ -696,7 +721,7 @@
   right: 8px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .mk-spotlight__reveal,
+  .mk-spotlight,
   .mk-spotlight__lens {
     transition: none;
   }

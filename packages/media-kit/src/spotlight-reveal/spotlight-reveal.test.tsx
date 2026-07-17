@@ -163,6 +163,54 @@ describe('SpotlightReveal', () => {
     expect(root.querySelector('img[alt="Después"]')).toBeInTheDocument();
   });
 
+  // Regresión (bug reportado por Nico, F3.6 bloque D): "SpotlightReveal va muy
+  // lento" al seguir el puntero. Causa raíz confirmada en navegador real: la
+  // transición CSS de 160ms vivía en `clip-path`, que empaqueta posición (x/y) Y
+  // radio en un único valor — cada `pointermove` (solo cambia x/y) quedaba
+  // atrapado en esa transición, y como pointermove dispara mucho más rápido que
+  // 160ms, el círculo quedaba persiguiendo al cursor en vez de seguirlo 1:1
+  // (medido: un salto instantáneo de posición tardaba ~160ms en reflejarse).
+  // Fix: `--mk-spot-active-radius` (0 inactivo / radio activo) es la ÚNICA
+  // variable que anima (ver styles.css); `--mk-spot-radius` (usado por el
+  // anillo) se mantiene fijo siempre, sin depender de `active`.
+  describe('--mk-spot-active-radius (mecanismo del fix de lag, F3.6 bloque D)', () => {
+    it('es 0px sin foco ni puntero (inactivo)', () => {
+      render(<SpotlightReveal base={<div />} reveal={<div />} label="S" />);
+      const root = screen.getByLabelText('S');
+      expect(root.style.getPropertyValue('--mk-spot-active-radius')).toBe('0px');
+      expect(root.style.getPropertyValue('--mk-spot-radius')).toBe('110px');
+    });
+
+    it('pasa al radio configurado en cuanto el puntero activa la lente', () => {
+      render(<SpotlightReveal base={<div />} reveal={<div />} label="S" radius={60} />);
+      const root = screen.getByLabelText('S');
+      mockRect(root, { left: 0, top: 0, width: 200, height: 100 });
+      fireEvent.pointerMove(root, { clientX: 100, clientY: 25 });
+      expect(root.style.getPropertyValue('--mk-spot-active-radius')).toBe('60px');
+      // El radio "base" (usado por el anillo) no depende de active: mismo valor.
+      expect(root.style.getPropertyValue('--mk-spot-radius')).toBe('60px');
+    });
+
+    it('vuelve a 0px al perder el puntero (pointerleave), --mk-spot-radius no cambia', () => {
+      render(<SpotlightReveal base={<div />} reveal={<div />} label="S" />);
+      const root = screen.getByLabelText('S');
+      mockRect(root, { left: 0, top: 0, width: 200, height: 100 });
+      fireEvent.pointerMove(root, { clientX: 100, clientY: 25 });
+      expect(root.style.getPropertyValue('--mk-spot-active-radius')).toBe('110px');
+      fireEvent.pointerLeave(root);
+      expect(root.style.getPropertyValue('--mk-spot-active-radius')).toBe('0px');
+      expect(root.style.getPropertyValue('--mk-spot-radius')).toBe('110px');
+    });
+
+    it('con foco de teclado (sin puntero) también pasa al radio configurado', () => {
+      render(<SpotlightReveal base={<div />} reveal={<div />} label="S" />);
+      const root = screen.getByLabelText('S');
+      expect(root.style.getPropertyValue('--mk-spot-active-radius')).toBe('0px');
+      act(() => root.focus());
+      expect(root.style.getPropertyValue('--mk-spot-active-radius')).toBe('110px');
+    });
+  });
+
   it('un MediaSource en reveal respeta su propio alt (no lo fuerza a vacío)', () => {
     render(
       <SpotlightReveal
