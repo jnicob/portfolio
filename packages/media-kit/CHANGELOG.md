@@ -53,6 +53,12 @@
   `resize` or `fullscreenchange`), so panning past the new bounds silently did nothing. The zoom/
   pan hook now listens for both events while mounted and re-clamps the current state (and
   recomputes `canPan`) on each.
+- **CompareSlider:** `compareMode="onion"` never blended — the `after` layer stayed effectively
+  invisible across the whole slider range. `--mk-compare-pos` is a `<percentage>` value (e.g.
+  `50%`); the opacity rule divided it by the unitless number `100`, and CSS percentage arithmetic
+  keeps the percentage type through that division (`50% / 100` = `0.5%`, not `0.5`), so real
+  opacity topped out around `1%`. Dividing by `100%` instead cancels the percentage type and
+  yields the intended `0`–`1` fraction.
 
 No breaking changes; every new prop above is optional with a default that preserves prior
 behavior, and every existing prop, default, and CSS variable is unchanged.

@@ -228,7 +228,11 @@
    completos, respectivamente. */
 .mk-compare[data-compare-mode='onion'] .mk-compare__after {
   clip-path: none;
-  opacity: calc(var(--mk-compare-pos) / 100);
+  /* --mk-compare-pos es un <percentage> (p.ej. '50%'); dividir entre 100% (no
+     entre 100 sin unidad) cancela el tipo porcentaje y da el número 0-1 que
+     opacity espera. Dividir entre 100 conservaba el tipo porcentaje y colapsaba
+     la opacidad real a ~1/100 de lo esperado (bug: onion invisible). */
+  opacity: calc(var(--mk-compare-pos) / 100%);
 }
 .mk-compare[data-compare-mode='onion'] .mk-compare__divider {
   display: none;
