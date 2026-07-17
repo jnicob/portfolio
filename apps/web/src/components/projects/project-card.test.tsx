@@ -117,11 +117,14 @@ describe('ProjectCard', () => {
     expect(heading.textContent).toBe(withoutCaseStudy.title.es);
   });
 
-  it('con animateMetrics, el valor de cada métrica sigue accesible vía sr-only', () => {
+  it('con animateMetrics, el valor de cada métrica sigue accesible vía sr-only y visible (aria-hidden)', () => {
     renderProjectCard({ project: withMetrics, locale: 'es', animateMetrics: true });
 
     for (const metric of withMetrics.metrics) {
+      // jsdom no implementa IntersectionObserver: AnimatedMetric cae en el
+      // fallback y muestra el valor final directo también en el nodo visible.
       expect(screen.getByText(metric.value, { selector: '.sr-only' })).toBeInTheDocument();
+      expect(screen.getByText(metric.value, { selector: '[aria-hidden]' })).toBeInTheDocument();
     }
   });
 
