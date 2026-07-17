@@ -379,15 +379,19 @@ export default async function ShowcasePage({ params }: Props) {
     {
       id: 'api-player',
       node: (
-        <Section id="api-player" title={t('apiPlayer.title')} description={t('apiPlayer.intro')}>
+        <Section
+          id="api-player"
+          title={t('sections.apiPlayer.title')}
+          description={t('sections.apiPlayer.description')}
+        >
           <ApiRequestPlayer
             demo={apiDemo}
             labels={{
-              run: t('apiPlayer.run'),
-              running: t('apiPlayer.running'),
-              copy: t('apiPlayer.copy'),
-              copied: t('apiPlayer.copied'),
-              done: t('apiPlayer.done'),
+              run: t('sections.apiPlayer.run'),
+              running: t('sections.apiPlayer.running'),
+              copy: t('sections.apiPlayer.copy'),
+              copied: t('sections.apiPlayer.copied'),
+              done: t('sections.apiPlayer.done'),
             }}
           />
         </Section>

@@ -156,6 +156,46 @@ describe('ApiRequestPlayer', () => {
     expect(() => fireEvent.click(screen.getByRole('button', { name: labels.copy }))).not.toThrow();
   });
 
+  it('desmontar durante pending limpia el timeout: el callback no dispara tras desmontar', () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    stubReducedMotion(true);
+    const { unmount } = renderPlayer();
+
+    fireEvent.click(screen.getByRole('button', { name: labels.run }));
+    expect(screen.getByRole('button', { name: labels.running })).toBeInTheDocument();
+
+    // Desmonta ANTES de que el setTimeout de 600ms llegue a disparar.
+    unmount();
+    expect(() => act(() => vi.advanceTimersByTime(600))).not.toThrow();
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
+
+  it('si el portapapeles rechaza, no crashea, no deja unhandled rejection y no queda "copied"', async () => {
+    const writeText = vi.fn().mockRejectedValue(new Error('denied'));
+    vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } });
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    stubReducedMotion(true);
+    renderPlayer();
+
+    fireEvent.click(screen.getByRole('button', { name: labels.run }));
+    await screen.findByText(/COMPLETED/);
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: labels.copy }));
+      // Deja correr el microtask del catch antes de aserciones (evita el warning
+      // "not wrapped in act" por el setState que NO llega a producirse).
+      await Promise.resolve();
+    });
+
+    expect(writeText).toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: labels.copy })).toBeInTheDocument();
+    expect(screen.queryByText(labels.copied)).not.toBeInTheDocument();
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
+
   it('desmontar durante streaming limpia timeout y rAF sin dejar un setState huérfano', () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     const frame = stubAnimationFrame();

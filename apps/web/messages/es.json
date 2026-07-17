@@ -191,16 +191,16 @@
         "scrubDescription": "Mueve el puntero sobre el vídeo (o enfócalo y usa las flechas) para recorrer el clip, como las miniaturas de YouTube.",
         "scrubLabel": "Vista previa con scrub de un clip corto",
         "scrubCaption": "VideoScrubPreview — mueve el puntero, o enfócalo y pulsa las flechas, Inicio o Fin."
+      },
+      "apiPlayer": {
+        "title": "API player",
+        "description": "Simulación de una llamada real: pulsa Run para ver la petición viajar por pending → streaming → done, con la misma demo que reutilizará el playground.",
+        "run": "Run",
+        "running": "Ejecutando…",
+        "copy": "Copiar",
+        "copied": "¡Copiado!",
+        "done": "Respuesta recibida"
       }
-    },
-    "apiPlayer": {
-      "title": "API player",
-      "intro": "Simulación de una llamada real: pulsa Run para ver la petición viajar por pending → streaming → done, con la misma demo reutilizada en el playground (F4).",
-      "run": "Run",
-      "running": "Ejecutando…",
-      "copy": "Copiar",
-      "copied": "¡Copiado!",
-      "done": "Respuesta recibida"
     },
     "lightboxLabels": {
       "controls": "Controles",

@@ -191,16 +191,16 @@
         "scrubDescription": "Move the pointer over the video (or focus it and use the arrow keys) to scrub through the clip, like YouTube thumbnail previews.",
         "scrubLabel": "Scrub preview of a short clip",
         "scrubCaption": "VideoScrubPreview — move the pointer, or focus it and press the arrow keys, Home or End."
+      },
+      "apiPlayer": {
+        "title": "API player",
+        "description": "A simulated real call: hit Run to watch the request travel through pending → streaming → done, the same demo the playground will reuse.",
+        "run": "Run",
+        "running": "Running…",
+        "copy": "Copy",
+        "copied": "Copied!",
+        "done": "Response received"
       }
-    },
-    "apiPlayer": {
-      "title": "API player",
-      "intro": "A simulated real call: hit Run to watch the request travel through pending → streaming → done, the same demo reused by the playground (F4).",
-      "run": "Run",
-      "running": "Running…",
-      "copy": "Copy",
-      "copied": "Copied!",
-      "done": "Response received"
     },
     "lightboxLabels": {
       "controls": "Controls",
