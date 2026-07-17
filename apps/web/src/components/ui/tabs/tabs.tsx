@@ -29,7 +29,11 @@ export function Tabs({ defaultValue, children }: { defaultValue: string; childre
   const [active, setActive] = useState(defaultValue);
   const baseId = useId();
   return (
-    <TabsContext.Provider value={{ active, setActive, baseId }}>{children}</TabsContext.Provider>
+    <TabsContext.Provider value={{ active, setActive, baseId }}>
+      {/* Root en grid: fila 1 auto para `TabList`, fila 2 (1fr) compartida por
+          todos los `TabPanel` (misma celda, ver comentario en TabPanel). */}
+      <div className="grid grid-rows-[auto_1fr]">{children}</div>
+    </TabsContext.Provider>
   );
 }
 
@@ -89,16 +93,24 @@ export function Tab({ value, children }: { value: string; children: ReactNode })
 export function TabPanel({ value, children }: { value: string; children: ReactNode }) {
   const { active, baseId } = useTabs('TabPanel');
   const selected = active === value;
-  // El panel inactivo queda montado y oculto con `hidden` (no se desmonta): cero
-  // layout-shift al cambiar de tab, y `hidden` lo saca del árbol de accesibilidad.
+  // Ambos paneles quedan montados y comparten la misma celda de grid
+  // (`col-start-1 row-start-2`, ver `Tabs`): la altura del contenedor pasa a
+  // ser la del panel más alto, así que cambiar de tab no la desplaza. El
+  // inactivo usa `invisible` (visibility:hidden) en vez de `hidden`
+  // (display:none) — conserva su caja para que el grid siga midiéndola.
+  // `aria-hidden` lo saca del árbol de accesibilidad y `tabIndex` desaparece
+  // (undefined) para que no sea focusable. El activo hace fade-in 150ms.
   return (
     <div
       role="tabpanel"
       id={`${baseId}-panel-${value}`}
       aria-labelledby={`${baseId}-tab-${value}`}
-      tabIndex={0}
-      hidden={!selected}
-      className="mt-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      aria-hidden={!selected}
+      tabIndex={selected ? 0 : undefined}
+      className={cn(
+        'col-start-1 row-start-2 mt-3 transition-opacity duration-150 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+        selected ? 'opacity-100' : 'invisible opacity-0',
+      )}
     >
       {children}
     </div>
