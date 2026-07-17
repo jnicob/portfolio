@@ -19,6 +19,7 @@ import { CompareModesDemo } from '@/components/showcase/compare-modes-demo';
 import { FilterGalleryDemo } from '@/components/showcase/filter-gallery-demo';
 import { MediaKitDemo } from '@/components/showcase/media-kit-demo';
 import { ShowcaseView } from '@/components/showcase/showcase-view';
+import { buildShowcaseViewLabels } from '@/components/showcase/showcase-view-labels';
 import { SpotlightDemo } from '@/components/showcase/spotlight-demo';
 import { VideoScrubDemo } from '@/components/showcase/video-scrub-demo';
 
@@ -75,15 +76,7 @@ export default async function ShowcasePage({ params }: Props) {
     { id: 'api-player', label: t('toc.apiPlayer') },
   ];
 
-  const labels = {
-    navLabel: t('tocLabel'),
-    inputLabel: t('filterLabel'),
-    emptyMessage: t('filterEmpty'),
-    placeholder: t('filterPlaceholder'),
-    all: t('index.all'),
-    showing: t('index.showing'),
-    showingAll: t('index.showingAll'),
-  };
+  const labels = buildShowcaseViewLabels(t);
 
   const sections = [
     {
