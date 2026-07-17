@@ -30,7 +30,7 @@ const enLabels: MediaLightboxLabels = {
 };
 
 const enStrings: MediaKitDemoStrings = {
-  beforeAfterAlt: 'Original low-resolution image',
+  beforeAfterAlt: 'Desaturated version of the photo',
   dragCompareLabel: 'Compare before and after (drag)',
   dragCaption: 'mode="drag" — drag the divider',
   hoverCompareLabel: 'Compare before and after (hover)',
@@ -62,5 +62,20 @@ describe('MediaKitDemo', () => {
     await user.click(firstExpandButton as HTMLElement);
     expect(await screen.findByRole('button', { name: enLabels.close })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Cerrar' })).not.toBeInTheDocument();
+  });
+
+  it('renders the real landscape photo on both sides of the drag and hover demos, desaturating the before side with a CSS filter', () => {
+    const { container } = render(<MediaKitDemo labels={enLabels} strings={enStrings} />);
+    const landscapeImages = Array.from(
+      container.querySelectorAll<HTMLImageElement>('img[src="/demo/landscape.webp"]'),
+    );
+    // 2 demos (drag, hover) x 2 sides (before, after)
+    expect(landscapeImages).toHaveLength(4);
+    for (const img of landscapeImages) {
+      expect(img).toHaveAttribute('width', '1600');
+      expect(img).toHaveAttribute('height', '900');
+    }
+    const desaturatedImages = landscapeImages.filter((img) => img.style.filter.includes('saturate'));
+    expect(desaturatedImages).toHaveLength(2);
   });
 });

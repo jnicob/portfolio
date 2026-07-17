@@ -37,8 +37,17 @@ export function MediaKitDemo({ labels, strings }: Props) {
       <div className="grid gap-4 md:grid-cols-2">
         <figure className="flex flex-col gap-2">
           <CompareSlider
-            before={<img src="/demo/photo-before.svg" alt={strings.beforeAfterAlt} />}
-            after={<img src="/demo/photo-after.svg" alt="" />}
+            before={
+              <img
+                src="/demo/landscape.webp"
+                alt={strings.beforeAfterAlt}
+                width={1600}
+                height={900}
+                loading="lazy"
+                style={{ filter: 'saturate(0.12) contrast(0.92) brightness(0.96)' }}
+              />
+            }
+            after={<img src="/demo/landscape.webp" alt="" width={1600} height={900} loading="lazy" />}
             label={strings.dragCompareLabel}
             expand={expand}
           />
@@ -47,8 +56,17 @@ export function MediaKitDemo({ labels, strings }: Props) {
         <figure className="flex flex-col gap-2">
           <CompareSlider
             mode="hover"
-            before={<img src="/demo/photo-before.svg" alt={strings.beforeAfterAlt} />}
-            after={<img src="/demo/photo-after.svg" alt="" />}
+            before={
+              <img
+                src="/demo/landscape.webp"
+                alt={strings.beforeAfterAlt}
+                width={1600}
+                height={900}
+                loading="lazy"
+                style={{ filter: 'saturate(0.12) contrast(0.92) brightness(0.96)' }}
+              />
+            }
+            after={<img src="/demo/landscape.webp" alt="" width={1600} height={900} loading="lazy" />}
             label={strings.hoverCompareLabel}
             expand={expand}
           />

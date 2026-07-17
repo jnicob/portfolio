@@ -141,7 +141,7 @@
       "mediaKit": {
         "title": "@nicobehm/media-kit",
         "description": "Componentes media del paquete propio: CompareSlider (drag/hover, color/B-N) y MediaLightbox con zoom.",
-        "beforeAfterAlt": "Imagen original en baja resolución",
+        "beforeAfterAlt": "Versión desaturada de la foto",
         "dragCompareLabel": "Comparar antes y después (drag)",
         "dragCaption": "mode=\"drag\" — arrastra el divisor",
         "hoverCompareLabel": "Comparar antes y después (hover)",

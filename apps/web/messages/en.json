@@ -141,7 +141,7 @@
       "mediaKit": {
         "title": "@nicobehm/media-kit",
         "description": "Media components from the own package: CompareSlider (drag/hover, color/B&W) and MediaLightbox with zoom.",
-        "beforeAfterAlt": "Original low-resolution image",
+        "beforeAfterAlt": "Desaturated version of the photo",
         "dragCompareLabel": "Compare before and after (drag)",
         "dragCaption": "mode=\"drag\" — drag the divider",
         "hoverCompareLabel": "Compare before and after (hover)",
