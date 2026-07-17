@@ -3,12 +3,15 @@ import type { Locale } from '@/i18n/routing';
 import type { Project } from '@/data/schemas';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AnimatedMetric } from '@/components/ui/animated-metric';
 
 type ProjectCardProps = {
   project: Project;
   locale: Locale;
   /** Nivel del heading del título según el contexto (h2 bajo un h1, h3 bajo un h2). */
   headingLevel?: 'h2' | 'h3';
+  /** Opt-in: anima las métricas (count-up al entrar en viewport). Default false. */
+  animateMetrics?: boolean;
 };
 
 const titleLinkClassName =
@@ -40,7 +43,12 @@ function TitleLink({ project, locale }: { project: Project; locale: Locale }) {
 }
 
 /** Tarjeta de proyecto: patrón "clickable card" accesible — el link vive en el heading. RSC-compatible. */
-export function ProjectCard({ project, locale, headingLevel = 'h3' }: ProjectCardProps) {
+export function ProjectCard({
+  project,
+  locale,
+  headingLevel = 'h3',
+  animateMetrics = false,
+}: ProjectCardProps) {
   return (
     <Card>
       <CardHeader>
@@ -60,7 +68,9 @@ export function ProjectCard({ project, locale, headingLevel = 'h3' }: ProjectCar
             {project.metrics.map((metric) => (
               <div key={metric.label.en}>
                 <dt className="text-sm text-fg-muted">{metric.label[locale]}</dt>
-                <dd className="font-mono text-fg">{metric.value}</dd>
+                <dd className="font-mono text-fg">
+                  {animateMetrics ? <AnimatedMetric value={metric.value} /> : metric.value}
+                </dd>
               </div>
             ))}
           </dl>

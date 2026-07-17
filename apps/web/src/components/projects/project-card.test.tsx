@@ -116,4 +116,21 @@ describe('ProjectCard', () => {
     const heading = screen.getByRole('heading', { name: withoutCaseStudy.title.es });
     expect(heading.textContent).toBe(withoutCaseStudy.title.es);
   });
+
+  it('con animateMetrics, el valor de cada métrica sigue accesible vía sr-only', () => {
+    renderProjectCard({ project: withMetrics, locale: 'es', animateMetrics: true });
+
+    for (const metric of withMetrics.metrics) {
+      expect(screen.getByText(metric.value, { selector: '.sr-only' })).toBeInTheDocument();
+    }
+  });
+
+  it('sin animateMetrics (default), el valor de la métrica se renderiza como texto plano', () => {
+    renderProjectCard({ project: withMetrics, locale: 'es' });
+
+    for (const metric of withMetrics.metrics) {
+      expect(screen.getByText(metric.value)).toBeInTheDocument();
+      expect(screen.queryByText(metric.value, { selector: '.sr-only' })).not.toBeInTheDocument();
+    }
+  });
 });
