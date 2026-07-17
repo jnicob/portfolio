@@ -225,6 +225,16 @@ h6 {
 :root[data-theme='light'] {
   --mk-focus-ring: var(--ring);
   --mk-radius: var(--radius-card);
+  /* FilterGallery chips sit on the page surface (never over a photo/video like
+   * --mk-control-*/--mk-handle-* do), so they get the same selection language as
+   * Tabs (T14): active = accent fill, inactive = muted text over the `border`
+   * hover step. This keeps the active chip visibly heavier than the inactive one
+   * in both themes, unlike the un-mapped defaults (see media-kit's styles.css.test.ts). */
+  --mk-filter-bg: var(--surface);
+  --mk-filter-color: var(--fg-muted);
+  --mk-filter-hover-bg: var(--border);
+  --mk-filter-active-bg: var(--accent);
+  --mk-filter-active-color: var(--accent-fg);
 }
 
 /* Tipografía mínima para el cuerpo MDX de los case studies (sin plugin typography). */

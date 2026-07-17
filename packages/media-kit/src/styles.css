@@ -16,6 +16,14 @@
   --mk-control-bg: rgb(24 24 27 / 0.85);
   --mk-control-color: #fafafa;
   --mk-spot-ring: rgb(255 255 255 / 0.9);
+  /* FilterGallery chips: dedicated tokens (not --mk-control-*/--mk-handle-*, which are
+     designed to sit over a photo/video, not the page surface — see styles.css.test.ts
+     and README's Styling table). Defaults below reproduce the previous look exactly. */
+  --mk-filter-bg: var(--mk-control-bg);
+  --mk-filter-color: var(--mk-control-color);
+  --mk-filter-hover-bg: rgb(255 255 255 / 0.12);
+  --mk-filter-active-bg: var(--mk-handle-color);
+  --mk-filter-active-color: var(--mk-handle-icon-color);
 }
 
 /* CompareSlider */
@@ -738,18 +746,19 @@
   padding: 6px 12px;
   border: 0;
   border-radius: 9999px;
-  background: var(--mk-control-bg);
-  color: var(--mk-control-color);
+  background: var(--mk-filter-bg);
+  color: var(--mk-filter-color);
+  font: inherit;
   cursor: pointer;
   font-size: 14px;
   line-height: 1.2;
 }
 .mk-filter-gallery__filters button:hover:not([aria-pressed='true']) {
-  background: rgb(255 255 255 / 0.12);
+  background: var(--mk-filter-hover-bg);
 }
 .mk-filter-gallery__filters button[aria-pressed='true'] {
-  background: var(--mk-handle-color);
-  color: var(--mk-handle-icon-color);
+  background: var(--mk-filter-active-bg);
+  color: var(--mk-filter-active-color);
 }
 .mk-filter-gallery__filters button:focus-visible {
   outline: 2px solid var(--mk-focus-ring);

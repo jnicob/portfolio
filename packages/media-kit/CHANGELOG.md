@@ -21,7 +21,11 @@
   `aria-pressed`), `allLabel` (default `'All'`), `duration` (default `240`ms), `className`. Items
   entering fade+scale in from `0.96`; items leaving are removed immediately (no exit animation in
   this version). `prefers-reduced-motion` skips `element.animate` entirely. SSR-safe: the first
-  render never measures or animates.
+  render never measures or animates. New public custom properties for the filter chips —
+  `--mk-filter-bg`/`--mk-filter-color` (inactive), `--mk-filter-hover-bg`, `--mk-filter-active-bg`/
+  `--mk-filter-active-color` (active) — default to the previous `--mk-control-*`/`--mk-handle-*`
+  values, but let consumers theme the chips independently: they sit on the page surface, unlike
+  the media-overlay controls those defaults were designed for.
 - **New component `VideoScrubPreview`:** hover-scrub of a video (YouTube-thumbnail pattern) via a
   muted, posterized `<video>`. Props: `src`, `label` (required), `poster`, `scrubOnFocus` (default
   `true`). Pointer move sets `currentTime` proportionally (throttled with

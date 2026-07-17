@@ -71,3 +71,52 @@ describe('SpotlightReveal: la transición vive en el radio, nunca en clip-path (
     expect(css).not.toMatch(/\[data-active\]\s*\.mk-spotlight__reveal/);
   });
 });
+
+// Regresión (design review F3.6/B2+M1): los chips de FilterGallery viven sobre el fondo
+// de la página del consumidor, no sobre un medio — a diferencia de la toolbar de
+// MediaLightbox o el botón `expand` de CompareSlider, que sí flotan sobre una foto/vídeo.
+// Reutilizar --mk-control-bg/--mk-control-color (un overlay oscuro fijo pensado para esos
+// controles-sobre-medio) y --mk-handle-color/--mk-handle-icon-color (pensados para
+// contrastar con el medio, nunca con la página) rompía el chip activo en tema light: bg
+// blanco (--mk-handle-color) sobre página blanca, sin ningún borde que lo separe. Se
+// introducen custom properties dedicadas para que el consumidor pueda mapearlas a sus
+// propios tokens de tema (ver README) sin heredar el contrato "sobre medio" de los otros
+// controles. Cambio aditivo: los defaults reproducen el comportamiento visual anterior.
+describe('FilterGallery: chips usan custom properties propias, no las de "control sobre medio" (CSS, no ejercitable por jsdom)', () => {
+  const css = readFileSync(stylesPath, 'utf-8');
+
+  it('declara los defaults --mk-filter-* en :root', () => {
+    expect(css).toMatch(/--mk-filter-bg:\s*var\(--mk-control-bg\)/);
+    expect(css).toMatch(/--mk-filter-color:\s*var\(--mk-control-color\)/);
+    expect(css).toMatch(/--mk-filter-hover-bg:\s*rgb\(255 255 255 \/ 0\.12\)/);
+    expect(css).toMatch(/--mk-filter-active-bg:\s*var\(--mk-handle-color\)/);
+    expect(css).toMatch(/--mk-filter-active-color:\s*var\(--mk-handle-icon-color\)/);
+  });
+
+  it('.mk-filter-gallery__filters button ya no usa --mk-control-bg/--mk-control-color', () => {
+    const match = css.match(/\.mk-filter-gallery__filters button\s*\{([^}]*)\}/);
+    expect(match).not.toBeNull();
+    const body = match?.[1] ?? '';
+    expect(body).toMatch(/background:\s*var\(--mk-filter-bg\)/);
+    expect(body).toMatch(/color:\s*var\(--mk-filter-color\)/);
+    expect(body).toMatch(/font:\s*inherit/);
+    expect(body).not.toMatch(/--mk-control-bg/);
+    expect(body).not.toMatch(/--mk-control-color/);
+  });
+
+  it('el hover de un chip inactivo usa --mk-filter-hover-bg', () => {
+    const match = css.match(
+      /\.mk-filter-gallery__filters button:hover:not\(\[aria-pressed='true'\]\)\s*\{([^}]*)\}/,
+    );
+    expect(match).not.toBeNull();
+    expect(match?.[1]).toMatch(/background:\s*var\(--mk-filter-hover-bg\)/);
+  });
+
+  it('el chip activo usa --mk-filter-active-bg/--mk-filter-active-color, no --mk-handle-*', () => {
+    const match = css.match(/\.mk-filter-gallery__filters button\[aria-pressed='true'\]\s*\{([^}]*)\}/);
+    expect(match).not.toBeNull();
+    const body = match?.[1] ?? '';
+    expect(body).toMatch(/background:\s*var\(--mk-filter-active-bg\)/);
+    expect(body).toMatch(/color:\s*var\(--mk-filter-active-color\)/);
+  });
+});
