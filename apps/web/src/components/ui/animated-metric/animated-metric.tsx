@@ -5,12 +5,20 @@ import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 const DEFAULT_DURATION_MS = 900;
 
-/** Reproduce el patrón del literal original (prefijo, separador de miles, sufijo) sobre n. */
+/**
+ * Reproduce el patrón del literal original (prefijo, separador de miles, sufijo) sobre n.
+ * El segmento numérico solo puede empezar y terminar en dígito (nunca en el separador de
+ * miles ni en un espacio): así "3 (create, list, get-by-id)" anima solo el "3" y conserva
+ * el resto -incluido el espacio antes del paréntesis- byte a byte, y una lista de texto sin
+ * dígitos como "Kling, WAN" (donde ", " no es un separador de miles) nunca se confunde con
+ * un número.
+ */
 export function formatLike(original: string, n: number): string {
-  const match = /^(\D*)([\d.,\s]+)(.*)$/.exec(original);
+  if (!/\d/.test(original)) return original;
+  const match = /^(\D*)(\d(?:[\d.,]*\d)?)(.*)$/.exec(original);
   if (!match) return original;
   const [, prefix = '', digits = '', suffix = ''] = match;
-  const separator = /[.,\s]/.exec(digits)?.[0];
+  const separator = /[.,]/.exec(digits)?.[0];
   let body = String(n);
   if (separator) body = body.replace(/\B(?=(\d{3})+(?!\d))/g, separator);
   return `${prefix}${body}${suffix}`;
@@ -40,11 +48,20 @@ export function AnimatedMetric({ value, durationMs = DEFAULT_DURATION_MS }: Anim
   // mismatch de hidratación. El conteo 0→N arranca solo al intersectar (ver
   // efecto más abajo), nunca antes del primer paint.
   const [display, setDisplay] = useState(value);
+  const hasDigits = /\d/.test(value);
   const target = Number((/[\d.,\s]+/.exec(value)?.[0] ?? '0').replace(/[.,\s]/g, ''));
 
   useEffect(() => {
     const node = targetRef.current;
-    if (!node || typeof IntersectionObserver === 'undefined' || prefersReducedMotion()) return;
+    // Métricas sin dígitos (p.ej. listas de texto como "Kling, WAN") no tienen nada que
+    // animar: se quedan en el literal directo, sin observar el elemento.
+    if (
+      !node ||
+      !hasDigits ||
+      typeof IntersectionObserver === 'undefined' ||
+      prefersReducedMotion()
+    )
+      return;
 
     let frame: number | null = null;
     const observer = new IntersectionObserver(([entry]) => {
@@ -65,7 +82,7 @@ export function AnimatedMetric({ value, durationMs = DEFAULT_DURATION_MS }: Anim
       observer.disconnect();
       if (frame != null) cancelAnimationFrame(frame);
     };
-  }, [value, target, durationMs]);
+  }, [value, target, durationMs, hasDigits]);
 
   return (
     <span ref={targetRef}>

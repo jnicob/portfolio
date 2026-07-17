@@ -52,6 +52,7 @@ function stubAnimationEnvironment() {
       });
     },
     disconnect,
+    observe,
     pendingFrameCount: () => frames.size,
   };
 }
@@ -65,6 +66,14 @@ describe('formatLike', () => {
 
   it('devuelve el literal sin cambios cuando no contiene dígitos', () => {
     expect(formatLike('N/A', 5)).toBe('N/A');
+  });
+
+  it('no corrompe una lista de texto sin dígitos (", " no es un separador de miles)', () => {
+    expect(formatLike('Kling, WAN', 0)).toBe('Kling, WAN');
+  });
+
+  it('preserva el espacio entre el número y el resto del literal', () => {
+    expect(formatLike('3 (create, list, get-by-id)', 3)).toBe('3 (create, list, get-by-id)');
   });
 });
 
@@ -139,6 +148,25 @@ describe('AnimatedMetric — camino animado (IntersectionObserver + rAF disponib
 
     env.flush(1000);
     expect(env.disconnect).toHaveBeenCalledTimes(1);
+  });
+
+  it('no anima métricas sin dígitos: no observa el elemento y muestra el literal directo', () => {
+    const env = stubAnimationEnvironment();
+    render(<AnimatedMetric value="Kling, WAN" durationMs={1000} />);
+
+    expect(env.observe).not.toHaveBeenCalled();
+    expect(screen.getByText('Kling, WAN', { selector: '[aria-hidden]' })).toBeInTheDocument();
+  });
+
+  it('anima solo el número de un literal "N (resto)" preservando el resto byte-exacto', () => {
+    const env = stubAnimationEnvironment();
+    render(<AnimatedMetric value="3 (create, list, get-by-id)" durationMs={1000} />);
+
+    env.intersect();
+    env.flush(1000);
+    expect(
+      screen.getByText('3 (create, list, get-by-id)', { selector: '[aria-hidden]' }),
+    ).toBeInTheDocument();
   });
 
   it('al desmontar durante la animación, cancela el frame en vuelo sin dejar un setState huérfano', () => {
