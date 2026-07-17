@@ -630,3 +630,69 @@
   white-space: nowrap;
   border: 0;
 }
+
+/* SpotlightReveal */
+.mk-spotlight {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--mk-radius);
+  touch-action: none;
+  cursor: crosshair;
+}
+.mk-spotlight:focus-visible {
+  outline: 2px solid var(--mk-focus-ring);
+  outline-offset: 2px;
+}
+.mk-spotlight__base img,
+.mk-spotlight__reveal img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.mk-spotlight__reveal {
+  position: absolute;
+  inset: 0;
+  clip-path: circle(0px at var(--mk-spot-x) var(--mk-spot-y));
+  transition: clip-path 160ms ease-out;
+}
+.mk-spotlight[data-active] .mk-spotlight__reveal {
+  clip-path: circle(var(--mk-spot-radius) at var(--mk-spot-x) var(--mk-spot-y));
+}
+.mk-spotlight__lens {
+  position: absolute;
+  left: var(--mk-spot-x);
+  top: var(--mk-spot-y);
+  width: calc(var(--mk-spot-radius) * 2);
+  height: calc(var(--mk-spot-radius) * 2);
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--mk-spot-ring, rgba(255, 255, 255, 0.9));
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease-out;
+}
+.mk-spotlight[data-active] .mk-spotlight__lens {
+  opacity: 1;
+}
+.mk-spotlight__badge {
+  position: absolute;
+  top: 8px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--mk-overlay-bg);
+  color: var(--mk-control-color);
+  font-size: 12px;
+  pointer-events: none;
+}
+.mk-spotlight__badge[data-side='base'] {
+  left: 8px;
+}
+.mk-spotlight__badge[data-side='reveal'] {
+  right: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mk-spotlight__reveal,
+  .mk-spotlight__lens {
+    transition: none;
+  }
+}
