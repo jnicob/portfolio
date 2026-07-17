@@ -24,6 +24,8 @@ Triage propuesto:
 6. **Galería filtrable** (ampliación de alcance, valorar si F3.6 o F3.7): más ejemplos
    y reales (no SVGs), con posibilidad de fullscreen; filtro por nombre (texto); los
    vídeos con autoplay al dejar el ratón encima (con delay de activación).
+   → **DIFERIDO a F3.7** (triage 2026-07-17): son 3-4 features nuevas de paquete+app
+   con assets nuevos, no polish — se planifica con el brainstorm de F3.7.
 7. **Scrub de vídeo**: el ejemplo no funciona bien o no se entiende — mejorar demo y
    affordance (que se entienda qué hace y que responda bien).
 8. **Lazy loading** para imágenes y componentes pesados del showcase.
