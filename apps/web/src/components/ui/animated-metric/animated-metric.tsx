@@ -31,12 +31,12 @@ type AnimatedMetricProps = {
  */
 export function AnimatedMetric({ value, durationMs = DEFAULT_DURATION_MS }: AnimatedMetricProps) {
   const targetRef = useRef<HTMLSpanElement>(null);
-  const target = Number((/[\d.,\s]+/.exec(value)?.[0] ?? '0').replace(/[.,\s]/g, ''));
   const [display, setDisplay] = useState(() =>
     typeof IntersectionObserver === 'undefined' || prefersReducedMotion()
       ? value
       : formatLike(value, 0),
   );
+  const target = Number((/[\d.,\s]+/.exec(value)?.[0] ?? '0').replace(/[.,\s]/g, ''));
 
   useEffect(() => {
     const node = targetRef.current;
