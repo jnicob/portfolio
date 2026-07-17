@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { MediaLightboxLabels } from '@nicobehm/media-kit';
 import type { Locale } from '@/i18n/routing';
+import { apiDemo } from '@/data/api-demo';
 import { localizedPageMetadata } from '@/lib/seo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,7 @@ import { Select } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
 import { ShareViewButton } from '@/components/layout/share-view-button';
+import { ApiRequestPlayer } from '@/components/showcase/api-request-player';
 import { CompareModesDemo } from '@/components/showcase/compare-modes-demo';
 import { FilterGalleryDemo } from '@/components/showcase/filter-gallery-demo';
 import { MediaKitDemo } from '@/components/showcase/media-kit-demo';
@@ -70,6 +72,7 @@ export default async function ShowcasePage({ params }: Props) {
     { id: 'form', label: t('toc.form') },
     { id: 'tabs', label: t('toc.tabs') },
     { id: 'media-kit', label: t('toc.mediaKit') },
+    { id: 'api-player', label: t('toc.apiPlayer') },
   ];
 
   const labels = {
@@ -370,6 +373,23 @@ export default async function ShowcasePage({ params }: Props) {
               }}
             />
           </div>
+        </Section>
+      ),
+    },
+    {
+      id: 'api-player',
+      node: (
+        <Section id="api-player" title={t('apiPlayer.title')} description={t('apiPlayer.intro')}>
+          <ApiRequestPlayer
+            demo={apiDemo}
+            labels={{
+              run: t('apiPlayer.run'),
+              running: t('apiPlayer.running'),
+              copy: t('apiPlayer.copy'),
+              copied: t('apiPlayer.copied'),
+              done: t('apiPlayer.done'),
+            }}
+          />
         </Section>
       ),
     },

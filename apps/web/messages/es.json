@@ -93,7 +93,8 @@
       "card": "Card",
       "form": "Formulario",
       "tabs": "Tabs",
-      "mediaKit": "Media kit"
+      "mediaKit": "Media kit",
+      "apiPlayer": "API player"
     },
     "sections": {
       "button": {
@@ -191,6 +192,15 @@
         "scrubLabel": "Vista previa con scrub de un clip corto",
         "scrubCaption": "VideoScrubPreview — mueve el puntero, o enfócalo y pulsa las flechas, Inicio o Fin."
       }
+    },
+    "apiPlayer": {
+      "title": "API player",
+      "intro": "Simulación de una llamada real: pulsa Run para ver la petición viajar por pending → streaming → done, con la misma demo reutilizada en el playground (F4).",
+      "run": "Run",
+      "running": "Ejecutando…",
+      "copy": "Copiar",
+      "copied": "¡Copiado!",
+      "done": "Respuesta recibida"
     },
     "lightboxLabels": {
       "controls": "Controles",

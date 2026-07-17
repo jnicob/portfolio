@@ -93,7 +93,8 @@
       "card": "Card",
       "form": "Form",
       "tabs": "Tabs",
-      "mediaKit": "Media kit"
+      "mediaKit": "Media kit",
+      "apiPlayer": "API player"
     },
     "sections": {
       "button": {
@@ -191,6 +192,15 @@
         "scrubLabel": "Scrub preview of a short clip",
         "scrubCaption": "VideoScrubPreview — move the pointer, or focus it and press the arrow keys, Home or End."
       }
+    },
+    "apiPlayer": {
+      "title": "API player",
+      "intro": "A simulated real call: hit Run to watch the request travel through pending → streaming → done, the same demo reused by the playground (F4).",
+      "run": "Run",
+      "running": "Running…",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "done": "Response received"
     },
     "lightboxLabels": {
       "controls": "Controls",
