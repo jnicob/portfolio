@@ -59,7 +59,11 @@ export function ShowcaseView({ toc, labels, sections, children }: ShowcaseViewPr
       isFirstRun.current = false;
       return;
     }
-    window.history.replaceState(null, '', filter ? `#${filter}` : window.location.pathname);
+    window.history.replaceState(
+      null,
+      '',
+      filter ? `#${filter}` : window.location.pathname + window.location.search,
+    );
   }, [filter]);
 
   const items: FilterableItem[] = [{ id: ALL_ID, label: labels.all }, ...toc];
@@ -68,17 +72,19 @@ export function ShowcaseView({ toc, labels, sections, children }: ShowcaseViewPr
 
   return (
     <>
-      <nav aria-label={labels.navLabel} className="hidden lg:block">
-        <div className="sticky top-12">
-          <ShowcaseIndex
-            items={items}
-            inputLabel={labels.inputLabel}
-            emptyMessage={labels.emptyMessage}
-            placeholder={labels.placeholder}
-            selectedId={filter ?? ALL_ID}
-            onSelect={(id) => setFilter(id === ALL_ID ? null : id)}
-          />
-        </div>
+      {/* Visible en todo breakpoint (T30/I2): en <lg no hay grid (ver `main` en
+          page.tsx), así que el orden del DOM ya lo coloca como bloque normal
+          encima del contenido, sin rediseño. En ≥lg, `main` pasa a grid de dos
+          columnas y aquí solo se activa el sticky de la barra lateral. */}
+      <nav aria-label={labels.navLabel} className="mb-8 lg:sticky lg:top-12 lg:mb-0">
+        <ShowcaseIndex
+          items={items}
+          inputLabel={labels.inputLabel}
+          emptyMessage={labels.emptyMessage}
+          placeholder={labels.placeholder}
+          selectedId={filter ?? ALL_ID}
+          onSelect={(id) => setFilter(id === ALL_ID ? null : id)}
+        />
       </nav>
       <div className="flex flex-col gap-14">
         {children}
