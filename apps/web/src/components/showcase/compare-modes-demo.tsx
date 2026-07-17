@@ -4,6 +4,11 @@ import { useState } from 'react';
 import { CompareSlider, type CompareSliderMode } from '@nicobehm/media-kit';
 import { Button } from '@/components/ui/button';
 
+/** Perf (T30/qa-B1): ver el mismo comentario en media-kit-demo.tsx — variante ~840w. */
+const LANDSCAPE_SRC_SET = '/demo/landscape-840.webp 840w, /demo/landscape.webp 1600w';
+/** Figure a ancho completo del contenido (sin grid), en cualquier breakpoint. */
+const FULL_WIDTH_SIZES = '(min-width: 1024px) 1000px, calc(100vw - 3rem)';
+
 /** Orden de exhibición de los modos en la botonera (spec B4). */
 const MODES = [
   'wipe',
@@ -66,6 +71,8 @@ export function CompareModesDemo({ strings }: Props) {
         before={
           <img
             src="/demo/landscape.webp"
+            srcSet={LANDSCAPE_SRC_SET}
+            sizes={FULL_WIDTH_SIZES}
             alt={strings.beforeAlt}
             width={1600}
             height={900}
@@ -73,7 +80,17 @@ export function CompareModesDemo({ strings }: Props) {
             style={{ filter: 'saturate(0.12) contrast(0.92) brightness(0.96)' }}
           />
         }
-        after={<img src="/demo/landscape.webp" alt="" width={1600} height={900} loading="lazy" />}
+        after={
+          <img
+            src="/demo/landscape.webp"
+            srcSet={LANDSCAPE_SRC_SET}
+            sizes={FULL_WIDTH_SIZES}
+            alt=""
+            width={1600}
+            height={900}
+            loading="lazy"
+          />
+        }
         label={strings.compareLabel}
         pauseLabel={strings.pauseLabel}
         resumeLabel={strings.resumeLabel}

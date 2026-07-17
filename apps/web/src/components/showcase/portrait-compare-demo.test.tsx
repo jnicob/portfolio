@@ -61,4 +61,17 @@ describe('PortraitCompareDemo', () => {
     renderDemo();
     expect(screen.getByText(caption)).toBeInTheDocument();
   });
+
+  // Perf (T30/qa-B1): portrait.webp es 1600×900, muy por encima del ancho real de esta
+  // figure en mobile. srcSet deja elegir la variante ~840w (el lado "después", MediaSource
+  // con fullSrc HD, ya lo resuelve el propio paquete — no se toca aquí).
+  it('el lado "antes" (ReactNode) ofrece una variante ~840w vía srcSet', () => {
+    renderDemo();
+    const before = screen.getByAltText(beforeAlt);
+    expect(before).toHaveAttribute(
+      'srcset',
+      '/demo/portrait-840.webp 840w, /demo/portrait.webp 1600w',
+    );
+    expect(before.getAttribute('sizes')).toBeTruthy();
+  });
 });

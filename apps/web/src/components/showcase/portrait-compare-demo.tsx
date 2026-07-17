@@ -2,6 +2,11 @@
 
 import { CompareSlider, type CompareSliderExpand } from '@nicobehm/media-kit';
 
+/** Perf (T30/qa-B1): ver el mismo comentario en media-kit-demo.tsx — variante ~840w. */
+const PORTRAIT_SRC_SET = '/demo/portrait-840.webp 840w, /demo/portrait.webp 1600w';
+/** Figure a ancho completo del contenido (sin grid), en cualquier breakpoint. */
+const FULL_WIDTH_SIZES = '(min-width: 1024px) 1000px, calc(100vw - 3rem)';
+
 type Props = {
   /** Alt del lado "antes" (ReactNode con filter grayscale). */
   beforeAlt: string;
@@ -26,6 +31,8 @@ export function PortraitCompareDemo({ beforeAlt, compareLabel, caption, expand }
         before={
           <img
             src="/demo/portrait.webp"
+            srcSet={PORTRAIT_SRC_SET}
+            sizes={FULL_WIDTH_SIZES}
             alt={beforeAlt}
             width={1600}
             height={900}

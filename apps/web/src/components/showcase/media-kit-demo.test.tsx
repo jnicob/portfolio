@@ -75,7 +75,28 @@ describe('MediaKitDemo', () => {
       expect(img).toHaveAttribute('width', '1600');
       expect(img).toHaveAttribute('height', '900');
     }
-    const desaturatedImages = landscapeImages.filter((img) => img.style.filter.includes('saturate'));
+    const desaturatedImages = landscapeImages.filter((img) =>
+      img.style.filter.includes('saturate'),
+    );
     expect(desaturatedImages).toHaveLength(2);
+  });
+
+  // Perf (T30/qa-B1): landscape.webp es 1600×900 pero en mobile (single-column bajo md)
+  // el CompareSlider se renderiza a un ancho de contenido mucho menor — sin srcset, el
+  // navegador descargaba siempre el asset completo. La variante ~840w deja elegir al
+  // navegador según el ancho real renderizado.
+  it('las 4 imágenes de landscape ofrecen una variante ~840w vía srcSet, con sizes acorde al grid', () => {
+    const { container } = render(<MediaKitDemo labels={enLabels} strings={enStrings} />);
+    const landscapeImages = Array.from(
+      container.querySelectorAll<HTMLImageElement>('img[src="/demo/landscape.webp"]'),
+    );
+    expect(landscapeImages).toHaveLength(4);
+    for (const img of landscapeImages) {
+      expect(img).toHaveAttribute(
+        'srcset',
+        '/demo/landscape-840.webp 840w, /demo/landscape.webp 1600w',
+      );
+      expect(img.getAttribute('sizes')).toBeTruthy();
+    }
   });
 });

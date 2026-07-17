@@ -38,4 +38,21 @@ describe('SpotlightDemo', () => {
     render(<SpotlightDemo strings={strings} />);
     expect(screen.getByText(strings.caption)).toBeInTheDocument();
   });
+
+  // Perf (T30/qa-B1): mismo fix que MediaKitDemo — landscape.webp es 1600×900, muy por
+  // encima del ancho real de esta figure en mobile. srcSet deja elegir la variante ~840w.
+  it('ambas capas ofrecen una variante ~840w vía srcSet', () => {
+    const { container } = render(<SpotlightDemo strings={strings} />);
+    const landscapeImages = Array.from(
+      container.querySelectorAll<HTMLImageElement>('img[src="/demo/landscape.webp"]'),
+    );
+    expect(landscapeImages).toHaveLength(2);
+    for (const img of landscapeImages) {
+      expect(img).toHaveAttribute(
+        'srcset',
+        '/demo/landscape-840.webp 840w, /demo/landscape.webp 1600w',
+      );
+      expect(img.getAttribute('sizes')).toBeTruthy();
+    }
+  });
 });

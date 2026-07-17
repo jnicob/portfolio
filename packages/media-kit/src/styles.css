@@ -16,7 +16,7 @@
   --mk-control-bg: rgb(24 24 27 / 0.85);
   --mk-control-color: #fafafa;
   --mk-spot-ring: rgb(255 255 255 / 0.9);
-  /* FilterGallery chips: dedicated tokens (not --mk-control-*/--mk-handle-*, which are
+  /* FilterGallery chips: dedicated tokens (not --mk-control-* nor --mk-handle-*, which are
      designed to sit over a photo/video, not the page surface — see styles.css.test.ts
      and README's Styling table). Defaults below reproduce the previous look exactly. */
   --mk-filter-bg: var(--mk-control-bg);
