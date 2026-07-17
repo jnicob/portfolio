@@ -38,4 +38,12 @@ describe('Button', () => {
     expect(btn.className).toContain('bg-danger');
     expect(btn.className).toContain('h-8');
   });
+
+  // A2 (convención de cursor, Fase 3.6): en Tailwind v4 `<button>` ya no trae
+  // `cursor: pointer` por defecto — sin esta clase explícita, todo botón real de la
+  // app (incl. los del showcase) mostraba cursor por defecto pese a ser interactivo.
+  it('es cursor-pointer en cualquier variante (es un control interactivo real)', () => {
+    render(<Button>Ok</Button>);
+    expect(screen.getByRole('button')).toHaveClass('cursor-pointer');
+  });
 });

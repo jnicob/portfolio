@@ -102,3 +102,31 @@ describe('Tabs v3.6 — paneles apilados en grid, sin desplazamiento (B2)', () =
     expect(preview).not.toHaveAttribute('tabindex');
   });
 });
+
+// A3 (feedback de Nico): en Tailwind v4 `<button>` ya no trae `cursor: pointer` por
+// defecto (cambio de preflight respecto a v3) — sin clase explícita las Tabs no
+// mostraban puntero ni hover perceptible. Convención de la Fase 3.6 (A2): un control
+// muestra `cursor-pointer` si y solo si es interactivo real; el hover reutiliza los
+// mismos tokens que Button (ghost/primary, T14) en vez de inventar un estado nuevo.
+describe('Tabs — cursor y hover (A2/A3)', () => {
+  it('cada trigger es cursor-pointer, sea cual sea su estado', () => {
+    renderTabs();
+    expect(screen.getByRole('tab', { name: 'Preview' })).toHaveClass('cursor-pointer');
+    expect(screen.getByRole('tab', { name: 'API' })).toHaveClass('cursor-pointer');
+  });
+
+  it('el trigger inactivo tiene hover de fondo perceptible sobre el TabList (bg-surface)', () => {
+    renderTabs();
+    const inactive = screen.getByRole('tab', { name: 'API' });
+    // No `hover:bg-surface` (Button ghost): TabList ya es bg-surface, así que ese hover
+    // quedaría invisible sobre sí mismo. `border` es el siguiente escalón con contraste real.
+    expect(inactive).toHaveClass('hover:bg-border');
+    expect(inactive).toHaveClass('hover:text-fg');
+  });
+
+  it('el trigger activo tiene hover propio, igual que Button primary', () => {
+    renderTabs();
+    const active = screen.getByRole('tab', { name: 'Preview' });
+    expect(active).toHaveClass('hover:bg-accent-hover');
+  });
+});

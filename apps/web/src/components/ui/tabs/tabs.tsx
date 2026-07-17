@@ -81,8 +81,17 @@ export function Tab({ value, children }: { value: string; children: ReactNode })
       tabIndex={selected ? 0 : -1}
       onClick={() => setActive(value)}
       className={cn(
-        'rounded-control px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
-        selected ? 'bg-accent text-accent-fg' : 'text-fg-muted hover:text-fg',
+        // Cursor + hover reutilizan el lenguaje de Button (T14): activo ~ variante primary
+        // (bg-accent + hover:bg-accent-hover). El inactivo NO puede copiar el hover
+        // `hover:bg-surface` de Button ghost tal cual: `TabList` ya pinta su fondo con
+        // `bg-surface`, así que ese hover quedaría invisible sobre sí mismo (verificado en
+        // navegador). Se usa el siguiente escalón semántico, `border` (ya usado en todo el
+        // repo como el paso "surface → un poco más marcado"), que sí contrasta. `cursor-pointer`
+        // explícito porque en Tailwind v4 `<button>` ya no lo trae por defecto (A2/A3).
+        'cursor-pointer rounded-control px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+        selected
+          ? 'bg-accent text-accent-fg hover:bg-accent-hover'
+          : 'text-fg-muted hover:bg-border hover:text-fg',
       )}
     >
       {children}
