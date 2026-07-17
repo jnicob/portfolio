@@ -1,54 +1,48 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-17 · por /checkpoint (F3.6 bloques A+B hechos)
+> Actualizado: 2026-07-17 · por /checkpoint (F3.6 bloques A+B+C+D hechos; solo queda T21)
 
 ## Ahora
 
-**F3.6 (Showcase UX v2 + media-kit 0.5) EN EJECUCIÓN** en rama
-`feature/phase-3.6-showcase-mediakit` (sin pushear) con subagent-driven-development.
-**Hechas T1-T16 de 21** (commits `c64fd51..fd4fe3f`, cada una con review aprobada):
-- **Bloque A completo (T1-T9):** media-kit **0.5.0** — fix foco fullscreen, re-clamp pan,
-  tooltips con delay, `compareMode` (wipe/onion/blink/side-by-side), `SpotlightReveal`,
-  `FilterGallery`, `VideoScrubPreview`, release con README/CHANGELOG verificados 1:1.
-- **Bloque B completo (T10-T16):** assets IA reales (landscape.webp 113 kB, scrub.mp4
-  617 kB + póster), colorización real, tabs sin salto (grid apilado), índice que FILTRA
-  (ShowcaseView + hash deep-link), radii/estados coherentes, 4 demos nuevas.
-Gate verde: media-kit 173 tests · web 256 · lint/typecheck · build estático.
-**Feedback de Nico (2026-07-17) registrado** en
-[docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md](docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md):
-sección A (bugs/polish del showcase, incl. onion roto y spotlight lento) va ANTES
-del merge; secciones B-E (menú, inicio, CV, proyectos) → fase F3.7.
-**Siguiente tarea: T17 (AnimatedMetric)** — bloque C (T17-T20), luego fixes de
-feedback A, luego T21 cierre.
+**F3.6 (Showcase UX v2 + media-kit 0.5) CASI CERRADA** en rama
+`feature/phase-3.6-showcase-mediakit` (sin pushear, working tree limpio, HEAD `6e5244a`).
+**Hechas T1-T20 + bloque D (T22-T27) + fix pre-T21 (T28)** — cada una con review aprobada:
+- **Bloques A+B (T1-T16):** media-kit 0.5.0 + showcase UX v2 (ver ledger).
+- **Bloque C (T17-T20):** `AnimatedMetric`, `TiltCard`, `ApiRequestPlayer` (+sección
+  `api-player`), `HeroCanvas` (fix HiDPI verificado en navegador a DPR 1 y 2).
+- **Bloque D (T22-T27, feedback Nico sección A):** BUG onion arreglado (CSS calc:
+  `%/100` → `%/100%`), BUG spotlight arreglado (`@property` radius animable, tracking
+  1:1), footer al fondo (`min-h-dvh` flex), cursor/hover en Tabs + auditoría A2 de
+  cursores, demo scrub con hint + facade lazy (mp4 ya no se descarga sin interacción),
+  imágenes ya lazy. A6 (galería ampliada) DIFERIDA a F3.7.
+- **T28:** console error `FORMATTING_ERROR`/key cruda del índice resuelto (`t.raw`).
+Gate verde: media-kit 182 tests · web 320 · lint/typecheck. **Solo queda T21 (cierre).**
 
 ## Hecho
 
 - ✅ Fases 0–3.5 (ver roadmap) · media-kit 0.2.0→0.4.0 en fases previas.
-- ✅ F3.6 bloques A y B (arriba). Ledger tarea a tarea: `.superpowers/sdd/progress.md`.
+- ✅ F3.6 bloques A, B, C y D + enmiendas de plan (`3ce2400`: T22-T27; i18n
+  `sections.apiPlayer.*`). Ledger tarea a tarea: `.superpowers/sdd/progress.md`.
 
 ## Siguiente acción
 
-1. Ejecutar bloque C por el plan: T17 AnimatedMetric → T18 TiltCard →
-   T19 ApiRequestPlayer → T20 HeroCanvas (subagentes sonnet + review por tarea).
-2. Fixes del feedback sección A (showcase) como tareas nuevas antes de T21
-   (enmendar plan F3.6; el ítem 6 "galería ampliada" puede diferirse a F3.7).
-3. T21 cierre: gate + builds duales + export servido, verificación viva (Playwright),
-   design review + qa-a11y-perf, review final (modelo top), roadmap/STATUS,
-   merge FF a main + push. Notas acumuladas para T21 en el ledger (deriva spec
-   120/150 ms de Tabs, tooltip del ojo pre-existente, Minors por tarea).
-4. Tras el merge: planificar F3.7 (feedback B-E: menú activo/hamburguesa, intro de
-   perfil, skills con estrellas, timeline CV, proyectos: naming Freepik/Magnific,
-   URLs, proyecto de integración automatizada, métricas reales) con brainstorm + plan.
+1. **T21 cierre de fase** (checklist en el plan, sección "Task 21"): gate + build
+   paquete + builds duales export/node + export servido; verificación en vivo
+   (Playwright) incl. fixes del bloque D; design review + qa-a11y-perf; code review
+   final de rama (modelo top, `superpowers:requesting-code-review`); roadmap/STATUS;
+   merge FF a main + push. Notas acumuladas para T21 al final del ledger.
+2. Tras el merge: **F3.7** (feedback secciones B-E + galería A6) con brainstorm + plan
+   nuevos junto al usuario — NO empezar en automático.
 
 ## Pendientes del usuario (no bloqueantes)
 
 - Dominio definitivo + `NEXT_PUBLIC_SITE_URL` (el build avisa si falta).
-- Publicar `@nicobehm/media-kit` en npm (0.5.0 lista en la rama al cerrar F3.6).
+- Publicar `@nicobehm/media-kit` en npm (0.5.0 lista al cerrar F3.6).
 - Upgrade Node 22 (retirar pins de `docs/decisions/2026-07-10-dependency-pins.md`).
 
 ## Fuentes de verdad
 
-- Plan F3.6 (en curso): [docs/superpowers/plans/2026-07-17-phase-3.6-showcase-mediakit.md](docs/superpowers/plans/2026-07-17-phase-3.6-showcase-mediakit.md)
+- Plan F3.6 (T21 + bloque D): [docs/superpowers/plans/2026-07-17-phase-3.6-showcase-mediakit.md](docs/superpowers/plans/2026-07-17-phase-3.6-showcase-mediakit.md)
+- Feedback Nico (A hecho; B-E → F3.7): [docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md](docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md)
 - Spec F3.6: [docs/superpowers/specs/2026-07-16-phase-3.6-showcase-mediakit-design.md](docs/superpowers/specs/2026-07-16-phase-3.6-showcase-mediakit-design.md)
-- Roadmap: [docs/superpowers/plans/2026-07-10-portfolio-roadmap.md](docs/superpowers/plans/2026-07-10-portfolio-roadmap.md) · Spec producto: [docs/superpowers/specs/2026-07-10-portfolio-design.md](docs/superpowers/specs/2026-07-10-portfolio-design.md)
-- Ledger SDD (tarea a tarea): `.superpowers/sdd/progress.md`
+- Roadmap: [docs/superpowers/plans/2026-07-10-portfolio-roadmap.md](docs/superpowers/plans/2026-07-10-portfolio-roadmap.md) · Ledger SDD: `.superpowers/sdd/progress.md`
