@@ -6,9 +6,12 @@ import { ApiRequestPlayer, type ApiRequestPlayerLabels } from './api-request-pla
 const labels: ApiRequestPlayerLabels = {
   run: 'Run',
   running: 'Running…',
+  pending: 'Pending…',
+  streaming: 'Streaming…',
   copy: 'Copy',
   copied: 'Copied!',
   done: 'Response received',
+  responsePlaceholder: 'The response will appear here — press Run',
 };
 
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
@@ -85,6 +88,35 @@ describe('ApiRequestPlayer', () => {
     renderPlayer();
     expect(screen.getByText(/text-to-image/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: labels.run })).toBeInTheDocument();
+  });
+
+  it('idle muestra un placeholder en la respuesta en vez de un <pre> vacío', () => {
+    renderPlayer();
+    expect(screen.getByText(labels.responsePlaceholder)).toBeInTheDocument();
+  });
+
+  it('durante pending, una etiqueta de estado en font-mono acompaña al spinner', () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    stubReducedMotion(true);
+    renderPlayer();
+    fireEvent.click(screen.getByRole('button', { name: labels.run }));
+    expect(screen.getByText(labels.pending)).toBeInTheDocument();
+  });
+
+  it('durante streaming, una etiqueta de estado en font-mono acompaña al caret', () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    const frame = stubAnimationFrame();
+    stubReducedMotion(false);
+    renderPlayer();
+
+    fireEvent.click(screen.getByRole('button', { name: labels.run }));
+    act(() => vi.advanceTimersByTime(600));
+    frame.flush();
+
+    expect(screen.getByText(labels.streaming)).toBeInTheDocument();
+    expect(screen.getByText('▌')).toBeInTheDocument();
+
+    frame.flushAll();
   });
 
   it('run → pending → done con la respuesta completa (reduced-motion: sin typing)', async () => {

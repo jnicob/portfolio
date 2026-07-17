@@ -16,9 +16,15 @@ type PlayerState = 'idle' | 'pending' | 'streaming' | 'done';
 export type ApiRequestPlayerLabels = {
   run: string;
   running: string;
+  /** Etiqueta de estado (font-mono) junto al spinner mientras `state === 'pending'`. */
+  pending: string;
+  /** Etiqueta de estado (font-mono) junto al caret mientras `state === 'streaming'`. */
+  streaming: string;
   copy: string;
   copied: string;
   done: string;
+  /** Contenido del `<pre>` de respuesta en `state === 'idle'`, antes de la primera ejecución. */
+  responsePlaceholder: string;
 };
 
 type Props = { demo: ApiDemo; labels: ApiRequestPlayerLabels };
@@ -113,24 +119,34 @@ export function ApiRequestPlayer({ demo, labels }: Props) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <div className="flex min-h-8 items-center gap-2">
-          {state === 'pending' && (
-            <span
-              aria-hidden
-              className="h-4 w-4 animate-spin rounded-full border-2 border-border border-t-accent"
-            />
-          )}
-          {state === 'done' && (
-            <>
-              <Badge variant="accent">{demo.status}</Badge>
-              <Button variant="ghost" size="sm" onClick={copy}>
-                {copied ? labels.copied : labels.copy}
-              </Button>
-            </>
-          )}
-        </div>
+        {/* Idle no tiene nada que mostrar aquí (ni spinner, ni badge): en vez de
+            una fila min-h-8 hueca, directamente no se renderiza hasta pending. */}
+        {state !== 'idle' && (
+          <div className="flex min-h-8 items-center gap-2">
+            {state === 'pending' && (
+              <>
+                <span
+                  aria-hidden
+                  className="h-4 w-4 animate-spin rounded-full border-2 border-border border-t-accent"
+                />
+                <span className="font-mono text-sm text-fg-muted">{labels.pending}</span>
+              </>
+            )}
+            {state === 'streaming' && (
+              <span className="font-mono text-sm text-fg-muted">{labels.streaming}</span>
+            )}
+            {state === 'done' && (
+              <>
+                <Badge variant="accent">{demo.status}</Badge>
+                <Button variant="ghost" size="sm" onClick={copy}>
+                  {copied ? labels.copied : labels.copy}
+                </Button>
+              </>
+            )}
+          </div>
+        )}
         <pre className="overflow-x-auto rounded-control border border-border bg-surface p-4 font-mono text-sm text-fg">
-          {responseText}
+          {state === 'idle' ? labels.responsePlaceholder : responseText}
           {state === 'streaming' && (
             <span aria-hidden className="animate-pulse">
               ▌

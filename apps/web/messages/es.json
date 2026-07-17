@@ -198,9 +198,12 @@
         "description": "Simulación de una llamada real: pulsa Run para ver la petición viajar por pending → streaming → done, con la misma demo que reutilizará el playground.",
         "run": "Run",
         "running": "Ejecutando…",
+        "pending": "Pendiente…",
+        "streaming": "Streaming…",
         "copy": "Copiar",
         "copied": "¡Copiado!",
-        "done": "Respuesta recibida"
+        "done": "Respuesta recibida",
+        "responsePlaceholder": "La respuesta aparecerá aquí — pulsa Run"
       }
     },
     "lightboxLabels": {

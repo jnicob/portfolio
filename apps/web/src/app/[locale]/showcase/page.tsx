@@ -383,9 +383,12 @@ export default async function ShowcasePage({ params }: Props) {
             labels={{
               run: t('sections.apiPlayer.run'),
               running: t('sections.apiPlayer.running'),
+              pending: t('sections.apiPlayer.pending'),
+              streaming: t('sections.apiPlayer.streaming'),
               copy: t('sections.apiPlayer.copy'),
               copied: t('sections.apiPlayer.copied'),
               done: t('sections.apiPlayer.done'),
+              responsePlaceholder: t('sections.apiPlayer.responsePlaceholder'),
             }}
           />
         </Section>

@@ -198,9 +198,12 @@
         "description": "A simulated real call: hit Run to watch the request travel through pending → streaming → done, the same demo the playground will reuse.",
         "run": "Run",
         "running": "Running…",
+        "pending": "Pending…",
+        "streaming": "Streaming…",
         "copy": "Copy",
         "copied": "Copied!",
-        "done": "Response received"
+        "done": "Response received",
+        "responsePlaceholder": "The response will appear here — press Run"
       }
     },
     "lightboxLabels": {
