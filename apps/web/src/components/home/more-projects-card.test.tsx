@@ -24,7 +24,14 @@ describe('MoreProjectsCard', () => {
     expect(links).toHaveLength(1);
     // localePrefix: 'always' (i18n/routing.ts) antepone el locale a cualquier href de <Link>.
     expect(links[0]).toHaveAttribute('href', '/es/projects');
-    expect(links[0]).toHaveAccessibleName('Todos los proyectos');
+    // WCAG 2.5.3 (Label in Name): el nombre accesible debe CONTENER el texto visible.
+    // Antes, un aria-label="Todos los proyectos" recortaba el nombre a solo el título,
+    // ignorando el resto del contenido visible del link (preview de proyectos + contador)
+    // — axe (label-content-name-mismatch) lo marca como mismatch porque el nombre no
+    // contiene TODO el texto visible anidado. Sin aria-label, el nombre se computa del
+    // propio contenido: por construcción contiene (empieza por) el título visible.
+    expect(links[0]).not.toHaveAttribute('aria-label');
+    expect(links[0]).toHaveAccessibleName(/^Todos los proyectos/);
     expect(screen.getByText(/Backoffice de contenido Freepik\/Flaticon/)).toBeInTheDocument();
   });
 
@@ -46,7 +53,11 @@ describe('MoreProjectsCard', () => {
   it('adelanta como máximo 3 títulos no destacados y muestra el contador de los restantes', () => {
     render(
       <NextIntlClientProvider locale="en" messages={en}>
-        <MoreProjectsCard locale="en" title="All projects" countTemplate="and {count} more projects" />
+        <MoreProjectsCard
+          locale="en"
+          title="All projects"
+          countTemplate="and {count} more projects"
+        />
       </NextIntlClientProvider>,
     );
     const previewTitles = notFeatured.slice(0, 3).map((p) => p.title.en);

@@ -17,9 +17,14 @@ function countLabel(template: string, count: number): string {
 }
 
 /**
- * Última celda del grid de destacados: toda la card es un único enlace a /projects
- * (nombre accesible = título), con affordance visual de navegación (borde discontinuo).
- * RSC-compatible.
+ * Última celda del grid de destacados: toda la card es un único enlace a /projects, con
+ * affordance visual de navegación (borde discontinuo). RSC-compatible.
+ *
+ * Sin `aria-label`: un `aria-label={title}` recortaba el nombre accesible al solo título,
+ * ignorando el resto del contenido visible del link (preview de proyectos + contador) —
+ * WCAG 2.5.3 (Label in Name) exige que el nombre CONTENGA el texto visible, y axe
+ * (`label-content-name-mismatch`) lo marcaba como mismatch. Sin override, el nombre se
+ * computa del propio contenido: empieza por el título visible y lo contiene por construcción.
  */
 export function MoreProjectsCard({ locale, title, countTemplate }: MoreProjectsCardProps) {
   const notFeatured = projects.filter((p) => !p.featured);
@@ -29,7 +34,6 @@ export function MoreProjectsCard({ locale, title, countTemplate }: MoreProjectsC
   return (
     <Link
       href="/projects"
-      aria-label={title}
       className="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:col-span-2 lg:col-span-3"
     >
       <Card className="border-dashed transition-colors hover:border-accent">
@@ -45,9 +49,7 @@ export function MoreProjectsCard({ locale, title, countTemplate }: MoreProjectsC
               <li key={p.slug}>{p.title[locale]}</li>
             ))}
           </ul>
-          {remaining > 0 && (
-            <p className="text-fg-muted">{countLabel(countTemplate, remaining)}</p>
-          )}
+          {remaining > 0 && <p className="text-fg-muted">{countLabel(countTemplate, remaining)}</p>}
         </CardContent>
       </Card>
     </Link>
