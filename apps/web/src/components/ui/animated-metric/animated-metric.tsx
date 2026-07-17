@@ -24,18 +24,22 @@ type AnimatedMetricProps = {
 
 /**
  * Anima un número 0→N al entrar en viewport (IntersectionObserver, una vez),
- * conservando el formato del literal original. Sin IO (SSR/tests) o con
- * `prefers-reduced-motion`, muestra el valor final directo sin animar.
+ * conservando el formato del literal original. El primer render (SSR y
+ * cliente por igual) siempre muestra el valor final, evitando un mismatch
+ * de hidratación; el conteo 0→N solo arranca cuando el elemento intersecta.
+ * Sin IO (SSR/tests) o con `prefers-reduced-motion`, no hay animación: el
+ * valor final se queda tal cual.
  * El nodo animado es decorativo (`aria-hidden`); el valor real vive en `sr-only`
  * para que quede accesible desde el primer render.
  */
 export function AnimatedMetric({ value, durationMs = DEFAULT_DURATION_MS }: AnimatedMetricProps) {
   const targetRef = useRef<HTMLSpanElement>(null);
-  const [display, setDisplay] = useState(() =>
-    typeof IntersectionObserver === 'undefined' || prefersReducedMotion()
-      ? value
-      : formatLike(value, 0),
-  );
+  // El estado inicial es siempre el valor final, igual en servidor y cliente:
+  // el servidor (sin IntersectionObserver) no tiene otra opción, así que el
+  // cliente debe pintar lo mismo en su primer render para no producir un
+  // mismatch de hidratación. El conteo 0→N arranca solo al intersectar (ver
+  // efecto más abajo), nunca antes del primer paint.
+  const [display, setDisplay] = useState(value);
   const target = Number((/[\d.,\s]+/.exec(value)?.[0] ?? '0').replace(/[.,\s]/g, ''));
 
   useEffect(() => {

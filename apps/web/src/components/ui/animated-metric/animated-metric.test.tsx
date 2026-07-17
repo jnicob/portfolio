@@ -91,10 +91,14 @@ describe('AnimatedMetric — camino animado (IntersectionObserver + rAF disponib
     vi.restoreAllMocks();
   });
 
-  it('antes de intersectar muestra 0 con el formato del literal (prefijo/separador/sufijo)', () => {
+  it('antes de intersectar (primer render) muestra el valor final, igual que el SSR', () => {
+    // Contrato de hidratación: el servidor (sin IntersectionObserver) renderiza
+    // el valor final directo. El cliente debe pintar exactamente lo mismo en su
+    // primer render -aunque IO esté disponible- para no producir un mismatch de
+    // texto (React #418). El conteo 0→N solo arranca cuando el IO intersecta.
     stubAnimationEnvironment();
     render(<AnimatedMetric value="1.000+" durationMs={1000} />);
-    expect(screen.getByText('0+', { selector: '[aria-hidden]' })).toBeInTheDocument();
+    expect(screen.getByText('1.000+', { selector: '[aria-hidden]' })).toBeInTheDocument();
   });
 
   it('tras intersectar progresa con easing out-cubic y termina exacto en el literal original', () => {
