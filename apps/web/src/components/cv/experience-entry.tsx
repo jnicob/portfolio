@@ -14,6 +14,15 @@ type ExperienceEntryBlockProps = {
 };
 
 /**
+ * Formatea el rango de fechas de una experiencia: `start — end`, o `start — presentLabel`
+ * si `end` es `null` (puesto actual). Única fuente de este formateo — usado tanto por el
+ * rango inline de `ExperienceEntryBlock` como por el Badge del rail en `CvTimeline` (T19).
+ */
+export function formatExperienceRange(entry: ExperienceEntry, presentLabel: string): string {
+  return `${entry.start} — ${entry.end ?? presentLabel}`;
+}
+
+/**
  * Bloque de una experiencia laboral: rol + empresa, rango de fechas, resumen, highlights
  * y tags. Presentacional puro, RSC-compatible. Reutilizado por las 3 vistas del CV (T9/T24)
  * — sin asunciones de layout del contenedor.
@@ -32,9 +41,7 @@ export function ExperienceEntryBlock({
           {entry.role[locale]}, <span>{entry.company}</span>
         </h3>
         {!hideDates && (
-          <p className="text-sm text-fg-muted">
-            {entry.start} — {entry.end ?? presentLabel}
-          </p>
+          <p className="text-sm text-fg-muted">{formatExperienceRange(entry, presentLabel)}</p>
         )}
       </div>
       <p className="text-fg-muted">{entry.summary[locale]}</p>

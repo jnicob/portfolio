@@ -1,7 +1,7 @@
 import { projectSchema, type Project } from './schemas';
 
 const entries = [
-  // ——— Freepik/Magnific (2022-07 → hoy) ———
+  // ——— Freepik/Magnific (2022-07 → 2026-07) ———
   {
     slug: 'freepik-api-platform',
     title: {
