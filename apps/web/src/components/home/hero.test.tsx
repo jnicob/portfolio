@@ -25,7 +25,7 @@ describe('Hero', () => {
     renderHero();
     expect(screen.getByText(es.home.availability)).toBeInTheDocument();
 
-    const cta = screen.getByRole('link', { name: es.home.availabilityCta });
+    const cta = screen.getByRole('link', { name: `${es.home.availabilityCta} — LinkedIn` });
     expect(cta).toHaveAttribute('href', profile.links.linkedin);
     expect(cta).toHaveAttribute('target', '_blank');
     expect(cta).toHaveAttribute('rel', 'noopener noreferrer');

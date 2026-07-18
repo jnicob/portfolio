@@ -32,6 +32,7 @@ export function Hero({ locale, cvLabel }: HeroProps) {
             href={profile.links.linkedin}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={`${t('availabilityCta')} — LinkedIn`}
             className={cn(buttonVariants({ variant: 'secondary', size: 'sm' }))}
           >
             {t('availabilityCta')}
@@ -40,7 +41,7 @@ export function Hero({ locale, cvLabel }: HeroProps) {
         <p className="max-w-2xl text-lg text-fg-muted">{profile.summary[locale]}</p>
         <Link
           href="/cv"
-          className="inline-flex w-fit items-center gap-2 rounded-control bg-accent px-4 py-2 font-medium text-accent-fg transition-colors hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className={cn(buttonVariants({ variant: 'primary', size: 'md' }), 'w-fit')}
         >
           {cvLabel}
         </Link>
