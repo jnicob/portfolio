@@ -3,6 +3,7 @@ import {
   cvViewSchema,
   educationEntrySchema,
   experienceEntrySchema,
+  galleryItemSchema,
   localizedStringSchema,
   profileSchema,
   projectFrontmatterSchema,
@@ -336,6 +337,85 @@ describe('datos reales', () => {
       'fares-taie-salud',
       'elisa-processor',
     ]);
+  });
+});
+
+describe('galleryItemSchema', () => {
+  const image = {
+    type: 'image' as const,
+    id: 'nbp-retrato-neon',
+    model: 'Google NBP',
+    title: LOC,
+    src: '/demo/gallery/nbp-retrato-neon.webp',
+    hdSrc: '/demo/gallery/nbp-retrato-neon-hd.webp',
+    width: 1200,
+    height: 1608,
+  };
+  const video = {
+    type: 'video' as const,
+    id: 'veo-costa-atardecer',
+    model: 'Google Veo',
+    title: LOC,
+    src: '/demo/gallery/veo-costa-atardecer.mp4',
+    poster: '/demo/gallery/veo-costa-atardecer-poster.webp',
+    width: 1200,
+    height: 675,
+  };
+  const audio = {
+    type: 'audio' as const,
+    id: 'audio-lofi',
+    model: 'Google Lyria',
+    title: LOC,
+    src: '/demo/gallery/audio-lofi.mp3',
+    cover: '/demo/gallery/audio-lofi-cover.webp',
+    coverHd: '/demo/gallery/audio-lofi-cover-hd.webp',
+    width: 1200,
+    height: 1200,
+  };
+
+  it('acepta un ítem image/video/audio válido', () => {
+    expect(galleryItemSchema.safeParse(image).success).toBe(true);
+    expect(galleryItemSchema.safeParse(video).success).toBe(true);
+    expect(galleryItemSchema.safeParse(audio).success).toBe(true);
+  });
+
+  it('image exige src y hdSrc', () => {
+    expect(() =>
+      galleryItemSchema.parse({
+        type: 'image',
+        id: 'x',
+        model: 'Google NBP',
+        title: LOC,
+        src: '/demo/gallery/x.webp',
+        width: 1200,
+        height: 800,
+      }),
+    ).toThrow(); // falta hdSrc
+  });
+
+  it('video exige src y poster', () => {
+    const withoutPoster: Record<string, unknown> = { ...video };
+    delete withoutPoster.poster;
+    expect(galleryItemSchema.safeParse(withoutPoster).success).toBe(false);
+  });
+
+  it('audio exige src, cover y coverHd', () => {
+    const withoutCoverHd: Record<string, unknown> = { ...audio };
+    delete withoutCoverHd.coverHd;
+    expect(galleryItemSchema.safeParse(withoutCoverHd).success).toBe(false);
+  });
+
+  it('rechaza width/height no positivos', () => {
+    expect(galleryItemSchema.safeParse({ ...image, width: 0 }).success).toBe(false);
+    expect(galleryItemSchema.safeParse({ ...image, height: -1 }).success).toBe(false);
+  });
+
+  it('rechaza claves extra', () => {
+    expect(galleryItemSchema.safeParse({ ...image, extra: true }).success).toBe(false);
+  });
+
+  it('rechaza type fuera del discriminador', () => {
+    expect(galleryItemSchema.safeParse({ ...image, type: 'gif' }).success).toBe(false);
   });
 });
 

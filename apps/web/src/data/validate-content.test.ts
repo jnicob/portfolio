@@ -3,6 +3,7 @@ import { routing } from '@/i18n/routing';
 import { compileProject, getProjectSlugs } from '@/lib/content';
 import { education } from './education';
 import { experience } from './experience';
+import { galleryItems } from './gallery';
 import { profile } from './profile';
 import { projects } from './projects';
 import { skills } from './skills';
@@ -32,7 +33,7 @@ describe('validate-content', () => {
   });
 
   it('GUARDIA PII: ni email ni teléfono en ningún dato serializado', () => {
-    const all = JSON.stringify({ profile, experience, education, skills, projects });
+    const all = JSON.stringify({ profile, experience, education, skills, projects, galleryItems });
     expect(all).not.toMatch(EMAIL);
     expect(all).not.toMatch(PHONE);
   });

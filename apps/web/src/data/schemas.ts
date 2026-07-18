@@ -110,3 +110,41 @@ export type Skin = z.infer<typeof skinSchema>;
 export const CV_VIEWS = ['standard', 'compact', 'timeline'] as const;
 export const cvViewSchema = z.enum(CV_VIEWS);
 export type CvView = z.infer<typeof cvViewSchema>;
+
+/** Campos comunes a los 3 tipos de ítem de la galería IA (spec §7). */
+const galleryItemBase = {
+  id: z.string().min(1),
+  model: z.string().min(1),
+  title: localizedStringSchema,
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+};
+
+export const galleryItemSchema = z.discriminatedUnion('type', [
+  z
+    .object({
+      type: z.literal('image'),
+      ...galleryItemBase,
+      src: z.string().min(1),
+      hdSrc: z.string().min(1),
+    })
+    .strict(),
+  z
+    .object({
+      type: z.literal('video'),
+      ...galleryItemBase,
+      src: z.string().min(1),
+      poster: z.string().min(1),
+    })
+    .strict(),
+  z
+    .object({
+      type: z.literal('audio'),
+      ...galleryItemBase,
+      src: z.string().min(1),
+      cover: z.string().min(1),
+      coverHd: z.string().min(1),
+    })
+    .strict(),
+]);
+export type GalleryItem = z.infer<typeof galleryItemSchema>;
