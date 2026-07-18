@@ -21,9 +21,9 @@ function renderFeaturedProjects() {
 }
 
 describe('FeaturedProjects', () => {
-  it('destaca freepik-api-platform, ai-model-onboarding y freepik-api-playground', () => {
+  it('destaca freepik-api-platform, ai-service-integration y freepik-api-playground', () => {
     expect(featured.map((p) => p.slug).sort()).toEqual(
-      ['freepik-api-platform', 'ai-model-onboarding', 'freepik-api-playground'].sort(),
+      ['freepik-api-platform', 'ai-service-integration', 'freepik-api-playground'].sort(),
     );
   });
 

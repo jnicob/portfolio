@@ -27,36 +27,30 @@ const entries = [
     date: '2022-07',
   },
   {
-    slug: 'ai-model-onboarding',
+    slug: 'ai-service-integration',
     title: {
-      es: 'Onboarding end-to-end de modelos de IA',
-      en: 'End-to-end AI model onboarding',
+      es: 'Integración de servicios automatizada a través de IA',
+      en: 'AI-automated service integration',
     },
     summary: {
-      es: 'Proceso repetible para llevar un modelo de IA (imagen/vídeo) desde la especificación OpenAPI hasta producción: precios, límites de uso, implementación en FastAPI, configuración de gateway y documentación pública. Aplicado a familias de modelos como Kling y WAN.',
-      en: 'Repeatable process to take an AI (image/video) model from OpenAPI spec to production: pricing, rate limits, FastAPI implementation, gateway configuration and public documentation. Applied to model families such as Kling and WAN.',
+      es: 'Sistema de agentes de IA especializados que automatiza el alta de un servicio nuevo en la plataforma de APIs: a partir de la definición del servicio generan la especificación OpenAPI, la implementación del endpoint, la configuración de precios y límites, los permisos y reglas de gateway, la documentación pública y su entrada en el Playground — para cualquier servicio, no solo modelos concretos.',
+      en: 'System of specialized AI agents that automates onboarding a new service into the API platform: from the service definition they generate the OpenAPI spec, the endpoint implementation, pricing and rate-limit configuration, gateway permissions and rules, public documentation and its Playground entry — for any service, not just specific models.',
     },
     role: {
-      es: 'Ingeniero responsable del proceso de onboarding',
-      en: 'Engineer owning the onboarding process',
+      es: 'Ingeniero — diseño y orquestación de los agentes',
+      en: 'Engineer — agent design and orchestration',
     },
-    stack: ['openapi', 'fastapi', 'python', 'apisix'],
-    links: {
-      docs: 'https://docs.freepik.com',
-    },
+    stack: ['openapi', 'fastapi', 'apisix', 'llm-agents', 'python'],
+    links: { docs: 'https://docs.freepik.com' },
     metrics: [
       {
-        label: { es: 'Familias de modelos publicadas', en: 'Model families shipped' },
-        value: 'Kling, WAN',
-      },
-      {
-        label: { es: 'Endpoints por modelo', en: 'Endpoints per model' },
-        value: '3 (create, list, get-by-id)',
+        // 6 = spec, API, precios, permisos/reglas, documentación, playground
+        label: { es: 'Artefactos generados por servicio', en: 'Artifacts generated per service' },
+        value: '6',
       },
     ],
     featured: true,
     caseStudy: true,
-    // Sin fecha de proyecto evidenciada públicamente: se usa el inicio de la etapa Freepik/Magnific.
     date: '2022-07',
   },
   {

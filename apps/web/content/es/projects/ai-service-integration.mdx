@@ -1,0 +1,74 @@
+---
+title: Integración de servicios automatizada a través de IA
+summary: 'Sistema de agentes de IA especializados que automatiza el alta de un servicio nuevo en la plataforma de APIs: de la definición del servicio a spec, implementación, precios, permisos, documentación y playground.'
+role: Ingeniero — diseño y orquestación de los agentes
+stack: [openapi, fastapi, apisix, llm-agents, python]
+links:
+  docs: https://docs.freepik.com
+metrics:
+  - label: Artefactos generados por servicio
+    value: '6'
+# Sin fecha de proyecto evidenciada públicamente: inicio de la etapa Freepik/Magnific (= projects.ts)
+date: '2022-07'
+---
+
+## El problema
+
+Dar de alta un servicio nuevo en una plataforma pública de APIs no es un
+solo cambio: son al menos seis artefactos coordinados a través de varios
+repositorios — la especificación OpenAPI, la implementación del
+endpoint, la configuración de precios y límites de uso, los permisos y
+reglas del gateway, la documentación pública y la entrada en el
+Playground. Cada artefacto tiene su propio formato, sus propias
+convenciones y su propio repo. Hacerlo a mano, servicio a servicio,
+funciona pero es lento y propenso a inconsistencias: un parámetro que
+llega a la spec pero no al servidor, una regla de precio que no llega al
+gateway, una página de docs que se olvida.
+
+## La solución
+
+Un sistema de agentes de IA especializados, uno por artefacto, orquestados
+sobre una única definición del servicio como fuente de verdad. Cada agente
+conoce en profundidad las convenciones de su repo — el formato de la
+spec, la estructura del controlador, el esquema de configuración del
+gateway, la plantilla de la página de docs — y produce el cambio
+correspondiente listo para revisión humana. El orquestador reparte el
+trabajo entre agentes, pasa la definición del servicio como contexto
+compartido y consolida los resultados en un conjunto de cambios coherente
+entre repos.
+
+## Qué genera
+
+A partir de la definición de un servicio, el sistema genera:
+
+1. **Especificación OpenAPI** — el contrato de petición/respuesta del
+   endpoint, con sus parámetros y validaciones.
+2. **Implementación del endpoint** — el controlador y el caso de uso en
+   el servidor, siguiendo el patrón de otros endpoints existentes.
+3. **Precios y límites de uso** — la configuración de coste por
+   generación o por uso y los límites por plan.
+4. **Permisos y reglas de gateway** — la ruta, el permiso asociado y las
+   reglas de coste a nivel de gateway.
+5. **Documentación pública** — la página de referencia del endpoint y su
+   entrada en el changelog.
+6. **Entrada en el Playground** — el formulario interactivo generado
+   desde la misma spec para probar el servicio desde el navegador.
+
+## Impacto
+
+El resultado es un proceso de onboarding repetible y consistente: el
+mismo patrón que antes se aplicaba a mano, servicio a servicio, a
+familias de modelos como Kling o WAN queda generalizado a cualquier
+servicio que la plataforma quiera exponer. El orquestador reduce el
+trabajo manual entre repos a revisar y aprobar los cambios que cada
+agente propone, no a escribirlos desde cero.
+
+## Lecciones
+
+Los agentes rinden en la medida en que las convenciones que siguen son
+estrictas y la fuente de verdad es única: cuando el formato de cada
+artefacto está bien definido y la definición del servicio no admite
+ambigüedad, el agente produce un cambio correcto casi siempre; cuando la
+convención es laxa, el agente hereda esa ambigüedad. Es el mismo
+principio que gobierna este portfolio — specs y datos tipados como fuente
+única, nunca contenido duplicado a mano.

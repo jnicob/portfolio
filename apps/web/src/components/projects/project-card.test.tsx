@@ -7,7 +7,7 @@ import es from '../../../messages/es.json';
 import { ProjectCard } from './project-card';
 
 const withoutCaseStudy = projects.find((p) => p.slug === 'freepik-api-playground')!;
-const withMetrics = projects.find((p) => p.slug === 'ai-model-onboarding')!;
+const withMetrics = projects.find((p) => p.slug === 'ai-service-integration')!;
 
 function renderProjectCard(props: ComponentProps<typeof ProjectCard>) {
   return render(

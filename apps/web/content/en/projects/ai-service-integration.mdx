@@ -1,0 +1,72 @@
+---
+title: AI-automated service integration
+summary: 'System of specialized AI agents that automates onboarding a new service into the API platform: from the service definition to spec, implementation, pricing, permissions, documentation and playground.'
+role: Engineer — agent design and orchestration
+stack: [openapi, fastapi, apisix, llm-agents, python]
+links:
+  docs: https://docs.freepik.com
+metrics:
+  - label: Artifacts generated per service
+    value: '6'
+# No publicly evidenced project date: start of the Freepik/Magnific period (= projects.ts)
+date: '2022-07'
+---
+
+## The problem
+
+Onboarding a new service into a public API platform isn't a single
+change: it's at least six artifacts coordinated across several
+repositories — the OpenAPI specification, the endpoint implementation,
+pricing and rate-limit configuration, gateway permissions and rules,
+public documentation and the Playground entry. Each artifact has its own
+format, its own conventions and its own repo. Doing this by hand,
+service by service, works but is slow and prone to inconsistencies: a
+parameter that lands in the spec but not the server, a pricing rule that
+never reaches the gateway, a docs page that gets forgotten.
+
+## The solution
+
+A system of specialized AI agents, one per artifact, orchestrated around
+a single service definition as the source of truth. Each agent deeply
+knows its repo's conventions — the spec format, the controller
+structure, the gateway configuration schema, the docs page template —
+and produces the corresponding change ready for human review. The
+orchestrator splits the work across agents, passes the service
+definition as shared context, and consolidates the results into a
+coherent set of changes across repos.
+
+## What it generates
+
+From a service definition, the system generates:
+
+1. **OpenAPI specification** — the endpoint's request/response contract,
+   with its parameters and validations.
+2. **Endpoint implementation** — the controller and use case in the
+   server, following the pattern of existing endpoints.
+3. **Pricing and rate limits** — per-generation or usage-based cost
+   configuration and per-tier limits.
+4. **Gateway permissions and rules** — the route, its associated
+   permission and the gateway-level cost rules.
+5. **Public documentation** — the endpoint reference page and its
+   changelog entry.
+6. **Playground entry** — the interactive form generated from the same
+   spec to try the service from the browser.
+
+## Impact
+
+The result is a repeatable, consistent onboarding process: the same
+pattern that used to be applied by hand, service by service, to model
+families such as Kling or WAN is now generalized to any service the
+platform wants to expose. The orchestrator reduces the manual
+cross-repo work to reviewing and approving what each agent proposes,
+rather than writing it from scratch.
+
+## Lessons
+
+Agents perform well to the extent that the conventions they follow are
+strict and the source of truth is single: when each artifact's format is
+well defined and the service definition leaves no ambiguity, the agent
+produces a correct change almost every time; when the convention is
+loose, the agent inherits that ambiguity. It's the same principle that
+governs this portfolio — specs and typed data as the single source, never
+content duplicated by hand.

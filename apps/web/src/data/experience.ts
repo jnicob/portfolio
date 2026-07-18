@@ -24,8 +24,8 @@ const entries = [
         en: 'Public AI generation, stock and task-status APIs: from OpenAPI spec to production (FastAPI, APISIX gateway, docs), including the Flows API for chaining models.',
       },
       {
-        es: 'Onboarding end-to-end de modelos de IA (Kling, WAN…): precios, límites, implementación y documentación.',
-        en: 'End-to-end AI model onboarding (Kling, WAN…): pricing, limits, implementation and documentation.',
+        es: 'Integración automatizada de servicios mediante agentes de IA: de la definición del servicio a spec, implementación, precios, permisos, documentación y playground.',
+        en: 'Automated service integration through AI agents: from the service definition to spec, implementation, pricing, permissions, documentation and playground.',
       },
       {
         es: 'Playground web de la API y panel de desarrollador (uso, presupuesto, límites, facturación y API keys).',

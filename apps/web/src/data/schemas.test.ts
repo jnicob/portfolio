@@ -323,7 +323,7 @@ describe('datos reales', () => {
     expect(projects).toHaveLength(14);
     expect(projects.map((p) => p.slug)).toEqual([
       'freepik-api-platform',
-      'ai-model-onboarding',
+      'ai-service-integration',
       'freepik-api-playground',
       'freepik-developer-dashboard',
       'freepik-backoffice',
