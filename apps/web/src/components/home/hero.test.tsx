@@ -20,4 +20,14 @@ describe('Hero', () => {
     expect(screen.getByText(profile.summary.es)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Ver CV' })).toHaveAttribute('href', '/es/cv');
   });
+
+  it('renderiza el badge de disponibilidad y el CTA a LinkedIn', () => {
+    renderHero();
+    expect(screen.getByText(es.home.availability)).toBeInTheDocument();
+
+    const cta = screen.getByRole('link', { name: es.home.availabilityCta });
+    expect(cta).toHaveAttribute('href', profile.links.linkedin);
+    expect(cta).toHaveAttribute('target', '_blank');
+    expect(cta).toHaveAttribute('rel', 'noopener noreferrer');
+  });
 });
