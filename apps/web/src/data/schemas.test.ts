@@ -70,7 +70,7 @@ describe('profileSchema — guardia de PII', () => {
 describe('experienceEntrySchema', () => {
   const entry = {
     id: 'freepik',
-    company: 'Freepik',
+    company: 'Freepik/Magnific',
     role: LOC,
     start: '2024-01',
     end: null,

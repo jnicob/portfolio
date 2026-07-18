@@ -9,8 +9,8 @@ const entries = [
       en: 'Freepik/Magnific API Platform',
     },
     summary: {
-      es: 'Diseño e implementación end-to-end de la plataforma pública de APIs de Freepik: generación de IA (imagen, vídeo, audio), stock, estado de tareas y cuenta. Especificación OpenAPI, servidor FastAPI, gateway APISIX (rate limits, costes, API keys), facturación y documentación pública.',
-      en: "End-to-end design and implementation of Freepik's public API platform: AI generation (image, video, audio), stock content, task status and account APIs. OpenAPI specification, FastAPI server, APISIX gateway (rate limits, cost tracking, API keys), billing and public documentation.",
+      es: 'Diseño e implementación end-to-end de la plataforma pública de APIs de Freepik/Magnific: generación de IA (imagen, vídeo, audio), stock, estado de tareas y cuenta. Especificación OpenAPI, servidor FastAPI, gateway APISIX (rate limits, costes, API keys), facturación y documentación pública.',
+      en: "End-to-end design and implementation of Freepik/Magnific's public API platform: AI generation (image, video, audio), stock content, task status and account APIs. OpenAPI specification, FastAPI server, APISIX gateway (rate limits, cost tracking, API keys), billing and public documentation.",
     },
     role: { es: 'Ingeniero de plataforma de APIs', en: 'API Platform Engineer' },
     stack: ['openapi', 'fastapi', 'python', 'apisix', 'rest-api'],
@@ -56,15 +56,18 @@ const entries = [
     ],
     featured: true,
     caseStudy: true,
-    // Sin fecha de proyecto evidenciada públicamente: se usa el inicio de la etapa Freepik.
+    // Sin fecha de proyecto evidenciada públicamente: se usa el inicio de la etapa Freepik/Magnific.
     date: '2022-07',
   },
   {
     slug: 'freepik-api-playground',
-    title: { es: 'Playground de la web de la API de Freepik', en: 'Freepik API web Playground' },
+    title: {
+      es: 'Playground de la web de la API de Freepik/Magnific',
+      en: 'Freepik/Magnific API web Playground',
+    },
     summary: {
-      es: 'Consola interactiva para probar los modelos de la Freepik API desde el navegador: formularios generados desde la spec OpenAPI y validados con Zod, ejecución real con polling, visores por tipo de salida (imagen, vídeo, audio, before/after), ejemplos por modelo y gestión de API keys integrada.',
-      en: 'Interactive console to try Freepik API models from the browser: forms generated from the OpenAPI spec and validated with Zod, real execution with polling, per-output viewers (image, video, audio, before/after), per-model examples and built-in API key management.',
+      es: 'Consola interactiva para probar los modelos de la API de Freepik/Magnific desde el navegador: formularios generados desde la spec OpenAPI y validados con Zod, ejecución real con polling, visores por tipo de salida (imagen, vídeo, audio, before/after), ejemplos por modelo y gestión de API keys integrada.',
+      en: 'Interactive console to try Freepik/Magnific API models from the browser: forms generated from the OpenAPI spec and validated with Zod, real execution with polling, per-output viewers (image, video, audio, before/after), per-model examples and built-in API key management.',
     },
     role: {
       es: 'Ingeniero frontend — desarrollo y evolución del Playground',
@@ -75,7 +78,7 @@ const entries = [
     metrics: [],
     featured: true,
     caseStudy: false,
-    // Sin fecha pública evidenciada: inicio etapa Freepik.
+    // Sin fecha pública evidenciada: inicio etapa Freepik/Magnific.
     date: '2022-07',
   },
   {
@@ -85,8 +88,8 @@ const entries = [
       en: 'API developer dashboard',
     },
     summary: {
-      es: 'Dashboard del desarrollador de la Freepik API: uso y presupuesto con gráficos de consumo, límites de peticiones, facturación y gestión de API keys, incluidas reglas para miembros enterprise.',
-      en: 'Freepik API developer dashboard: usage and budget with consumption charts, rate limits, billing and API key management, including enterprise member rules.',
+      es: 'Dashboard del desarrollador de la API de Freepik/Magnific: uso y presupuesto con gráficos de consumo, límites de peticiones, facturación y gestión de API keys, incluidas reglas para miembros enterprise.',
+      en: 'Freepik/Magnific API developer dashboard: usage and budget with consumption charts, rate limits, billing and API key management, including enterprise member rules.',
     },
     role: { es: 'Ingeniero frontend', en: 'Frontend engineer' },
     stack: ['nextjs', 'react', 'typescript', 'react-query'],

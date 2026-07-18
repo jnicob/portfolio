@@ -31,7 +31,7 @@
   "home": {
     "meta": {
       "title": "Nico Behm — Ingeniero full-stack",
-      "description": "Ingeniero full-stack construyendo plataformas de API de IA end-to-end en Freepik/Magnific."
+      "description": "Ingeniero full-stack con más de 12 años entre salud, producto internacional y plataformas de APIs de IA a gran escala."
     },
     "showcaseCta": "Ver showcase de componentes →",
     "cvCta": "Ver CV",
@@ -50,10 +50,10 @@
   "projects": {
     "meta": {
       "title": "Proyectos — Nico Behm",
-      "description": "De la plataforma de APIs de Freepik al backoffice, la web pública y proyectos anteriores."
+      "description": "De la plataforma de APIs de Freepik/Magnific al backoffice, la web pública y proyectos anteriores."
     },
     "title": "Proyectos",
-    "intro": "De la plataforma de APIs de Freepik al backoffice, la web pública y proyectos anteriores.",
+    "intro": "De la plataforma de APIs de Freepik/Magnific al backoffice, la web pública y proyectos anteriores.",
     "backToList": "Volver a proyectos"
   },
   "cv": {

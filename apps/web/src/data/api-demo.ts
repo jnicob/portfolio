@@ -1,7 +1,7 @@
 /**
  * Datos de ejemplo para `ApiRequestPlayer` (showcase T19, reutilizado por el
  * playground real en F4). Request/response inventados, genéricos, estilo
- * Freepik API — nada real ni sensible.
+ * API de Freepik/Magnific — nada real ni sensible.
  */
 export type ApiDemo = {
   method: 'POST';
