@@ -7,7 +7,6 @@ export type GalleryAudioTileLabels = { play: string; pause: string };
 type Props = {
   cover: string;
   src: string;
-  title: string;
   width: number;
   height: number;
   labels: GalleryAudioTileLabels;
@@ -17,6 +16,12 @@ type Props = {
  * Tile de galería para un ítem de audio (spec F3.7 / T10): carátula +
  * overlay play/pause + barra de progreso fina.
  *
+ * Sin `title` propio (fix review T11): el nombre accesible por ítem ya lo
+ * llevan `labels.play`/`labels.pause` (interpolados por el consumidor, p.ej.
+ * "Reproducir Lo-fi") y, en `GalleryDemo`, el `<figcaption>` visible del tile.
+ * Un tercer `<span sr-only>{title}</span>` aquí solo triplicaba esa misma
+ * información para lectores de pantalla.
+ *
  * Facade: el `<audio src>` no se monta hasta la PRIMERA pulsación de play —
  * 0 bytes de red antes de esa interacción (mismo patrón que `VideoScrubDemo`
  * con el `<video>`). `mounted` solo pasa de `false` a `true` una vez; el
@@ -25,7 +30,7 @@ type Props = {
  * Los toggles posteriores (ya montado) llaman a `play()`/`pause()`
  * directamente desde el handler.
  */
-export function GalleryAudioTile({ cover, src, title, width, height, labels }: Props) {
+export function GalleryAudioTile({ cover, src, width, height, labels }: Props) {
   const [mounted, setMounted] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -99,7 +104,6 @@ export function GalleryAudioTile({ cover, src, title, width, height, labels }: P
           <track kind="captions" />
         </audio>
       )}
-      <span className="sr-only">{title}</span>
     </div>
   );
 }

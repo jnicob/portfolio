@@ -5,7 +5,6 @@ import { GalleryAudioTile } from './gallery-audio-tile';
 const baseProps = {
   cover: '/c.webp',
   src: '/a.mp3',
-  title: 'Lo-fi',
   width: 1200,
   height: 1200,
   labels: { play: 'Reproducir Lo-fi', pause: 'Pausar Lo-fi' },

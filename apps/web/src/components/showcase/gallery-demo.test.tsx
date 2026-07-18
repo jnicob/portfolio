@@ -82,4 +82,28 @@ describe('GalleryDemo', () => {
     fireEvent.click(screen.getAllByRole('button', { name: /Pantalla completa/ })[0]!);
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
+
+  it('categoría activa + búsqueda sin coincidencias en esa categoría muestra el empty state (fix review T11)', () => {
+    render(<GalleryDemo locale="es" labels={labels} />);
+    // Seedream son solo imágenes: filtrar por Audio + buscar "seedream" da 0 resultados
+    // combinados, aunque la búsqueda por sí sola (sin filtro de categoría) sí tendría 4.
+    fireEvent.click(screen.getByRole('button', { name: labels.categories.audio }));
+    fireEvent.change(screen.getByRole('searchbox', { name: labels.searchLabel }), {
+      target: { value: 'seedream' },
+    });
+    expect(screen.getByText(labels.emptyState)).toBeInTheDocument();
+  });
+
+  it('el lightbox de audio agrupa carátula y player en un contenedor propio en columna (fix review T11)', () => {
+    render(<GalleryDemo locale="es" labels={labels} />);
+    const audioButton = screen
+      .getAllByRole('button', { name: /Pantalla completa/ })
+      .find((button) => button.getAttribute('aria-label')?.includes('Lyria'));
+    expect(audioButton).toBeDefined();
+    fireEvent.click(audioButton!);
+    const content = screen.getByTestId('audio-lightbox-content');
+    expect(content).toHaveClass('flex-col');
+    expect(content.querySelector('img')).toBeInTheDocument();
+    expect(within(content).getByRole('button', { name: /Reproducir/ })).toBeInTheDocument();
+  });
 });

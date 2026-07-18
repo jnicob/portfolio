@@ -129,7 +129,6 @@ function GalleryTile({ item, title, labels, onOpen }: TileProps) {
         <GalleryAudioTile
           cover={item.cover}
           src={item.src}
-          title={title}
           width={item.width}
           height={item.height}
           labels={{ play: fill(labels.audio.play, title), pause: fill(labels.audio.pause, title) }}
@@ -156,6 +155,14 @@ function GalleryTile({ item, title, labels, onOpen }: TileProps) {
  * `MediaLightbox` prioriza `media` > `children` (son excluyentes) y ambos
  * necesitan un elemento interactivo debajo del medio (el `<video controls>`
  * nativo, o la carátula + `GalleryAudioTile` para seguir controlando el play).
+ *
+ * El audio NO puede confiar en el `data-fit` del lightbox (fix review T11): esas
+ * reglas de sizing solo alcanzan a un `<img>`/`<video>` HIJO DIRECTO de
+ * `.mk-lightbox__media` (ver comentario de `MediaLightboxProps.children` en el
+ * paquete), que además es flex ROW por defecto — un `<>...</>` con la carátula y
+ * el player quedaría lado a lado y sin tamaño. Por eso el audio se envuelve en su
+ * propio contenedor en columna con layout autogestionado (carátula acotada por
+ * alto + player de ancho acotado debajo).
  */
 function renderLightboxChildren(item: GalleryItem, title: string, labels: GalleryDemoLabels) {
   if (item.type === 'video') {
@@ -163,17 +170,24 @@ function renderLightboxChildren(item: GalleryItem, title: string, labels: Galler
   }
   if (item.type === 'audio') {
     return (
-      <>
-        <img src={pickCoverSrc(item)} alt="" />
-        <GalleryAudioTile
-          cover={item.cover}
-          src={item.src}
-          title={title}
-          width={item.width}
-          height={item.height}
-          labels={{ play: fill(labels.audio.play, title), pause: fill(labels.audio.pause, title) }}
-        />
-      </>
+      <figure
+        data-testid="audio-lightbox-content"
+        className="flex max-h-full max-w-full flex-col items-center gap-4 overflow-auto"
+      >
+        <img src={pickCoverSrc(item)} alt="" className="max-h-[70dvh] w-auto" />
+        <div className="w-full max-w-sm">
+          <GalleryAudioTile
+            cover={item.cover}
+            src={item.src}
+            width={item.width}
+            height={item.height}
+            labels={{
+              play: fill(labels.audio.play, title),
+              pause: fill(labels.audio.pause, title),
+            }}
+          />
+        </div>
+      </figure>
     );
   }
   return null;
@@ -185,6 +199,12 @@ function renderLightboxChildren(item: GalleryItem, title: string, labels: Galler
  */
 export function GalleryDemo({ locale, labels }: Props) {
   const [query, setQuery] = useState('');
+  // Filtro de categoría controlado (en vez de dejarlo interno a FilterGallery, fix
+  // review T11): `hasResults` necesita conocer la categoría activa para computar la
+  // intersección REAL categoría AND búsqueda — con el filtro sin controlar, FilterGallery
+  // podía terminar mostrando 0 tiles (categoría + búsqueda sin coincidencias) sin que
+  // este componente se enterara para mostrar el empty state.
+  const [category, setCategory] = useState<string | null>(null);
   const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
 
   const titledItems = galleryItems.map((item) => ({ item, title: itemTitle(item, locale) }));
@@ -195,7 +215,11 @@ export function GalleryDemo({ locale, labels }: Props) {
         .filter(({ title }) => normalize(title).includes(normalizedQuery))
         .map(({ item }) => item.id)
     : undefined;
-  const hasResults = visibleIds === undefined || visibleIds.length > 0;
+  const hasResults = titledItems.some(
+    ({ item }) =>
+      (category === null || item.type === category) &&
+      (visibleIds === undefined || visibleIds.includes(item.id)),
+  );
 
   const filterItems: FilterGalleryItem[] = titledItems.map(({ item, title }) => ({
     id: item.id,
@@ -227,6 +251,8 @@ export function GalleryDemo({ locale, labels }: Props) {
         ]}
         allLabel={labels.allLabel}
         label={labels.filterLabel}
+        filter={category}
+        onFilterChange={setCategory}
         visibleIds={visibleIds}
       />
       {!hasResults && (
