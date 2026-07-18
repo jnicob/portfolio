@@ -1,0 +1,248 @@
+'use client';
+
+import {
+  FilterGallery,
+  MediaLightbox,
+  HoverVideo,
+  preloadFullSources,
+  shouldUseFullSrc,
+  type FilterGalleryItem,
+  type MediaLightboxLabels,
+  type MediaSource,
+} from '@nicobehm/media-kit';
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { galleryItems } from '@/data/gallery';
+import type { GalleryItem } from '@/data/schemas';
+import { GalleryAudioTile, type GalleryAudioTileLabels } from './gallery-audio-tile';
+
+type AudioGalleryItem = Extract<GalleryItem, { type: 'audio' }>;
+
+export type GalleryDemoLabels = {
+  filterLabel: string;
+  allLabel: string;
+  categories: { image: string; video: string; audio: string };
+  searchLabel: string;
+  searchPlaceholder: string;
+  emptyState: string;
+  /** aria-label del botón ⛶; plantilla con `{title}` (helper local `fill`). */
+  fullscreen: string;
+  audio: GalleryAudioTileLabels;
+  lightbox: MediaLightboxLabels;
+};
+
+type Props = { locale: 'es' | 'en'; labels: GalleryDemoLabels };
+
+/** Interpola `{title}` en una plantilla i18n. La interpolación es por ítem: no puede hacerla `t()` en la page. */
+function fill(template: string, title: string): string {
+  return template.replace('{title}', title);
+}
+
+/** Case/diacritics-insensitive: `'Café' → 'cafe'`. */
+function normalize(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase();
+}
+
+/** Título visible + buscable: modelo primero para que la búsqueda encuentre por modelo. */
+function itemTitle(item: GalleryItem, locale: 'es' | 'en'): string {
+  return `${item.model} — ${item.title[locale]}`;
+}
+
+/** Medio a precargar/mostrar en el lightbox por tipo. Vídeo no tiene variante HD propia (usa `<video>` nativo). */
+function toMediaSource(item: GalleryItem, title: string): MediaSource {
+  if (item.type === 'image') return { src: item.src, fullSrc: item.hdSrc, alt: title };
+  if (item.type === 'audio') return { src: item.cover, fullSrc: item.coverHd, alt: title };
+  return { src: item.poster, alt: title };
+}
+
+/**
+ * Réplica manual de `pickFullscreenSrc` (no exportada por el paquete) para el
+ * caso audio: el lightbox usa `children` en vez de `media` (ver comentario en
+ * `GalleryDemo`), así que la elección base/HD de la carátula grande la hace
+ * este componente con la misma regla (`shouldUseFullSrc`, sí exportada).
+ */
+function pickCoverSrc(item: AudioGalleryItem): string {
+  if (typeof window === 'undefined') return item.cover;
+  return shouldUseFullSrc(window.screen.width, window.devicePixelRatio) ? item.coverHd : item.cover;
+}
+
+function FullscreenIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={16}
+      height={16}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3" />
+    </svg>
+  );
+}
+
+type TileProps = {
+  item: GalleryItem;
+  title: string;
+  labels: GalleryDemoLabels;
+  onOpen: (item: GalleryItem) => void;
+};
+
+/**
+ * Tile por tipo + botón ⛶ solo-icono. La `<img>`/carátula de fondo es decorativa
+ * (`alt=""`): el título visible vive en el `<figcaption>`, no duplicado para
+ * lectores de pantalla (review T10).
+ */
+function GalleryTile({ item, title, labels, onOpen }: TileProps) {
+  function preload() {
+    preloadFullSources([toMediaSource(item, title)]);
+  }
+
+  return (
+    <figure className="relative flex flex-col gap-2">
+      {item.type === 'image' && (
+        <img
+          src={item.src}
+          alt=""
+          loading="lazy"
+          width={item.width}
+          height={item.height}
+          className="rounded-card"
+        />
+      )}
+      {item.type === 'video' && (
+        <HoverVideo
+          src={item.src}
+          poster={item.poster}
+          label={title}
+          width={item.width}
+          height={item.height}
+        />
+      )}
+      {item.type === 'audio' && (
+        <GalleryAudioTile
+          cover={item.cover}
+          src={item.src}
+          title={title}
+          width={item.width}
+          height={item.height}
+          labels={{ play: fill(labels.audio.play, title), pause: fill(labels.audio.pause, title) }}
+        />
+      )}
+      <figcaption className="text-sm text-fg-muted">{title}</figcaption>
+      <button
+        type="button"
+        aria-label={fill(labels.fullscreen, title)}
+        onPointerEnter={preload}
+        onFocus={preload}
+        onClick={() => onOpen(item)}
+        className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-surface/80 text-fg backdrop-blur focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      >
+        <FullscreenIcon />
+      </button>
+    </figure>
+  );
+}
+
+/**
+ * Contenido del lightbox: image usa `media` (el paquete resuelve fullSrc/base
+ * según pantalla vía `pickFullscreenSrc`); vídeo y audio usan `children`, porque
+ * `MediaLightbox` prioriza `media` > `children` (son excluyentes) y ambos
+ * necesitan un elemento interactivo debajo del medio (el `<video controls>`
+ * nativo, o la carátula + `GalleryAudioTile` para seguir controlando el play).
+ */
+function renderLightboxChildren(item: GalleryItem, title: string, labels: GalleryDemoLabels) {
+  if (item.type === 'video') {
+    return <video controls autoPlay muted playsInline src={item.src} poster={item.poster} />;
+  }
+  if (item.type === 'audio') {
+    return (
+      <>
+        <img src={pickCoverSrc(item)} alt="" />
+        <GalleryAudioTile
+          cover={item.cover}
+          src={item.src}
+          title={title}
+          width={item.width}
+          height={item.height}
+          labels={{ play: fill(labels.audio.play, title), pause: fill(labels.audio.pause, title) }}
+        />
+      </>
+    );
+  }
+  return null;
+}
+
+/**
+ * Galería de ejemplos IA completa (F3.7 T11): búsqueda + filtro por categoría
+ * (combinados vía `visibleIds`, T3) + tile por tipo + lightbox HD por ítem.
+ */
+export function GalleryDemo({ locale, labels }: Props) {
+  const [query, setQuery] = useState('');
+  const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
+
+  const titledItems = galleryItems.map((item) => ({ item, title: itemTitle(item, locale) }));
+
+  const normalizedQuery = normalize(query);
+  const visibleIds = normalizedQuery
+    ? titledItems
+        .filter(({ title }) => normalize(title).includes(normalizedQuery))
+        .map(({ item }) => item.id)
+    : undefined;
+  const hasResults = visibleIds === undefined || visibleIds.length > 0;
+
+  const filterItems: FilterGalleryItem[] = titledItems.map(({ item, title }) => ({
+    id: item.id,
+    categories: [item.type],
+    node: <GalleryTile item={item} title={title} labels={labels} onOpen={setLightboxItem} />,
+  }));
+
+  const activeTitle = lightboxItem ? itemTitle(lightboxItem, locale) : '';
+  const media =
+    lightboxItem && lightboxItem.type === 'image'
+      ? toMediaSource(lightboxItem, activeTitle)
+      : undefined;
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Input
+        type="search"
+        aria-label={labels.searchLabel}
+        placeholder={labels.searchPlaceholder}
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+      />
+      <FilterGallery
+        items={filterItems}
+        categories={[
+          { id: 'image', label: labels.categories.image },
+          { id: 'video', label: labels.categories.video },
+          { id: 'audio', label: labels.categories.audio },
+        ]}
+        allLabel={labels.allLabel}
+        label={labels.filterLabel}
+        visibleIds={visibleIds}
+      />
+      {!hasResults && (
+        <p role="status" className="text-sm text-fg-muted">
+          {labels.emptyState}
+        </p>
+      )}
+      <MediaLightbox
+        open={lightboxItem !== null}
+        onClose={() => setLightboxItem(null)}
+        label={activeTitle}
+        labels={labels.lightbox}
+        media={media}
+      >
+        {lightboxItem ? renderLightboxChildren(lightboxItem, activeTitle, labels) : null}
+      </MediaLightbox>
+    </div>
+  );
+}
