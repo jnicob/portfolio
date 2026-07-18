@@ -826,3 +826,27 @@
   background: var(--mk-handle-color);
   transition: width 60ms linear;
 }
+
+/* HoverVideo */
+.mk-hover-video {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--mk-radius);
+  cursor: pointer;
+}
+.mk-hover-video img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.mk-hover-video video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mk-hover-video:focus-visible {
+  outline: 2px solid var(--mk-focus-ring);
+  outline-offset: 2px;
+}
