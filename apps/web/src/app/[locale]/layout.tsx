@@ -18,6 +18,8 @@ const sourceSerif = Source_Serif_4({
   subsets: ['latin'],
   variable: '--font-source-serif',
   display: 'swap',
+  // Solo la usa el skin 'editorial' (--font-heading); no precargar para el resto.
+  preload: false,
 });
 
 export function generateStaticParams() {
