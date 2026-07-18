@@ -16,11 +16,11 @@ const entries = [
     stack: ['openapi', 'fastapi', 'python', 'apisix', 'rest-api'],
     links: {
       live: 'https://www.freepik.com/api',
-      docs: 'https://docs.freepik.com',
+      docs: 'https://docs.magnific.com',
     },
     metrics: [
-      { label: { es: 'Modelos de IA servidos', en: 'AI models served' }, value: '25+' },
-      { label: { es: 'Endpoints públicos', en: 'Public endpoints' }, value: '40+' },
+      { label: { es: 'Modelos de IA servidos', en: 'AI models served' }, value: '40+' },
+      { label: { es: 'Endpoints públicos', en: 'Public endpoints' }, value: '100+' },
     ],
     featured: true,
     caseStudy: true,
@@ -41,7 +41,7 @@ const entries = [
       en: 'Engineer — agent design and orchestration',
     },
     stack: ['openapi', 'fastapi', 'apisix', 'llm-agents', 'python'],
-    links: { docs: 'https://docs.freepik.com' },
+    links: { docs: 'https://docs.magnific.com' },
     metrics: [
       {
         // 6 = spec, API, precios, permisos/reglas, documentación, playground
