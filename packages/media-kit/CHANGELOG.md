@@ -57,6 +57,19 @@
 - **`CompareSlider` `compareMode="side-by-side"`:** stacks vertically (`data-stacked="true"`, one
   column) instead of staying two-column when the container narrows below `480`px (tracked via
   `ResizeObserver`), and both halves are normalized to equal height at every width.
+- **`MediaLightbox`:** clicking play/pause on a `children`-injected audio control, or the native
+  controls of a `<video controls>` inside the lightbox, closed the dialog instead of operating the
+  media (QA finding, F3.7 close-out — 100% reproducible). Root cause: `useZoomPan`'s
+  `onPointerDown` called `setPointerCapture` unconditionally for any pointerdown inside the
+  viewport except `[data-mk-drag-exempt]`; capture redirects the subsequent pointerup/click to the
+  viewport div regardless of where the pointer physically is, so `onOverlayClick` saw
+  `event.target === viewportRef.current` and closed. The exemption now covers any native
+  interactive element (`button, a, input, select, textarea, video, audio`, plus the existing
+  `[data-mk-drag-exempt]`), so pan/zoom never steals their pointer events. `onOverlayClick` also
+  gained a second, independent guard (`consumeInteractiveDown`) that remembers whether the
+  pointerdown that started the gesture began on an interactive control — captured before any
+  possible retargeting, so it doesn't depend on where the click event's target ends up. Pan/drag
+  over the media itself is unaffected.
 
 ### Compatibility
 

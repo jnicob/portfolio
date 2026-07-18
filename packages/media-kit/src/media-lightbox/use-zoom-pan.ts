@@ -28,12 +28,27 @@ export type UseZoomPanResult = {
   panBy: (dx: number, dy: number) => void;
   /** Lee y limpia el flag "el último gesto fue un drag" (evita cerrar en overlay). */
   consumeDrag: () => boolean;
+  /**
+   * Lee y limpia el flag "el último pointerdown nació en un control interactivo"
+   * (T25 QA fix). Defensa en profundidad para `onOverlayClick`: aunque el pointerup/
+   * click subsiguiente llegara retargeteado al viewport por alguna vía no cubierta
+   * aquí, este flag —capturado ANTES de cualquier posible retargeteo— evita cerrar.
+   */
+  consumeInteractiveDown: () => boolean;
 };
 
 type ZoomPanState = { scale: number; tx: number; ty: number };
 
 /** Paso multiplicativo de botones y teclado. */
 const BUTTON_STEP = 1.5;
+
+// T25 QA fix (t25-qa-a11y.md, bloqueante): controles nativos/interactivos que
+// `MediaLightbox` renderiza como `children` (play/pause de audio, `<video controls>`,
+// enlaces de descarga…) no deben perder su pointerdown/click a manos del pan. Antes
+// solo `[data-mk-drag-exempt]` (el handle del compare-slider) estaba exento; se
+// generaliza a cualquier control nativo interactivo.
+const INTERACTIVE_SELECTOR =
+  'button, a, input, select, textarea, video, audio, [data-mk-drag-exempt]';
 
 export function useZoomPan(
   viewportRef: RefObject<HTMLElement | null>,
@@ -42,6 +57,7 @@ export function useZoomPan(
 ): UseZoomPanResult {
   const [state, setState] = useState<ZoomPanState>({ scale: minZoom, tx: 0, ty: 0 });
   const draggedRef = useRef(false);
+  const interactiveDownRef = useRef(false);
   const scaleRef = useRef(state.scale);
   scaleRef.current = state.scale;
 
@@ -104,6 +120,12 @@ export function useZoomPan(
     return dragged;
   }, []);
 
+  const consumeInteractiveDown = useCallback(() => {
+    const interactive = interactiveDownRef.current;
+    interactiveDownRef.current = false;
+    return interactive;
+  }, []);
+
   // Gestos: listeners nativos sobre el viewport (wheel necesita passive: false).
   useEffect(() => {
     const vp = viewportRef.current;
@@ -135,13 +157,22 @@ export function useZoomPan(
 
     const onPointerDown = (event: PointerEvent) => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
-      // T13: escape hatch genérico — gestos originados en un elemento marcado (p.ej. el
-      // handle del compare-slider dentro del lightbox) no deben iniciar el pan del visor.
-      // Estos listeners son NATIVOS (addEventListener), por lo que el stopPropagation de
-      // React en el handler del elemento hijo NO los frena; el filtro debe vivir aquí.
-      if (event.target instanceof Element && event.target.closest('[data-mk-drag-exempt]')) {
+      // T13/T25: escape hatch genérico — gestos originados en un control interactivo
+      // (botón, enlace, `<video controls>`/`<audio>` nativos, el handle del
+      // compare-slider marcado con [data-mk-drag-exempt]…) no deben iniciar el pan
+      // del visor NI capturar el puntero. `setPointerCapture` redirige TODOS los
+      // eventos de puntero subsiguientes de ese pointerId (incluido el click
+      // sintético) al elemento que capturó, aunque el puntero siga físicamente sobre
+      // el control original — eso es lo que hacía que play/pause del audio o los
+      // controles nativos del vídeo cerraran el lightbox en vez de operar el medio
+      // (t25-qa-a11y.md). Estos listeners son NATIVOS (addEventListener), por lo que
+      // el stopPropagation de React en el handler del elemento hijo NO los frena; el
+      // filtro debe vivir aquí.
+      if (event.target instanceof Element && event.target.closest(INTERACTIVE_SELECTOR)) {
+        interactiveDownRef.current = true;
         return;
       }
+      interactiveDownRef.current = false;
       pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
       vp.setPointerCapture?.(event.pointerId);
       if (pointers.size === 2) {
@@ -253,5 +284,6 @@ export function useZoomPan(
     reset,
     panBy,
     consumeDrag,
+    consumeInteractiveDown,
   };
 }

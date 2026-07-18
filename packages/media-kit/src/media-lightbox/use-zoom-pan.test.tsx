@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { useZoomPan } from './use-zoom-pan';
 
 export function fakeElement(width: number, height: number): HTMLElement {
@@ -286,5 +286,62 @@ describe('useZoomPan — re-clamp del pan al cambiar el viewport', () => {
 
     expect(result.current.style.transform).toBe('translate(0px, 0px) scale(2)');
     expect(result.current.canPan).toBe(false);
+  });
+});
+
+describe('useZoomPan — no capturar el puntero de controles interactivos (T25 QA fix)', () => {
+  // Causa raíz (t25-qa-a11y.md): onPointerDown capturaba el puntero de CUALQUIER
+  // target dentro del viewport salvo [data-mk-drag-exempt], lo que retargeteaba el
+  // click subsiguiente (p.ej. de un botón play/pause) al div del viewport.
+  function setupProbe() {
+    let latest: UseZoomPanResult | undefined;
+    const utils = render(<GestureProbe onRender={(r) => (latest = r)} />);
+    const viewport = utils.getByTestId('viewport');
+    const content = utils.getByTestId('content');
+    mockSizes(viewport, 800, 600);
+    mockSizes(content, 800, 600);
+    return { viewport, content, latest: () => latest! };
+  }
+
+  it('pointerdown sobre un <button> hijo del contenido no captura el puntero', () => {
+    const { viewport } = setupProbe();
+    const button = document.createElement('button');
+    viewport.querySelector('[data-testid="content"]')?.appendChild(button);
+    const captureSpy = vi.spyOn(viewport, 'setPointerCapture');
+    fireEvent.pointerDown(button, {
+      pointerId: 1,
+      clientX: 10,
+      clientY: 10,
+      button: 0,
+      pointerType: 'mouse',
+    });
+    expect(captureSpy).not.toHaveBeenCalled();
+  });
+
+  it('consumeInteractiveDown refleja el pointerdown sobre un control y se limpia al leerlo', () => {
+    const { viewport, latest } = setupProbe();
+    const button = document.createElement('button');
+    viewport.querySelector('[data-testid="content"]')?.appendChild(button);
+    fireEvent.pointerDown(button, {
+      pointerId: 1,
+      clientX: 10,
+      clientY: 10,
+      button: 0,
+      pointerType: 'mouse',
+    });
+    expect(latest().consumeInteractiveDown()).toBe(true);
+    expect(latest().consumeInteractiveDown()).toBe(false);
+  });
+
+  it('regresión: pointerdown sobre el contenido no interactivo SÍ captura el puntero (pan intacto)', () => {
+    const { content, latest } = setupProbe();
+    fireEvent.pointerDown(content, {
+      pointerId: 1,
+      clientX: 10,
+      clientY: 10,
+      button: 0,
+      pointerType: 'mouse',
+    });
+    expect(latest().consumeInteractiveDown()).toBe(false);
   });
 });

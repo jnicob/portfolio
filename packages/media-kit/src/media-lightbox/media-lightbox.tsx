@@ -441,6 +441,12 @@ function MediaLightboxContent({
   function onOverlayClick(event: MouseEvent<HTMLDivElement>) {
     // Un pan que termina en click no debe cerrar.
     if (zoomPan.consumeDrag()) return;
+    // T25 QA fix, defensa en profundidad: si el pointerdown que originó este gesto
+    // nació en un control interactivo (botón, <video controls>…), no cerrar. La causa
+    // raíz (setPointerCapture incondicional) ya está resuelta en useZoomPan, pero este
+    // segundo guard no depende de dónde termine el click retargeteado — se basa en lo
+    // que se observó ANTES de cualquier posible retargeteo.
+    if (zoomPan.consumeInteractiveDown()) return;
     if (event.target === event.currentTarget || event.target === viewportRef.current) onClose();
   }
 

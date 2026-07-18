@@ -704,3 +704,109 @@ describe('tooltips (v0.5)', () => {
     }
   });
 });
+
+describe('MediaLightbox — no secuestrar punteros de children interactivos (T25 QA fix)', () => {
+  // Causa raíz (t25-qa-a11y.md): useZoomPan capturaba el puntero de CUALQUIER
+  // pointerdown dentro del viewport salvo [data-mk-drag-exempt]. En un navegador
+  // real eso retargetea el pointerup/click subsiguiente al div del viewport, y
+  // onOverlayClick (target === viewportRef.current) cierra el diálogo en vez de
+  // dejar que el botón reciba su propio click (p.ej. play/pause del audio).
+
+  it('pointerdown sobre un botón hijo de children NO captura el puntero del viewport', () => {
+    render(
+      <MediaLightbox open onClose={() => {}} label="V">
+        <button type="button">Reproducir</button>
+      </MediaLightbox>,
+    );
+    const button = screen.getByRole('button', { name: 'Reproducir' });
+    const viewport = button.closest('.mk-lightbox__viewport') as HTMLElement;
+    const captureSpy = vi.spyOn(viewport, 'setPointerCapture');
+    fireEvent.pointerDown(button, {
+      pointerId: 1,
+      clientX: 10,
+      clientY: 10,
+      button: 0,
+      pointerType: 'mouse',
+    });
+    expect(captureSpy).not.toHaveBeenCalled();
+  });
+
+  it('click en un botón hijo de children no cierra el diálogo', async () => {
+    const onClose = vi.fn();
+    render(
+      <MediaLightbox open onClose={onClose} label="V">
+        <button type="button" onClick={() => {}}>
+          Reproducir
+        </button>
+      </MediaLightbox>,
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Reproducir' }));
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('click en los controles nativos de un <video controls> hijo de children no cierra el diálogo', () => {
+    const onClose = vi.fn();
+    render(
+      <MediaLightbox open onClose={onClose} label="V">
+        <video controls src="/clip.mp4" data-testid="video" />
+      </MediaLightbox>,
+    );
+    const video = screen.getByTestId('video');
+    const viewport = video.closest('.mk-lightbox__viewport') as HTMLElement;
+    const captureSpy = vi.spyOn(viewport, 'setPointerCapture');
+    // El navegador entrega el pointerdown al propio <video> cuando el clic cae
+    // en su zona de controles nativos (no hay un DOM separado accesible en jsdom
+    // para esa franja, pero el target real sigue siendo el elemento <video>).
+    fireEvent.pointerDown(video, {
+      pointerId: 1,
+      clientX: 10,
+      clientY: 10,
+      button: 0,
+      pointerType: 'mouse',
+    });
+    expect(captureSpy).not.toHaveBeenCalled();
+    fireEvent.click(video);
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('regresión: pointerdown sobre el propio contenido (imagen, no interactivo) SÍ captura el puntero (pan intacto)', () => {
+    render(
+      <MediaLightbox open onClose={() => {}} label="V">
+        <img src="/a.png" alt="contenido" />
+      </MediaLightbox>,
+    );
+    const img = screen.getByAltText('contenido');
+    const viewport = img.closest('.mk-lightbox__viewport') as HTMLElement;
+    const captureSpy = vi.spyOn(viewport, 'setPointerCapture');
+    fireEvent.pointerDown(img, {
+      pointerId: 1,
+      clientX: 10,
+      clientY: 10,
+      button: 0,
+      pointerType: 'mouse',
+    });
+    expect(captureSpy).toHaveBeenCalledWith(1);
+  });
+
+  it('defensa en profundidad: onOverlayClick no cierra si el pointerdown que originó el gesto nació en un control interactivo, aunque el click llegue retargeteado al viewport', () => {
+    const onClose = vi.fn();
+    render(
+      <MediaLightbox open onClose={onClose} label="V">
+        <button type="button">Reproducir</button>
+      </MediaLightbox>,
+    );
+    const button = screen.getByRole('button', { name: 'Reproducir' });
+    const viewport = button.closest('.mk-lightbox__viewport') as HTMLElement;
+    fireEvent.pointerDown(button, {
+      pointerId: 1,
+      clientX: 10,
+      clientY: 10,
+      button: 0,
+      pointerType: 'mouse',
+    });
+    // Simula el retargeteo que produciría setPointerCapture en un navegador real:
+    // el click sintético llega al viewport, no al botón.
+    fireEvent.click(viewport);
+    expect(onClose).not.toHaveBeenCalled();
+  });
+});
