@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Link } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 import { compileProject, getProjectSlugs } from '@/lib/content';
 import { localizedPageMetadata } from '@/lib/seo';
@@ -33,9 +34,13 @@ export default async function ProjectPage({ params }: Props) {
   const project = await compileProject(locale, slug);
   if (!project) notFound();
   const { frontmatter, content } = project;
+  const t = await getTranslations('projects');
   return (
     <main className="mx-auto max-w-3xl px-4 py-12">
-      <h1 className="text-3xl font-semibold">{frontmatter.title}</h1>
+      <Link href="/projects" className="text-sm text-fg-muted hover:text-fg">
+        ← {t('backToList')}
+      </Link>
+      <h1 className="mt-6 text-3xl font-semibold">{frontmatter.title}</h1>
       <p className="mt-2 text-fg-muted">{frontmatter.summary}</p>
       {frontmatter.metrics.length > 0 && (
         <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-2">

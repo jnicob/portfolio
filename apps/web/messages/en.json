@@ -53,7 +53,8 @@
       "description": "From Freepik's API platform to the backoffice, public web and earlier work."
     },
     "title": "Projects",
-    "intro": "From Freepik's API platform to the backoffice, public web and earlier work."
+    "intro": "From Freepik's API platform to the backoffice, public web and earlier work.",
+    "backToList": "Back to projects"
   },
   "cv": {
     "meta": {

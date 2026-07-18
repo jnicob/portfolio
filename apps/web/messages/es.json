@@ -53,7 +53,8 @@
       "description": "De la plataforma de APIs de Freepik al backoffice, la web pública y proyectos anteriores."
     },
     "title": "Proyectos",
-    "intro": "De la plataforma de APIs de Freepik al backoffice, la web pública y proyectos anteriores."
+    "intro": "De la plataforma de APIs de Freepik al backoffice, la web pública y proyectos anteriores.",
+    "backToList": "Volver a proyectos"
   },
   "cv": {
     "meta": {

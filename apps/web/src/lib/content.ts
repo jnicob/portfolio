@@ -4,6 +4,7 @@ import type { ReactElement } from 'react';
 import { compileMDX } from 'next-mdx-remote/rsc';
 import { projectFrontmatterSchema, type ProjectFrontmatter } from '@/data/schemas';
 import type { Locale } from '@/i18n/routing';
+import { mdxComponents } from './mdx-components';
 
 const DEFAULT_ROOT = path.join(process.cwd(), 'content');
 
@@ -29,6 +30,7 @@ export async function compileProject(
   const { content, frontmatter } = await compileMDX({
     source,
     options: { parseFrontmatter: true },
+    components: mdxComponents,
   });
   // Frontmatter inválido lanza: datos rotos = build rojo, jamás página vacía.
   return { frontmatter: projectFrontmatterSchema.parse(frontmatter), content };

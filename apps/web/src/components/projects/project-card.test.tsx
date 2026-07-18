@@ -108,6 +108,16 @@ describe('ProjectCard', () => {
     expect(heading.textContent).toBe(`${withoutCaseStudy.title.es}\u2009↗`);
   });
 
+  it('el título con enlace externo (sin case study) abre en pestaña nueva con rel seguro (E3)', () => {
+    renderProjectCard({
+      project: { ...withoutCaseStudy, caseStudy: false, links: { live: 'https://example.com' } },
+      locale: 'es',
+    });
+    const link = screen.getByRole('link', { name: withoutCaseStudy.title.es });
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
   it('el título en texto plano (sin case study ni enlaces) no lleva sufijo', () => {
     renderProjectCard({
       project: { ...withoutCaseStudy, caseStudy: false, links: {} },

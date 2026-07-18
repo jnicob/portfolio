@@ -33,7 +33,7 @@ function TitleLink({ project, locale }: { project: Project; locale: Locale }) {
   const external = project.links.live ?? project.links.docs ?? project.links.repo;
   if (external) {
     return (
-      <a href={external} rel="noreferrer" className={titleLinkClassName}>
+      <a href={external} target="_blank" rel="noopener noreferrer" className={titleLinkClassName}>
         {project.title[locale]}
         <span aria-hidden>{' ↗'}</span>
       </a>
