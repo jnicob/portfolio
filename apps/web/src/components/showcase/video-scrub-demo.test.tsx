@@ -4,7 +4,7 @@ import { VideoScrubDemo, type VideoScrubDemoStrings } from './video-scrub-demo';
 
 const strings: VideoScrubDemoStrings = {
   label: 'Scrub preview of a short clip',
-  hint: 'Move the pointer to scrub the video',
+  hint: 'Swipe or use the arrow keys to scrub the video',
   caption: 'VideoScrubPreview demo caption',
 };
 
@@ -31,6 +31,14 @@ describe('VideoScrubDemo', () => {
   it('renders the caption from props', () => {
     render(<VideoScrubDemo strings={strings} />);
     expect(screen.getByText(strings.caption)).toBeInTheDocument();
+  });
+
+  it('ocupa el ancho completo de la card — sin cap de ancho estrecho (backlog T21 "ancho scrub")', () => {
+    const { container } = render(<VideoScrubDemo strings={strings} />);
+    fireEvent.pointerEnter(screen.getByLabelText(strings.label));
+    const scrubRoot = container.querySelector('.mk-scrub');
+    expect(scrubRoot).not.toBeNull();
+    expect(scrubRoot!.closest('[class*="max-w"]')).toBeNull();
   });
 });
 

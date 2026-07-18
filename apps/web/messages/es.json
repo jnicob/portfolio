@@ -173,9 +173,9 @@
         "spotlightRevealBadge": "Color",
         "spotlightCaption": "SpotlightReveal — mueve el puntero (o usa las flechas) para revelar el color bajo la lupa.",
         "scrubTitle": "Vista previa con scrub de vídeo",
-        "scrubDescription": "Mueve el puntero sobre el vídeo (o enfócalo y usa las flechas) para recorrer el clip, como las miniaturas de YouTube.",
+        "scrubDescription": "Recorre un vídeo sin reproducirlo: mueve el puntero (o usa las flechas) para saltar a cualquier fotograma, como en las miniaturas de YouTube.",
         "scrubLabel": "Vista previa con scrub de un clip corto",
-        "scrubHint": "Mueve el puntero para recorrer el vídeo",
+        "scrubHint": "Desliza o usa las flechas para recorrer el vídeo",
         "scrubCaption": "VideoScrubPreview — mueve el puntero, o enfócalo y pulsa las flechas, Inicio o Fin."
       },
       "gallery": {

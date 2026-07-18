@@ -70,7 +70,7 @@ export function VideoScrubDemo({ strings }: Props) {
     <figure className="flex flex-col gap-2">
       <div
         ref={containerRef}
-        className="relative aspect-video w-full max-w-md"
+        className="relative aspect-video w-full"
         onPointerEnter={activate}
         onFocus={handleFocus}
       >
