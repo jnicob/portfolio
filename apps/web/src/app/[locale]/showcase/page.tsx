@@ -424,6 +424,7 @@ export default async function ShowcasePage({ params }: Props) {
               previewIdle: t('sections.apiPlayer.previewIdle'),
               previewAlt: t('sections.apiPlayer.previewAlt'),
               fullscreen: t('sections.apiPlayer.fullscreen'),
+              lightbox: t.raw('lightboxLabels') as MediaLightboxLabels,
             }}
           />
         </Section>

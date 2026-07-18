@@ -1,7 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { MediaLightbox, preloadFullSources, type MediaSource } from '@nicobehm/media-kit';
+import {
+  MediaLightbox,
+  preloadFullSources,
+  type MediaLightboxLabels,
+  type MediaSource,
+} from '@nicobehm/media-kit';
 import type { ApiDemo } from '@/data/api-demo';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 import { Badge } from '@/components/ui/badge';
@@ -37,6 +42,13 @@ export type ApiRequestPlayerLabels = {
   previewAlt: string;
   /** aria-label del botón ⛶ que precarga el HD y abre el lightbox. */
   fullscreen: string;
+  /**
+   * Chrome del `MediaLightbox` (zoom, fit, cerrar, ayuda…). Reutiliza el mismo
+   * bloque i18n compartido (`lightboxLabels`) que `GalleryDemo`/`MediaKitDemo`:
+   * sin esto el lightbox cae a sus labels por defecto EN INGLÉS incluso en /es/,
+   * un finding seguro de review (regla del proyecto: i18n completo en toda UI visible).
+   */
+  lightbox: MediaLightboxLabels;
 };
 
 type Props = { demo: ApiDemo; labels: ApiRequestPlayerLabels };
@@ -255,6 +267,7 @@ export function ApiRequestPlayer({ demo, labels }: Props) {
         open={lightboxOpen}
         onClose={() => setLightboxOpen(false)}
         label={labels.previewAlt}
+        labels={labels.lightbox}
         media={previewMedia}
       />
     </div>
