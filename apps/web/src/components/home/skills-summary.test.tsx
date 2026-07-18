@@ -39,7 +39,7 @@ describe('SkillsSummary', () => {
 
   it('expone el nivel de cada skill via aria-label localizado y 5 puntos visuales', () => {
     renderSkillsSummary();
-    const react = skills.find((s) => s.name === 'React')!;
+    const react = skills.find((s) => s.name === 'React / Next.js')!;
     const group = screen.getByLabelText(`${react.name}: level ${react.level} of 5`);
     expect(group).toBeInTheDocument();
     const dots = group.querySelectorAll('[aria-hidden="true"]');

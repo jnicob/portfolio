@@ -1,10 +1,15 @@
 import { skillSchema, type Skill } from './schemas';
 
 const entries = [
-  { name: 'React', level: 5, category: 'frontend', tags: ['react', 'javascript', 'ui'] },
-  { name: 'Next.js', level: 4, category: 'frontend', tags: ['nextjs', 'react', 'ssr'] },
-  { name: 'TypeScript', level: 5, category: 'frontend', tags: ['typescript', 'javascript'] },
-  { name: 'Vue 2/3', level: 4, category: 'frontend', tags: ['vue', 'typescript', 'ui'] },
+  { name: 'JavaScript', level: 5, category: 'frontend', tags: ['javascript', 'es2024'] },
+  {
+    name: 'React / Next.js',
+    level: 4,
+    category: 'frontend',
+    tags: ['react', 'nextjs', 'ssr', 'ui'],
+  },
+  { name: 'TypeScript', level: 4, category: 'frontend', tags: ['typescript', 'javascript'] },
+  { name: 'Vue 2/3', level: 3, category: 'frontend', tags: ['vue', 'typescript', 'ui'] },
   { name: 'PHP / Laravel', level: 5, category: 'backend', tags: ['php', 'laravel', 'rest-api'] },
   {
     name: 'Node.js / Express',
@@ -12,7 +17,12 @@ const entries = [
     category: 'backend',
     tags: ['nodejs', 'express', 'rest-api'],
   },
-  { name: 'MySQL / SQL Server', level: 4, category: 'backend', tags: ['mysql', 'sql-server', 'database'] },
+  {
+    name: 'MySQL / SQL Server',
+    level: 4,
+    category: 'backend',
+    tags: ['mysql', 'sql-server', 'database'],
+  },
   {
     name: 'Python / FastAPI',
     level: 3,
@@ -38,8 +48,18 @@ const entries = [
     category: 'platform',
     tags: ['linux', 'apache', 'server-admin'],
   },
-  { name: 'HL7 / healthcare interoperability', level: 4, category: 'platform', tags: ['hl7', 'mirth-connect', 'snomed-ct'] },
-  { name: 'Docker / Kubernetes', level: 3, category: 'platform', tags: ['docker', 'kubernetes', 'helm'] },
+  {
+    name: 'HL7 / healthcare interoperability',
+    level: 4,
+    category: 'platform',
+    tags: ['hl7', 'mirth-connect', 'snomed-ct'],
+  },
+  {
+    name: 'Docker / Kubernetes',
+    level: 3,
+    category: 'platform',
+    tags: ['docker', 'kubernetes', 'helm'],
+  },
   {
     name: 'Testing (Jest / PHPUnit)',
     level: 4,
