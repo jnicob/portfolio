@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { VideoScrubPreview } from './video-scrub-preview';
 
@@ -63,5 +63,42 @@ describe('VideoScrubPreview', () => {
     const { root, video } = setupVideo(Number.NaN);
     fireEvent.pointerMove(root, { clientX: 100, clientY: 10 });
     expect(video.currentTime).toBe(0);
+  });
+});
+
+function setDuration(video: HTMLVideoElement, value: number) {
+  Object.defineProperty(video, 'duration', { configurable: true, value });
+}
+
+describe('scrub v3 (v0.6)', () => {
+  beforeEach(() => {
+    stubImmediateRaf();
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it('el scrub se activa cuando loadedmetadata llega después del hover', async () => {
+    const { container } = render(<VideoScrubPreview src="/v.mp4" label="Scrub" />);
+    const root = container.querySelector('.mk-scrub') as HTMLElement;
+    const video = container.querySelector('video') as HTMLVideoElement;
+    vi.spyOn(root, 'getBoundingClientRect').mockReturnValue({ left: 0, width: 100 } as DOMRect);
+    // Sin metadata: no-op (comportamiento actual, sin errores)
+    fireEvent.pointerMove(root, { clientX: 50 });
+    // Llega el metadata → el siguiente move ya scrubbea
+    setDuration(video, 10);
+    fireEvent.loadedMetadata(video);
+    fireEvent.pointerMove(root, { clientX: 50 });
+    await waitFor(() => expect(video.currentTime).toBeCloseTo(5));
+  });
+
+  it('muestra el tiempo actual y total', () => {
+    const { container } = render(<VideoScrubPreview src="/v.mp4" label="Scrub" />);
+    const video = container.querySelector('video') as HTMLVideoElement;
+    setDuration(video, 90);
+    fireEvent.loadedMetadata(video);
+    expect(container.querySelector('.mk-scrub__time')).toHaveTextContent('0:00 / 1:30');
   });
 });

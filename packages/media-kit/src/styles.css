@@ -24,6 +24,7 @@
   --mk-filter-hover-bg: rgb(255 255 255 / 0.12);
   --mk-filter-active-bg: var(--mk-handle-color);
   --mk-filter-active-color: var(--mk-handle-icon-color);
+  --mk-scrub-track: rgb(255 255 255 / 0.24);
 }
 
 /* CompareSlider */
@@ -817,14 +818,37 @@
   width: 100%;
   height: auto;
 }
-.mk-scrub__bar {
+.mk-scrub__track {
   position: absolute;
   left: 0;
   bottom: 0;
-  height: 3px;
+  width: 100%;
+  height: 6px;
+  background: var(--mk-scrub-track);
+}
+.mk-scrub__bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
   width: var(--mk-scrub-pos);
   background: var(--mk-handle-color);
   transition: width 60ms linear;
+}
+.mk-scrub__time {
+  position: absolute;
+  right: 6px;
+  bottom: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--mk-control-bg);
+  color: var(--mk-control-color);
+  font:
+    11px/1.2 ui-monospace,
+    monospace;
+}
+.mk-scrub__time:empty {
+  display: none;
 }
 
 /* HoverVideo */

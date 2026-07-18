@@ -1,6 +1,13 @@
 'use client';
 
-import { useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
+import {
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+  type PointerEvent,
+  type SyntheticEvent,
+} from 'react';
 
 export type VideoScrubPreviewProps = {
   /** URL del vídeo (mismo origen o CORS habilitado). */
@@ -17,6 +24,14 @@ export type VideoScrubPreviewProps = {
 /** Paso de las flechas de teclado, como fracción 0-1 (5%). */
 const KEY_STEP = 0.05;
 
+/** Formatea segundos como `m:ss` (p.ej. 90 → "1:30"). */
+function formatTime(seconds: number): string {
+  const total = Math.max(0, Math.round(seconds));
+  const minutes = Math.floor(total / 60);
+  const secs = total % 60;
+  return `${minutes}:${String(secs).padStart(2, '0')}`;
+}
+
 /** Vídeo que se recorre al mover el puntero (estilo miniaturas de YouTube, spec A6). */
 export function VideoScrubPreview({
   src,
@@ -29,12 +44,14 @@ export function VideoScrubPreview({
   const videoRef = useRef<HTMLVideoElement>(null);
   const frameRef = useRef<number | null>(null);
   const [progress, setProgress] = useState(0);
+  const [duration, setDurationState] = useState<number | null>(null);
 
   function scrubTo(fraction: number) {
     const video = videoRef.current;
-    if (!video || !Number.isFinite(video.duration) || video.duration <= 0) return;
+    const total = duration ?? video?.duration;
+    if (!video || !Number.isFinite(total) || (total ?? 0) <= 0) return;
     const clamped = Math.min(1, Math.max(0, fraction));
-    video.currentTime = clamped * video.duration;
+    video.currentTime = clamped * (total as number);
     setProgress(clamped * 100);
   }
 
@@ -55,6 +72,10 @@ export function VideoScrubPreview({
     const video = videoRef.current;
     if (video) video.currentTime = 0;
     setProgress(0);
+  }
+
+  function onLoadedMetadata(event: SyntheticEvent<HTMLVideoElement>) {
+    setDurationState(event.currentTarget.duration);
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
@@ -81,8 +102,22 @@ export function VideoScrubPreview({
       onPointerLeave={onPointerLeave}
       onKeyDown={onKeyDown}
     >
-      <video ref={videoRef} src={src} poster={poster} muted playsInline preload="metadata" aria-hidden />
-      <div className="mk-scrub__bar" aria-hidden />
+      <video
+        ref={videoRef}
+        src={src}
+        poster={poster}
+        muted
+        playsInline
+        preload="metadata"
+        aria-hidden
+        onLoadedMetadata={onLoadedMetadata}
+      />
+      <div className="mk-scrub__track" aria-hidden>
+        <div className="mk-scrub__bar" aria-hidden />
+      </div>
+      <div className="mk-scrub__time" aria-hidden>
+        {duration != null ? `${formatTime((progress / 100) * duration)} / ${formatTime(duration)}` : ''}
+      </div>
     </div>
   );
 }
