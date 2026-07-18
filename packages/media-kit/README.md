@@ -71,7 +71,7 @@ keyboard. Implements the [ARIA slider pattern](https://www.w3.org/WAI/ARIA/apg/p
 | `resumeLabel`      | `string`                     | `'Comparison following pointer'` | Announced via `aria-live` when `pauseOnClick` resumes the hover-follow.                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `overlayLabels`    | `CompareSliderOverlayLabels` | `undefined`                      | `aria-hidden` text badges in the bottom-left (`before`) / bottom-right (`after`) corners — the accessible name of each side already comes from its `alt` (internal, for a `MediaSource` side, or the consumer's own for a `ReactNode` side). See [`CompareSliderOverlayLabels`](#compareslideroverlaylabels) below.                                                                                                                                                                                                          |
 | `objectFit`        | `'cover' \| 'contain'`       | `'cover'`                        | `object-fit` of the `<img>` the package renders for a `MediaSource` side. A `ReactNode` side is opaque to the component — this prop never reaches it; the consumer controls its own `object-fit`.                                                                                                                                                                                                                                                                                                                            |
-| `compareMode`      | `CompareSliderMode`          | `'wipe'`                         | Comparison axis. `'wipe'`: current `clip-path`/divider behavior, zero changes. `'onion'`: same handle/keyboard, but drives the `after` layer's opacity instead of the divider position (no visible divider; `aria-valuetext` announces `"{n}% after"`). `'blink'`: no slider/handle — alternates `before`/`after` every 800ms behind a `role="switch"` pause/resume button (reuses `pauseLabel`/`resumeLabel` and their `aria-live` region; starts paused under `prefers-reduced-motion`). `'side-by-side'`: no slider/handle — both sides render in full via a two-column grid (two-row when `orientation="vertical"`) with `overlayLabels`; nested inside `MediaLightbox` it inherits the viewer's zoom/pan for free (the transform wraps the whole compare). See `CompareSliderMode` below. **Caveat:** `blinkRunning`'s initial value (running unless `prefers-reduced-motion`) is computed once at mount from the `compareMode` prop; switching an already-mounted component's `compareMode` into `'blink'` starts it paused instead of running — pass a `key` that changes alongside `compareMode` if you need it to auto-start. |
+| `compareMode`      | `CompareSliderMode`          | `'wipe'`                         | Comparison axis. `'wipe'`: current `clip-path`/divider behavior, zero changes. `'onion'`: same handle/keyboard, but drives the `after` layer's opacity instead of the divider position (no visible divider; `aria-valuetext` announces `"{n}% after"`). `'blink'`: no slider/handle — alternates `before`/`after` every 800ms behind a `role="switch"` pause/resume button (reuses `pauseLabel`/`resumeLabel` and their `aria-live` region; starts paused under `prefers-reduced-motion`). `'side-by-side'`: no slider/handle — both sides render in full via a two-column grid (two-row when `orientation="vertical"`) with `overlayLabels`; nested inside `MediaLightbox` it inherits the viewer's zoom/pan for free (the transform wraps the whole compare). Responsive: a `ResizeObserver` on the container switches to one column/two rows (`data-stacked="true"` on the root) below a `480`px container width, regardless of `orientation`; both halves render their `<img>` at `width:100%; height:100%; object-fit:cover` so the two rows/columns stay equal height instead of following each image's own intrinsic aspect ratio. See `CompareSliderMode` below. **Caveat:** `blinkRunning`'s initial value (running unless `prefers-reduced-motion`) is computed once at mount from the `compareMode` prop; switching an already-mounted component's `compareMode` into `'blink'` starts it paused instead of running — pass a `key` that changes alongside `compareMode` if you need it to auto-start. |
 
 `before`/`after` have no default — they are required props.
 
@@ -198,7 +198,8 @@ A filterable grid with animated reflow — manual FLIP (First-Last-Invert-Play) 
 | `categories`     | `readonly FilterGalleryCategory[]`      | `undefined` | If passed, renders the filter button group (`role="group"`, toggle buttons with `aria-pressed`) — always includes an "All" button regardless of this list.                                            |
 | `allLabel`       | `string`                                | `'All'`     | Label of the "all" button.                                                                                                                                                                             |
 | `label`          | `string`                                | —           | Accessible name (`aria-label`) of both the filter button group and the grid.                                                                                                                           |
-| `duration`       | `number`                                | `240`       | Milliseconds of the FLIP repositioning animation.                                                                                                                                                      |
+| `duration`       | `number`                                | `240`       | Milliseconds of the FLIP repositioning animation (also the duration of the entering fade+scale and the leaving fade-out, below).                                                                       |
+| `visibleIds`     | `readonly string[]`                     | `undefined` | Additional visibility restriction, intersected with the category `filter` — lets an external predicate (e.g. a text search box) combine with category filtering. `undefined` means no restriction.    |
 | `className`      | `string`                                | `undefined` | Extra class name appended to the root element.                                                                                                                                                        |
 
 `items` and `label` have no default — they are required props.
@@ -218,14 +219,19 @@ A filterable grid with animated reflow — manual FLIP (First-Last-Invert-Play) 
 | `id`    | `string` | Value passed to `filter`/`onFilterChange` when its button is pressed. |
 | `label` | `string` | Visible button text.                                                  |
 
-Filtering hides items whose `categories` don't include the active filter; the items that stay
-visible are repositioned with FLIP — rects measured before the change, then animated from their
-previous position to identity via `element.animate`. Items newly entering fade+scale in from
-`0.96`; items leaving are removed immediately (no exit animation in this version — deferred
-unmount would be required, documented as a known extension point, not implemented — YAGNI).
-`prefers-reduced-motion` (checked in JS) skips `element.animate` entirely: filter changes are
-instant. SSR-safe: the first render never measures or animates, it only captures positions for
-the next filter change.
+An item is visible when its `categories` include the active `filter` **and** (if `visibleIds` is
+passed) its `id` is in `visibleIds` — the two restrictions intersect, so category buttons and an
+external predicate (e.g. a search box driving `visibleIds`) compose freely. Items that stay visible
+are repositioned with FLIP — rects measured before the change, then animated from their previous
+position to identity via `element.animate`. Items newly entering fade+scale in from `0.96`. Items
+leaving stay mounted for the duration of their own fade+scale-out (`opacity 1→0`, `scale(1)→0.96`,
+`duration` ms) — a deferred unmount: the leaving `<li>` gets `data-fg-exiting` + `aria-hidden` +
+`inert` for that window, so it's invisible to assistive tech and unfocusable while it visually fades.
+If an exiting id becomes visible again before its animation finishes, the exit is canceled and it
+rejoins immediately. `prefers-reduced-motion` (checked in JS), no `element.animate` support, or
+unmounting the whole `FilterGallery` while an exit is in flight all skip straight to removal — no
+orphaned exiting items. SSR-safe: the first render never measures or animates, it only captures
+positions for the next filter/`visibleIds` change.
 
 ### VideoScrubPreview
 
@@ -246,14 +252,47 @@ sets `currentTime = (x / width) * duration` (throttled with `requestAnimationFra
 `pointerleave` resets to `currentTime = 0` (back to the poster) — the video never actually plays,
 so there's nothing to pause. Keyboard:
 `ArrowRight`/`ArrowLeft` step ±5% of `duration`, `Home`/`End` jump to start/end — all gated on
-`scrubOnFocus` (default `true`). Until the browser fires `loadedmetadata`, `video.duration` is
-`NaN` and any scrub attempt is a no-op (no errors thrown). No autoplay, no sound;
-`prefers-reduced-motion` doesn't apply here — scrubbing is direct user interaction, not an
-animation the component runs on its own.
+`scrubOnFocus` (default `true`). Until the browser fires `loadedmetadata`, any scrub attempt is a
+no-op (no errors thrown). The duration used to compute the scrub position is captured once into
+React state inside `onLoadedMetadata`, instead of being re-read from `video.duration` on every
+gesture — so a subsequent gesture keeps scrubbing correctly even if `video.duration` itself later
+becomes unavailable again (e.g. `NaN` from a buffering/source reset), which the live-property
+approach would have treated as "metadata never arrived" and silently ignored.
 
-A thin bottom progress bar reflects position through an internal `--mk-scrub-pos` CSS variable —
-an implementation detail (analogous to `CompareSlider`'s internal `--mk-compare-pos`), not a
-public token meant to be set by consumers.
+A track (`.mk-scrub__track`, height `6px`, background `--mk-scrub-track`) with a filled bar
+(`.mk-scrub__bar`) reflects position along the bottom edge through an internal `--mk-scrub-pos`
+CSS variable — an implementation detail (analogous to `CompareSlider`'s internal
+`--mk-compare-pos`), not a public token meant to be set by consumers. Once duration is known (and
+finite — `Infinity` is guarded the same as `NaN`), a floating `m:ss / m:ss` time chip
+(`.mk-scrub__time`, bottom-right, e.g. `"0:07 / 1:30"`) renders next to it; before that, or if
+duration isn't finite, it stays empty (and hidden via `:empty`).
+
+### HoverVideo
+
+A poster/video facade: at rest, only an `<img poster>` exists — zero video bytes are downloaded
+until the user actually engages.
+
+| Prop        | Type     | Default | Description                                                                                                    |
+| ----------- | -------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src`       | `string` | —       | Video URL. Only fetched after activation (facade — 0 bytes at rest).                                                                                                                                  |
+| `poster`    | `string` | —       | Image visible at rest.                                                                                                                                                                                |
+| `label`     | `string` | —       | Accessible name of the interactive area (`aria-label`).                                                                                                                                               |
+| `delay`     | `number` | `300`   | Milliseconds of sustained hover before the video activates.                                                                                                                                           |
+| `width`     | `number` | —       | Intrinsic poster width, set on the `<img>` for zero CLS.                                                                                                                                              |
+| `height`    | `number` | —       | Intrinsic poster height, set on the `<img>` for zero CLS.                                                                                                                                              |
+| `className` | `string` | `undefined` | Extra class name appended to the root element.                                                                                                                                                    |
+
+`src`, `poster`, `label`, `width`, and `height` have no default — they are required props.
+
+The root is `role="button"`, `tabIndex={0}`, with `aria-label={label}` and `aria-pressed`
+reflecting whether the video is currently mounted/playing; `data-state` (`'idle'` or `'playing'`)
+mirrors the same state for styling. With a fine pointer (`matchMedia('(pointer: fine)')`, assumed
+true if `matchMedia` is unavailable — e.g. SSR or an unpolyfilled test environment) and no
+`prefers-reduced-motion`, hovering for `delay` ms mounts a `<video autoPlay muted loop playsInline
+aria-hidden>` over the poster; leaving before the delay elapses cancels the pending timer without
+ever mounting the video. `Enter`/`Space` on the focused root, or a click, always toggles playback
+regardless of pointer type or `prefers-reduced-motion` — this explicit toggle is the only way to
+activate the video on a coarse pointer or under reduced motion.
 
 ### `MediaSource`
 
@@ -342,6 +381,7 @@ properties (`--mk-overlay-bg`, `--mk-z-lightbox`, close-button vars) on `:root` 
 | `--mk-filter-hover-bg`   | `rgb(255 255 255 / 0.12)` | Background of an inactive FilterGallery chip on hover. |
 | `--mk-filter-active-bg`  | `var(--mk-handle-color)` | Background of the active (`aria-pressed="true"`) FilterGallery chip. |
 | `--mk-filter-active-color` | `var(--mk-handle-icon-color)` | Text color of the active FilterGallery chip. |
+| `--mk-scrub-track`       | `rgb(255 255 255 / 0.24)` | Background of VideoScrubPreview's progress track (`.mk-scrub__track`), behind the filled bar. |
 
 ## Recipes
 

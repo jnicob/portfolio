@@ -1,5 +1,61 @@
 # Changelog
 
+## 0.6.0 — 2026-07-18
+
+### Added
+
+- **New component `HoverVideo`:** a poster/video facade — at rest only the `<img poster>` exists
+  (zero video bytes downloaded). A sustained hover (`delay`, default `300`ms) with a fine pointer
+  mounts the `<video autoPlay muted loop playsInline>`; leaving the area before the delay elapses
+  cancels it. Click, or `Enter`/`Space` on the focused root (`role="button"`, `tabIndex={0}`),
+  always toggles play/pause regardless of pointer type or `prefers-reduced-motion` — `data-state`
+  (`'idle' | 'playing'`) and `aria-pressed` reflect the current state. Props: `src`, `poster`,
+  `label` (required), `delay` (default `300`), `width`/`height` (required, intrinsic poster
+  dimensions for zero CLS), `className`.
+- **`FilterGallery`:** `visibleIds?: readonly string[]` — an additional visibility restriction
+  intersected with the category `filter`, so external predicates (e.g. a text search box) can
+  combine with the existing category buttons without the consumer reimplementing the FLIP
+  reflow. `undefined` (default) means no restriction.
+- **`FilterGallery`:** animated exit — items leaving `visible` now fade+scale out
+  (`opacity 1→0`, `scale(1)→scale(0.96)`) instead of disappearing immediately, via the same manual
+  FLIP/WAAPI mechanism used for the entering/repositioning animations (deferred unmount: the
+  leaving `<li>` stays mounted with `data-fg-exiting` + `aria-hidden` + `inert` for the duration of
+  its own animation). Reentering an item before its exit finishes cancels the exit and it rejoins
+  instantly. `prefers-reduced-motion` (or no `element.animate` support) unmounts immediately, same
+  as before.
+- **`VideoScrubPreview`:** the bottom progress indicator is now a thicker track (`.mk-scrub__track`,
+  height `6px`, background `--mk-scrub-track`) with a filled bar plus a floating `m:ss / m:ss` time
+  chip (`.mk-scrub__time`, bottom-right) that appears once video metadata is available (guarded
+  against non-finite duration, e.g. `Infinity`). Scrubbing before `loadedmetadata` fires is still a
+  no-op (unchanged); the duration used to scrub is now captured once into React state instead of
+  re-read from `video.duration` on every gesture, so scrubbing keeps working even if the live
+  property later goes stale (e.g. `NaN` from a buffering/source reset) — the previous "always trust
+  `video.duration`" approach would have treated that the same as metadata never having arrived.
+- New public CSS variable `--mk-scrub-track` (default `rgb(255 255 255 / 0.24)`) — background of
+  `VideoScrubPreview`'s progress track.
+
+### Fixed
+
+- **`CompareSlider`:** in fullscreen (`MediaLightbox`'s `compare`/`expand`) with a portrait-aspect
+  `before`/`after` pair, the two layers no longer misalign. `MediaLightbox`'s `data-fit` sizing rule
+  used a descendant combinator (`.mk-lightbox__media :is(img, video)`) that also matched the
+  `<img>`s nested two levels down inside `.mk-compare__before`/`__after`, sizing each side
+  independently by its own intrinsic size/`sizes` instead of letting them share the compare's own
+  box. Switched to a direct-child combinator (`>`) so the rule only reaches the lone `<img>`/`<video>`
+  of the `media`/`children` cases — a nested compare is now sized exclusively by its own
+  `.mk-compare__before img, .mk-compare__after img` rules, which already keep both sides in the same
+  box.
+- **`CompareSlider` `compareMode="side-by-side"`:** stacks vertically (`data-stacked="true"`, one
+  column) instead of staying two-column when the container narrows below `480`px (tracked via
+  `ResizeObserver`), and both halves are normalized to equal height at every width.
+
+### Compatibility
+
+All changes are additive; no breaking changes. Every new prop is optional with a default that
+preserves prior behavior (`FilterGallery`'s exit animation is the one behavior change without a
+prop gate, and it degrades to the previous immediate-unmount under `prefers-reduced-motion`, same
+as every other animation in this package).
+
 ## 0.5.0 — 2026-07-17
 
 ### Added
