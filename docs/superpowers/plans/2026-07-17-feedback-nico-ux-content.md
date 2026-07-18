@@ -90,6 +90,33 @@ Comentarios de revisión manual. Triage vigente (decisión de Nico 2026-07-18):
    mostrando el resultado gusta, pero el tamaño de la sección NO debe cambiar (cero
    desplazamiento vertical al correr/completar).
 
+## G. Feedback 2026-07-18 (durante el cierre de F3.7 → F3.8)
+
+**Showcase**
+
+1. **Posible BUG tema+idioma**: al cambiar dark/light y a continuación cambiar idioma,
+   el tema parece cambiar junto con el idioma en vez de solo cambiar el idioma —
+   verificar y arreglar si se confirma (sospecha: interacción del theme aplicado con la
+   navegación del LocaleSwitcher / appearance-init).
+2. **Selector de layouts en la galería IA** («AI-generated example gallery»): mostrar
+   distintos layouts con un selector — p. ej. masonry (buenos ejemplos de implementación
+   en los proyectos internos pikaso y fc_freepik_web como REFERENCIA de patrón, sin
+   copiar código; crear un skill del proyecto y en ai-config si hace falta). Menos filas,
+   reduciendo la cantidad según tamaño/resolución de pantalla (máximo 4-5 para destacar
+   el visual del layout).
+3. **API player — más ejemplos**: añadir ejemplos de vídeo, audio y error. En una etapa
+   posterior: code viewer y parámetros personalizables.
+
+**Proyectos**
+
+4. **«Panel de desarrollador de la API»**: página de detalle como la de otros proyectos,
+   contando las características más destacadas de los paneles de gestión y estadísticas
+   para API (dev-hub y profile), tanto en B2B como en consumo de créditos y adecuación a
+   distintos planes. Añadir además todas las landings de API como enlaces en la página
+   de detalle.
+5. **«Backoffice de contenido Freepik/Flaticon»**: página de detalle como la de otros
+   proyectos con las características más destacadas de cada proyecto que lo compone.
+
 ## Requisito transversal del plan F3.7 (pedido 2026-07-18)
 
 Al final del plan definitivo de F3.7: **listado de ítems con TODAS las features del
