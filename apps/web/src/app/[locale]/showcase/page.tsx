@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { MediaLightboxLabels } from '@nicobehm/media-kit';
 import type { Locale } from '@/i18n/routing';
@@ -14,14 +15,36 @@ import { Select } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
 import { ShareViewButton } from '@/components/layout/share-view-button';
-import { ApiRequestPlayer } from '@/components/showcase/api-request-player';
-import { CompareModesDemo } from '@/components/showcase/compare-modes-demo';
-import { FilterGalleryDemo } from '@/components/showcase/filter-gallery-demo';
-import { MediaKitDemo } from '@/components/showcase/media-kit-demo';
 import { ShowcaseView } from '@/components/showcase/showcase-view';
 import { buildShowcaseViewLabels } from '@/components/showcase/showcase-view-labels';
-import { SpotlightDemo } from '@/components/showcase/spotlight-demo';
-import { VideoScrubDemo } from '@/components/showcase/video-scrub-demo';
+
+// Perf (T31): estas 6 demos son las más pesadas del showcase (hidratación de
+// CompareSlider/FilterGallery/SpotlightReveal/ApiRequestPlayer con sus estados,
+// timers y listeners). `next/dynamic` con `ssr: true` (default) separa su chunk
+// del grafo inicial SIN perder el HTML prerenderizado (el export estático sigue
+// generándolas por completo en build) — solo difiere cuándo el navegador
+// parsea/ejecuta/hidrata ese JS, liberando el main thread antes para el LCP del
+// header. Distinto del bytes-on-the-wire descartado en T27 (allí el chunk de
+// media-kit ya era pequeño y se cargaba en paralelo; aquí el objetivo es
+// hidratación diferida, no menos bytes). Exports nombrados ⇒ patrón `.then(m => m.X)`.
+const ApiRequestPlayer = dynamic(() =>
+  import('@/components/showcase/api-request-player').then((m) => m.ApiRequestPlayer),
+);
+const CompareModesDemo = dynamic(() =>
+  import('@/components/showcase/compare-modes-demo').then((m) => m.CompareModesDemo),
+);
+const FilterGalleryDemo = dynamic(() =>
+  import('@/components/showcase/filter-gallery-demo').then((m) => m.FilterGalleryDemo),
+);
+const MediaKitDemo = dynamic(() =>
+  import('@/components/showcase/media-kit-demo').then((m) => m.MediaKitDemo),
+);
+const SpotlightDemo = dynamic(() =>
+  import('@/components/showcase/spotlight-demo').then((m) => m.SpotlightDemo),
+);
+const VideoScrubDemo = dynamic(() =>
+  import('@/components/showcase/video-scrub-demo').then((m) => m.VideoScrubDemo),
+);
 
 type Props = { params: Promise<{ locale: Locale }> };
 
