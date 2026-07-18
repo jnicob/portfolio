@@ -9,6 +9,12 @@ export type ApiDemo = {
   request: object;
   response: object;
   status: string;
+  /**
+   * Preview mostrada en el panel Preview del player al llegar a `done` (T13):
+   * asset real de la galería (`nbp-amanecer-alpino`), coherente con la request
+   * `text-to-image` de abajo — el paisaje que "devuelve" ese endpoint simulado.
+   */
+  preview: { src: string; fullSrc: string; width: number; height: number };
 };
 
 export const apiDemo: ApiDemo = {
@@ -25,4 +31,10 @@ export const apiDemo: ApiDemo = {
     generated: ['https://cdn.example.com/result.webp'],
   },
   status: '200 OK',
+  preview: {
+    src: '/demo/gallery/nbp-amanecer-alpino.webp',
+    fullSrc: '/demo/gallery/nbp-amanecer-alpino-hd.webp',
+    width: 1200,
+    height: 670,
+  },
 };

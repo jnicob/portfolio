@@ -419,6 +419,11 @@ export default async function ShowcasePage({ params }: Props) {
               copied: t('sections.apiPlayer.copied'),
               done: t('sections.apiPlayer.done'),
               responsePlaceholder: t('sections.apiPlayer.responsePlaceholder'),
+              previewTab: t('sections.apiPlayer.previewTab'),
+              responseTab: t('sections.apiPlayer.responseTab'),
+              previewIdle: t('sections.apiPlayer.previewIdle'),
+              previewAlt: t('sections.apiPlayer.previewAlt'),
+              fullscreen: t('sections.apiPlayer.fullscreen'),
             }}
           />
         </Section>

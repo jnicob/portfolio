@@ -203,7 +203,12 @@
         "copy": "Copiar",
         "copied": "¡Copiado!",
         "done": "Respuesta recibida",
-        "responsePlaceholder": "La respuesta aparecerá aquí — pulsa Run"
+        "responsePlaceholder": "La respuesta aparecerá aquí — pulsa Run",
+        "previewTab": "Vista previa",
+        "responseTab": "Respuesta",
+        "previewIdle": "La vista previa aparecerá aquí al completarse la respuesta",
+        "previewAlt": "Vista previa generada por el endpoint de ejemplo",
+        "fullscreen": "Pantalla completa"
       }
     },
     "lightboxLabels": {

@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { MediaLightbox, preloadFullSources, type MediaSource } from '@nicobehm/media-kit';
 import type { ApiDemo } from '@/data/api-demo';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
 
 const PENDING_MS = 600;
 /** ~800 caracteres/s a 60fps ≈ 13.3 car/frame, redondeado a 14. */
@@ -25,16 +27,53 @@ export type ApiRequestPlayerLabels = {
   done: string;
   /** Contenido del `<pre>` de respuesta en `state === 'idle'`, antes de la primera ejecución. */
   responsePlaceholder: string;
+  /** Nombre accesible del tab "Preview" (T13, columna visor Preview|Response). */
+  previewTab: string;
+  /** Nombre accesible del tab "Response". */
+  responseTab: string;
+  /** Placeholder del panel Preview mientras `state !== 'done'` (idle/pending/streaming). */
+  previewIdle: string;
+  /** `alt` de la imagen de preview mostrada en `state === 'done'`. */
+  previewAlt: string;
+  /** aria-label del botón ⛶ que precarga el HD y abre el lightbox. */
+  fullscreen: string;
 };
 
 type Props = { demo: ApiDemo; labels: ApiRequestPlayerLabels };
 
+function FullscreenIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={16}
+      height={16}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3" />
+    </svg>
+  );
+}
+
 /**
- * Demo interactiva de un endpoint (T19): bloque request estático + botón Run
- * que simula una llamada real — 600 ms de latencia (`pending`, spinner) y la
- * respuesta escribiéndose en streaming (rAF, ~14 car/frame) con caret, hasta
- * `done` (status badge + botón copy). Con `prefers-reduced-motion` la
- * respuesta aparece completa, sin typing. Reejecutable desde cualquier estado.
+ * Demo interactiva de un endpoint (T19, split v2 en T13): columna request
+ * (método+path, `<pre>` de la request, botón Run al pie) + columna visor
+ * (fila de estado SIEMPRE reservada `min-h-8` + Tabs Preview|Response). El
+ * botón Run simula una llamada real — 600 ms de latencia (`pending`, spinner)
+ * y la respuesta escribiéndose en streaming (rAF, ~14 car/frame) con caret,
+ * hasta `done` (status badge + botón copy + preview de imagen con fullscreen).
+ * Con `prefers-reduced-motion` la respuesta aparece completa, sin typing.
+ * Reejecutable desde cualquier estado.
+ *
+ * Cero layout shift (T13): todo estado vive dentro de cajas de altura fija
+ * (`min-h-8` la fila de estado; `h-64` ambos paneles de Tabs, que además
+ * quedan siempre montados — B2 de F3.6 — así que cambiar de tab tampoco
+ * desplaza nada). Nada se monta/desmonta fuera de esas cajas.
+ *
  * Reutilizada en F4 con request/response reales del playground (`demo`/`labels`
  * son props, nada hardcodeado en el componente salvo el propio comportamiento).
  */
@@ -42,12 +81,18 @@ export function ApiRequestPlayer({ demo, labels }: Props) {
   const [state, setState] = useState<PlayerState>('idle');
   const [responseText, setResponseText] = useState('');
   const [copied, setCopied] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const pendingTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const copyTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const frame = useRef<number | null>(null);
 
   const requestText = JSON.stringify(demo.request, null, 2);
   const fullResponse = JSON.stringify(demo.response, null, 2);
+  const previewMedia: MediaSource = {
+    src: demo.preview.src,
+    fullSrc: demo.preview.fullSrc,
+    alt: labels.previewAlt,
+  };
 
   useEffect(() => {
     return () => {
@@ -98,67 +143,120 @@ export function ApiRequestPlayer({ demo, labels }: Props) {
     }
   }
 
+  /** Precarga el HD de la preview en hover/focus del botón ⛶, antes del click real. */
+  function preloadPreview() {
+    preloadFullSources([previewMedia]);
+  }
+
   const isRunning = state === 'pending' || state === 'streaming';
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2 font-mono text-sm text-fg-muted">
-          <span className="font-semibold text-fg">{demo.method}</span>
-          <span>{demo.path}</span>
-        </div>
-        <pre className="overflow-x-auto rounded-control border border-border bg-surface p-4 font-mono text-sm text-fg">
-          {requestText}
-        </pre>
-      </div>
-
-      <div>
-        <Button onClick={run} disabled={isRunning}>
-          {isRunning ? labels.running : labels.run}
-        </Button>
-      </div>
-
-      <div className="flex flex-col gap-2">
-        {/* Idle no tiene nada que mostrar aquí (ni spinner, ni badge): en vez de
-            una fila min-h-8 hueca, directamente no se renderiza hasta pending. */}
-        {state !== 'idle' && (
-          <div className="flex min-h-8 items-center gap-2">
-            {state === 'pending' && (
-              <>
-                <span
-                  aria-hidden
-                  className="h-4 w-4 animate-spin rounded-full border-2 border-border border-t-accent"
-                />
-                <span className="font-mono text-sm text-fg-muted">{labels.pending}</span>
-              </>
-            )}
-            {state === 'streaming' && (
-              <span className="font-mono text-sm text-fg-muted">{labels.streaming}</span>
-            )}
-            {state === 'done' && (
-              <>
-                <Badge variant="accent">{demo.status}</Badge>
-                <Button variant="ghost" size="sm" onClick={copy}>
-                  {copied ? labels.copied : labels.copy}
-                </Button>
-              </>
-            )}
+    <div className="grid gap-4 md:grid-cols-2">
+      {/* Columna request: método+path + <pre> de la request + Run al pie de la columna. */}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2 font-mono text-sm text-fg-muted">
+            <span className="font-semibold text-fg">{demo.method}</span>
+            <span>{demo.path}</span>
           </div>
-        )}
-        <pre className="overflow-x-auto rounded-control border border-border bg-surface p-4 font-mono text-sm text-fg">
-          {state === 'idle' ? labels.responsePlaceholder : responseText}
-          {state === 'streaming' && (
-            <span aria-hidden className="animate-pulse">
-              ▌
-            </span>
+          <pre className="overflow-x-auto whitespace-pre-wrap rounded-control border border-border bg-surface p-4 font-mono text-sm text-fg">
+            {requestText}
+          </pre>
+        </div>
+        <div className="mt-auto">
+          <Button onClick={run} disabled={isRunning}>
+            {isRunning ? labels.running : labels.run}
+          </Button>
+        </div>
+      </div>
+
+      {/* Columna visor: fila de estado reservada + Tabs Preview|Response. */}
+      <div className="flex flex-col gap-2">
+        {/* SIEMPRE renderizada (incluso en idle, vacía): reserva min-h-8 para que
+            aparecer/desaparecer spinner, label o badge no desplace el layout. */}
+        <div data-testid="player-status-row" className="flex min-h-8 items-center gap-2">
+          {state === 'pending' && (
+            <>
+              <span
+                aria-hidden
+                className="h-4 w-4 animate-spin rounded-full border-2 border-border border-t-accent"
+              />
+              <span className="font-mono text-sm text-fg-muted">{labels.pending}</span>
+            </>
           )}
-        </pre>
+          {state === 'streaming' && (
+            <span className="font-mono text-sm text-fg-muted">{labels.streaming}</span>
+          )}
+          {state === 'done' && (
+            <>
+              <Badge variant="accent">{demo.status}</Badge>
+              <Button variant="ghost" size="sm" onClick={copy}>
+                {copied ? labels.copied : labels.copy}
+              </Button>
+            </>
+          )}
+        </div>
+
+        <Tabs defaultValue="response">
+          <TabList label={`${labels.previewTab} / ${labels.responseTab}`}>
+            <Tab value="preview">{labels.previewTab}</Tab>
+            <Tab value="response">{labels.responseTab}</Tab>
+          </TabList>
+
+          <TabPanel value="preview">
+            {state === 'done' ? (
+              <div className="relative h-64">
+                <img
+                  src={previewMedia.src}
+                  alt={labels.previewAlt}
+                  className="h-full w-full object-contain"
+                />
+                <button
+                  type="button"
+                  aria-label={labels.fullscreen}
+                  onPointerEnter={preloadPreview}
+                  onFocus={preloadPreview}
+                  onClick={() => setLightboxOpen(true)}
+                  className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-surface/80 text-fg backdrop-blur focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                >
+                  <FullscreenIcon />
+                </button>
+              </div>
+            ) : (
+              <div className="flex h-64 items-center justify-center rounded-control border border-border bg-surface p-4 text-center text-sm text-fg-muted">
+                {labels.previewIdle}
+              </div>
+            )}
+          </TabPanel>
+
+          <TabPanel value="response">
+            <pre
+              data-testid="player-response-pane"
+              className="h-64 overflow-auto whitespace-pre-wrap rounded-control border border-border bg-surface p-4 font-mono text-sm text-fg"
+            >
+              {state === 'idle' ? labels.responsePlaceholder : responseText}
+              {state === 'streaming' && (
+                <span aria-hidden className="animate-pulse">
+                  ▌
+                </span>
+              )}
+            </pre>
+          </TabPanel>
+        </Tabs>
+
         {/* Único aria-live del componente: anuncia la llegada de la respuesta, no el
             texto que se va escribiendo (evita verbosidad en streaming). */}
         <div role="status" className="sr-only">
           {state === 'done' ? labels.done : ''}
         </div>
       </div>
+
+      <MediaLightbox
+        open={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        label={labels.previewAlt}
+        media={previewMedia}
+      />
     </div>
   );
 }
