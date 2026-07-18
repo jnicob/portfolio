@@ -1,6 +1,6 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-18 · cierre de F3.6 (T21 completada, fase mergeada)
+> Actualizado: 2026-07-18 · por /checkpoint (F3.6 mergeada; F3.7 conjunta definida, sin empezar)
 
 ## Ahora
 
@@ -35,11 +35,14 @@ preexistente (273-284 kB gz vs presupuesto 130 kB)** → primera prioridad de F4
 
 ## Siguiente acción
 
-1. **F3.7** (feedback secciones B-E + galería A6 + backlog design de T21: altura
-   side-by-side, ancho scrub, copy táctil del hint, card huérfana 768, canvas dark
-   en reposo, pre-wrap JSON, fade real al filtrar, key i18n del resume de blink,
-   jerarquía "y 8 proyectos más") — **requiere brainstorm + plan con el usuario, NO
-   empezar en automático**.
+1. **F3.7 CONJUNTA** (decisión Nico 2026-07-18): feedback showcase 2026-07-18 (sección F
+   del doc de feedback: retrato fullscreen, lado-a-lado mobile, galería con assets IA
+   reales vía AI API, calidad HD+preload fullscreen, scrub UX o sustitución, API player
+   rediseñado sin layout shift) + secciones B-E + A6 + backlog design/QA de T21 (ledger).
+   Empezar con **brainstorm + plan** (superpowers:brainstorming → writing-plans) en
+   sesión nueva — prompt de continuación entregado en el checkpoint 2026-07-18.
+   Requisito transversal del plan: listado final de TODAS las features + punteros a
+   decisiones técnicas (ver sección "Requisito transversal" del doc de feedback).
 2. F4 arrastra: First Load JS >2× presupuesto (palanca real del gate perf), sweep
    z.url()/consistencia, guard NEXT_PUBLIC_SITE_URL, contraste borders 1.4.11.
 
