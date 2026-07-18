@@ -87,9 +87,14 @@ describe('scrub v3 (v0.6)', () => {
     vi.spyOn(root, 'getBoundingClientRect').mockReturnValue({ left: 0, width: 100 } as DOMRect);
     // Sin metadata: no-op (comportamiento actual, sin errores)
     fireEvent.pointerMove(root, { clientX: 50 });
-    // Llega el metadata → el siguiente move ya scrubbea
+    expect(video.currentTime).toBe(0);
+    // Llega el metadata → el estado interno captura duration=10
     setDuration(video, 10);
     fireEvent.loadedMetadata(video);
+    // Discriminante: si el scrub dependiera del fallback `?? video.duration` en vez del
+    // estado interno capturado en onLoadedMetadata, este reset a NaN haría el siguiente
+    // move un no-op de nuevo. Solo pasa si `scrubTo` usa el `duration` de estado.
+    setDuration(video, Number.NaN);
     fireEvent.pointerMove(root, { clientX: 50 });
     await waitFor(() => expect(video.currentTime).toBeCloseTo(5));
   });
@@ -100,5 +105,13 @@ describe('scrub v3 (v0.6)', () => {
     setDuration(video, 90);
     fireEvent.loadedMetadata(video);
     expect(container.querySelector('.mk-scrub__time')).toHaveTextContent('0:00 / 1:30');
+  });
+
+  it('duration no finita (Infinity) no rompe el chip: se mantiene vacío', () => {
+    const { container } = render(<VideoScrubPreview src="/v.mp4" label="Scrub" />);
+    const video = container.querySelector('video') as HTMLVideoElement;
+    setDuration(video, Number.POSITIVE_INFINITY);
+    fireEvent.loadedMetadata(video);
+    expect(container.querySelector('.mk-scrub__time')).toHaveTextContent('');
   });
 });

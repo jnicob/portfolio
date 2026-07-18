@@ -116,7 +116,9 @@ export function VideoScrubPreview({
         <div className="mk-scrub__bar" aria-hidden />
       </div>
       <div className="mk-scrub__time" aria-hidden>
-        {duration != null ? `${formatTime((progress / 100) * duration)} / ${formatTime(duration)}` : ''}
+        {duration != null && Number.isFinite(duration)
+          ? `${formatTime((progress / 100) * duration)} / ${formatTime(duration)}`
+          : ''}
       </div>
     </div>
   );
