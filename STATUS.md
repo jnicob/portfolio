@@ -1,48 +1,56 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-17 · por /checkpoint (F3.6 bloques A+B+C+D hechos; solo queda T21)
+> Actualizado: 2026-07-18 · cierre de F3.6 (T21 completada, fase mergeada)
 
 ## Ahora
 
-**F3.6 (Showcase UX v2 + media-kit 0.5) CASI CERRADA** en rama
-`feature/phase-3.6-showcase-mediakit` (sin pushear, working tree limpio, HEAD `6e5244a`).
-**Hechas T1-T20 + bloque D (T22-T27) + fix pre-T21 (T28)** — cada una con review aprobada:
-- **Bloques A+B (T1-T16):** media-kit 0.5.0 + showcase UX v2 (ver ledger).
-- **Bloque C (T17-T20):** `AnimatedMetric`, `TiltCard`, `ApiRequestPlayer` (+sección
-  `api-player`), `HeroCanvas` (fix HiDPI verificado en navegador a DPR 1 y 2).
-- **Bloque D (T22-T27, feedback Nico sección A):** BUG onion arreglado (CSS calc:
-  `%/100` → `%/100%`), BUG spotlight arreglado (`@property` radius animable, tracking
-  1:1), footer al fondo (`min-h-dvh` flex), cursor/hover en Tabs + auditoría A2 de
-  cursores, demo scrub con hint + facade lazy (mp4 ya no se descarga sin interacción),
-  imágenes ya lazy. A6 (galería ampliada) DIFERIDA a F3.7.
-- **T28:** console error `FORMATTING_ERROR`/key cruda del índice resuelto (`t.raw`).
-Gate verde: media-kit 182 tests · web 320 · lint/typecheck. **Solo queda T21 (cierre).**
+**F3.6 (Showcase UX v2 + media-kit 0.5) CERRADA** y mergeada FF a `main` (+push).
+T21 ejecutada completa: gate verde (media-kit 186 + web 336 tests, lint, typecheck,
+builds duales), verificación en vivo Playwright sobre el export (todos los fixes del
+bloque D confirmados + 0 console errors), design review y qa-a11y-perf con TODOS los
+bloqueantes/importantes arreglados y re-verificados, code review final (Fable)
+"Ready to merge: Yes".
+
+Fixes de cierre (T29-T31 + orquestador, todos con review):
+- **T29**: React #418 en home — `AnimatedMetric` hidrataba `0+` vs SSR `25+` (rama
+  server/client en el initializer). Era el console error preexistente de T20.
+- **T30** (fixer consolidado de reviews): `formatLike` ya no corrompe métricas no
+  numéricas; chips de FilterGallery con tokens `--mk-filter-*` (fallback aditivo) y
+  legibles en ambos temas; API player sin idle hueco + etiquetas pending/streaming;
+  índice/filtro visible en <lg; `SkillLevel` role=img + nombre accesible de
+  MoreProjectsCard → **axe 0 violations y Lighthouse A11y 100**; variantes 840px +
+  srcset; one-liners de docs.
+- **T31 + orquestador**: `next/dynamic` (ssr:true) en las 6 demos del showcase +
+  `preload:false` de Source Serif (solo la usa el skin editorial).
+
+**Gate perf**: mediana Lighthouse showcase **90** (= umbral verde) vs main 91, con
+LCP MEJOR que main (3.3s vs 3.5s); medición fiable solo en host ocioso (con carga
+varía 65-92). El residuo es TBT de hidratación ligado al **First Load JS
+preexistente (273-284 kB gz vs presupuesto 130 kB)** → primera prioridad de F4.
 
 ## Hecho
 
-- ✅ Fases 0–3.5 (ver roadmap) · media-kit 0.2.0→0.4.0 en fases previas.
-- ✅ F3.6 bloques A, B, C y D + enmiendas de plan (`3ce2400`: T22-T27; i18n
-  `sections.apiPlayer.*`). Ledger tarea a tarea: `.superpowers/sdd/progress.md`.
+- ✅ Fases 0–3.6 (ver roadmap) · media-kit 0.5.0 lista para npm.
+- ✅ F3.6: bloques A+B+C+D + T28-T31. Ledger tarea a tarea: `.superpowers/sdd/progress.md`.
 
 ## Siguiente acción
 
-1. **T21 cierre de fase** (checklist en el plan, sección "Task 21"): gate + build
-   paquete + builds duales export/node + export servido; verificación en vivo
-   (Playwright) incl. fixes del bloque D; design review + qa-a11y-perf; code review
-   final de rama (modelo top, `superpowers:requesting-code-review`); roadmap/STATUS;
-   merge FF a main + push. Notas acumuladas para T21 al final del ledger.
-2. Tras el merge: **F3.7** (feedback secciones B-E + galería A6) con brainstorm + plan
-   nuevos junto al usuario — NO empezar en automático.
+1. **F3.7** (feedback secciones B-E + galería A6 + backlog design de T21: altura
+   side-by-side, ancho scrub, copy táctil del hint, card huérfana 768, canvas dark
+   en reposo, pre-wrap JSON, fade real al filtrar, key i18n del resume de blink,
+   jerarquía "y 8 proyectos más") — **requiere brainstorm + plan con el usuario, NO
+   empezar en automático**.
+2. F4 arrastra: First Load JS >2× presupuesto (palanca real del gate perf), sweep
+   z.url()/consistencia, guard NEXT_PUBLIC_SITE_URL, contraste borders 1.4.11.
 
 ## Pendientes del usuario (no bloqueantes)
 
 - Dominio definitivo + `NEXT_PUBLIC_SITE_URL` (el build avisa si falta).
-- Publicar `@nicobehm/media-kit` en npm (0.5.0 lista al cerrar F3.6).
+- Publicar `@nicobehm/media-kit` 0.5.0 en npm.
 - Upgrade Node 22 (retirar pins de `docs/decisions/2026-07-10-dependency-pins.md`).
 
 ## Fuentes de verdad
 
-- Plan F3.6 (T21 + bloque D): [docs/superpowers/plans/2026-07-17-phase-3.6-showcase-mediakit.md](docs/superpowers/plans/2026-07-17-phase-3.6-showcase-mediakit.md)
+- Plan F3.6 (cerrado): [docs/superpowers/plans/2026-07-17-phase-3.6-showcase-mediakit.md](docs/superpowers/plans/2026-07-17-phase-3.6-showcase-mediakit.md)
 - Feedback Nico (A hecho; B-E → F3.7): [docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md](docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md)
-- Spec F3.6: [docs/superpowers/specs/2026-07-16-phase-3.6-showcase-mediakit-design.md](docs/superpowers/specs/2026-07-16-phase-3.6-showcase-mediakit-design.md)
 - Roadmap: [docs/superpowers/plans/2026-07-10-portfolio-roadmap.md](docs/superpowers/plans/2026-07-10-portfolio-roadmap.md) · Ledger SDD: `.superpowers/sdd/progress.md`
