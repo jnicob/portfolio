@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { MediaLightboxLabels } from '@nicobehm/media-kit';
 import type { Locale } from '@/i18n/routing';
+import type { GalleryDemoLabels } from '@/components/showcase/gallery-demo';
 import { apiDemo } from '@/data/api-demo';
 import { localizedPageMetadata } from '@/lib/seo';
 import { Badge } from '@/components/ui/badge';
@@ -33,8 +34,8 @@ const ApiRequestPlayer = dynamic(() =>
 const CompareModesDemo = dynamic(() =>
   import('@/components/showcase/compare-modes-demo').then((m) => m.CompareModesDemo),
 );
-const FilterGalleryDemo = dynamic(() =>
-  import('@/components/showcase/filter-gallery-demo').then((m) => m.FilterGalleryDemo),
+const GalleryDemo = dynamic(() =>
+  import('@/components/showcase/gallery-demo').then((m) => m.GalleryDemo),
 );
 const MediaKitDemo = dynamic(() =>
   import('@/components/showcase/media-kit-demo').then((m) => m.MediaKitDemo),
@@ -96,10 +97,34 @@ export default async function ShowcasePage({ params }: Props) {
     { id: 'form', label: t('toc.form') },
     { id: 'tabs', label: t('toc.tabs') },
     { id: 'media-kit', label: t('toc.mediaKit') },
+    { id: 'gallery', label: t('toc.gallery') },
     { id: 'api-player', label: t('toc.apiPlayer') },
   ];
 
   const labels = buildShowcaseViewLabels(t);
+
+  // GalleryDemoLabels no viene tal cual de un único bloque de mensajes:
+  // `fullscreen`/`audio.play`/`audio.pause` son plantillas con `{title}` que
+  // interpola el propio componente por ítem (`t.raw`, sin pasar por el
+  // formateo ICU de `t()`, que exigiría un valor para `{title}` en build time).
+  const galleryLabels: GalleryDemoLabels = {
+    filterLabel: t('sections.gallery.filterLabel'),
+    allLabel: t('sections.gallery.allLabel'),
+    categories: {
+      image: t('sections.gallery.categoryImageLabel'),
+      video: t('sections.gallery.categoryVideoLabel'),
+      audio: t('sections.gallery.categoryAudioLabel'),
+    },
+    searchLabel: t('sections.gallery.searchLabel'),
+    searchPlaceholder: t('sections.gallery.searchPlaceholder'),
+    emptyState: t('sections.gallery.emptyState'),
+    fullscreen: t.raw('sections.gallery.fullscreen') as string,
+    audio: {
+      play: t.raw('sections.gallery.audioPlay') as string,
+      pause: t.raw('sections.gallery.audioPause') as string,
+    },
+    lightbox: t.raw('lightboxLabels') as MediaLightboxLabels,
+  };
 
   const sections = [
     {
@@ -349,36 +374,6 @@ export default async function ShowcasePage({ params }: Props) {
           </div>
           <div className="flex flex-col gap-4 border-t border-border pt-6">
             <div className="flex flex-col gap-1">
-              <h3 className="text-lg font-semibold">{t('sections.mediaKit.filterGalleryTitle')}</h3>
-              <p className="text-sm text-fg-muted">
-                {t('sections.mediaKit.filterGalleryDescription')}
-              </p>
-            </div>
-            <FilterGalleryDemo
-              strings={{
-                label: t('sections.mediaKit.filterGalleryLabel'),
-                allLabel: t('sections.mediaKit.filterGalleryAllLabel'),
-                categoryLabels: {
-                  image: t('sections.mediaKit.filterGalleryCategoryImageLabel'),
-                  video: t('sections.mediaKit.filterGalleryCategoryVideoLabel'),
-                  audio: t('sections.mediaKit.filterGalleryCategoryAudioLabel'),
-                },
-                tileLabels: [
-                  t('sections.mediaKit.tileImage1Label'),
-                  t('sections.mediaKit.tileImage2Label'),
-                  t('sections.mediaKit.tileImage3Label'),
-                  t('sections.mediaKit.tileVideo1Label'),
-                  t('sections.mediaKit.tileVideo2Label'),
-                  t('sections.mediaKit.tileVideo3Label'),
-                  t('sections.mediaKit.tileAudio1Label'),
-                  t('sections.mediaKit.tileAudio2Label'),
-                ],
-                caption: t('sections.mediaKit.filterGalleryCaption'),
-              }}
-            />
-          </div>
-          <div className="flex flex-col gap-4 border-t border-border pt-6">
-            <div className="flex flex-col gap-1">
               <h3 className="text-lg font-semibold">{t('sections.mediaKit.scrubTitle')}</h3>
               <p className="text-sm text-fg-muted">{t('sections.mediaKit.scrubDescription')}</p>
             </div>
@@ -390,6 +385,18 @@ export default async function ShowcasePage({ params }: Props) {
               }}
             />
           </div>
+        </Section>
+      ),
+    },
+    {
+      id: 'gallery',
+      node: (
+        <Section
+          id="gallery"
+          title={t('sections.gallery.title')}
+          description={t('sections.gallery.description')}
+        >
+          <GalleryDemo locale={locale} labels={galleryLabels} />
         </Section>
       ),
     },
