@@ -120,3 +120,43 @@ describe('FilterGallery: chips usan custom properties propias, no las de "contro
     expect(body).toMatch(/color:\s*var\(--mk-filter-active-color\)/);
   });
 });
+
+// Regresión (BUG F1, F3.7, feedback de Nico): el ejemplo de retrato (color/B-N) del
+// showcase se veía desfasado al abrirlo en fullscreen. Confirmado en navegador real
+// (Playwright, viewport 2200×1200, screen.width×dpr ≥ 2000 para forzar fullSrc):
+// antes de este fix, `.mk-compare__before img` medía 1000×562.5px (rect) mientras
+// `.mk-compare__after img` medía 2076.4375×1168px — mismo x/y de origen pero cajas
+// de tamaño totalmente distinto (el compare quedaba "partido" a la mitad visualmente).
+// Causa raíz: `.mk-lightbox[data-fit='contain'] .mk-lightbox__media :is(img, video)`
+// (specificity 0,3,1) usaba un combinador DESCENDIENTE que alcanzaba las imágenes del
+// compare dos niveles más abajo (`.mk-compare > .mk-compare__before|__after > img`),
+// ganándole a la regla propia del compare `.mk-compare__before img, .mk-compare__after
+// img { width:100%; height:auto }` (specificity 0,1,1). Cada lado del compare quedaba
+// entonces dimensionado de forma INDEPENDIENTE según su propio algoritmo de tamaño por
+// defecto: el lado `before` (un <img> de consumidor con `srcSet`/`sizes="1000px"`
+// pensado para el layout embebido) usaba ese `sizes` como ancho especificado, mientras
+// el lado `after` (un <img> plano que MediaLightbox arma vía `pickFullscreenSrc`, sin
+// `sizes`) usaba su tamaño intrínseco (3200×1800) recortado por max-width/max-height —
+// dos cajas distintas aunque el aspect ratio de ambos assets (portrait.webp/portrait-hd.webp)
+// sea idéntico (16:9). jsdom no resuelve cascada real de `:is()`/combinadores contra
+// hojas de estilo reales ni layout (%, vw, dvh), así que el test ancla el mecanismo en
+// el texto fuente: el combinador debe ser HIJO DIRECTO (`>`), no descendiente, para que
+// esta regla solo alcance el <img>/<video> suelto de los casos `media`/`children` (donde
+// SÍ es hijo directo de `.mk-lightbox__media`) y nunca las imágenes anidadas de `compare`.
+describe('MediaLightbox data-fit: no dimensiona las imágenes del compare por separado (CSS, no ejercitable por jsdom)', () => {
+  const css = readFileSync(stylesPath, 'utf-8');
+
+  it.each(['contain', 'cover', 'actual'] as const)(
+    "data-fit='%s' usa combinador de hijo directo (>) entre .mk-lightbox__media y :is(img, video)",
+    (fit) => {
+      const descendantLeak = new RegExp(
+        `\\.mk-lightbox\\[data-fit='${fit}'\\]\\s+\\.mk-lightbox__media\\s+:is\\(img,\\s*video\\)`,
+      );
+      const directChild = new RegExp(
+        `\\.mk-lightbox\\[data-fit='${fit}'\\]\\s+\\.mk-lightbox__media\\s*>\\s*:is\\(img,\\s*video\\)`,
+      );
+      expect(css).not.toMatch(descendantLeak);
+      expect(css).toMatch(directChild);
+    },
+  );
+});

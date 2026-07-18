@@ -369,8 +369,22 @@
   cursor: grabbing;
 }
 
-/* El viewport es inset:0 sobre el overlay fixed → 100vw/100dvh equivalen a su tamaño. */
-.mk-lightbox[data-fit='contain'] .mk-lightbox__media :is(img, video) {
+/* El viewport es inset:0 sobre el overlay fixed → 100vw/100dvh equivalen a su tamaño.
+   Combinador de HIJO DIRECTO (>), no descendiente: con `compare` el <img>/<video>
+   real vive dos niveles más abajo (.mk-compare > .mk-compare__before|__after > img),
+   nunca como hijo directo de .mk-lightbox__media (eso solo pasa en los casos
+   `media`/`children`, ver JSX de MediaLightboxContent). Bug F1 (F3.7): con el
+   descendiente `.mk-lightbox__media :is(img, video)` esta regla (specificity 0,3,1)
+   le ganaba a la regla del compare `.mk-compare__after img` (0,1,1) y dimensionaba
+   CADA lado del compare por separado según su propio `sizes`/tamaño intrínseco —
+   el lado `before` (con `sizes` fijado para el layout embebido, ~1000px) terminaba
+   en una caja de tamaño completamente distinto al lado `after` (sin `sizes`, hasta
+   ~2076×1168px medido en navegador real), desalineando el compare en fullscreen.
+   Con `>` esta regla solo alcanza el <img>/<video> suelto de `media`/`children`, y
+   el compare vuelve a gobernarse únicamente por sus propias reglas
+   `.mk-compare__before img, .mk-compare__after img` (ambos lados comparten la MISMA
+   caja: `.mk-compare__after` es absolute+inset:0 sobre `.mk-compare__before`). */
+.mk-lightbox[data-fit='contain'] .mk-lightbox__media > :is(img, video) {
   max-width: calc(100vw - 2rem);
   max-height: calc(100dvh - 2rem);
   width: auto;
@@ -378,13 +392,13 @@
   border-radius: var(--mk-radius);
 }
 
-.mk-lightbox[data-fit='cover'] .mk-lightbox__media :is(img, video) {
+.mk-lightbox[data-fit='cover'] .mk-lightbox__media > :is(img, video) {
   width: 100vw;
   height: 100dvh;
   object-fit: cover;
 }
 
-.mk-lightbox[data-fit='actual'] .mk-lightbox__media :is(img, video) {
+.mk-lightbox[data-fit='actual'] .mk-lightbox__media > :is(img, video) {
   max-width: none;
   max-height: none;
   width: auto;
