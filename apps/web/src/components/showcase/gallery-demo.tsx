@@ -163,6 +163,12 @@ function GalleryTile({ item, title, labels, onOpen }: TileProps) {
  * el player quedaría lado a lado y sin tamaño. Por eso el audio se envuelve en su
  * propio contenedor en columna con layout autogestionado (carátula acotada por
  * alto + player de ancho acotado debajo).
+ *
+ * Fix design review T25 (I1): la carátula grande de aquí + la carátula propia de
+ * `GalleryAudioTile` duplicaban la misma imagen y la columna (≈1030px) desbordaba
+ * un viewport de 900px de alto. `GalleryAudioTile` recibe `hideCover` para pintar
+ * solo controles compactos (botón + barra), y la carátula grande baja a
+ * `max-h-[60dvh]` (antes 70dvh) para dejarle sitio.
  */
 function renderLightboxChildren(item: GalleryItem, title: string, labels: GalleryDemoLabels) {
   if (item.type === 'video') {
@@ -174,7 +180,7 @@ function renderLightboxChildren(item: GalleryItem, title: string, labels: Galler
         data-testid="audio-lightbox-content"
         className="flex max-h-full max-w-full flex-col items-center gap-4 overflow-auto"
       >
-        <img src={pickCoverSrc(item)} alt="" className="max-h-[70dvh] w-auto" />
+        <img src={pickCoverSrc(item)} alt="" className="max-h-[60dvh] w-auto" />
         <div className="w-full max-w-sm">
           <GalleryAudioTile
             cover={item.cover}
@@ -185,6 +191,7 @@ function renderLightboxChildren(item: GalleryItem, title: string, labels: Galler
               play: fill(labels.audio.play, title),
               pause: fill(labels.audio.pause, title),
             }}
+            hideCover
           />
         </div>
       </figure>

@@ -10,6 +10,15 @@ type Props = {
   width: number;
   height: number;
   labels: GalleryAudioTileLabels;
+  /**
+   * Omite la carátula y deja solo controles compactos (fix design review T25 I1):
+   * el lightbox de audio ya pinta su propia carátula grande por encima, así que
+   * una segunda instancia de este componente con su propia carátula duplicaba la
+   * imagen y desbordaba el viewport. Con `hideCover` el layout pasa de "carátula +
+   * botón superpuesto" a una fila horizontal botón+barra de ancho completo.
+   * Default `false` (tile de la grid, sin cambios).
+   */
+  hideCover?: boolean;
 };
 
 /**
@@ -30,7 +39,7 @@ type Props = {
  * Los toggles posteriores (ya montado) llaman a `play()`/`pause()`
  * directamente desde el handler.
  */
-export function GalleryAudioTile({ cover, src, width, height, labels }: Props) {
+export function GalleryAudioTile({ cover, src, width, height, labels, hideCover = false }: Props) {
   const [mounted, setMounted] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -68,6 +77,41 @@ export function GalleryAudioTile({ cover, src, width, height, labels }: Props) {
     setProgress(0);
   }
 
+  const audioElement = mounted && (
+    <audio
+      ref={audioRef}
+      src={src}
+      className="hidden"
+      onTimeUpdate={handleTimeUpdate}
+      onEnded={handleEnded}
+    >
+      <track kind="captions" />
+    </audio>
+  );
+
+  if (hideCover) {
+    return (
+      <div className="flex w-full items-center gap-3 rounded-card border border-border bg-surface p-3">
+        <button
+          type="button"
+          aria-label={playing ? labels.pause : labels.play}
+          onClick={handleToggle}
+          className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-fg hover:bg-bg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        >
+          {playing ? <PauseIcon /> : <PlayIcon />}
+        </button>
+        <div aria-hidden className="h-1 flex-1 rounded-full bg-bg">
+          <div
+            data-testid="audio-progress-fill"
+            className="h-full rounded-full bg-accent"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        {audioElement}
+      </div>
+    );
+  }
+
   return (
     <div className="relative overflow-hidden rounded-card">
       <img
@@ -93,17 +137,7 @@ export function GalleryAudioTile({ cover, src, width, height, labels }: Props) {
           style={{ width: `${progress}%` }}
         />
       </div>
-      {mounted && (
-        <audio
-          ref={audioRef}
-          src={src}
-          className="hidden"
-          onTimeUpdate={handleTimeUpdate}
-          onEnded={handleEnded}
-        >
-          <track kind="captions" />
-        </audio>
-      )}
+      {audioElement}
     </div>
   );
 }

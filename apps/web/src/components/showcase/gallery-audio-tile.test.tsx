@@ -70,4 +70,33 @@ describe('GalleryAudioTile', () => {
     const bar = container.querySelector('[data-testid="audio-progress-fill"]');
     expect(bar).toHaveStyle({ width: '0%' });
   });
+
+  describe('hideCover (fix design review T25 I1: lightbox de audio desbordaba el viewport)', () => {
+    it('no renderiza la <img> de carátula', () => {
+      const { container } = render(<GalleryAudioTile {...baseProps} hideCover />);
+      expect(container.querySelector('img')).not.toBeInTheDocument();
+    });
+
+    it('los controles play/pause siguen operativos', () => {
+      const playSpy = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue();
+      const pauseSpy = vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => {});
+      render(<GalleryAudioTile {...baseProps} hideCover />);
+      fireEvent.click(screen.getByRole('button', { name: 'Reproducir Lo-fi' }));
+      expect(playSpy).toHaveBeenCalled();
+      fireEvent.click(screen.getByRole('button', { name: 'Pausar Lo-fi' }));
+      expect(pauseSpy).toHaveBeenCalled();
+    });
+
+    it('la barra de progreso sigue actualizándose con timeupdate', () => {
+      vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue();
+      const { container } = render(<GalleryAudioTile {...baseProps} hideCover />);
+      fireEvent.click(screen.getByRole('button', { name: 'Reproducir Lo-fi' }));
+      const audio = container.querySelector('audio') as HTMLAudioElement;
+      Object.defineProperty(audio, 'duration', { value: 10, configurable: true });
+      Object.defineProperty(audio, 'currentTime', { value: 5, configurable: true });
+      fireEvent.timeUpdate(audio);
+      const bar = container.querySelector('[data-testid="audio-progress-fill"]');
+      expect(bar).toHaveStyle({ width: '50%' });
+    });
+  });
 });

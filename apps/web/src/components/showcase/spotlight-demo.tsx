@@ -14,8 +14,14 @@ import { SpotlightReveal } from '@nicobehm/media-kit';
 const PORTRAIT_SRC = '/demo/gallery/nbp-retrato-neon.webp';
 /** Variante HD (T14) de la galería: sirve pantallas grandes/retina vía srcSet. */
 const PORTRAIT_SRC_SET = `${PORTRAIT_SRC} 1200w, /demo/gallery/nbp-retrato-neon-hd.webp 2560w`;
-/** Figure a ancho completo del contenido (sin grid), en cualquier breakpoint. */
-const FULL_WIDTH_SIZES = '(min-width: 1024px) 1000px, calc(100vw - 3rem)';
+/**
+ * Fix design review T25 (I2): a ancho completo del contenido, el retrato 3:4
+ * renderizaba a 896×1201px — ≈2.4× más alto que las demos vecinas (scrub
+ * 896×504, comparaciones ≈500px) y rompía el ritmo vertical de la sección.
+ * El contenedor ahora acota a `max-w-md` (≈448px de ancho → ≈600px de alto en
+ * 3:4), así que `sizes` refleja ese tope en vez de ancho completo.
+ */
+const PORTRAIT_SIZES = '(min-width: 28rem) 28rem, calc(100vw - 3rem)';
 
 export type SpotlightDemoStrings = {
   /** Nombre accesible del área interactiva del spotlight. */
@@ -41,33 +47,35 @@ type Props = { strings: SpotlightDemoStrings };
 export function SpotlightDemo({ strings }: Props) {
   return (
     <figure className="flex flex-col gap-2">
-      <SpotlightReveal
-        base={
-          <img
-            src={PORTRAIT_SRC}
-            srcSet={PORTRAIT_SRC_SET}
-            sizes={FULL_WIDTH_SIZES}
-            alt={strings.baseAlt}
-            width={1200}
-            height={1608}
-            loading="lazy"
-            style={{ filter: 'grayscale(1)' }}
-          />
-        }
-        reveal={
-          <img
-            src={PORTRAIT_SRC}
-            srcSet={PORTRAIT_SRC_SET}
-            sizes={FULL_WIDTH_SIZES}
-            alt=""
-            width={1200}
-            height={1608}
-            loading="lazy"
-          />
-        }
-        label={strings.label}
-        overlayLabels={{ base: strings.baseBadge, reveal: strings.revealBadge }}
-      />
+      <div className="mx-auto w-full max-w-md">
+        <SpotlightReveal
+          base={
+            <img
+              src={PORTRAIT_SRC}
+              srcSet={PORTRAIT_SRC_SET}
+              sizes={PORTRAIT_SIZES}
+              alt={strings.baseAlt}
+              width={1200}
+              height={1608}
+              loading="lazy"
+              style={{ filter: 'grayscale(1)' }}
+            />
+          }
+          reveal={
+            <img
+              src={PORTRAIT_SRC}
+              srcSet={PORTRAIT_SRC_SET}
+              sizes={PORTRAIT_SIZES}
+              alt=""
+              width={1200}
+              height={1608}
+              loading="lazy"
+            />
+          }
+          label={strings.label}
+          overlayLabels={{ base: strings.baseBadge, reveal: strings.revealBadge }}
+        />
+      </div>
       <figcaption className="text-sm text-fg-muted">{strings.caption}</figcaption>
     </figure>
   );
