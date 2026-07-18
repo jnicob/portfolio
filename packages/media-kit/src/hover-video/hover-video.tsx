@@ -26,7 +26,11 @@ const DEFAULT_DELAY = 300;
  * bloquearla — el toggle explícito (click/Enter/Espacio) siempre funciona igual.
  */
 function hasFinePointer(): boolean {
-  return typeof window === 'undefined' || !window.matchMedia || window.matchMedia('(pointer: fine)').matches;
+  return (
+    typeof window === 'undefined' ||
+    !window.matchMedia ||
+    window.matchMedia('(pointer: fine)').matches
+  );
 }
 
 /**
@@ -36,7 +40,15 @@ function hasFinePointer(): boolean {
  * (Enter/Espacio) o click siempre funciona, incluso con `prefers-reduced-motion`
  * o puntero coarse (donde el hover por sí solo no activa nada).
  */
-export function HoverVideo({ src, poster, label, delay = DEFAULT_DELAY, width, height, className }: HoverVideoProps) {
+export function HoverVideo({
+  src,
+  poster,
+  label,
+  delay = DEFAULT_DELAY,
+  width,
+  height,
+  className,
+}: HoverVideoProps) {
   const [playing, setPlaying] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 

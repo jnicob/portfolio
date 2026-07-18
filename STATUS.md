@@ -12,6 +12,7 @@ bloqueantes/importantes arreglados y re-verificados, code review final (Fable)
 "Ready to merge: Yes".
 
 Fixes de cierre (T29-T31 + orquestador, todos con review):
+
 - **T29**: React #418 en home — `AnimatedMetric` hidrataba `0+` vs SSR `25+` (rama
   server/client en el initializer). Era el console error preexistente de T20.
 - **T30** (fixer consolidado de reviews): `formatLike` ya no corrompe métricas no

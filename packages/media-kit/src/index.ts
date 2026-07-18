@@ -17,10 +17,7 @@ export {
   shouldUseFullSrc,
   type MediaSource,
 } from './media-source';
-export {
-  SpotlightReveal,
-  type SpotlightRevealProps,
-} from './spotlight-reveal/spotlight-reveal';
+export { SpotlightReveal, type SpotlightRevealProps } from './spotlight-reveal/spotlight-reveal';
 export {
   FilterGallery,
   type FilterGalleryProps,

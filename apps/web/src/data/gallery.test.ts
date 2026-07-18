@@ -7,8 +7,7 @@ import type { GalleryItem } from './schemas';
 describe('galleryItems', () => {
   it('hay 16 ítems: 8 imagen / 5 vídeo / 3 audio, ids únicos', () => {
     expect(galleryItems).toHaveLength(16);
-    const count = (type: GalleryItem['type']) =>
-      galleryItems.filter((i) => i.type === type).length;
+    const count = (type: GalleryItem['type']) => galleryItems.filter((i) => i.type === type).length;
     expect(count('image')).toBe(8);
     expect(count('video')).toBe(5);
     expect(count('audio')).toBe(3);

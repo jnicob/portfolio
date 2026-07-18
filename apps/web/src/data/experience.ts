@@ -4,7 +4,10 @@ const entries = [
   {
     id: 'freepik',
     company: 'Freepik',
-    role: { es: 'Ingeniero full-stack — plataforma de APIs', en: 'Full-stack engineer — API platform' },
+    role: {
+      es: 'Ingeniero full-stack — plataforma de APIs',
+      en: 'Full-stack engineer — API platform',
+    },
     start: '2022-07',
     end: null,
     summary: {

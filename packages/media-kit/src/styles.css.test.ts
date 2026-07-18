@@ -43,9 +43,7 @@ describe('SpotlightReveal: la transición vive en el radio, nunca en clip-path (
   const css = readFileSync(stylesPath, 'utf-8');
 
   it('registra --mk-spot-active-radius como <length> animable', () => {
-    const match = css.match(
-      /@property --mk-spot-active-radius\s*\{([^}]*)\}/,
-    );
+    const match = css.match(/@property --mk-spot-active-radius\s*\{([^}]*)\}/);
     expect(match).not.toBeNull();
     const body = match?.[1] ?? '';
     expect(body).toMatch(/syntax:\s*'<length>'/);
@@ -64,7 +62,9 @@ describe('SpotlightReveal: la transición vive en el radio, nunca en clip-path (
     expect(match).not.toBeNull();
     const body = match?.[1] ?? '';
     expect(body).not.toMatch(/transition/);
-    expect(body).toMatch(/clip-path:\s*circle\(var\(--mk-spot-active-radius\) at var\(--mk-spot-x\) var\(--mk-spot-y\)\)/);
+    expect(body).toMatch(
+      /clip-path:\s*circle\(var\(--mk-spot-active-radius\) at var\(--mk-spot-x\) var\(--mk-spot-y\)\)/,
+    );
   });
 
   it('ya no existe el selector [data-active] que sobreescribía clip-path (el radio efectivo ahora lo fija JS)', () => {
@@ -113,7 +113,9 @@ describe('FilterGallery: chips usan custom properties propias, no las de "contro
   });
 
   it('el chip activo usa --mk-filter-active-bg/--mk-filter-active-color, no --mk-handle-*', () => {
-    const match = css.match(/\.mk-filter-gallery__filters button\[aria-pressed='true'\]\s*\{([^}]*)\}/);
+    const match = css.match(
+      /\.mk-filter-gallery__filters button\[aria-pressed='true'\]\s*\{([^}]*)\}/,
+    );
     expect(match).not.toBeNull();
     const body = match?.[1] ?? '';
     expect(body).toMatch(/background:\s*var\(--mk-filter-active-bg\)/);

@@ -997,20 +997,23 @@ describe('CompareSlider — expand reenvía compareMode al lightbox interno (fix
 describe('CompareSlider — side-by-side responsive (v0.6)', () => {
   function mockResizeObserver(width: number) {
     const callbacks: ResizeObserverCallback[] = [];
-    vi.stubGlobal('ResizeObserver', class {
-      constructor(cb: ResizeObserverCallback) {
-        callbacks.push(cb);
-      }
-      observe = (el: Element) =>
-        callbacks.forEach((cb) =>
-          cb(
-            [{ target: el, contentRect: { width } } as unknown as ResizeObserverEntry],
-            this as never,
-          ),
-        );
-      unobserve = () => {};
-      disconnect = () => {};
-    });
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        constructor(cb: ResizeObserverCallback) {
+          callbacks.push(cb);
+        }
+        observe = (el: Element) =>
+          callbacks.forEach((cb) =>
+            cb(
+              [{ target: el, contentRect: { width } } as unknown as ResizeObserverEntry],
+              this as never,
+            ),
+          );
+        unobserve = () => {};
+        disconnect = () => {};
+      },
+    );
   }
 
   afterEach(() => {

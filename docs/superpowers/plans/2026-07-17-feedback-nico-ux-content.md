@@ -5,7 +5,7 @@ Comentarios de revisión manual. Triage vigente (decisión de Nico 2026-07-18):
 - **Sección A (Showcase):** RESUELTA en F3.6 (bloque D, T22-T27 + fixes de cierre T29-T31),
   salvo A6 (galería ampliada) → F3.7.
 - **F3.7 = TODO JUNTO**: sección F (feedback showcase 2026-07-18, abajo) + secciones B-E
-  + A6 + backlog de design/QA de T21 (ver ledger). Brainstorm + plan propios.
+  - A6 + backlog de design/QA de T21 (ver ledger). Brainstorm + plan propios.
 
 ## A. Showcase (F3.6 — arreglar antes del merge)
 
