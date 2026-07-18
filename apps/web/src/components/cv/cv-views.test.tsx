@@ -58,3 +58,14 @@ describe('las 3 vistas del CV', () => {
     expect(timelineList!.children).toHaveLength(experience.length);
   });
 });
+
+describe('CvTimeline — fecha en badge', () => {
+  it('muestra la fecha en badge dentro de la card y no duplicada', () => {
+    render(<CvTimeline locale="es" strings={STRINGS} />);
+    const freepikCard = screen.getByText('Freepik/Magnific').closest('li')!;
+    // El Badge de rango lleva data-testid="timeline-date" (lo añade esta task)
+    expect(within(freepikCard).getByTestId('timeline-date')).toHaveTextContent(/2022/);
+    // ExperienceEntryBlock no vuelve a pintar el rango (hideDates)
+    expect(within(freepikCard).getAllByText(/2022/)).toHaveLength(1);
+  });
+});

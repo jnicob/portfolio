@@ -17,7 +17,9 @@ describe('ExperienceEntryBlock', () => {
   });
 
   it('muestra el rango de fechas con presentLabel cuando end es null', () => {
-    const entry = experience.find((e) => e.end === null)!;
+    // Ninguna entrada real tiene end === null (todas las etapas están cerradas);
+    // se construye una entrada sintética para probar el contrato del componente.
+    const entry = { ...experience[0]!, end: null };
     render(<ExperienceEntryBlock entry={entry} locale="es" presentLabel={PRESENT_LABEL} />);
 
     expect(screen.getByText(`${entry.start} — ${PRESENT_LABEL}`)).toBeInTheDocument();
@@ -46,5 +48,14 @@ describe('ExperienceEntryBlock', () => {
     for (const highlight of entry.highlights) {
       expect(screen.queryByText(highlight.es)).not.toBeInTheDocument();
     }
+  });
+
+  it('con hideDates=true no renderiza el rango de fechas (lo pinta el contenedor)', () => {
+    const entry = experience[0]!;
+    render(
+      <ExperienceEntryBlock entry={entry} locale="es" presentLabel={PRESENT_LABEL} hideDates />,
+    );
+
+    expect(screen.queryByText(`${entry.start} — ${entry.end}`)).not.toBeInTheDocument();
   });
 });

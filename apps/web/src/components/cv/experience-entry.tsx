@@ -9,6 +9,8 @@ type ExperienceEntryBlockProps = {
   presentLabel: string;
   /** Compacta márgenes y oculta los highlights — usado por las vistas compact/timeline (T24). */
   dense?: boolean;
+  /** Omite el rango de fechas — el contenedor lo pinta aparte (Badge del rail, T19). */
+  hideDates?: boolean;
 };
 
 /**
@@ -21,16 +23,19 @@ export function ExperienceEntryBlock({
   locale,
   presentLabel,
   dense = false,
+  hideDates = false,
 }: ExperienceEntryBlockProps) {
   return (
     <article className={cn('flex flex-col', dense ? 'gap-1' : 'gap-2')}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <h3 className="font-semibold text-fg">
-          {entry.role[locale]}, {entry.company}
+          {entry.role[locale]}, <span>{entry.company}</span>
         </h3>
-        <p className="text-sm text-fg-muted">
-          {entry.start} — {entry.end ?? presentLabel}
-        </p>
+        {!hideDates && (
+          <p className="text-sm text-fg-muted">
+            {entry.start} — {entry.end ?? presentLabel}
+          </p>
+        )}
       </div>
       <p className="text-fg-muted">{entry.summary[locale]}</p>
       {!dense && (
