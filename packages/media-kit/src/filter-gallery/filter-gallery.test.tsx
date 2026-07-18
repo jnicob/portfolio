@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { FilterGallery } from './filter-gallery';
 
@@ -44,6 +44,23 @@ const ITEMS = [
   { id: 'b', categories: ['video'], node: <span>B</span> },
   { id: 'c', categories: ['image', 'video'], node: <span>C</span> },
 ];
+
+/**
+ * Stub de `element.animate` que devuelve un handle fake (con `onfinish` capturable
+ * y `cancel` espiable) por cada llamada, en vez de `vi.fn()` a secas: los tests de
+ * salida animada necesitan disparar `onfinish` manualmente y comprobar que una
+ * reentrada cancela el handle en curso.
+ */
+function stubAnimateWithHandles() {
+  const handles: { onfinish: (() => void) | null; cancel: ReturnType<typeof vi.fn> }[] = [];
+  const animate = vi.fn(() => {
+    const handle = { onfinish: null as (() => void) | null, cancel: vi.fn() };
+    handles.push(handle);
+    return handle;
+  });
+  Object.defineProperty(HTMLElement.prototype, 'animate', { configurable: true, value: animate });
+  return handles;
+}
 
 describe('FilterGallery', () => {
   afterEach(() => {
@@ -172,5 +189,76 @@ describe('visibleIds (v0.6)', () => {
     });
     render(<FilterGallery items={ITEMS} filter={null} visibleIds={['a', 'b']} label="G" />);
     expect(animate).not.toHaveBeenCalled();
+  });
+});
+
+describe('exit animation (v0.6)', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+    delete (HTMLElement.prototype as { animate?: unknown }).animate;
+  });
+
+  it('mantiene el item saliente montado hasta que termina el fade-out', () => {
+    const handles = stubAnimateWithHandles();
+    const { rerender } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
+    rerender(<FilterGallery items={ITEMS} filter="video" label="G" />);
+    expect(screen.getByText('A')).toBeInTheDocument(); // saliendo, aún montado
+
+    act(() => handles.forEach((handle) => handle.onfinish?.()));
+    expect(screen.queryByText('A')).not.toBeInTheDocument();
+  });
+
+  it('el item saliente queda fuera del árbol accesible mientras se desvanece', () => {
+    stubAnimateWithHandles();
+    const { rerender } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
+    rerender(<FilterGallery items={ITEMS} filter="video" label="G" />);
+    const exitingItem = screen.getByText('A').closest('li');
+    expect(exitingItem).toHaveAttribute('aria-hidden', 'true');
+    expect(exitingItem).toHaveAttribute('inert');
+  });
+
+  it('con prefers-reduced-motion desmonta inmediatamente (sin fase de salida)', () => {
+    stubReducedMotion(true);
+    const animate = vi.fn();
+    Object.defineProperty(HTMLElement.prototype, 'animate', {
+      configurable: true,
+      value: animate,
+    });
+    const { rerender } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
+    rerender(<FilterGallery items={ITEMS} filter="video" label="G" />);
+    expect(screen.queryByText('A')).not.toBeInTheDocument();
+  });
+
+  it('sin element.animate (sin WAAPI) desmonta inmediatamente', () => {
+    const { rerender } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
+    rerender(<FilterGallery items={ITEMS} filter="video" label="G" />);
+    expect(screen.queryByText('A')).not.toBeInTheDocument();
+  });
+
+  it('si el item saliente vuelve a ser visible antes de terminar, cancela la animación y reaparece accesible', () => {
+    const handles = stubAnimateWithHandles();
+    const { rerender } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
+    rerender(<FilterGallery items={ITEMS} filter="video" label="G" />);
+    expect(screen.getByText('A')).toBeInTheDocument();
+
+    rerender(<FilterGallery items={ITEMS} filter={null} label="G" />);
+    expect(handles[0]?.cancel).toHaveBeenCalled();
+    const item = screen.getByText('A').closest('li');
+    expect(item).not.toHaveAttribute('aria-hidden');
+    expect(item).not.toHaveAttribute('inert');
+
+    // El onfinish del handle cancelado no debe poder desmontarlo retroactivamente.
+    act(() => handles[0]?.onfinish?.());
+    expect(screen.getByText('A')).toBeInTheDocument();
+  });
+
+  it('items no afectados por el filtro siguen sin marcas de salida', () => {
+    stubAnimateWithHandles();
+    const { rerender } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
+    rerender(<FilterGallery items={ITEMS} filter="video" label="G" />);
+    const survivor = screen.getByText('B').closest('li');
+    expect(survivor).not.toHaveAttribute('data-fg-exiting');
+    expect(survivor).not.toHaveAttribute('aria-hidden');
   });
 });
