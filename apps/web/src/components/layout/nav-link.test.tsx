@@ -40,4 +40,13 @@ describe('NavLink', () => {
     const link = screen.getByRole('link', { name: 'CV' });
     expect(link).not.toHaveAttribute('aria-current');
   });
+
+  it('clicar el enlace de sección desde una sub-ruta sí navega', () => {
+    renderNavLink('/projects', 'Proyectos', '/projects/un-slug');
+    const link = screen.getByRole('link', { name: 'Proyectos' });
+    expect(link).toHaveAttribute('aria-current', 'page');
+    const event = createEvent.click(link);
+    fireEvent(link, event);
+    expect(event.defaultPrevented).toBe(false);
+  });
 });
