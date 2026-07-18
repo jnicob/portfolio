@@ -4,7 +4,9 @@
     "home": "Home",
     "cv": "CV",
     "projects": "Projects",
-    "showcase": "Showcase"
+    "showcase": "Showcase",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu"
   },
   "footer": { "github": "GitHub", "linkedin": "LinkedIn" },
   "share": {
