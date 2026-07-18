@@ -49,7 +49,13 @@ export function MoreProjectsCard({ locale, title, countTemplate }: MoreProjectsC
               <li key={p.slug}>{p.title[locale]}</li>
             ))}
           </ul>
-          {remaining > 0 && <p className="text-fg-muted">{countLabel(countTemplate, remaining)}</p>}
+          {remaining > 0 && (
+            // Design review F3.6 T21 ("jerarquía y 8 más"): a igual tamaño que la lista de
+            // preview, el sufijo de conteo competía visualmente con los títulos de proyecto.
+            // text-sm lo baja de peso sin tocar el orden del contenido (nombre accesible
+            // del Link intacto, T30).
+            <p className="text-sm text-fg-muted">{countLabel(countTemplate, remaining)}</p>
+          )}
         </CardContent>
       </Card>
     </Link>

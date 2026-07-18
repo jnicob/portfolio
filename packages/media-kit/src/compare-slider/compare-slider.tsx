@@ -104,10 +104,22 @@ export type CompareSliderProps = {
    * Default `true`.
    */
   pauseOnClick?: boolean;
-  /** Anunciado por el aria-live al pausar. Default `'Comparison paused'`. */
+  /** Anunciado por el aria-live al pausar (hover-pause, C6). Default `'Comparison paused'`. */
   pauseLabel?: string;
-  /** Anunciado por el aria-live al reanudar. Default `'Comparison following pointer'`. */
+  /**
+   * Anunciado por el aria-live al reanudar (hover-pause, C6). Default
+   * `'Comparison following pointer'`.
+   */
   resumeLabel?: string;
+  /**
+   * Texto del switch de `compareMode="blink"` cuando está pausado (design review F3.6
+   * T21, Minor del code review: el switch de blink reutilizaba `pauseLabel`, un nombre
+   * accesible pensado para el hover-pause de C6 — "Comparison paused" no describe lo que
+   * hace este switch). Default `'Blink paused'`.
+   */
+  blinkPauseLabel?: string;
+  /** Texto del switch de `compareMode="blink"` cuando está corriendo. Default `'Blink playing'`. */
+  blinkResumeLabel?: string;
   /**
    * Badges superpuestos en cada lado (paridad C5), esquina inferior izquierda/derecha.
    * `aria-hidden`: el nombre accesible del medio ya lo da el `alt` del `<img>` (interno
@@ -125,7 +137,7 @@ export type CompareSliderProps = {
    * `'onion'` conserva el mismo handle/teclado pero gobierna opacidad en vez de
    * posición del divisor. `'side-by-side'` no tiene slider ni handle: ambos lados
    * se muestran completos (grid). `'blink'` tampoco tiene slider: alterna
-   * before/after cada 800ms con un switch de pausa (reutiliza `pauseLabel`/`resumeLabel`).
+   * before/after cada 800ms con un switch de pausa propio (`blinkPauseLabel`/`blinkResumeLabel`).
    */
   compareMode?: CompareSliderMode;
 };
@@ -180,6 +192,8 @@ export function CompareSlider({
   pauseOnClick = true,
   pauseLabel = 'Comparison paused',
   resumeLabel = 'Comparison following pointer',
+  blinkPauseLabel = 'Blink paused',
+  blinkResumeLabel = 'Blink playing',
   overlayLabels,
   objectFit = 'cover',
   compareMode = 'wipe',
@@ -300,10 +314,12 @@ export function CompareSlider({
   }
 
   function toggleBlinkRunning() {
-    // Mismo patrón que togglePaused: reutiliza pauseLabel/resumeLabel para el
-    // aria-live aunque el switch de blink gobierne "running", no "paused".
+    // Mismo patrón que togglePaused, pero con su propio par de labels
+    // (blinkPauseLabel/blinkResumeLabel): el switch de blink gobierna "running", un
+    // estado distinto del hover-pause de C6, y necesita su propio nombre accesible
+    // (design review F3.6 T21).
     const next = !blinkRunning;
-    setAnnouncement(next ? resumeLabel : pauseLabel);
+    setAnnouncement(next ? blinkResumeLabel : blinkPauseLabel);
     setBlinkRunning(next);
   }
 
@@ -461,7 +477,7 @@ export function CompareSlider({
           data-mk-drag-exempt=""
           onClick={toggleBlinkRunning}
         >
-          {blinkRunning ? pauseLabel : resumeLabel}
+          {blinkRunning ? blinkPauseLabel : blinkResumeLabel}
         </button>
       ) : null}
       {expand ? (

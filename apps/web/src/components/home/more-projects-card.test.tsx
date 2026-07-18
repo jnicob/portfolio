@@ -70,4 +70,21 @@ describe('MoreProjectsCard', () => {
     }
     expect(screen.getByText(`and ${remaining} more projects`)).toBeInTheDocument();
   });
+
+  it('el contador "y N más" baja de peso frente a los títulos (design review F3.6 T21, jerarquía)', () => {
+    render(
+      <NextIntlClientProvider locale="es" messages={es}>
+        <MoreProjectsCard
+          locale="es"
+          title="Todos los proyectos"
+          countTemplate="y {count} proyectos más"
+        />
+      </NextIntlClientProvider>,
+    );
+    const countText = screen.getByText(`y ${remaining} proyectos más`);
+    expect(countText.className).toContain('text-sm');
+    expect(countText.className).toContain('text-fg-muted');
+    // El nombre accesible del link sigue intacto (T30): sigue empezando por el título visible.
+    expect(screen.getByRole('link')).toHaveAccessibleName(/^Todos los proyectos/);
+  });
 });

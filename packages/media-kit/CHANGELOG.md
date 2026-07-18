@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.7.0 — 2026-07-18
+
+### Fixed
+
+- **`CompareSlider`:** the `compareMode="blink"` pause/resume switch had no accessible name of
+  its own — its button text reused `pauseLabel`/`resumeLabel`, which describe the unrelated
+  hover-follow pause (C6, `mode="hover"` + `pauseOnClick`). A screen reader user landing on the
+  blink switch heard "Comparison paused"/"Comparison following pointer", which doesn't describe
+  what the switch does. New optional props `blinkPauseLabel` (default `'Blink paused'`) and
+  `blinkResumeLabel` (default `'Blink playing'`) give it its own stable name; `pauseLabel`/
+  `resumeLabel` keep their original meaning, unchanged for existing consumers (design review
+  F3.6 T21).
+
 ## 0.6.0 — 2026-07-18
 
 ### Added

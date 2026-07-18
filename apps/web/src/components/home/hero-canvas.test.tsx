@@ -292,6 +292,18 @@ describe('HeroCanvas', () => {
     expect(canvas.style.height).toBe('300px');
   });
 
+  it('en reposo (sin puntero) usa 0.35 de alpha por dot — no el 0.15 casi invisible en dark del design review F3.6 T21', () => {
+    stubReducedMotion(false);
+    const ctx = stubContext2D();
+    stubAccentColor('#336699');
+    stubContainerRect({ width: 200, height: 100 });
+
+    render(<HeroCanvas />);
+
+    expect(ctx.fill).toHaveBeenCalled();
+    expect(ctx.globalAlpha).toBe(0.35);
+  });
+
   it('con --color-accent vacío (aún no resuelto), no pinta ningún dot en vez de un color por defecto', () => {
     stubReducedMotion(false);
     const ctx = stubContext2D();

@@ -941,23 +941,39 @@ describe('CompareSlider — compareMode blink (T5)', () => {
     expect(document.querySelector('.mk-compare__divider')).toBeNull();
   });
 
-  it('el switch usa pauseLabel/resumeLabel como texto según el estado', () => {
+  it('el switch usa blinkPauseLabel/blinkResumeLabel como texto según el estado (clave propia, no reutiliza pauseLabel/resumeLabel del hover-pause)', () => {
     render(
       <CompareSlider
         before={<img alt="" src="/a.png" />}
         after={<img alt="" src="/b.png" />}
         compareMode="blink"
-        pauseLabel="Pausar"
-        resumeLabel="Reanudar"
+        pauseLabel="Comparación en pausa"
+        resumeLabel="Comparación siguiendo el puntero"
+        blinkPauseLabel="Pausar parpadeo"
+        blinkResumeLabel="Reanudar parpadeo"
         label="C"
       />,
     );
     const toggle = screen.getByRole('switch');
     expect(toggle).toHaveAttribute('aria-checked', 'true');
-    expect(toggle).toHaveTextContent('Pausar');
+    expect(toggle).toHaveTextContent('Pausar parpadeo');
     fireEvent.click(toggle);
     expect(toggle).toHaveAttribute('aria-checked', 'false');
-    expect(toggle).toHaveTextContent('Reanudar');
+    expect(toggle).toHaveTextContent('Reanudar parpadeo');
+  });
+
+  it('el switch de blink tiene un default propio distinto de pauseLabel/resumeLabel cuando no se pasan blinkPauseLabel/blinkResumeLabel', () => {
+    render(
+      <CompareSlider
+        before={<img alt="" src="/a.png" />}
+        after={<img alt="" src="/b.png" />}
+        compareMode="blink"
+        label="C"
+      />,
+    );
+    const toggle = screen.getByRole('switch');
+    expect(toggle).not.toHaveTextContent('Comparison following pointer');
+    expect(toggle).not.toHaveTextContent('Comparison paused');
   });
 
   it('limpia el interval al desmontar', () => {

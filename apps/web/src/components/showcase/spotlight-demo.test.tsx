@@ -4,28 +4,31 @@ import { SpotlightDemo, type SpotlightDemoStrings } from './spotlight-demo';
 
 const strings: SpotlightDemoStrings = {
   label: 'Reveal color under the spotlight',
-  baseAlt: 'Black and white version of the landscape photo',
+  baseAlt: 'Black and white version of the neon portrait',
   baseBadge: 'B&W',
   revealBadge: 'Color',
   caption: 'SpotlightReveal caption',
 };
 
 describe('SpotlightDemo', () => {
-  it('renders SpotlightReveal with the accessible spotlight role and the landscape photo', () => {
+  it('renders SpotlightReveal with the accessible spotlight role and the neon portrait (gallery T8 asset, design review F3.6 T21: not the same landscape photo as the demos above)', () => {
     render(<SpotlightDemo strings={strings} />);
     const root = screen.getByLabelText(strings.label);
     expect(root).toHaveAttribute('aria-roledescription', 'spotlight');
     const base = screen.getByAltText(strings.baseAlt);
-    expect(base).toHaveAttribute('src', '/demo/landscape.webp');
+    expect(base).toHaveAttribute('src', '/demo/gallery/nbp-retrato-neon.webp');
     expect(base.style.filter).toBe('grayscale(1)');
-    expect(base).toHaveAttribute('width', '1600');
-    expect(base).toHaveAttribute('height', '900');
+    // Dimensiones reales del asset (apps/web/src/data/gallery.ts): 1200×1608, retrato.
+    expect(base).toHaveAttribute('width', '1200');
+    expect(base).toHaveAttribute('height', '1608');
   });
 
-  it('uses the same landscape photo for both base and reveal layers (one asset, one filter)', () => {
+  it('uses the same neon portrait photo for both base and reveal layers (one asset, one filter)', () => {
     const { container } = render(<SpotlightDemo strings={strings} />);
-    const landscapeImages = container.querySelectorAll('img[src="/demo/landscape.webp"]');
-    expect(landscapeImages).toHaveLength(2);
+    const portraitImages = container.querySelectorAll(
+      'img[src="/demo/gallery/nbp-retrato-neon.webp"]',
+    );
+    expect(portraitImages).toHaveLength(2);
   });
 
   it('overlays base/reveal badges using the passed labels', () => {
@@ -39,18 +42,20 @@ describe('SpotlightDemo', () => {
     expect(screen.getByText(strings.caption)).toBeInTheDocument();
   });
 
-  // Perf (T30/qa-B1): mismo fix que MediaKitDemo — landscape.webp es 1600×900, muy por
-  // encima del ancho real de esta figure en mobile. srcSet deja elegir la variante ~840w.
-  it('ambas capas ofrecen una variante ~840w vía srcSet', () => {
+  // Perf (T30/qa-B1): mismo patrón que MediaKitDemo — el asset base (1200w) sirve de
+  // variante ligera; el `-hd` (2560w, T14) sirve pantallas grandes/retina vía srcSet.
+  it('ambas capas ofrecen la variante HD vía srcSet para pantallas grandes/retina', () => {
     const { container } = render(<SpotlightDemo strings={strings} />);
-    const landscapeImages = Array.from(
-      container.querySelectorAll<HTMLImageElement>('img[src="/demo/landscape.webp"]'),
+    const portraitImages = Array.from(
+      container.querySelectorAll<HTMLImageElement>(
+        'img[src="/demo/gallery/nbp-retrato-neon.webp"]',
+      ),
     );
-    expect(landscapeImages).toHaveLength(2);
-    for (const img of landscapeImages) {
+    expect(portraitImages).toHaveLength(2);
+    for (const img of portraitImages) {
       expect(img).toHaveAttribute(
         'srcset',
-        '/demo/landscape-840.webp 840w, /demo/landscape.webp 1600w',
+        '/demo/gallery/nbp-retrato-neon.webp 1200w, /demo/gallery/nbp-retrato-neon-hd.webp 2560w',
       );
       expect(img.getAttribute('sizes')).toBeTruthy();
     }

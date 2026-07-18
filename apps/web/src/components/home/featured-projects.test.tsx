@@ -67,6 +67,25 @@ describe('FeaturedProjects', () => {
     expect(document.querySelectorAll('[data-tilt]')).toHaveLength(featured.length + 1);
   });
 
+  it('con un nº impar de destacados (768px, sm:grid-cols-2), la última card destacada no queda huérfana: spanea 2 columnas en sm y vuelve a 1 en lg (design review F3.6 T21, "card huérfana 768")', () => {
+    // 3 destacados en un grid sm:grid-cols-2 lg:grid-cols-3: en el rango sm (640-1024,
+    // incluye 768) la 3ª card quedaba sola en su fila con un hueco vacío al lado.
+    expect(featured.length % 2).toBe(1);
+    renderFeaturedProjects();
+    const lastFeatured = featured[featured.length - 1]!;
+    const lastLink = screen.getByRole('link', { name: lastFeatured.title.en });
+    const tiltWrapper = lastLink.closest('[data-tilt]') as HTMLElement;
+    expect(tiltWrapper.className).toContain('sm:col-span-2');
+    expect(tiltWrapper.className).toContain('lg:col-span-1');
+    // El resto de destacadas NO llevan este span extra.
+    const otherFeatured = featured.slice(0, -1);
+    for (const project of otherFeatured) {
+      const link = screen.getByRole('link', { name: project.title.en });
+      const wrapper = link.closest('[data-tilt]') as HTMLElement;
+      expect(wrapper.className).not.toContain('sm:col-span-2');
+    }
+  });
+
   it('la celda de MoreProjectsCard conserva su column-span del grid al envolverla en TiltCard', () => {
     renderFeaturedProjects();
     const moreLink = screen.getByRole('link', { name: /all projects/i });

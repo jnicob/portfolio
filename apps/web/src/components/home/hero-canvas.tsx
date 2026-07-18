@@ -7,7 +7,14 @@ const GRID_STEP_PX = 24;
 const POINTER_RADIUS_PX = 140;
 const BASE_DOT_RADIUS_PX = 1;
 const MAX_DOT_RADIUS_PX = 2.5;
-const BASE_DOT_ALPHA = 0.15;
+// Con 0.15 el grid en reposo quedaba casi invisible en dark (design review
+// F3.6 T21, finding "canvas dark en reposo"): el degradado de --color-accent
+// sobre el fondo oscuro necesita más alpha base para leerse como textura sin
+// puntero encima. 0.35 iguala el "piso" que ya usaba el propio elemento
+// <canvas> (ver `opacity-[0.35]` más abajo) — mismo valor en ambos temas
+// (verificado en dev: en light no se vuelve chillón, sigue siendo un fondo
+// sutil de puntos).
+const BASE_DOT_ALPHA = 0.35;
 const MAX_DEVICE_PIXEL_RATIO = 2;
 
 type PointerPosition = { x: number; y: number };

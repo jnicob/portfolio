@@ -15,6 +15,8 @@ const strings: CompareModesDemoStrings = {
   compareLabel: 'Compare before and after (mode switcher)',
   pauseLabel: 'Comparison paused',
   resumeLabel: 'Comparison following pointer',
+  blinkPauseLabel: 'Pause blink',
+  blinkResumeLabel: 'Resume blink',
   caption: 'compareMode demo caption',
 };
 
@@ -65,6 +67,17 @@ describe('CompareModesDemo', () => {
     await user.click(screen.getByRole('button', { name: strings.modeLabels.wipe }));
     await user.click(screen.getByRole('button', { name: strings.modeLabels.blink }));
     expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'true');
+  });
+
+  it('the blink toggle uses its own strings.blinkPauseLabel/blinkResumeLabel, not pauseLabel/resumeLabel (design review F3.6 T21)', async () => {
+    const user = userEvent.setup();
+    renderDemo();
+    await user.click(screen.getByRole('button', { name: strings.modeLabels.blink }));
+    const blinkSwitch = screen.getByRole('switch');
+    expect(blinkSwitch).toHaveAccessibleName(strings.blinkPauseLabel);
+    expect(blinkSwitch).not.toHaveAccessibleName(strings.pauseLabel);
+    await user.click(blinkSwitch);
+    expect(blinkSwitch).toHaveAccessibleName(strings.blinkResumeLabel);
   });
 
   it('renders the same landscape photo on both sides, desaturating only the "before" side', () => {

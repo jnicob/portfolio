@@ -26,10 +26,19 @@ export type CompareModesDemoStrings = {
   beforeAlt: string;
   /** Nombre accesible del divisor del CompareSlider. */
   compareLabel: string;
-  /** Anunciado/mostrado al pausar el switch de blink. */
+  /** Anunciado al pausar el hover-follow del divisor (modos wipe/onion, C6). */
   pauseLabel: string;
-  /** Anunciado/mostrado al reanudar el switch de blink. */
+  /** Anunciado al reanudar el hover-follow del divisor (modos wipe/onion, C6). */
   resumeLabel: string;
+  /**
+   * Texto del switch de pausa/reanudación del modo blink, cuando está corriendo (pasa a
+   * "pausado" al pulsar). Clave i18n propia (design review F3.6 T21, Minor del code
+   * review): antes reutilizaba `pauseLabel`/`resumeLabel`, pensados para el hover-follow
+   * de wipe/onion, no para este switch.
+   */
+  blinkPauseLabel: string;
+  /** Texto del switch de blink cuando está pausado (pasa a "corriendo" al pulsar). */
+  blinkResumeLabel: string;
   /** Texto del figcaption. */
   caption: string;
 };
@@ -94,6 +103,8 @@ export function CompareModesDemo({ strings }: Props) {
         label={strings.compareLabel}
         pauseLabel={strings.pauseLabel}
         resumeLabel={strings.resumeLabel}
+        blinkPauseLabel={strings.blinkPauseLabel}
+        blinkResumeLabel={strings.blinkResumeLabel}
       />
       <figcaption className="text-sm text-fg-muted">{strings.caption}</figcaption>
     </figure>

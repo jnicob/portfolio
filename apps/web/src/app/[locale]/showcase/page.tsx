@@ -353,6 +353,8 @@ export default async function ShowcasePage({ params }: Props) {
                 compareLabel: t('sections.mediaKit.modesCompareLabel'),
                 pauseLabel: t('sections.mediaKit.modesPauseLabel'),
                 resumeLabel: t('sections.mediaKit.modesResumeLabel'),
+                blinkPauseLabel: t('sections.mediaKit.modesBlinkPauseLabel'),
+                blinkResumeLabel: t('sections.mediaKit.modesBlinkResumeLabel'),
                 caption: t('sections.mediaKit.modesCaption'),
               }}
             />
