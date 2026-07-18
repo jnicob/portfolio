@@ -112,13 +112,19 @@ export type CompareSliderProps = {
    */
   resumeLabel?: string;
   /**
-   * Texto del switch de `compareMode="blink"` cuando está pausado (design review F3.6
-   * T21, Minor del code review: el switch de blink reutilizaba `pauseLabel`, un nombre
+   * Texto del switch de `compareMode="blink"` mientras el blink está corriendo — la
+   * acción disponible es pausarlo (convención acción-botón, no estado: el texto describe
+   * lo que el click hace a continuación, no lo que ya pasó). Design review F3.6 T21,
+   * Minor del code review: el switch de blink reutilizaba `pauseLabel`, un nombre
    * accesible pensado para el hover-pause de C6 — "Comparison paused" no describe lo que
-   * hace este switch). Default `'Blink paused'`.
+   * hace este switch. Default `'Pause blinking'`.
    */
   blinkPauseLabel?: string;
-  /** Texto del switch de `compareMode="blink"` cuando está corriendo. Default `'Blink playing'`. */
+  /**
+   * Texto del switch de `compareMode="blink"` mientras está pausado — la acción
+   * disponible es reanudarlo (misma convención acción-botón que `blinkPauseLabel`).
+   * Default `'Resume blinking'`.
+   */
   blinkResumeLabel?: string;
   /**
    * Badges superpuestos en cada lado (paridad C5), esquina inferior izquierda/derecha.
@@ -192,8 +198,8 @@ export function CompareSlider({
   pauseOnClick = true,
   pauseLabel = 'Comparison paused',
   resumeLabel = 'Comparison following pointer',
-  blinkPauseLabel = 'Blink paused',
-  blinkResumeLabel = 'Blink playing',
+  blinkPauseLabel = 'Pause blinking',
+  blinkResumeLabel = 'Resume blinking',
   overlayLabels,
   objectFit = 'cover',
   compareMode = 'wipe',
@@ -314,12 +320,15 @@ export function CompareSlider({
   }
 
   function toggleBlinkRunning() {
-    // Mismo patrón que togglePaused, pero con su propio par de labels
-    // (blinkPauseLabel/blinkResumeLabel): el switch de blink gobierna "running", un
-    // estado distinto del hover-pause de C6, y necesita su propio nombre accesible
-    // (design review F3.6 T21).
+    // blinkPauseLabel/blinkResumeLabel son acción-botón (describen lo que el switch
+    // hace a continuación, no el estado ya alcanzado): running=true -> el switch
+    // ofrece "pausar" (blinkPauseLabel), running=false -> ofrece "reanudar"
+    // (blinkResumeLabel). El aria-live anuncia esa MISMA acción disponible tras el
+    // toggle, con la misma condición que el render de más abajo (`blinkRunning ?
+    // blinkPauseLabel : blinkResumeLabel`), así el anuncio nunca puede desincronizarse
+    // del texto visible del switch (design review F3.6 T21 + F3.7 T24).
     const next = !blinkRunning;
-    setAnnouncement(next ? blinkResumeLabel : blinkPauseLabel);
+    setAnnouncement(next ? blinkPauseLabel : blinkResumeLabel);
     setBlinkRunning(next);
   }
 

@@ -976,6 +976,25 @@ describe('CompareSlider — compareMode blink (T5)', () => {
     expect(toggle).not.toHaveTextContent('Comparison paused');
   });
 
+  it('los defaults del switch son coherentes con el estado (corriendo -> "Pause blinking", pausado -> "Resume blinking")', () => {
+    render(
+      <CompareSlider
+        before={<img alt="" src="/a.png" />}
+        after={<img alt="" src="/b.png" />}
+        compareMode="blink"
+        label="C"
+      />,
+    );
+    const toggle = screen.getByRole('switch');
+    // Arranca corriendo (sin prefers-reduced-motion): el switch debe anunciar la
+    // acción disponible ("Pause blinking"), no describir el estado al revés.
+    expect(toggle).toHaveAttribute('aria-checked', 'true');
+    expect(toggle).toHaveAccessibleName('Pause blinking');
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-checked', 'false');
+    expect(toggle).toHaveAccessibleName('Resume blinking');
+  });
+
   it('limpia el interval al desmontar', () => {
     vi.useFakeTimers();
     const clearSpy = vi.spyOn(window, 'clearInterval');
