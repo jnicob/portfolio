@@ -1,6 +1,6 @@
 'use client';
 
-import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { prefersReducedMotion } from '../internal/prefers-reduced-motion';
 
 export type FilterGalleryItem = {
@@ -86,13 +86,30 @@ export function FilterGallery({
   const visibleIdSet = new Set(visible.map((item) => item.id));
 
   // Salida animada (v0.6): ids que dejaron de estar en `visible` pero siguen
-  // montados mientras dura su fade-out. `previousVisibleItemIdsRef` guarda los ids
+  // montados mientras dura su fade-out. `previousRenderedIdsRef` guarda los ids
   // visibles del render anterior para detectar altas/bajas dentro del layout
   // effect; `exitAnimationsRef` guarda el handle de `Animation` en curso por id
-  // (para poder cancelarlo si el item vuelve a ser visible antes de terminar).
+  // (para poder cancelarlo si el item vuelve a ser visible antes de terminar, o si
+  // el componente entero se desmonta con una salida en curso).
   const [exitingIds, setExitingIds] = useState<readonly string[]>([]);
-  const previousVisibleItemIdsRef = useRef<readonly string[]>(visible.map((item) => item.id));
+  const previousRenderedIdsRef = useRef<readonly string[]>(visible.map((item) => item.id));
   const exitAnimationsRef = useRef<Map<string, Animation>>(new Map());
+
+  // Cleanup de solo-desmontaje (deps `[]`, no confundir con el layout effect de
+  // abajo que corre en cada render): si FilterGallery se desmonta con alguna
+  // salida en curso, cancela sus `Animation` (libera el efecto sobre el nodo) y
+  // marca `isMountedRef` en false. `dropExiting` respeta ese flag: aunque algún
+  // entorno dispare `onfinish` después de `cancel()` (la spec WAAPI no lo hace,
+  // pero no todos los polyfills la siguen al pie de la letra), no se llama a
+  // `setExitingIds` sobre un componente ya desmontado.
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      for (const anim of exitAnimationsRef.current.values()) anim.cancel();
+    };
+  }, []);
 
   // First (posiciones previas) se capturó en el layout effect del render anterior;
   // aquí solo comparamos con Last (posiciones ya pintadas de este render) cuando el
@@ -116,9 +133,9 @@ export function FilterGallery({
     // saliente todavía no existe en el DOM (el render diferido lo monta en la
     // pasada siguiente).
     const currentIds = visible.map((item) => item.id);
-    const removed = previousVisibleItemIdsRef.current.filter((id) => !visibleIdSet.has(id));
+    const removed = previousRenderedIdsRef.current.filter((id) => !visibleIdSet.has(id));
     const reentered = exitingIds.filter((id) => visibleIdSet.has(id));
-    previousVisibleItemIdsRef.current = currentIds;
+    previousRenderedIdsRef.current = currentIds;
 
     if (reentered.length > 0) {
       for (const id of reentered) {
@@ -195,6 +212,7 @@ export function FilterGallery({
 
   function dropExiting(id: string) {
     exitAnimationsRef.current.delete(id);
+    if (!isMountedRef.current) return;
     setExitingIds((prev) => prev.filter((existing) => existing !== id));
   }
 

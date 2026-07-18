@@ -59,7 +59,7 @@ function stubAnimateWithHandles() {
     return handle;
   });
   Object.defineProperty(HTMLElement.prototype, 'animate', { configurable: true, value: animate });
-  return handles;
+  return { handles, animate };
 }
 
 describe('FilterGallery', () => {
@@ -200,7 +200,7 @@ describe('exit animation (v0.6)', () => {
   });
 
   it('mantiene el item saliente montado hasta que termina el fade-out', () => {
-    const handles = stubAnimateWithHandles();
+    const { handles } = stubAnimateWithHandles();
     const { rerender } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
     rerender(<FilterGallery items={ITEMS} filter="video" label="G" />);
     expect(screen.getByText('A')).toBeInTheDocument(); // saliendo, aún montado
@@ -237,7 +237,7 @@ describe('exit animation (v0.6)', () => {
   });
 
   it('si el item saliente vuelve a ser visible antes de terminar, cancela la animación y reaparece accesible', () => {
-    const handles = stubAnimateWithHandles();
+    const { handles, animate } = stubAnimateWithHandles();
     const { rerender } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
     rerender(<FilterGallery items={ITEMS} filter="video" label="G" />);
     expect(screen.getByText('A')).toBeInTheDocument();
@@ -248,9 +248,39 @@ describe('exit animation (v0.6)', () => {
     expect(item).not.toHaveAttribute('aria-hidden');
     expect(item).not.toHaveAttribute('inert');
 
-    // El onfinish del handle cancelado no debe poder desmontarlo retroactivamente.
+    // El onfinish del handle cancelado es un "stale callback": no debe reabrir una
+    // nueva fase de salida (nada de `data-fg-exiting` de vuelta) ni disparar una
+    // animación extra — sin la guarda de reentrada, dropExiting('a') no rompería
+    // nada visualmente (el item sigue en `visible`), pero esto confirma que ni
+    // siquiera se re-procesa como si acabara de salir.
+    const animateCallsBeforeStaleFinish = animate.mock.calls.length;
     act(() => handles[0]?.onfinish?.());
-    expect(screen.getByText('A')).toBeInTheDocument();
+    expect(animate.mock.calls.length).toBe(animateCallsBeforeStaleFinish);
+    const itemAfterStaleFinish = screen.getByText('A').closest('li');
+    expect(itemAfterStaleFinish).not.toHaveAttribute('data-fg-exiting');
+    expect(itemAfterStaleFinish).not.toHaveAttribute('aria-hidden');
+  });
+
+  it('desmonta con una salida en curso: cancela la Animation pendiente (mecanismo, no solo ausencia de crash)', () => {
+    // Igual que en api-request-player.test.tsx: React 19 vuelve un no-op silencioso
+    // el setState post-unmount (ya no hay warning "state update on an unmounted
+    // component"), así que "no lanza / no hace console.error" NO discrimina por sí
+    // solo si el cleanup deja de cancelar la Animation. La aserción real es que
+    // `cancel()` se invocó en el handle al desmontar; el spy de `console.error` es
+    // una comprobación adicional de que tampoco aparece ningún otro warning.
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { handles } = stubAnimateWithHandles();
+    const { rerender, unmount } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
+    rerender(<FilterGallery items={ITEMS} filter="video" label="G" />);
+    expect(screen.getByText('A')).toBeInTheDocument(); // salida en curso
+
+    unmount();
+    expect(handles[0]?.cancel).toHaveBeenCalled();
+
+    // Un `onfinish` que dispare después de desmontar (algunos entornos lo hacen
+    // incluso tras `cancel()`) no debe lanzar ni imprimir warnings.
+    expect(() => act(() => handles[0]?.onfinish?.())).not.toThrow();
+    expect(consoleError).not.toHaveBeenCalled();
   });
 
   it('items no afectados por el filtro siguen sin marcas de salida', () => {
