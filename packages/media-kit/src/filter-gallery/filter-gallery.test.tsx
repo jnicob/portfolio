@@ -162,4 +162,15 @@ describe('visibleIds (v0.6)', () => {
     rerender(<FilterGallery items={ITEMS} filter={null} visibleIds={['b', 'c']} label="G" />);
     expect(animate).toHaveBeenCalled();
   });
+
+  it('el primer render con visibleIds no anima (SSR-safe)', () => {
+    stubGrowingRects();
+    const animate = vi.fn();
+    Object.defineProperty(HTMLElement.prototype, 'animate', {
+      configurable: true,
+      value: animate,
+    });
+    render(<FilterGallery items={ITEMS} filter={null} visibleIds={['a', 'b']} label="G" />);
+    expect(animate).not.toHaveBeenCalled();
+  });
 });
