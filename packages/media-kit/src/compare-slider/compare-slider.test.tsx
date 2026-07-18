@@ -993,3 +993,53 @@ describe('CompareSlider — expand reenvía compareMode al lightbox interno (fix
     expect(innerCompare).toHaveAttribute('data-compare-mode', 'side-by-side');
   });
 });
+
+describe('CompareSlider — side-by-side responsive (v0.6)', () => {
+  function mockResizeObserver(width: number) {
+    const callbacks: ResizeObserverCallback[] = [];
+    vi.stubGlobal('ResizeObserver', class {
+      constructor(cb: ResizeObserverCallback) {
+        callbacks.push(cb);
+      }
+      observe = (el: Element) =>
+        callbacks.forEach((cb) =>
+          cb(
+            [{ target: el, contentRect: { width } } as unknown as ResizeObserverEntry],
+            this as never,
+          ),
+        );
+      unobserve = () => {};
+      disconnect = () => {};
+    });
+  }
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('marca data-stacked cuando el contenedor es estrecho', () => {
+    mockResizeObserver(360);
+    const { container } = render(
+      <CompareSlider
+        compareMode="side-by-side"
+        before={{ src: '/a.png', alt: 'Before' }}
+        after={{ src: '/b.png', alt: 'After' }}
+        label="SxS"
+      />,
+    );
+    expect(container.querySelector('.mk-compare')).toHaveAttribute('data-stacked', 'true');
+  });
+
+  it('no marca data-stacked con ancho holgado', () => {
+    mockResizeObserver(900);
+    const { container } = render(
+      <CompareSlider
+        compareMode="side-by-side"
+        before={{ src: '/a.png', alt: 'Before' }}
+        after={{ src: '/b.png', alt: 'After' }}
+        label="SxS"
+      />,
+    );
+    expect(container.querySelector('.mk-compare')).not.toHaveAttribute('data-stacked');
+  });
+});

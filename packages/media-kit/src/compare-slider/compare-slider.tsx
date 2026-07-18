@@ -203,6 +203,7 @@ export function CompareSlider({
   const [blinkRunning, setBlinkRunning] = useState(
     () => compareMode === 'blink' && !prefersReducedMotion(),
   );
+  const [stacked, setStacked] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
   // Posición del pointerdown y si hubo arrastre desde entonces (umbral 4px, misma
@@ -227,6 +228,23 @@ export function CompareSlider({
     const id = window.setInterval(() => setBlinkShowsAfter((v) => !v), BLINK_INTERVAL_MS);
     return () => window.clearInterval(id);
   }, [compareMode, blinkRunning]);
+
+  // side-by-side responsive: ResizeObserver para detectar cuando el contenedor
+  // es estrecho (<480px) y apilar verticalmente.
+  const STACK_BREAKPOINT = 480;
+  useEffect(() => {
+    if (compareMode !== 'side-by-side') return;
+    const root = containerRef.current;
+    if (!root || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry) {
+        setStacked(entry.contentRect.width < STACK_BREAKPOINT);
+      }
+    });
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, [compareMode]);
 
   function update(next: number) {
     const clamped = clamp(next);
@@ -376,6 +394,7 @@ export function CompareSlider({
       data-blink-side={compareMode === 'blink' ? (blinkShowsAfter ? 'after' : 'before') : undefined}
       data-paused={paused ? '' : undefined}
       data-loading={loading ? '' : undefined}
+      data-stacked={compareMode === 'side-by-side' && stacked ? 'true' : undefined}
       style={{ ['--mk-compare-pos' as string]: `${position}%` }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
