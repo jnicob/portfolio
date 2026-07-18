@@ -72,10 +72,14 @@ export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
   }
 
   // El combobox ya limpia el filtro con Escape (T22); si ya estaba vacío, esta
-  // Escape cierra el panel en su lugar (misma tecla, dos pasos).
+  // Escape cierra el panel en su lugar (misma tecla, dos pasos). stopPropagation
+  // en ese cierre evita que el mismo keydown siga subiendo y cierre también un
+  // disclosure ancestro (p.ej. el MobileMenu, cuando este switcher vive dentro
+  // de su panel) — cierre por capas, de adentro hacia afuera.
   function handlePanelKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key !== 'Escape') return;
     if (findComboboxInput(panelRef.current)?.value === '') {
+      event.stopPropagation();
       closeAndFocusButton();
     }
   }

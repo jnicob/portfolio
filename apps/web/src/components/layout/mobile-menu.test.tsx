@@ -1,13 +1,26 @@
 import type { ComponentProps } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MobileMenu, type MobileMenuLabels } from './mobile-menu';
 import { NavLink } from './nav-link';
+import { SkinSwitcher, type SkinSwitcherLabels } from './skin-switcher';
 
 vi.mock('@/i18n/navigation', () => ({
   Link: (props: ComponentProps<'a'>) => <a {...props} />,
   usePathname: () => '/',
 }));
+
+const SKIN_LABELS: SkinSwitcherLabels = {
+  button: 'Skin',
+  inputLabel: 'Filter skins',
+  emptyMessage: 'No skins match',
+  skinNames: {
+    'dev-tool': 'Dev tool',
+    editorial: 'Editorial',
+    terminal: 'Terminal',
+    vibrant: 'Vibrant',
+  },
+};
 
 const labels: MobileMenuLabels = { open: 'Abrir menú', close: 'Cerrar menú' };
 
@@ -20,6 +33,11 @@ function renderMenu() {
 }
 
 describe('MobileMenu', () => {
+  afterEach(() => {
+    delete document.documentElement.dataset.skin;
+    localStorage.clear();
+  });
+
   it('abre y cierra con aria-expanded correcto', () => {
     renderMenu();
     const button = screen.getByRole('button', { name: 'Abrir menú' });
@@ -49,6 +67,28 @@ describe('MobileMenu', () => {
     expect(screen.getByRole('button', { name: 'Abrir menú' })).toHaveAttribute(
       'aria-expanded',
       'false',
+    );
+  });
+
+  it('Escape con el dropdown de un switcher anidado abierto solo cierra ese dropdown, no el menú', () => {
+    render(
+      <MobileMenu labels={labels}>
+        <SkinSwitcher labels={SKIN_LABELS} />
+      </MobileMenu>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Abrir menú' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Skin' }));
+    expect(screen.getByRole('combobox', { name: 'Filter skins' })).toBeInTheDocument();
+
+    fireEvent.keyDown(screen.getByRole('combobox', { name: 'Filter skins' }), {
+      key: 'Escape',
+    });
+
+    expect(screen.queryByRole('combobox', { name: 'Filter skins' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Cerrar menú' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
     );
   });
 });
