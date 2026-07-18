@@ -72,6 +72,14 @@ export type MediaLightboxProps = {
   /**
    * Contenido a pantalla completa: <img>, <video> o composición. Ignorado si
    * `compare` o `media` están presentes.
+   *
+   * Restricción (F1, F3.7): para que `data-fit` dimensione el medio (contain/cover/
+   * actual, ver styles.css), el <img>/<video> debe ser HIJO DIRECTO de este slot —
+   * las reglas `data-fit` usan un combinador de hijo directo a propósito, para no
+   * alcanzar (y romper) las imágenes anidadas de `compare`. Una composición
+   * ENVUELTA (<img>/<video> dentro de un <div> u otro wrapper) no recibe ese sizing:
+   * se muestra a su tamaño natural/el que le dé su propio CSS, silenciosamente (misma
+   * clase de bug que F1 si se asume lo contrario).
    */
   children?: ReactNode;
   /**

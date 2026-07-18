@@ -338,9 +338,14 @@
   display: block;
 }
 
-/* T13: compare dentro del lightbox — respeta el mismo tope de tamaño que el media
-   suelto (el slider dimensiona por su propio contenido; data-fit del dialog decide
-   el tamaño del <img>/<video> antes/después dentro de él). */
+/* T13: compare dentro del lightbox — tope de tamaño del contenedor `.mk-compare`
+   respecto a `.mk-lightbox__media` (nunca desborda el visor). Comportamiento REAL
+   post-fix F1 (F3.7, ver comentario en las reglas `data-fit` más abajo): las capas
+   `before`/`after` YA NO las dimensiona `data-fit` (eso solo aplica a un <img>/<video>
+   hijo DIRECTO, caso `media`/`children`) — cada lado del compare se dimensiona
+   exclusivamente por sus propias reglas `.mk-compare__before img, .mk-compare__after
+   img { width:100%; height:auto }`. Este `max-width/max-height:100%` es el único
+   límite que impone el lightbox al compare como un todo. */
 .mk-lightbox__media .mk-compare {
   max-width: 100%;
   max-height: 100%;
