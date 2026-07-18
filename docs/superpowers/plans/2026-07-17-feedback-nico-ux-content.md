@@ -1,13 +1,11 @@
-# Feedback de Nico — 2026-07-17 (tras bloques A+B de F3.6)
+# Feedback de Nico — 2026-07-17 (tras bloques A+B de F3.6) + 2026-07-18 (post-merge)
 
-Comentarios de revisión manual sobre la rama `feature/phase-3.6-showcase-mediakit`.
-Triage propuesto:
+Comentarios de revisión manual. Triage vigente (decisión de Nico 2026-07-18):
 
-- **Sección A (Showcase):** bugs y polish de lo construido en F3.6 → resolver ANTES del
-  merge FF de la fase (tareas nuevas previas a T21, enmendando el plan F3.6).
-- **Secciones B-E (Menú/Inicio/CV/Proyectos):** UX global + contenido → fase nueva
-  (F3.7) con brainstorm + plan propios tras cerrar F3.6. Los ítems marcados `[quick]`
-  son candidatos a colarse en F3.6 si el usuario lo prefiere.
+- **Sección A (Showcase):** RESUELTA en F3.6 (bloque D, T22-T27 + fixes de cierre T29-T31),
+  salvo A6 (galería ampliada) → F3.7.
+- **F3.7 = TODO JUNTO**: sección F (feedback showcase 2026-07-18, abajo) + secciones B-E
+  + A6 + backlog de design/QA de T21 (ver ledger). Brainstorm + plan propios.
 
 ## A. Showcase (F3.6 — arreglar antes del merge)
 
@@ -69,3 +67,32 @@ Triage propuesto:
    "Endpoints públicos" — verificar cifras reales en spec/docs/playground públicos
    antes de actualizar (regla de procedencia de F3: solo datos derivables de fuentes
    públicas).
+
+## F. Showcase — feedback 2026-07-18 (post-merge F3.6, sobre main 287b240)
+
+1. **BUG: retrato desfasado en fullscreen** — el ejemplo del retrato (compare) se ve
+   desfasado/desalineado al abrirlo en pantalla completa.
+2. **Modo "lado a lado" en mobile**: debe pasar a disposición arriba/abajo en pantallas
+   pequeñas (hoy dos mitades horizontales).
+3. **Galería filtrable con ejemplos reales generados con IA** (absorbe y concreta A6):
+   - Imágenes: Google NBP y Seedream 5 Pro. Vídeo: Google Veo y Kling V3 (vía AI API
+     de Freepik/Magnific). Audio: cualquier servicio, puede no ser de IA.
+   - Referencia de cómo generar si hace falta: `~/workspace/freepik/freepik-ai-context/api-b2b`
+     (NO copiar contenido interno al repo; regla de procedencia de F3).
+   - Cada ítem con opción de fullscreen, mostrando SOLO el icono (sin etiqueta de texto).
+4. **Calidad/resolución para fullscreen**: assets con más resolución cuando el usuario
+   tiene pantalla grande/retina; posible preload de la versión HD al hacer hover sobre
+   el botón de fullscreen.
+5. **VideoScrubPreview: mala UX persistente** — no va fluido y no se entiende el sentido
+   del efecto. Mejorarlo; si no se consigue, eliminarlo o sustituirlo por otra demo.
+6. **API player muy lejos del Playground real**: diseño mejorado, simplificado pero con
+   las funcionalidades de más impacto (p.ej. visor de resultados con fullscreen). El Run
+   mostrando el resultado gusta, pero el tamaño de la sección NO debe cambiar (cero
+   desplazamiento vertical al correr/completar).
+
+## Requisito transversal del plan F3.7 (pedido 2026-07-18)
+
+Al final del plan definitivo de F3.7: **listado de ítems con TODAS las features del
+portfolio** y referencias a las decisiones técnicas de diseño / arquitectura /
+performance / seguridad / testing / observabilidad (punteros a specs, planes, decisiones
+en `docs/` y ledger — no duplicar contenido).
