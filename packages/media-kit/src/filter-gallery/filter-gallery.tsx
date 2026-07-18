@@ -26,6 +26,8 @@ export type FilterGalleryProps = {
   label: string;
   /** Duración en ms de la animación FLIP. Default 240. */
   duration?: number;
+  /** Restricción adicional de visibilidad; se interseca con el filtro de categoría. `undefined` = sin restricción. */
+  visibleIds?: readonly string[];
   className?: string;
 };
 
@@ -46,6 +48,7 @@ export function FilterGallery({
   allLabel = 'All',
   label,
   duration = 240,
+  visibleIds,
   className,
 }: FilterGalleryProps) {
   const gridRef = useRef<HTMLUListElement>(null);
@@ -54,22 +57,29 @@ export function FilterGallery({
   // depende del estado declarado más abajo): en el primer render coinciden, así que
   // el layout effect ve `filterChanged = false` y no anima el montaje inicial.
   const previousFilterRef = useRef(filter !== undefined ? filter : defaultFilter);
+  const previousVisibleIdsRef = useRef(visibleIds ? visibleIds.join(' ') : '');
   const [internalFilter, setInternalFilter] = useState(defaultFilter);
 
   const activeFilter = filter !== undefined ? filter : internalFilter;
-  const visible =
-    activeFilter == null ? items : items.filter((item) => item.categories.includes(activeFilter));
+  const visible = items.filter(
+    (item) =>
+      (activeFilter == null || item.categories.includes(activeFilter)) &&
+      (visibleIds === undefined || visibleIds.includes(item.id)),
+  );
 
   // First (posiciones previas) se capturó en el layout effect del render anterior;
   // aquí solo comparamos con Last (posiciones ya pintadas de este render) cuando el
-  // filtro cambió, y volvemos a capturar para el próximo cambio.
+  // filtro o visibleIds cambió, y volvemos a capturar para el próximo cambio.
   useLayoutEffect(() => {
     const grid = gridRef.current;
+    const currentVisibleIdsKey = visibleIds ? visibleIds.join(' ') : '';
     const filterChanged = previousFilterRef.current !== activeFilter;
+    const visibleIdsChanged = previousVisibleIdsRef.current !== currentVisibleIdsKey;
     previousFilterRef.current = activeFilter;
+    previousVisibleIdsRef.current = currentVisibleIdsKey;
     if (!grid) return;
 
-    if (filterChanged && !prefersReducedMotion()) {
+    if ((filterChanged || visibleIdsChanged) && !prefersReducedMotion()) {
       for (const el of grid.querySelectorAll<HTMLElement>('[data-fg-id]')) {
         if (typeof el.animate !== 'function') continue;
         const id = el.dataset.fgId;

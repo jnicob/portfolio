@@ -118,3 +118,48 @@ describe('FilterGallery', () => {
     expect(animate).not.toHaveBeenCalled();
   });
 });
+
+describe('visibleIds (v0.6)', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+    delete (HTMLElement.prototype as { animate?: unknown }).animate;
+  });
+
+  it('interseca visibleIds con el filtro de categoría', () => {
+    const items = [
+      { id: 'a', categories: ['image'], node: <span>A</span> },
+      { id: 'b', categories: ['image'], node: <span>B</span> },
+      { id: 'c', categories: ['video'], node: <span>C</span> },
+    ];
+    render(<FilterGallery items={items} filter="image" visibleIds={['b', 'c']} label="G" />);
+    expect(screen.queryByText('A')).not.toBeInTheDocument();
+    expect(screen.getByText('B')).toBeInTheDocument();
+    expect(screen.queryByText('C')).not.toBeInTheDocument(); // categoría lo excluye
+  });
+
+  it('sin visibleIds mantiene el comportamiento actual', () => {
+    const items = [
+      { id: 'a', categories: ['image'], node: <span>A</span> },
+      { id: 'b', categories: ['image'], node: <span>B</span> },
+      { id: 'c', categories: ['video'], node: <span>C</span> },
+    ];
+    render(<FilterGallery items={items} filter="image" label="G" />);
+    expect(screen.getByText('A')).toBeInTheDocument();
+    expect(screen.getByText('B')).toBeInTheDocument();
+  });
+
+  it('cambia visibleIds dispara element.animate', () => {
+    stubGrowingRects();
+    const animate = vi.fn();
+    Object.defineProperty(HTMLElement.prototype, 'animate', {
+      configurable: true,
+      value: animate,
+    });
+    const { rerender } = render(
+      <FilterGallery items={ITEMS} filter={null} visibleIds={['a', 'b']} label="G" />,
+    );
+    rerender(<FilterGallery items={ITEMS} filter={null} visibleIds={['b', 'c']} label="G" />);
+    expect(animate).toHaveBeenCalled();
+  });
+});
