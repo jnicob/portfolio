@@ -108,7 +108,7 @@ const entries = [
     links: {},
     metrics: [],
     featured: false,
-    caseStudy: false,
+    caseStudy: true,
     date: '2022-07',
   },
   // ——— AccelOne (2020-09 → 2022-10; fecha = inicio de etapa, sin evidencia por proyecto) ———

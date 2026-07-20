@@ -1,0 +1,55 @@
+---
+title: Backoffice de contenido Freepik/Flaticon
+summary: 'Sistemas internos de gestión de recursos gráficos y colaboradores: revisión, catalogación, moderación y publicación (Laravel + Nova y admin histórico), workflow de tareas de producción de contenido (ilustración, vector, PSD, 3D, IA), gestión de packs de iconos de Flaticon, portal fiscal de colaboradores y extensiones Chrome de productividad interna.'
+role: Ingeniero full-stack
+stack: [php, laravel, vue, typescript, kubernetes]
+links: {}
+metrics: []
+# Sin fecha de proyecto evidenciada públicamente: inicio de la etapa Freepik/Magnific (= projects.ts)
+date: '2022-07'
+---
+
+## El contexto
+
+Detrás de un catálogo de millones de recursos gráficos hay una fábrica:
+miles de colaboradores subiendo contenido que alguien tiene que revisar,
+catalogar, moderar y publicar, además de toda una operación interna de
+producción propia. El backoffice de contenido de Freepik/Flaticon es ese
+conjunto de sistemas internos, y este proyecto cubre el trabajo full-stack
+en las piezas que lo componen.
+
+## Revisión, catalogación y publicación
+
+El corazón del backoffice son las herramientas con las que el equipo de
+contenido revisa lo que llega, lo cataloga —metadatos, etiquetas y
+categorías—, modera lo que no cumple las normas y publica lo aprobado.
+Conviven dos generaciones, un admin histórico y su sucesor sobre
+Laravel + Nova. Parte del trabajo fue esa transición: mover flujos al sistema nuevo
+sin parar la operación.
+
+## Workflow de producción de contenido
+
+La producción propia —ilustración, vector, PSD, 3D y, más recientemente,
+contenido generado con IA— se organiza como un workflow de tareas. Los
+encargos pasan por asignación, producción, revisión y entrega, con las
+reglas de cada tipo de contenido codificadas en el sistema. El objetivo es
+que la capacidad de producción sea planificable y medible, no una cola opaca.
+
+## Packs de iconos de Flaticon
+
+Los iconos de Flaticon no viven sueltos: se agrupan en packs coherentes,
+con un mismo estilo y una misma familia. La composición, consistencia,
+versionado y publicación de esos packs tiene su propia herramienta dentro
+del backoffice.
+
+## Portal fiscal de colaboradores
+
+Los colaboradores cobran por su contenido, y eso exige documentación fiscal
+en regla. El portal les permite gestionar sus datos y documentos, con
+validaciones que evitan errores antes de que lleguen a facturación.
+
+## Extensiones Chrome internas
+
+Herramientas de productividad para los equipos internos empaquetadas como
+extensiones de Chrome: atajos sobre las pantallas del backoffice que ahorran
+pasos repetitivos en los flujos de revisión de cada día.
