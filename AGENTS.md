@@ -45,6 +45,7 @@ Read the matching skill in `skills/<name>/SKILL.md` BEFORE working on a matching
 | component, variants, cva, composition, headless, forms, empty state, loading state, error state | `component-patterns` |
 | accessibility, a11y, WCAG, aria, keyboard, focus, contrast, screen reader | `accessibility` |
 | performance, Core Web Vitals, LCP, bundle size, images, code splitting, Lighthouse | `performance` |
+| masonry, justified, galería de alturas variables, columnas responsive, waterfall | `masonry-layouts` |
 | refactor, readability, SOLID, module size, naming, single responsibility, code review | `code-principles` |
 | TypeScript, types, hooks rules, naming, imports, constants, test conventions | `code-conventions` |
 

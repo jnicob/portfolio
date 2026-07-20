@@ -46,6 +46,7 @@ Read the matching skill in `skills/<name>/SKILL.md` BEFORE working on a matching
 | component, variants, cva, composition, headless, forms, empty state, loading state, error state | `component-patterns` |
 | accessibility, a11y, WCAG, aria, keyboard, focus, contrast, screen reader | `accessibility` |
 | performance, Core Web Vitals, LCP, bundle size, images, code splitting, Lighthouse | `performance` |
+| masonry, justified, galería de alturas variables, columnas responsive, waterfall | `masonry-layouts` |
 | refactor, readability, SOLID, module size, naming, single responsibility, code review | `code-principles` |
 | TypeScript, types, hooks rules, naming, imports, constants, test conventions | `code-conventions` |
 
@@ -87,6 +88,7 @@ root sources directly.
 - **code-conventions**: Concrete TypeScript, React hooks and code-style conventions for this repo. Use when writing or reviewing any TypeScript/React code — types, hooks, naming, imports, component internals, test conventions.
 - **code-principles**: Readability, SOLID, single responsibility and module-size rules for this repo. Use when writing, refactoring or reviewing any code.
 - **component-patterns**: Component conventions — composition, cva variants, headless patterns, accessible forms, explicit empty/loading/error states. Use when creating or refactoring any UI component.
+- **masonry-layouts**: Use when building or reviewing gallery layouts — masonry, justified rows, responsive column counts, or any variable-height media grid
 - **nextjs-static-dual**: Next.js 16 App Router with dual runtime — static export (default) and optional Node mode. Use when creating routes/pages, choosing RSC vs client components, or touching next.config, route handlers, images or anything runtime-dependent.
 - **performance**: Core Web Vitals, image discipline, bundle budget and code splitting for a static-first Next.js site. Use when adding dependencies, images, fonts, client components, or investigating slowness.
 - **tailwind-tokens**: Semantic design tokens with Tailwind v4 and dark/light theming via CSS variables + data-theme. Use when styling anything, adding colors, spacing, radii, or working on themes.
