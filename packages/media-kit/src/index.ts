@@ -29,4 +29,4 @@ export {
   VideoScrubPreview,
   type VideoScrubPreviewProps,
 } from './video-scrub-preview/video-scrub-preview';
-export { HoverVideo, type HoverVideoProps } from './hover-video/hover-video';
+export { HoverVideo, type HoverVideoProps } from './hover-video';

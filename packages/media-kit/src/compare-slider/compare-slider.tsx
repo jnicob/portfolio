@@ -14,6 +14,8 @@ import { isMediaSource, preloadFullSources, type MediaSource } from '../media-so
 
 /** Cadencia del alterno before/after en `compareMode="blink"` (spec A3). */
 const BLINK_INTERVAL_MS = 800;
+/** Ancho de contenedor bajo el cual side-by-side pasa a apilado. */
+const STACK_BREAKPOINT = 480;
 
 export type CompareSliderExpand = {
   /** aria-label del dialog del compare-lightbox. */
@@ -251,7 +253,6 @@ export function CompareSlider({
 
   // side-by-side responsive: ResizeObserver para detectar cuando el contenedor
   // es estrecho (<480px) y apilar verticalmente.
-  const STACK_BREAKPOINT = 480;
   useEffect(() => {
     if (compareMode !== 'side-by-side') return;
     const root = containerRef.current;

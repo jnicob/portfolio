@@ -71,6 +71,19 @@ describe('GalleryAudioTile', () => {
     expect(bar).toHaveStyle({ width: '0%' });
   });
 
+  it('sincroniza el estado si el audio se pausa o reanuda desde fuera', () => {
+    vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue();
+    render(<GalleryAudioTile {...baseProps} />);
+    fireEvent.click(screen.getByRole('button', { name: baseProps.labels.play }));
+    const audio = document.querySelector('audio') as HTMLAudioElement;
+
+    fireEvent.pause(audio);
+    expect(screen.getByRole('button', { name: baseProps.labels.play })).toBeInTheDocument();
+
+    fireEvent.play(audio);
+    expect(screen.getByRole('button', { name: baseProps.labels.pause })).toBeInTheDocument();
+  });
+
   describe('hideCover (fix design review T25 I1: lightbox de audio desbordaba el viewport)', () => {
     it('no renderiza la <img> de carátula', () => {
       const { container } = render(<GalleryAudioTile {...baseProps} hideCover />);

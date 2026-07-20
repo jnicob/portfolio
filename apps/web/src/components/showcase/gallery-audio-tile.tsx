@@ -84,6 +84,8 @@ export function GalleryAudioTile({ cover, src, width, height, labels, hideCover 
       className="hidden"
       onTimeUpdate={handleTimeUpdate}
       onEnded={handleEnded}
+      onPlay={() => setPlaying(true)}
+      onPause={() => setPlaying(false)}
     >
       <track kind="captions" />
     </audio>
