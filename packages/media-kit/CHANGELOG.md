@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0 — Unreleased
+
+### Added
+
+- Motor de layouts de `FilterGallery`: `layout="masonry"` y `layout="justified"` con
+  posiciones derivadas de `aspectRatio` por ítem y el orden DOM intacto.
+
 ## 0.6.0 — 2026-07-18
 
 ### Added
