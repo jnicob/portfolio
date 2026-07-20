@@ -1,56 +1,45 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-18 · por /checkpoint (F3.7 cerrada y mergeada; feedback G registrado para F3.8)
+> Actualizado: 2026-07-20 · por /checkpoint (F3.8 con spec+plan aprobados, sin empezar)
 
 ## Ahora
 
-**F3.7 (Showcase v3 + UX global + contenido) CERRADA** y mergeada FF a `main` (+push).
-41 commits, 25 tareas SDD con review por tarea + review final de rama (Fable)
-«Ready to merge: Yes». media-kit **0.6.0** lista para npm (aditiva, cero breaking).
+**F3.8 (Showcase avanzado + detalle de proyectos) PLANIFICADA, sin empezar.**
+Brainstorm cerrado → spec (`2b103f0`) + plan de 15 tareas TDD (`0469e87`). En `main`,
+working tree limpio, rama feature aún NO creada (la crea la Task 1).
 
-Lo entregado:
+Alcance F3.8 (feedback sección G):
 
-- **Galería «Ejemplos generados con IA»**: 16 assets reales (8 imágenes Google NBP +
-  Seedream 5 Pro, 5 vídeos Veo 3.1 + Kling 3.0, 3 pistas Lyria con carátula) con doble
-  variante display/HD, filtro categoría + búsqueda, hover-autoplay, fullscreen con
-  preload HD en hover del botón, audio en lightbox compacto. Todo facade (0 bytes de
-  media pre-interacción).
-- **API player v2**: split estilo playground (request | Preview/Response), cero layout
-  shift medido (310px constantes), preview con fullscreen.
-- **Scrub v3**: asset GOP-8 + chip de tiempo + barra gruesa — **GATE design review:
-  APROBADA** (se queda en el showcase).
-- **media-kit 0.6.0**: fix compare fullscreen (especificidad CSS), side-by-side
-  responsive, FilterGallery visibleIds + salida animada, HoverVideo, scrub v3, props
-  blink dedicadas, fix pointer-capture sobre children interactivos del lightbox.
-- **UX global**: nav activa (aria-current, sin re-navegación en match exacto),
-  hamburguesa mobile (disclosure, fix desync ThemeSwitcher vía MutationObserver).
-- **Contenido**: intro de carrera + badge disponibilidad (sin fecha), skills C2
-  (JS 5★, React/Next 4★, TS 4★, Vue 3★), CV timeline rail (Freepik/Magnific
-  **jul 2022 — jul 2026**), case study nuevo «Integración de servicios automatizada a
-  través de IA» (clean-room), naming Freepik/Magnific, métricas verificadas contra
-  docs públicas (**40+ modelos / 100+ endpoints**, docs.magnific.com), URLs reales.
-
-**Gates**: 605 tests · lint 0 errors · builds duales · verificación en vivo 16/16 ·
-axe 0 violations (12 combos) · Lighthouse showcase **mediana 91 = main** (protocolo
-host-ocioso) · First Load JS +3.9 kB (features nav; demos en chunks diferidos).
+- **G1 — bug tema+idioma** (systematic-debugging): al cambiar idioma tras togglear el
+  tema, el tema se revierte. Hipótesis a confirmar: `<html data-theme="dark">` estático
+  de `[locale]/layout.tsx` se re-aplica en el remount por locale y `AppearanceInit` no
+  restaura por su caché one-shot.
+- **G2 — selector de layouts** en la galería IA: grid (actual) + masonry + justified.
+  Motor JS de columnas balanceadas con **orden DOM = orden de datos** en `FilterGallery`
+  (media-kit **0.6.0 → 0.7.0**, aditivo); máx 4-5 **columnas** responsive. CSS
+  multi-column descartado con evidencia (análisis clean-room de pikaso/fc_freepik_web).
+- **G3 — API player**: selector de endpoint (imagen/vídeo/audio/error) reutilizando
+  assets de la galería; cero layout shift; code viewer/params → F4.
+- **G4/G5 — detalles**: MDX es/en clean-room para «Panel de desarrollador de la API»
+  (con landings públicas) y «Backoffice de contenido Freepik/Flaticon» (5 subproyectos).
+- **Backlog F3.7 (5 de 6)**: onPause sync audio tile, preview dims player, regex
+  protocolo-relativo, STACK_BREAKPOINT a module scope, barrel hover-video.
 
 ## Hecho
 
 - ✅ Fases 0–3.7 (ver roadmap) · media-kit 0.6.0 lista para npm.
+- ✅ F3.8: spec + plan aprobados y commiteados (brainstorm 2026-07-19/20).
 - ✅ Ledger tarea a tarea: `.superpowers/sdd/progress.md`.
 
 ## Siguiente acción
 
-1. **F3.8 — feedback G (2026-07-18)**: ver sección G de
-   [docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md](docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md):
-   posible bug tema+idioma, selector de layouts (masonry) en la galería IA con máx 4-5
-   filas responsive, API player con más ejemplos (vídeo/audio/error), páginas de detalle
-   para «Panel de desarrollador» y «Backoffice de contenido». Empezar con brainstorm
-   corto + plan (prompt de continuación entregado en el checkpoint 2026-07-18).
-2. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf), backlog del
-   review final (onPause sync del audio tile, preview dims del API player, regex
-   protocolo-relativo, STACK_BREAKPOINT a module scope, barrel hover-video, Escape
-   anidado del skin filter).
+1. **Ejecutar F3.8** con `superpowers:subagent-driven-development` sobre el plan
+   [docs/superpowers/plans/2026-07-20-phase-3.8-advanced-showcase-project-details.md](docs/superpowers/plans/2026-07-20-phase-3.8-advanced-showcase-project-details.md),
+   rama `feature/phase-3.8-advanced-showcase-project-details`, TDD tarea a tarea.
+   Empezar por Task 1 (crear rama + repro sistemática de G1). Gate por tarea:
+   `pnpm run lint && pnpm run typecheck && pnpm run test`.
+2. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf) + Escape anidado
+   del skin filter (único ítem del backlog F3.7 que NO entra en F3.8).
 
 ## Pendientes del usuario (no bloqueantes)
 
