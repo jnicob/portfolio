@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { computeMasonryLayout } from './layout-engine';
+import {
+  columnCountForWidth,
+  computeJustifiedLayout,
+  computeMasonryLayout,
+} from './layout-engine';
 
 describe('computeMasonryLayout', () => {
   it('con 1 columna apila en vertical con gap', () => {
@@ -60,5 +64,70 @@ describe('computeMasonryLayout', () => {
     expect(
       computeMasonryLayout({ aspectRatios: [1], containerWidth: 0, columns: 3, gap: 8 }),
     ).toEqual({ boxes: [], totalHeight: 0 });
+  });
+});
+
+describe('computeJustifiedLayout', () => {
+  it('llena el ancho exacto en cada fila completa', () => {
+    const { boxes } = computeJustifiedLayout({
+      aspectRatios: [2, 1.2, 1],
+      containerWidth: 300,
+      targetRowHeight: 100,
+      gap: 10,
+    });
+
+    expect(boxes[0]?.x).toBe(0);
+    expect(boxes[1]?.x).toBeCloseTo((boxes[0]?.width ?? 0) + 10, 5);
+    expect((boxes[0]?.width ?? 0) + 10 + (boxes[1]?.width ?? 0)).toBeCloseTo(300, 5);
+    expect(boxes[0]?.height).toBeCloseTo(boxes[1]?.height ?? 0, 5);
+  });
+
+  it('no estira la última fila incompleta', () => {
+    const { boxes } = computeJustifiedLayout({
+      aspectRatios: [2, 1.2, 1],
+      containerWidth: 300,
+      targetRowHeight: 100,
+      gap: 10,
+    });
+
+    expect(boxes[2]?.height).toBe(100);
+    expect(boxes[2]?.width).toBe(100);
+  });
+
+  it('apila filas con gap y extraHeight y calcula la altura total', () => {
+    const { boxes, totalHeight } = computeJustifiedLayout({
+      aspectRatios: [2, 1.2, 1],
+      containerWidth: 300,
+      targetRowHeight: 100,
+      gap: 10,
+      extraHeight: 20,
+    });
+
+    const row1Height = boxes[0]?.height ?? 0;
+    expect(boxes[2]?.y).toBeCloseTo(row1Height + 10, 5);
+    expect(totalHeight).toBeCloseTo(row1Height + 10 + (boxes[2]?.height ?? 0), 5);
+  });
+
+  it('devuelve un layout vacío para una entrada vacía', () => {
+    expect(
+      computeJustifiedLayout({
+        aspectRatios: [],
+        containerWidth: 300,
+        targetRowHeight: 100,
+        gap: 10,
+      }),
+    ).toEqual({ boxes: [], totalHeight: 0 });
+  });
+});
+
+describe('columnCountForWidth', () => {
+  it('escala de 2 a 5 columnas según el ancho del contenedor', () => {
+    expect(columnCountForWidth(320)).toBe(2);
+    expect(columnCountForWidth(559)).toBe(2);
+    expect(columnCountForWidth(560)).toBe(3);
+    expect(columnCountForWidth(879)).toBe(3);
+    expect(columnCountForWidth(880)).toBe(4);
+    expect(columnCountForWidth(1199)).toBe(4);
+    expect(columnCountForWidth(1200)).toBe(5);
   });
 });

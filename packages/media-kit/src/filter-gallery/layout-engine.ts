@@ -36,3 +36,69 @@ export function computeMasonryLayout(input: {
 
   return { boxes, totalHeight: Math.max(...nextY) - gap };
 }
+
+/**
+ * Agrupa de forma greedy a alto objetivo; las filas completas llenan el ancho
+ * exacto y la última fila incompleta conserva el alto objetivo.
+ */
+export function computeJustifiedLayout(input: {
+  aspectRatios: readonly number[];
+  containerWidth: number;
+  targetRowHeight: number;
+  gap: number;
+  extraHeight?: number;
+}): ComputedLayout {
+  const { aspectRatios, containerWidth, targetRowHeight, gap, extraHeight = 0 } = input;
+  if (aspectRatios.length === 0 || containerWidth <= 0) {
+    return { boxes: [], totalHeight: 0 };
+  }
+
+  const ratios = aspectRatios.map(normalizeRatio);
+  const rows: number[][] = [];
+  let current: number[] = [];
+  let widthAtTarget = 0;
+  ratios.forEach((ratio, index) => {
+    current.push(index);
+    widthAtTarget += targetRowHeight * ratio;
+    if (widthAtTarget + gap * (current.length - 1) >= containerWidth) {
+      rows.push(current);
+      current = [];
+      widthAtTarget = 0;
+    }
+  });
+
+  const lastIsPartial = current.length > 0;
+  if (lastIsPartial) rows.push(current);
+
+  const boxes: LayoutBox[] = [];
+  let y = 0;
+  rows.forEach((row, rowIndex) => {
+    const gaps = gap * (row.length - 1);
+    const rowRatioSum = row.reduce((sum, index) => sum + (ratios[index] ?? 1), 0);
+    const isLast = rowIndex === rows.length - 1 && lastIsPartial;
+    const mediaHeight = isLast ? targetRowHeight : (containerWidth - gaps) / rowRatioSum;
+    let x = 0;
+
+    for (const index of row) {
+      const width = mediaHeight * (ratios[index] ?? 1);
+      boxes[index] = { x, y, width, height: mediaHeight + extraHeight };
+      x += width + gap;
+    }
+    y += mediaHeight + extraHeight + gap;
+  });
+
+  return { boxes, totalHeight: y - gap };
+}
+
+export const MASONRY_COLUMN_THRESHOLDS = [
+  { minWidth: 1200, columns: 5 },
+  { minWidth: 880, columns: 4 },
+  { minWidth: 560, columns: 3 },
+] as const;
+
+export function columnCountForWidth(containerWidth: number): number {
+  for (const { minWidth, columns } of MASONRY_COLUMN_THRESHOLDS) {
+    if (containerWidth >= minWidth) return columns;
+  }
+  return 2;
+}
