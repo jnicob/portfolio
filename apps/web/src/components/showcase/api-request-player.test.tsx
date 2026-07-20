@@ -361,4 +361,68 @@ describe('ApiRequestPlayer', () => {
     expect(screen.getByTestId('player-request-pane')).toHaveClass('h-40');
     expect(screen.getByTestId('player-status-row')).toBeInTheDocument();
   });
+
+  it('la preview de vídeo monta video con poster y controles solo tras done', async () => {
+    stubReducedMotion(true);
+    renderPlayer();
+    fireEvent.change(screen.getByRole('combobox', { name: labels.endpoint }), {
+      target: { value: 'video' },
+    });
+    expect(document.querySelector('video')).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: labels.run }));
+    await screen.findByText(labels.done);
+    fireEvent.click(screen.getByRole('tab', { name: labels.previewTab }));
+
+    const video = document.querySelector('video');
+    expect(video).toHaveAttribute('poster');
+    expect(video).toHaveAttribute('controls');
+  });
+
+  it('la preview de audio muestra carátula y controles compactos', async () => {
+    stubReducedMotion(true);
+    renderPlayer();
+    fireEvent.change(screen.getByRole('combobox', { name: labels.endpoint }), {
+      target: { value: 'audio' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: labels.run }));
+    await screen.findByText(labels.done);
+    fireEvent.click(screen.getByRole('tab', { name: labels.previewTab }));
+
+    expect(screen.getByRole('img', { name: labels.previewAlt })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: labels.audio.play })).toBeInTheDocument();
+  });
+
+  it('la preview de error muestra el estado diseñado sin fullscreen', async () => {
+    stubReducedMotion(true);
+    renderPlayer();
+    fireEvent.change(screen.getByRole('combobox', { name: labels.endpoint }), {
+      target: { value: 'error' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: labels.run }));
+    await screen.findByText(labels.done);
+    fireEvent.click(screen.getByRole('tab', { name: labels.previewTab }));
+
+    expect(screen.getByText(labels.previewError)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: labels.fullscreen })).not.toBeInTheDocument();
+  });
+
+  it('la preview de imagen usa width y height explícitos', async () => {
+    stubReducedMotion(true);
+    renderPlayer();
+    fireEvent.click(screen.getByRole('button', { name: labels.run }));
+    await screen.findByText(labels.done);
+    fireEvent.click(screen.getByRole('tab', { name: labels.previewTab }));
+
+    const preview = apiDemoExamples[0]?.preview;
+    if (!preview || preview.kind !== 'image') throw new Error('Fixture image ausente');
+    expect(screen.getByRole('img', { name: labels.previewAlt })).toHaveAttribute(
+      'width',
+      String(preview.width),
+    );
+    expect(screen.getByRole('img', { name: labels.previewAlt })).toHaveAttribute(
+      'height',
+      String(preview.height),
+    );
+  });
 });

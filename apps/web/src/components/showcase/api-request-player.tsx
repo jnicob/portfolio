@@ -7,11 +7,12 @@ import {
   type MediaLightboxLabels,
   type MediaSource,
 } from '@nicobehm/media-kit';
-import type { ApiDemoExample, ApiDemoExampleId } from '@/data/api-demo';
+import type { ApiDemoExample, ApiDemoExampleId, ApiDemoPreview } from '@/data/api-demo';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
+import { GalleryAudioTile } from './gallery-audio-tile';
 
 const PENDING_MS = 600;
 /** ~800 caracteres/s a 60fps ≈ 13.3 car/frame, redondeado a 14. */
@@ -84,6 +85,93 @@ function FullscreenIcon() {
   );
 }
 
+function renderDonePreview(
+  preview: ApiDemoPreview,
+  labels: ApiRequestPlayerLabels,
+  handlers: { preload: () => void; openLightbox: () => void },
+) {
+  if (preview.kind === 'error') {
+    return (
+      <div className="flex h-64 flex-col items-center justify-center gap-2 rounded-control border border-border bg-surface p-4 text-center">
+        <span aria-hidden className="text-2xl">
+          ⚠
+        </span>
+        <p className="text-sm text-fg-muted">{labels.previewError}</p>
+      </div>
+    );
+  }
+
+  const fullscreenButton = (
+    <button
+      type="button"
+      aria-label={labels.fullscreen}
+      onPointerEnter={handlers.preload}
+      onFocus={handlers.preload}
+      onClick={handlers.openLightbox}
+      className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-surface/80 text-fg backdrop-blur focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+    >
+      <FullscreenIcon />
+    </button>
+  );
+
+  if (preview.kind === 'image') {
+    return (
+      <div className="relative h-64">
+        <img
+          src={preview.src}
+          alt={labels.previewAlt}
+          width={preview.width}
+          height={preview.height}
+          className="h-full w-full object-contain"
+        />
+        {fullscreenButton}
+      </div>
+    );
+  }
+
+  if (preview.kind === 'video') {
+    return (
+      <div className="relative h-64">
+        <video
+          controls
+          muted
+          playsInline
+          src={preview.src}
+          poster={preview.poster}
+          width={preview.width}
+          height={preview.height}
+          aria-label={labels.previewAlt}
+          className="h-full w-full object-contain"
+        />
+        {fullscreenButton}
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative flex h-64 flex-col items-center gap-2 p-2">
+      <img
+        src={preview.cover}
+        alt={labels.previewAlt}
+        width={preview.width}
+        height={preview.height}
+        className="h-40 w-full object-contain"
+      />
+      <div className="w-full max-w-sm">
+        <GalleryAudioTile
+          cover={preview.cover}
+          src={preview.src}
+          width={preview.width}
+          height={preview.height}
+          labels={labels.audio}
+          hideCover
+        />
+      </div>
+      {fullscreenButton}
+    </div>
+  );
+}
+
 /**
  * Demo interactiva de un endpoint (T19, split v2 en T13): columna request
  * (método+path, `<pre>` de la request, botón Run al pie) + columna visor
@@ -122,7 +210,13 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
           fullSrc: example.preview.fullSrc,
           alt: labels.previewAlt,
         }
-      : undefined;
+      : example.preview.kind === 'audio'
+        ? {
+            src: example.preview.cover,
+            fullSrc: example.preview.coverHd,
+            alt: labels.previewAlt,
+          }
+        : undefined;
 
   useEffect(() => {
     return () => {
@@ -270,23 +364,10 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
 
           <TabPanel value="preview">
             {state === 'done' ? (
-              <div className="relative h-64">
-                <img
-                  src={previewMedia?.src}
-                  alt={labels.previewAlt}
-                  className="h-full w-full object-contain"
-                />
-                <button
-                  type="button"
-                  aria-label={labels.fullscreen}
-                  onPointerEnter={preloadPreview}
-                  onFocus={preloadPreview}
-                  onClick={() => setLightboxOpen(true)}
-                  className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-surface/80 text-fg backdrop-blur focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                >
-                  <FullscreenIcon />
-                </button>
-              </div>
+              renderDonePreview(example.preview, labels, {
+                preload: preloadPreview,
+                openLightbox: () => setLightboxOpen(true),
+              })
             ) : (
               <div className="flex h-64 items-center justify-center rounded-control border border-border bg-surface p-4 text-center text-sm text-fg-muted">
                 {labels.previewIdle}
@@ -322,7 +403,18 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
         label={labels.previewAlt}
         labels={labels.lightbox}
         media={previewMedia}
-      />
+      >
+        {example.preview.kind === 'video' ? (
+          <video
+            controls
+            autoPlay
+            muted
+            playsInline
+            src={example.preview.src}
+            poster={example.preview.poster}
+          />
+        ) : null}
+      </MediaLightbox>
     </div>
   );
 }
