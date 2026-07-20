@@ -396,4 +396,21 @@ describe('layout masonry/justified', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(RATIO_ITEMS.length);
     expect(animate).toHaveBeenCalled();
   });
+
+  it('recoloca los supervivientes antes de terminar el fade del ítem saliente', () => {
+    stubResizeObserver();
+    stubAnimateWithHandles();
+    const { rerender } = render(
+      <FilterGallery items={RATIO_ITEMS} filter={null} label="Demo" layout="masonry" />,
+    );
+    fireResize(200);
+
+    rerender(
+      <FilterGallery items={RATIO_ITEMS} filter="video" label="Demo" layout="masonry" />,
+    );
+
+    expect(screen.getByText('A').closest('li')).toHaveAttribute('data-fg-exiting');
+    expect(screen.getByText('B').closest('li')?.style.top).toBe('0px');
+    expect(screen.getByText('C').closest('li')?.style.top).toBe('0px');
+  });
 });

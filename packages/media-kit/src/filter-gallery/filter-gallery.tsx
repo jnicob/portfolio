@@ -2,7 +2,12 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { prefersReducedMotion } from '../internal/prefers-reduced-motion';
-import { columnCountForWidth, computeJustifiedLayout, computeMasonryLayout } from './layout-engine';
+import {
+  columnCountForWidth,
+  computeJustifiedLayout,
+  computeMasonryLayout,
+  type LayoutBox,
+} from './layout-engine';
 
 export type FilterGalleryLayout = 'grid' | 'masonry' | 'justified';
 
@@ -90,6 +95,7 @@ export function FilterGallery({
   const previousFilterRef = useRef(filter !== undefined ? filter : defaultFilter);
   const previousVisibleIdsRef = useRef(visibleIds ? visibleIds.join('\u0000') : '');
   const previousLayoutRef = useRef(layout);
+  const previousLayoutBoxesRef = useRef<Map<string, LayoutBox>>(new Map());
   const [internalFilter, setInternalFilter] = useState(defaultFilter);
 
   const activeFilter = filter !== undefined ? filter : internalFilter;
@@ -118,20 +124,26 @@ export function FilterGallery({
     layout !== 'grid' && containerWidth !== null && containerWidth > 0
       ? layout === 'masonry'
         ? computeMasonryLayout({
-            aspectRatios: renderedItems.map((item) => item.aspectRatio ?? 1),
+            aspectRatios: visible.map((item) => item.aspectRatio ?? 1),
             containerWidth,
             columns: columnCountForWidth(containerWidth),
             gap: LAYOUT_GAP,
             extraHeight: itemExtraHeight,
           })
         : computeJustifiedLayout({
-            aspectRatios: renderedItems.map((item) => item.aspectRatio ?? 1),
+            aspectRatios: visible.map((item) => item.aspectRatio ?? 1),
             containerWidth,
             targetRowHeight: JUSTIFIED_TARGET_ROW_HEIGHT,
             gap: LAYOUT_GAP,
             extraHeight: itemExtraHeight,
           })
       : null;
+  const currentLayoutBoxes = new Map(
+    visible.flatMap((item, index) => {
+      const box = computed?.boxes[index];
+      return box ? [[item.id, box] as const] : [];
+    }),
+  );
 
   // Cleanup de solo-desmontaje (deps `[]`, no confundir con el layout effect de
   // abajo que corre en cada render): si FilterGallery se desmonta con alguna
@@ -255,6 +267,10 @@ export function FilterGallery({
         .filter((el) => !el.hasAttribute('data-fg-exiting'))
         .map((el) => [el.dataset.fgId ?? '', el.getBoundingClientRect()]),
     );
+    previousLayoutBoxesRef.current = new Map([
+      ...previousLayoutBoxesRef.current,
+      ...currentLayoutBoxes,
+    ]);
   });
 
   function select(next: string | null) {
@@ -294,9 +310,11 @@ export function FilterGallery({
         ref={gridRef}
         style={computed ? { height: computed.totalHeight } : undefined}
       >
-        {renderedItems.map((item, index) => {
-          const box = computed?.boxes[index];
+        {renderedItems.map((item) => {
           const isExiting = !visibleIdSet.has(item.id);
+          const box = isExiting
+            ? previousLayoutBoxesRef.current.get(item.id)
+            : currentLayoutBoxes.get(item.id);
           return (
             <li
               key={item.id}
