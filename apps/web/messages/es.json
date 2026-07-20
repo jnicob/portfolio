@@ -206,7 +206,12 @@
       },
       "apiPlayer": {
         "title": "API player",
-        "description": "Simulación de una llamada real: pulsa Run para ver la petición viajar por pending → streaming → done, con la misma demo que reutilizará el playground.",
+        "description": "Simulación de una llamada real: pulsa Run para ver la petición viajar por pending → streaming → done, con ejemplos de imagen, vídeo, audio y error.",
+        "endpointLabel": "Endpoint",
+        "exampleImageLabel": "Imagen — text-to-image",
+        "exampleVideoLabel": "Vídeo — text-to-video",
+        "exampleAudioLabel": "Audio — text-to-music",
+        "exampleErrorLabel": "Error — petición inválida",
         "run": "Run",
         "running": "Ejecutando…",
         "pending": "Pendiente…",
@@ -219,7 +224,10 @@
         "responseTab": "Respuesta",
         "previewIdle": "La vista previa aparecerá aquí al completarse la respuesta",
         "previewAlt": "Vista previa generada por el endpoint de ejemplo",
-        "fullscreen": "Pantalla completa"
+        "fullscreen": "Pantalla completa",
+        "previewError": "La petición falló: revisa la pestaña Respuesta para ver el detalle del error.",
+        "audioPlayLabel": "Reproducir la pista generada",
+        "audioPauseLabel": "Pausar la pista generada"
       }
     },
     "lightboxLabels": {

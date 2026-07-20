@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { MediaLightboxLabels } from '@nicobehm/media-kit';
 import type { Locale } from '@/i18n/routing';
 import type { GalleryDemoLabels } from '@/components/showcase/gallery-demo';
-import { apiDemo } from '@/data/api-demo';
+import { apiDemoExamples } from '@/data/api-demo';
 import { localizedPageMetadata } from '@/lib/seo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -417,8 +417,15 @@ export default async function ShowcasePage({ params }: Props) {
           description={t('sections.apiPlayer.description')}
         >
           <ApiRequestPlayer
-            demo={apiDemo}
+            examples={apiDemoExamples}
             labels={{
+              endpoint: t('sections.apiPlayer.endpointLabel'),
+              examples: {
+                image: t('sections.apiPlayer.exampleImageLabel'),
+                video: t('sections.apiPlayer.exampleVideoLabel'),
+                audio: t('sections.apiPlayer.exampleAudioLabel'),
+                error: t('sections.apiPlayer.exampleErrorLabel'),
+              },
               run: t('sections.apiPlayer.run'),
               running: t('sections.apiPlayer.running'),
               pending: t('sections.apiPlayer.pending'),
@@ -432,6 +439,11 @@ export default async function ShowcasePage({ params }: Props) {
               previewIdle: t('sections.apiPlayer.previewIdle'),
               previewAlt: t('sections.apiPlayer.previewAlt'),
               fullscreen: t('sections.apiPlayer.fullscreen'),
+              previewError: t('sections.apiPlayer.previewError'),
+              audio: {
+                play: t('sections.apiPlayer.audioPlayLabel'),
+                pause: t('sections.apiPlayer.audioPauseLabel'),
+              },
               lightbox: t.raw('lightboxLabels') as MediaLightboxLabels,
             }}
           />

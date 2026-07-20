@@ -7,7 +7,7 @@ import {
   type MediaLightboxLabels,
   type MediaSource,
 } from '@nicobehm/media-kit';
-import type { ApiDemo } from '@/data/api-demo';
+import type { ApiDemoExample, ApiDemoExampleId } from '@/data/api-demo';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,8 @@ const COPY_FEEDBACK_MS = 2000;
 type PlayerState = 'idle' | 'pending' | 'streaming' | 'done';
 
 export type ApiRequestPlayerLabels = {
+  endpoint: string;
+  examples: Record<ApiDemoExampleId, string>;
   run: string;
   running: string;
   /** Etiqueta de estado (font-mono) junto al spinner mientras `state === 'pending'`. */
@@ -42,6 +44,8 @@ export type ApiRequestPlayerLabels = {
   previewAlt: string;
   /** aria-label del botón ⛶ que precarga el HD y abre el lightbox. */
   fullscreen: string;
+  previewError: string;
+  audio: { play: string; pause: string };
   /**
    * Chrome del `MediaLightbox` (zoom, fit, cerrar, ayuda…). Reutiliza el mismo
    * bloque i18n compartido (`lightboxLabels`) que `GalleryDemo`/`MediaKitDemo`:
@@ -51,7 +55,16 @@ export type ApiRequestPlayerLabels = {
   lightbox: MediaLightboxLabels;
 };
 
-type Props = { demo: ApiDemo; labels: ApiRequestPlayerLabels };
+type Props = { examples: readonly ApiDemoExample[]; labels: ApiRequestPlayerLabels };
+
+function selectedExample(
+  examples: readonly ApiDemoExample[],
+  exampleId: ApiDemoExampleId,
+): ApiDemoExample {
+  const example = examples.find((entry) => entry.id === exampleId) ?? examples[0];
+  if (!example) throw new Error('ApiRequestPlayer requiere al menos un ejemplo');
+  return example;
+}
 
 function FullscreenIcon() {
   return (
@@ -86,10 +99,11 @@ function FullscreenIcon() {
  * quedan siempre montados — B2 de F3.6 — así que cambiar de tab tampoco
  * desplaza nada). Nada se monta/desmonta fuera de esas cajas.
  *
- * Reutilizada en F4 con request/response reales del playground (`demo`/`labels`
+ * Reutilizada en F4 con request/response reales del playground (`examples`/`labels`
  * son props, nada hardcodeado en el componente salvo el propio comportamiento).
  */
-export function ApiRequestPlayer({ demo, labels }: Props) {
+export function ApiRequestPlayer({ examples, labels }: Props) {
+  const [exampleId, setExampleId] = useState<ApiDemoExampleId>(examples[0]?.id ?? 'image');
   const [state, setState] = useState<PlayerState>('idle');
   const [responseText, setResponseText] = useState('');
   const [copied, setCopied] = useState(false);
@@ -98,13 +112,17 @@ export function ApiRequestPlayer({ demo, labels }: Props) {
   const copyTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const frame = useRef<number | null>(null);
 
-  const requestText = JSON.stringify(demo.request, null, 2);
-  const fullResponse = JSON.stringify(demo.response, null, 2);
-  const previewMedia: MediaSource = {
-    src: demo.preview.src,
-    fullSrc: demo.preview.fullSrc,
-    alt: labels.previewAlt,
-  };
+  const example = selectedExample(examples, exampleId);
+  const requestText = JSON.stringify(example.request, null, 2);
+  const fullResponse = JSON.stringify(example.response, null, 2);
+  const previewMedia: MediaSource | undefined =
+    example.preview.kind === 'image'
+      ? {
+          src: example.preview.src,
+          fullSrc: example.preview.fullSrc,
+          alt: labels.previewAlt,
+        }
+      : undefined;
 
   useEffect(() => {
     return () => {
@@ -143,6 +161,18 @@ export function ApiRequestPlayer({ demo, labels }: Props) {
     }, PENDING_MS);
   }
 
+  function selectExample(id: ApiDemoExampleId) {
+    clearTimeout(pendingTimeout.current);
+    clearTimeout(copyTimeout.current);
+    if (frame.current != null) cancelAnimationFrame(frame.current);
+    frame.current = null;
+    setCopied(false);
+    setResponseText('');
+    setLightboxOpen(false);
+    setState('idle');
+    setExampleId(id);
+  }
+
   async function copy() {
     if (!navigator.clipboard?.writeText) return;
     try {
@@ -157,7 +187,7 @@ export function ApiRequestPlayer({ demo, labels }: Props) {
 
   /** Precarga el HD de la preview en hover/focus del botón ⛶, antes del click real. */
   function preloadPreview() {
-    preloadFullSources([previewMedia]);
+    if (previewMedia) preloadFullSources([previewMedia]);
   }
 
   const isRunning = state === 'pending' || state === 'streaming';
@@ -167,11 +197,32 @@ export function ApiRequestPlayer({ demo, labels }: Props) {
       {/* Columna request: método+path + <pre> de la request + Run al pie de la columna. */}
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
+          <label className="flex h-9 items-center gap-2">
+            <span className="text-sm text-fg-muted">{labels.endpoint}</span>
+            <select
+              value={exampleId}
+              onChange={(event) => {
+                const selected = examples.find((entry) => entry.id === event.target.value);
+                if (selected) selectExample(selected.id);
+              }}
+              aria-label={labels.endpoint}
+              className="h-9 min-w-0 flex-1 cursor-pointer rounded-control border border-border bg-surface px-2 font-mono text-sm text-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              {examples.map((entry) => (
+                <option key={entry.id} value={entry.id}>
+                  {labels.examples[entry.id]}
+                </option>
+              ))}
+            </select>
+          </label>
           <div className="flex items-center gap-2 font-mono text-sm text-fg-muted">
-            <span className="font-semibold text-fg">{demo.method}</span>
-            <span>{demo.path}</span>
+            <span className="font-semibold text-fg">{example.method}</span>
+            <span>{example.path}</span>
           </div>
-          <pre className="overflow-x-auto whitespace-pre-wrap rounded-control border border-border bg-surface p-4 font-mono text-sm text-fg">
+          <pre
+            data-testid="player-request-pane"
+            className="h-40 overflow-auto whitespace-pre-wrap rounded-control border border-border bg-surface p-4 font-mono text-sm text-fg"
+          >
             {requestText}
           </pre>
         </div>
@@ -201,7 +252,9 @@ export function ApiRequestPlayer({ demo, labels }: Props) {
           )}
           {state === 'done' && (
             <>
-              <Badge variant="accent">{demo.status}</Badge>
+              <Badge variant={example.status.startsWith('4') ? 'neutral' : 'accent'}>
+                {example.status}
+              </Badge>
               <Button variant="ghost" size="sm" onClick={copy}>
                 {copied ? labels.copied : labels.copy}
               </Button>
@@ -219,7 +272,7 @@ export function ApiRequestPlayer({ demo, labels }: Props) {
             {state === 'done' ? (
               <div className="relative h-64">
                 <img
-                  src={previewMedia.src}
+                  src={previewMedia?.src}
                   alt={labels.previewAlt}
                   className="h-full w-full object-contain"
                 />
