@@ -84,6 +84,25 @@ export function applySkin(skin: Skin): void {
   applyAppearance({ theme: currentTheme(), skin });
 }
 
+/**
+ * Re-aplica la apariencia tras un remount del root layout: storage contiene la
+ * elección más reciente del usuario y el fallback conserva la resolución inicial.
+ */
+export function reapplyStoredAppearance(fallback: Appearance): void {
+  let storedTheme: string | null = null;
+  let storedSkin: string | null = null;
+  try {
+    storedTheme = localStorage.getItem(STORAGE_KEYS.theme);
+    storedSkin = localStorage.getItem(STORAGE_KEYS.skin);
+  } catch {
+    /* almacenamiento no disponible: re-aplica el fallback de la primera carga */
+  }
+  applyAppearance({
+    theme: parseValid(themeSchema, storedTheme) ?? fallback.theme,
+    skin: parseValid(skinSchema, storedSkin) ?? fallback.skin,
+  });
+}
+
 export function persistCvView(view: CvView): void {
   try {
     localStorage.setItem(STORAGE_KEYS.cvView, view);

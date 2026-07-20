@@ -1,5 +1,11 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { buildShareUrl, resolveAppearance, applyAppearance, applyTheme } from './appearance';
+import {
+  applyAppearance,
+  applyTheme,
+  buildShareUrl,
+  reapplyStoredAppearance,
+  resolveAppearance,
+} from './appearance';
 
 function resolve(search: string, stored: Partial<Record<'theme' | 'skin' | 'view', string>> = {}) {
   return resolveAppearance({
@@ -43,6 +49,7 @@ describe('resolveAppearance — precedencia URL > storage > default', () => {
 
 describe('applyAppearance / applyTheme', () => {
   afterEach(() => {
+    delete document.documentElement.dataset.theme;
     delete document.documentElement.dataset.skin;
     localStorage.clear();
   });
@@ -72,6 +79,37 @@ describe('applyAppearance / applyTheme', () => {
     } finally {
       Storage.prototype.setItem = original;
     }
+  });
+});
+
+describe('reapplyStoredAppearance', () => {
+  afterEach(() => {
+    delete document.documentElement.dataset.theme;
+    delete document.documentElement.dataset.skin;
+    localStorage.clear();
+  });
+
+  it('re-aplica el tema/skin guardados por encima del fallback', () => {
+    localStorage.setItem('theme', 'light');
+    localStorage.setItem('skin', 'terminal');
+    document.documentElement.dataset.theme = 'dark';
+    delete document.documentElement.dataset.skin;
+
+    reapplyStoredAppearance({ theme: 'dark', skin: 'dev-tool' });
+
+    expect(document.documentElement.dataset.theme).toBe('light');
+    expect(document.documentElement.dataset.skin).toBe('terminal');
+  });
+
+  it('cae al fallback cuando storage está vacío o inválido', () => {
+    localStorage.setItem('theme', 'purple');
+    localStorage.removeItem('skin');
+    document.documentElement.dataset.theme = 'dark';
+
+    reapplyStoredAppearance({ theme: 'light', skin: 'dev-tool' });
+
+    expect(document.documentElement.dataset.theme).toBe('light');
+    expect(document.documentElement.dataset.skin).toBeUndefined();
   });
 });
 

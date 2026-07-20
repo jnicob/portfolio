@@ -1,7 +1,13 @@
 'use client';
 
 import { useEffect } from 'react';
-import { applyAppearance, persistCvView, resolveAppearance, STORAGE_KEYS } from '@/lib/appearance';
+import {
+  applyAppearance,
+  persistCvView,
+  reapplyStoredAppearance,
+  resolveAppearance,
+  STORAGE_KEYS,
+} from '@/lib/appearance';
 import { cvViewSchema } from '@/data/schemas';
 import type { CvView, Skin, Theme } from '@/data/schemas';
 
@@ -29,7 +35,11 @@ type ResolvedAppearance = { theme: Theme; skin: Skin };
 let resolvedOnce: ResolvedAppearance | null = null;
 
 function resolveAndApplyOnce(): void {
-  if (resolvedOnce) return;
+  if (resolvedOnce) {
+    // El remount del root layout puede reimponer sus atributos HTML estáticos.
+    reapplyStoredAppearance(resolvedOnce);
+    return;
+  }
 
   const params = new URLSearchParams(location.search);
   const stored = {
@@ -70,8 +80,9 @@ function currentView(): CvView {
 /**
  * Resuelve y aplica la apariencia (URL > storage > default) tras hidratar, y limpia
  * `theme`/`skin`/`view` de la URL cuando venían presentes, conservando el resto de la query.
- * theme/skin se resuelven una sola vez (ver `resolveAndApplyOnce`); la view se lee fresca
- * de storage en cada montaje y se notifica al `onView` propio de cada instancia.
+ * theme/skin se resuelven una sola vez y se re-aplican desde storage en montajes posteriores
+ * (ver `resolveAndApplyOnce`); la view se lee fresca de storage en cada montaje y se notifica
+ * al `onView` propio de cada instancia.
  */
 export function AppearanceInit({ onView }: Props) {
   useEffect(() => {

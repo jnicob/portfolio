@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { STORAGE_KEYS } from '@/lib/appearance';
 
@@ -97,5 +97,20 @@ describe('AppearanceInit', () => {
     render(<AppearanceInit onView={onView} />);
 
     expect(onView).toHaveBeenCalledWith('compact');
+  });
+
+  it('un segundo montaje restaura el tema guardado tras el remount del root layout', async () => {
+    const AppearanceInit = await importFreshAppearanceInit();
+
+    const first = render(<AppearanceInit />);
+    first.unmount();
+
+    const { applyTheme } = await import('@/lib/appearance');
+    applyTheme('light');
+    document.documentElement.dataset.theme = 'dark';
+
+    render(<AppearanceInit />);
+
+    await waitFor(() => expect(document.documentElement.dataset.theme).toBe('light'));
   });
 });
