@@ -1,57 +1,49 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-20 · por /checkpoint (F3.8 con spec+plan aprobados, sin empezar)
+> Actualizado: 2026-07-20 · por /checkpoint (F3.8 en curso vía Codex, Bloques 1-2 revisados)
 
 ## Ahora
 
-**F3.8 (Showcase avanzado + detalle de proyectos) PLANIFICADA, sin empezar.**
-Brainstorm cerrado → spec (`2b103f0`) + plan de 15 tareas TDD (`0469e87`). En `main`,
-working tree limpio, rama feature aún NO creada (la crea la Task 1).
+**F3.8 (Showcase avanzado + detalle de proyectos) EN CURSO.** Ejecutada por **Codex CLI**
+(interactivo) con **review por bloques por Claude** (design + code) + git/checkpoint. Rama
+`feature/phase-3.8-advanced-showcase-project-details` pusheada a origin; **sin merge a main**
+(se difiere al cierre de fase). HEAD `82dd2c0`, working tree limpio.
 
-Alcance F3.8 (feedback sección G):
-
-- **G1 — bug tema+idioma** (systematic-debugging): al cambiar idioma tras togglear el
-  tema, el tema se revierte. Hipótesis a confirmar: `<html data-theme="dark">` estático
-  de `[locale]/layout.tsx` se re-aplica en el remount por locale y `AppearanceInit` no
-  restaura por su caché one-shot.
-- **G2 — selector de layouts** en la galería IA: grid (actual) + masonry + justified.
-  Motor JS de columnas balanceadas con **orden DOM = orden de datos** en `FilterGallery`
-  (media-kit **0.6.0 → 0.7.0**, aditivo); máx 4-5 **columnas** responsive. CSS
-  multi-column descartado con evidencia (análisis clean-room de pikaso/fc_freepik_web).
-- **G3 — API player**: selector de endpoint (imagen/vídeo/audio/error) reutilizando
-  assets de la galería; cero layout shift; code viewer/params → F4.
-- **G4/G5 — detalles**: MDX es/en clean-room para «Panel de desarrollador de la API»
-  (con landings públicas) y «Backoffice de contenido Freepik/Flaticon» (5 subproyectos).
-- **Backlog F3.7 (5 de 6)**: onPause sync audio tile, preview dims player, regex
-  protocolo-relativo, STACK_BREAKPOINT a module scope, barrel hover-video.
+- **Bloque 1 (T1-7)** ✅ revisado: fix G1 (bug tema+idioma) + motor masonry/justified
+  (media-kit **0.7.0**) + selector de layouts + skill `masonry-layouts`.
+- **Bloque 2 (fixes Review 1 + T8-13)** ✅ revisado: unificación selector, reflow, densidad;
+  API player con 4 ejemplos + previews/fullscreen; detalles G4/G5; backlog mecánico.
+- Code reviews: 0 Critical / 0 Important. Design reviews: fix-first.
 
 ## Hecho
 
-- ✅ Fases 0–3.7 (ver roadmap) · media-kit 0.6.0 lista para npm.
-- ✅ F3.8: spec + plan aprobados y commiteados (brainstorm 2026-07-19/20).
-- ✅ Ledger tarea a tarea: `.superpowers/sdd/progress.md`.
+- ✅ Fases 0–3.7 (ver roadmap) · media-kit 0.6.0 en npm-ready (0.7.0 en la feature branch).
+- ✅ F3.8 Bloques 1-2 (T1-13 + fixes Review 1): commits hasta `82dd2c0`, pusheados a origin.
+- ✅ Veredictos de review por bloque en el ledger `.superpowers/sdd/progress.md`.
 
 ## Siguiente acción
 
-1. **Ejecutar F3.8** con `superpowers:subagent-driven-development` sobre el plan
-   [docs/superpowers/plans/2026-07-20-phase-3.8-advanced-showcase-project-details.md](docs/superpowers/plans/2026-07-20-phase-3.8-advanced-showcase-project-details.md),
-   rama `feature/phase-3.8-advanced-showcase-project-details`, TDD tarea a tarea.
-   Empezar por Task 1 (crear rama + repro sistemática de G1). Gate por tarea:
-   `pnpm run lint && pnpm run typecheck && pnpm run test`.
-2. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf) + Escape anidado
-   del skin filter (único ítem del backlog F3.7 que NO entra en F3.8).
+1. **Bloque 3 (mañana, vía Codex) — Fase A:** arreglar los 3 Majors de UI del Review 2
+   (badge error → `danger`; viñetas de `prose-portfolio`; salto de reflow en `grid`; detalle
+   en el ledger «F3.8 REVIEW 2»). Luego **T14-15** del plan
+   [docs/superpowers/plans/2026-07-20-phase-3.8-advanced-showcase-project-details.md](docs/superpowers/plans/2026-07-20-phase-3.8-advanced-showcase-project-details.md):
+   inventario transversal + cierre. Gate por tarea: `pnpm run lint && pnpm run typecheck && pnpm run test`.
+2. **Review final por Claude** (design-reviewer + qa-a11y-perf + code-reviewer) sobre la rama
+   completa → **merge FF a main** + cierre (roadmap ✅, feedback G resuelto, STATUS a F4).
+3. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf) + Escape anidado del
+   skin filter (único ítem del backlog F3.7 fuera de F3.8).
 
 ## Pendientes del usuario (no bloqueantes)
 
 - Dominio definitivo + `NEXT_PUBLIC_SITE_URL` (el build avisa si falta).
-- Publicar `@nicobehm/media-kit` 0.6.0 en npm.
-- Activar el mensaje de disponibilidad cuando toque (ya visible tras F3.7 — decidir
-  momento del deploy).
+- Publicar `@nicobehm/media-kit` en npm.
+- Momento del deploy del badge de disponibilidad (visible desde F3.7).
 - Upgrade Node 22 (retirar pins de `docs/decisions/2026-07-10-dependency-pins.md`).
+- ¿Subir el skill `masonry-layouts` a ai-config? (recomendado; no propagado aún).
 
 ## Fuentes de verdad
 
-- Plan F3.7 (cerrado): [docs/superpowers/plans/2026-07-18-phase-3.7-showcase-ux-content.md](docs/superpowers/plans/2026-07-18-phase-3.7-showcase-ux-content.md) — incluye el **inventario transversal de features + punteros**
-- Spec F3.7: [docs/superpowers/specs/2026-07-18-phase-3.7-showcase-ux-content-design.md](docs/superpowers/specs/2026-07-18-phase-3.7-showcase-ux-content-design.md)
+- Plan F3.8: [docs/superpowers/plans/2026-07-20-phase-3.8-advanced-showcase-project-details.md](docs/superpowers/plans/2026-07-20-phase-3.8-advanced-showcase-project-details.md)
+- Spec F3.8 (§0 log del brainstorm): [docs/superpowers/specs/2026-07-19-phase-3.8-advanced-showcase-project-details-design.md](docs/superpowers/specs/2026-07-19-phase-3.8-advanced-showcase-project-details-design.md)
 - Feedback Nico (A-F hechos; **G → F3.8**): [docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md](docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md)
 - Roadmap: [docs/superpowers/plans/2026-07-10-portfolio-roadmap.md](docs/superpowers/plans/2026-07-10-portfolio-roadmap.md) · Ledger SDD: `.superpowers/sdd/progress.md`
