@@ -70,6 +70,16 @@ describe('GalleryDemo', () => {
     expect(masonryButton).toHaveAttribute('aria-pressed', 'true');
   });
 
+  it('comparte el lenguaje visual de píldora y relleno activo de los filtros', () => {
+    render(<GalleryDemo locale="es" labels={labels} />);
+
+    const gridButton = screen.getByRole('button', { name: labels.layouts.grid });
+    expect(gridButton.className).toContain('rounded-full');
+    expect(gridButton.className).toContain('bg-(--mk-filter-bg)');
+    expect(gridButton.className).toContain('aria-pressed:bg-accent');
+    expect(gridButton.className).toContain('aria-pressed:text-accent-fg');
+  });
+
   it('la búsqueda por modelo restringe el grid', () => {
     render(<GalleryDemo locale="es" labels={labels} />);
     fireEvent.change(screen.getByRole('searchbox', { name: labels.searchLabel }), {

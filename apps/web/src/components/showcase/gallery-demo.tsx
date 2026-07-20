@@ -263,7 +263,7 @@ export function GalleryDemo({ locale, labels }: Props) {
             type="button"
             aria-pressed={layout === id}
             onClick={() => setLayout(id)}
-            className="cursor-pointer rounded-control border border-border px-3 py-1.5 text-sm text-fg transition-colors hover:bg-surface aria-pressed:border-accent aria-pressed:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            className="cursor-pointer rounded-full border-0 bg-(--mk-filter-bg) px-3 py-1.5 text-sm text-(--mk-filter-color) transition-colors hover:bg-(--mk-filter-hover-bg) aria-pressed:bg-accent aria-pressed:text-accent-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             {labels.layouts[id]}
           </button>
