@@ -90,7 +90,7 @@ const entries = [
     links: { live: 'https://www.freepik.com/api' },
     metrics: [],
     featured: false,
-    caseStudy: false,
+    caseStudy: true,
     date: '2022-07',
   },
   {

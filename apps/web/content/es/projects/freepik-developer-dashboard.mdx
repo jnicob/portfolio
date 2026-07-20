@@ -1,0 +1,54 @@
+---
+title: Panel de desarrollador de la API
+summary: 'Dashboard del desarrollador de la API de Freepik/Magnific: uso y presupuesto con gráficos de consumo, límites de peticiones, facturación y gestión de API keys, incluidas reglas para miembros enterprise.'
+role: Ingeniero frontend
+stack: [nextjs, react, typescript, react-query]
+links:
+  docs: https://docs.magnific.com/introduction
+metrics: []
+# Sin fecha de proyecto evidenciada públicamente: inicio de la etapa Freepik/Magnific (= projects.ts)
+date: '2022-07'
+---
+
+## El producto
+
+Quien construye sobre la API de Freepik/Magnific necesita algo más que
+endpoints: necesita saber cuánto consume, cuánto le queda, qué está
+fallando y cómo gestionar sus credenciales. El panel de desarrollador es
+esa capa de gestión y estadísticas: la cara operativa de la plataforma
+para clientes B2B y para desarrolladores individuales, integrada en el
+hub del desarrollador y en el área de perfil de la cuenta.
+
+## Uso y presupuesto
+
+- Gráficos de consumo por periodo para seguir la actividad de cada
+  integración de un vistazo, con el detalle por servicio.
+- Límites de peticiones visibles y contextualizados: cada plan tiene los
+  suyos, y el panel muestra en qué punto está el cliente antes de que un
+  límite se convierta en un error.
+- Presupuesto de créditos: consumo acumulado frente a lo contratado, para
+  anticipar la necesidad de ampliar antes de quedarse sin crédito.
+
+## API keys y equipos
+
+- Alta, rotación y revocación de API keys sin pasar por soporte.
+- Reglas para miembros enterprise: los equipos grandes gestionan quién
+  puede crear claves y consumir crédito, con la organización —no el
+  individuo— como unidad de facturación.
+
+## B2B: créditos y planes
+
+El mismo panel sirve a un desarrollador individual con un plan de entrada
+y a una organización con contrato enterprise: la vista de consumo, los
+límites y la facturación se adaptan al plan contratado. Ese ajuste por
+plan —qué se muestra, qué se puede ampliar, dónde están los topes— es
+parte del producto, no una capa comercial añadida.
+
+## La plataforma, de una pieza
+
+El panel es la última milla de la [plataforma de APIs](./freepik-api-platform):
+lo que el desarrollador contrata y consume ahí es lo que explican las
+landings públicas.
+
+- [Documentación](https://docs.magnific.com/introduction) — referencia pública de la API.
+- [Precios](https://www.magnific.com/pricing) — planes y créditos.

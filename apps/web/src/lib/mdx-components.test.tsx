@@ -2,18 +2,26 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { mdxComponents } from './mdx-components';
 
-describe('mdxComponents', () => {
-  it('los enlaces externos del MDX abren en pestaña nueva', () => {
-    const A = mdxComponents.a!;
-    render(<A href="https://example.com">Ext</A>);
-    const link = screen.getByRole('link', { name: 'Ext' });
-    expect(link).toHaveAttribute('target', '_blank');
-    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
-  });
+const MdxLink = mdxComponents.a;
 
-  it('los enlaces internos no', () => {
-    const A = mdxComponents.a!;
-    render(<A href="/es/projects">Int</A>);
-    expect(screen.getByRole('link', { name: 'Int' })).not.toHaveAttribute('target');
-  });
+describe('ExternalAwareLink', () => {
+  it.each(['https://example.com', 'http://example.com', '//example.com'])(
+    'marca %s como externo con rel seguro',
+    (href) => {
+      render(<MdxLink href={href}>x</MdxLink>);
+      const link = screen.getByRole('link', { name: 'x' });
+      expect(link).toHaveAttribute('target', '_blank');
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    },
+  );
+
+  it.each(['/es/projects', '#seccion', 'mailto:a@b.c'])(
+    'deja %s como enlace normal',
+    (href) => {
+      render(<MdxLink href={href}>x</MdxLink>);
+      const link = screen.getByRole('link', { name: 'x' });
+      expect(link).not.toHaveAttribute('target');
+      expect(link).not.toHaveAttribute('rel');
+    },
+  );
 });

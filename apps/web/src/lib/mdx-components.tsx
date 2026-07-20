@@ -1,6 +1,7 @@
 import type { AnchorHTMLAttributes } from 'react';
 
-const EXTERNAL_HREF = /^https?:\/\//;
+/** Externo = absoluto http(s) o protocolo-relativo, que hereda el esquema. */
+const EXTERNAL_HREF = /^(https?:)?\/\//;
 
 /** Enlace `<a>` de contenido MDX: externo abre en pestaña nueva con rel seguro, interno se comporta como enlace normal. */
 function ExternalAwareLink({ href, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) {
