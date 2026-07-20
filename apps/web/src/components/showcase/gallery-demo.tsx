@@ -7,6 +7,7 @@ import {
   preloadFullSources,
   shouldUseFullSrc,
   type FilterGalleryItem,
+  type FilterGalleryLayout,
   type MediaLightboxLabels,
   type MediaSource,
 } from '@nicobehm/media-kit';
@@ -18,10 +19,18 @@ import { GalleryAudioTile, type GalleryAudioTileLabels } from './gallery-audio-t
 
 type AudioGalleryItem = Extract<GalleryItem, { type: 'audio' }>;
 
+type GalleryLayoutLabels = {
+  label: string;
+  grid: string;
+  masonry: string;
+  justified: string;
+};
+
 export type GalleryDemoLabels = {
   filterLabel: string;
   allLabel: string;
   categories: { image: string; video: string; audio: string };
+  layouts: GalleryLayoutLabels;
   searchLabel: string;
   searchPlaceholder: string;
   emptyState: string;
@@ -32,6 +41,9 @@ export type GalleryDemoLabels = {
 };
 
 type Props = { locale: 'es' | 'en'; labels: GalleryDemoLabels };
+
+const TILE_EXTRA_HEIGHT = 28;
+const LAYOUTS = ['grid', 'masonry', 'justified'] as const satisfies readonly FilterGalleryLayout[];
 
 /** Interpola `{title}` en una plantilla i18n. La interpolación es por ítem: no puede hacerla `t()` en la page. */
 function fill(template: string, title: string): string {
@@ -134,7 +146,7 @@ function GalleryTile({ item, title, labels, onOpen }: TileProps) {
           labels={{ play: fill(labels.audio.play, title), pause: fill(labels.audio.pause, title) }}
         />
       )}
-      <figcaption className="text-sm text-fg-muted">{title}</figcaption>
+      <figcaption className="truncate text-sm text-fg-muted">{title}</figcaption>
       <button
         type="button"
         aria-label={fill(labels.fullscreen, title)}
@@ -212,6 +224,7 @@ export function GalleryDemo({ locale, labels }: Props) {
   // podía terminar mostrando 0 tiles (categoría + búsqueda sin coincidencias) sin que
   // este componente se enterara para mostrar el empty state.
   const [category, setCategory] = useState<string | null>(null);
+  const [layout, setLayout] = useState<FilterGalleryLayout>('grid');
   const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
 
   const titledItems = galleryItems.map((item) => ({ item, title: itemTitle(item, locale) }));
@@ -231,6 +244,7 @@ export function GalleryDemo({ locale, labels }: Props) {
   const filterItems: FilterGalleryItem[] = titledItems.map(({ item, title }) => ({
     id: item.id,
     categories: [item.type],
+    aspectRatio: item.width / item.height,
     node: <GalleryTile item={item} title={title} labels={labels} onOpen={setLightboxItem} />,
   }));
 
@@ -242,6 +256,19 @@ export function GalleryDemo({ locale, labels }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
+      <div role="group" aria-label={labels.layouts.label} className="flex flex-wrap gap-2">
+        {LAYOUTS.map((id) => (
+          <button
+            key={id}
+            type="button"
+            aria-pressed={layout === id}
+            onClick={() => setLayout(id)}
+            className="cursor-pointer rounded-control border border-border px-3 py-1.5 text-sm text-fg transition-colors hover:bg-surface aria-pressed:border-accent aria-pressed:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            {labels.layouts[id]}
+          </button>
+        ))}
+      </div>
       <Input
         type="search"
         aria-label={labels.searchLabel}
@@ -261,6 +288,8 @@ export function GalleryDemo({ locale, labels }: Props) {
         filter={category}
         onFilterChange={setCategory}
         visibleIds={visibleIds}
+        layout={layout}
+        itemExtraHeight={TILE_EXTRA_HEIGHT}
       />
       {!hasResults && (
         <p role="status" className="text-sm text-fg-muted">

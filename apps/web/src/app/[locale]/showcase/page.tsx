@@ -115,6 +115,12 @@ export default async function ShowcasePage({ params }: Props) {
       video: t('sections.gallery.categoryVideoLabel'),
       audio: t('sections.gallery.categoryAudioLabel'),
     },
+    layouts: {
+      label: t('sections.gallery.layoutsLabel'),
+      grid: t('sections.gallery.layoutGridLabel'),
+      masonry: t('sections.gallery.layoutMasonryLabel'),
+      justified: t('sections.gallery.layoutJustifiedLabel'),
+    },
     searchLabel: t('sections.gallery.searchLabel'),
     searchPlaceholder: t('sections.gallery.searchPlaceholder'),
     emptyState: t('sections.gallery.emptyState'),

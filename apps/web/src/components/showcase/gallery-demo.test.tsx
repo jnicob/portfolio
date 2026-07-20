@@ -15,6 +15,12 @@ const labels: GalleryDemoLabels = {
   filterLabel: 'Categorías de la galería',
   allLabel: 'Todos',
   categories: { image: 'Imagen', video: 'Vídeo', audio: 'Audio' },
+  layouts: {
+    label: 'Disposición de la galería',
+    grid: 'Cuadrícula',
+    masonry: 'Masonry',
+    justified: 'Filas justificadas',
+  },
   searchLabel: 'Buscar en la galería',
   searchPlaceholder: 'Buscar por modelo o título…',
   emptyState: 'No se encontraron resultados.',
@@ -51,6 +57,19 @@ beforeEach(() => {
 });
 
 describe('GalleryDemo', () => {
+  it('el selector de layout cambia la disposición de la galería', () => {
+    render(<GalleryDemo locale="es" labels={labels} />);
+    const grid = screen.getByRole('list', { name: labels.filterLabel });
+    expect(grid).toHaveAttribute('data-layout', 'grid');
+
+    const masonryButton = screen.getByRole('button', { name: labels.layouts.masonry });
+    expect(masonryButton).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(masonryButton);
+
+    expect(grid).toHaveAttribute('data-layout', 'masonry');
+    expect(masonryButton).toHaveAttribute('aria-pressed', 'true');
+  });
+
   it('la búsqueda por modelo restringe el grid', () => {
     render(<GalleryDemo locale="es" labels={labels} />);
     fireEvent.change(screen.getByRole('searchbox', { name: labels.searchLabel }), {
