@@ -6,7 +6,8 @@
 
 - Motor de layouts de `FilterGallery`: `layout="masonry"` y `layout="justified"` con
   posiciones derivadas de `aspectRatio` por ítem, columnas responsive 2→5 por ancho de
-  contenedor y el orden DOM intacto.
+  contenedor y el orden DOM intacto. Las props aditivas `layout`, `itemExtraHeight` y
+  `FilterGalleryItem.aspectRatio` conservan `grid` como comportamiento por defecto.
 
 ## 0.6.0 — 2026-07-18
 

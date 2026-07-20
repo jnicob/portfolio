@@ -2,11 +2,19 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { prefersReducedMotion } from '../internal/prefers-reduced-motion';
+import { columnCountForWidth, computeJustifiedLayout, computeMasonryLayout } from './layout-engine';
+
+export type FilterGalleryLayout = 'grid' | 'masonry' | 'justified';
+
+const LAYOUT_GAP = 8;
+const JUSTIFIED_TARGET_ROW_HEIGHT = 220;
 
 export type FilterGalleryItem = {
   id: string;
   categories: readonly string[];
   node: ReactNode;
+  /** Ancho/alto del medio; masonry/justified usan 1 cuando se omite. */
+  aspectRatio?: number;
 };
 
 export type FilterGalleryCategory = { id: string; label: string };
@@ -28,6 +36,10 @@ export type FilterGalleryProps = {
   duration?: number;
   /** Restricción adicional de visibilidad; se interseca con el filtro de categoría. `undefined` = sin restricción. */
   visibleIds?: readonly string[];
+  /** Disposición de los ítems. Default `grid`. */
+  layout?: FilterGalleryLayout;
+  /** Alto fijo del chrome de cada tile que los layouts JS suman al medio. */
+  itemExtraHeight?: number;
   className?: string;
 };
 
@@ -66,6 +78,8 @@ export function FilterGallery({
   label,
   duration = 240,
   visibleIds,
+  layout = 'grid',
+  itemExtraHeight = 0,
   className,
 }: FilterGalleryProps) {
   const gridRef = useRef<HTMLUListElement>(null);
@@ -75,6 +89,7 @@ export function FilterGallery({
   // el layout effect ve `filterChanged = false` y no anima el montaje inicial.
   const previousFilterRef = useRef(filter !== undefined ? filter : defaultFilter);
   const previousVisibleIdsRef = useRef(visibleIds ? visibleIds.join('\u0000') : '');
+  const previousLayoutRef = useRef(layout);
   const [internalFilter, setInternalFilter] = useState(defaultFilter);
 
   const activeFilter = filter !== undefined ? filter : internalFilter;
@@ -92,8 +107,31 @@ export function FilterGallery({
   // (para poder cancelarlo si el item vuelve a ser visible antes de terminar, o si
   // el componente entero se desmonta con una salida en curso).
   const [exitingIds, setExitingIds] = useState<readonly string[]>([]);
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
   const previousRenderedIdsRef = useRef<readonly string[]>(visible.map((item) => item.id));
   const exitAnimationsRef = useRef<Map<string, Animation>>(new Map());
+
+  const renderedItems = items.filter(
+    (item) => visibleIdSet.has(item.id) || exitingIds.includes(item.id),
+  );
+  const computed =
+    layout !== 'grid' && containerWidth !== null && containerWidth > 0
+      ? layout === 'masonry'
+        ? computeMasonryLayout({
+            aspectRatios: renderedItems.map((item) => item.aspectRatio ?? 1),
+            containerWidth,
+            columns: columnCountForWidth(containerWidth),
+            gap: LAYOUT_GAP,
+            extraHeight: itemExtraHeight,
+          })
+        : computeJustifiedLayout({
+            aspectRatios: renderedItems.map((item) => item.aspectRatio ?? 1),
+            containerWidth,
+            targetRowHeight: JUSTIFIED_TARGET_ROW_HEIGHT,
+            gap: LAYOUT_GAP,
+            extraHeight: itemExtraHeight,
+          })
+      : null;
 
   // Cleanup de solo-desmontaje (deps `[]`, no confundir con el layout effect de
   // abajo que corre en cada render): si FilterGallery se desmonta con alguna
@@ -111,6 +149,18 @@ export function FilterGallery({
     };
   }, []);
 
+  useEffect(() => {
+    if (layout === 'grid') return;
+    const grid = gridRef.current;
+    if (!grid || typeof ResizeObserver === 'undefined') return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry) setContainerWidth(entry.contentRect.width);
+    });
+    observer.observe(grid);
+    return () => observer.disconnect();
+  }, [layout]);
+
   // First (posiciones previas) se capturó en el layout effect del render anterior;
   // aquí solo comparamos con Last (posiciones ya pintadas de este render) cuando el
   // filtro o visibleIds cambió, y volvemos a capturar para el próximo cambio.
@@ -119,8 +169,10 @@ export function FilterGallery({
     const currentVisibleIdsKey = visibleIds ? visibleIds.join('\u0000') : '';
     const filterChanged = previousFilterRef.current !== activeFilter;
     const visibleIdsChanged = previousVisibleIdsRef.current !== currentVisibleIdsKey;
+    const layoutChanged = previousLayoutRef.current !== layout;
     previousFilterRef.current = activeFilter;
     previousVisibleIdsRef.current = currentVisibleIdsKey;
+    previousLayoutRef.current = layout;
     if (!grid) return;
 
     // Detecta bajas (removed) y reentradas (reentered) comparando contra los ids
@@ -171,7 +223,7 @@ export function FilterGallery({
       anim.onfinish = () => dropExiting(id);
     }
 
-    if ((filterChanged || visibleIdsChanged) && !prefersReducedMotion()) {
+    if ((filterChanged || visibleIdsChanged || layoutChanged) && !prefersReducedMotion()) {
       for (const el of grid.querySelectorAll<HTMLElement>('[data-fg-id]')) {
         if (el.hasAttribute('data-fg-exiting') || typeof el.animate !== 'function') continue;
         const id = el.dataset.fgId;
@@ -235,23 +287,31 @@ export function FilterGallery({
           ))}
         </div>
       )}
-      <ul aria-label={label} className="mk-filter-gallery__grid" ref={gridRef}>
-        {items
-          .filter((item) => visibleIdSet.has(item.id) || exitingIds.includes(item.id))
-          .map((item) => {
-            const isExiting = !visibleIdSet.has(item.id);
-            return (
-              <li
-                key={item.id}
-                data-fg-id={item.id}
-                data-fg-exiting={isExiting ? '' : undefined}
-                aria-hidden={isExiting ? true : undefined}
-                inert={isExiting || undefined}
-              >
-                {item.node}
-              </li>
-            );
-          })}
+      <ul
+        aria-label={label}
+        className="mk-filter-gallery__grid"
+        data-layout={layout}
+        ref={gridRef}
+        style={computed ? { height: computed.totalHeight } : undefined}
+      >
+        {renderedItems.map((item, index) => {
+          const box = computed?.boxes[index];
+          const isExiting = !visibleIdSet.has(item.id);
+          return (
+            <li
+              key={item.id}
+              data-fg-id={item.id}
+              data-fg-exiting={isExiting ? '' : undefined}
+              aria-hidden={isExiting ? true : undefined}
+              inert={isExiting || undefined}
+              style={
+                box ? { left: box.x, top: box.y, width: box.width, height: box.height } : undefined
+              }
+            >
+              {item.node}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

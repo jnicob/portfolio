@@ -801,6 +801,15 @@
   margin: 0;
   padding: 0;
 }
+.mk-filter-gallery__grid[data-layout='masonry'],
+.mk-filter-gallery__grid[data-layout='justified'] {
+  display: block;
+  position: relative;
+}
+.mk-filter-gallery__grid[data-layout='masonry'] > li,
+.mk-filter-gallery__grid[data-layout='justified'] > li {
+  position: absolute;
+}
 
 /* VideoScrubPreview */
 .mk-scrub {

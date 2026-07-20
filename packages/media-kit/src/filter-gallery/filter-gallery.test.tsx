@@ -45,6 +45,36 @@ const ITEMS = [
   { id: 'c', categories: ['image', 'video'], node: <span>C</span> },
 ];
 
+const RATIO_ITEMS = ITEMS.map((item) => ({ ...item, aspectRatio: 1 }));
+
+let resizeCallbacks: ResizeObserverCallback[] = [];
+
+function stubResizeObserver() {
+  resizeCallbacks = [];
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      constructor(callback: ResizeObserverCallback) {
+        resizeCallbacks.push(callback);
+      }
+      observe = () => {};
+      unobserve = () => {};
+      disconnect = () => {};
+    },
+  );
+}
+
+function fireResize(width: number) {
+  act(() => {
+    for (const callback of resizeCallbacks) {
+      callback(
+        [{ contentRect: { width } } as unknown as ResizeObserverEntry],
+        {} as ResizeObserver,
+      );
+    }
+  });
+}
+
 /**
  * Stub de `element.animate` que devuelve un handle fake (con `onfinish` capturable
  * y `cancel` espiable) por cada llamada, en vez de `vi.fn()` a secas: los tests de
@@ -290,5 +320,80 @@ describe('exit animation (v0.6)', () => {
     const survivor = screen.getByText('B').closest('li');
     expect(survivor).not.toHaveAttribute('data-fg-exiting');
     expect(survivor).not.toHaveAttribute('aria-hidden');
+  });
+});
+
+describe('layout masonry/justified', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+    resizeCallbacks = [];
+  });
+
+  it('usa grid por defecto sin estilos de posicionamiento', () => {
+    render(<FilterGallery items={ITEMS} label="Demo" />);
+
+    const grid = screen.getByRole('list', { name: 'Demo' });
+    expect(grid).toHaveAttribute('data-layout', 'grid');
+    expect(grid.style.height).toBe('');
+  });
+
+  it('masonry posiciona los ítems y fija la altura del contenedor', () => {
+    stubResizeObserver();
+    render(<FilterGallery items={RATIO_ITEMS} label="Demo" layout="masonry" />);
+
+    fireResize(1000);
+
+    const grid = screen.getByRole('list', { name: 'Demo' });
+    const first = grid.querySelectorAll('li')[0] as HTMLElement;
+    expect(first.style.left).toBe('0px');
+    expect(first.style.top).toBe('0px');
+    expect(first.style.width).toBe('244px');
+    expect(first.style.height).toBe('244px');
+    expect(grid.style.height).not.toBe('');
+  });
+
+  it('usa aspectRatio 1 cuando el ítem no lo declara', () => {
+    stubResizeObserver();
+    const itemWithoutRatio = { id: 'square', categories: [], node: <span>Square</span> };
+    render(<FilterGallery items={[itemWithoutRatio]} label="Demo" layout="masonry" />);
+
+    fireResize(1000);
+
+    const item = screen.getByRole('listitem');
+    expect(item.style.width).toBe('244px');
+    expect(item.style.height).toBe('244px');
+  });
+
+  it('justified reparte una fila completa hasta llenar el ancho', () => {
+    stubResizeObserver();
+    render(<FilterGallery items={RATIO_ITEMS} label="Demo" layout="justified" />);
+
+    fireResize(600);
+
+    const items = screen.getAllByRole('listitem');
+    const last = items[2] as HTMLElement;
+    expect(Number.parseFloat(last.style.left) + Number.parseFloat(last.style.width)).toBeCloseTo(
+      600,
+      5,
+    );
+  });
+
+  it('cambia layout en caliente sin perder ítems', () => {
+    stubResizeObserver();
+    stubGrowingRects();
+    const animate = vi.fn();
+    Object.defineProperty(HTMLElement.prototype, 'animate', {
+      configurable: true,
+      value: animate,
+    });
+    const { rerender } = render(<FilterGallery items={RATIO_ITEMS} label="Demo" layout="grid" />);
+
+    rerender(<FilterGallery items={RATIO_ITEMS} label="Demo" layout="masonry" />);
+    fireResize(1000);
+
+    expect(screen.getByRole('list', { name: 'Demo' })).toHaveAttribute('data-layout', 'masonry');
+    expect(screen.getAllByRole('listitem')).toHaveLength(RATIO_ITEMS.length);
+    expect(animate).toHaveBeenCalled();
   });
 });

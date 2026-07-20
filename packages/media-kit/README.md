@@ -191,28 +191,31 @@ alongside the other public tokens) controls the lens's border color — see
 A filterable grid with animated reflow — manual FLIP (First-Last-Invert-Play) via WAAPI
 `element.animate`, no dependencies, no View Transitions API.
 
-| Prop             | Type                               | Default     | Description                                                                                                                                                                                        |
-| ---------------- | ---------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `items`          | `readonly FilterGalleryItem[]`     | —           | Items to render.                                                                                                                                                                                   |
-| `filter`         | `string \| null`                   | `undefined` | Controlled filter; `null` means "all". Omit for uncontrolled mode.                                                                                                                                 |
-| `defaultFilter`  | `string \| null`                   | `null`      | Initial filter in uncontrolled mode.                                                                                                                                                               |
-| `onFilterChange` | `(filter: string \| null) => void` | `undefined` | Called on every selection, in both controlled and uncontrolled mode.                                                                                                                               |
-| `categories`     | `readonly FilterGalleryCategory[]` | `undefined` | If passed, renders the filter button group (`role="group"`, toggle buttons with `aria-pressed`) — always includes an "All" button regardless of this list.                                         |
-| `allLabel`       | `string`                           | `'All'`     | Label of the "all" button.                                                                                                                                                                         |
-| `label`          | `string`                           | —           | Accessible name (`aria-label`) of both the filter button group and the grid.                                                                                                                       |
-| `duration`       | `number`                           | `240`       | Milliseconds of the FLIP repositioning animation (also the duration of the entering fade+scale and the leaving fade-out, below).                                                                   |
-| `visibleIds`     | `readonly string[]`                | `undefined` | Additional visibility restriction, intersected with the category `filter` — lets an external predicate (e.g. a text search box) combine with category filtering. `undefined` means no restriction. |
-| `className`      | `string`                           | `undefined` | Extra class name appended to the root element.                                                                                                                                                     |
+| Prop              | Type                               | Default     | Description                                                                                                                                                                                        |
+| ----------------- | ---------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `items`           | `readonly FilterGalleryItem[]`     | —           | Items to render.                                                                                                                                                                                   |
+| `filter`          | `string \| null`                   | `undefined` | Controlled filter; `null` means "all". Omit for uncontrolled mode.                                                                                                                                 |
+| `defaultFilter`   | `string \| null`                   | `null`      | Initial filter in uncontrolled mode.                                                                                                                                                               |
+| `onFilterChange`  | `(filter: string \| null) => void` | `undefined` | Called on every selection, in both controlled and uncontrolled mode.                                                                                                                               |
+| `categories`      | `readonly FilterGalleryCategory[]` | `undefined` | If passed, renders the filter button group (`role="group"`, toggle buttons with `aria-pressed`) — always includes an "All" button regardless of this list.                                         |
+| `allLabel`        | `string`                           | `'All'`     | Label of the "all" button.                                                                                                                                                                         |
+| `label`           | `string`                           | —           | Accessible name (`aria-label`) of both the filter button group and the grid.                                                                                                                       |
+| `duration`        | `number`                           | `240`       | Milliseconds of the FLIP repositioning animation (also the duration of the entering fade+scale and the leaving fade-out, below).                                                                   |
+| `visibleIds`      | `readonly string[]`                | `undefined` | Additional visibility restriction, intersected with the category `filter` — lets an external predicate (e.g. a text search box) combine with category filtering. `undefined` means no restriction. |
+| `layout`          | `FilterGalleryLayout`              | `'grid'`    | Layout strategy: CSS `grid`, balanced-column `masonry`, or `justified` rows.                                                                                                                       |
+| `itemExtraHeight` | `number`                           | `0`         | Fixed tile chrome height in pixels, added to each media box in `masonry` and `justified`.                                                                                                          |
+| `className`       | `string`                           | `undefined` | Extra class name appended to the root element.                                                                                                                                                     |
 
 `items` and `label` have no default — they are required props.
 
 #### `FilterGalleryItem`
 
-| Key          | Type                | Description                                                                |
-| ------------ | ------------------- | -------------------------------------------------------------------------- |
-| `id`         | `string`            | Stable identity used for FLIP tracking (`data-fg-id`) and the React `key`. |
-| `categories` | `readonly string[]` | Category ids the item belongs to; matched against `filter`.                |
-| `node`       | `ReactNode`         | Rendered content, wrapped in an `<li>`.                                    |
+| Key           | Type                | Description                                                                             |
+| ------------- | ------------------- | --------------------------------------------------------------------------------------- |
+| `id`          | `string`            | Stable identity used for FLIP tracking (`data-fg-id`) and the React `key`.              |
+| `categories`  | `readonly string[]` | Category ids the item belongs to; matched against `filter`.                             |
+| `node`        | `ReactNode`         | Rendered content, wrapped in an `<li>`.                                                 |
+| `aspectRatio` | `number`            | Media width/height for JS layouts; invalid or omitted values fall back to `1` (square). |
 
 #### `FilterGalleryCategory`
 
@@ -234,6 +237,20 @@ rejoins immediately. `prefers-reduced-motion` (checked in JS), no `element.anima
 unmounting the whole `FilterGallery` while an exit is in flight all skip straight to removal — no
 orphaned exiting items. SSR-safe: the first render never measures or animates, it only captures
 positions for the next filter/`visibleIds` change.
+
+`masonry` and `justified` preserve data order in the DOM and only change visual positions with
+absolute `left`/`top`; FLIP keeps exclusive ownership of `transform`. They observe the grid's own
+width with `ResizeObserver`. Until the first client-side measurement, no inline positions are
+applied, so prerendered HTML and the hydration-safe first render retain the CSS grid fallback.
+
+Masonry columns are selected by container width:
+
+| Minimum width | Columns |
+| ------------- | ------- |
+| `< 560px`     | 2       |
+| `560px`       | 3       |
+| `880px`       | 4       |
+| `1200px`      | 5       |
 
 ### VideoScrubPreview
 

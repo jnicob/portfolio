@@ -23,6 +23,7 @@ export {
   type FilterGalleryProps,
   type FilterGalleryItem,
   type FilterGalleryCategory,
+  type FilterGalleryLayout,
 } from './filter-gallery/filter-gallery';
 export {
   VideoScrubPreview,
