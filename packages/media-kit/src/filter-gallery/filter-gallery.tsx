@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 're
 import { prefersReducedMotion } from '../internal/prefers-reduced-motion';
 import {
   columnCountForWidth,
+  columnWidthForWidth,
   computeJustifiedLayout,
   computeMasonryLayout,
   type LayoutBox,
@@ -12,7 +13,6 @@ import {
 export type FilterGalleryLayout = 'grid' | 'masonry' | 'justified';
 
 const LAYOUT_GAP = 8;
-const JUSTIFIED_TARGET_ROW_HEIGHT = 220;
 
 export type FilterGalleryItem = {
   id: string;
@@ -133,7 +133,7 @@ export function FilterGallery({
         : computeJustifiedLayout({
             aspectRatios: visible.map((item) => item.aspectRatio ?? 1),
             containerWidth,
-            targetRowHeight: JUSTIFIED_TARGET_ROW_HEIGHT,
+            targetRowHeight: columnWidthForWidth(containerWidth, LAYOUT_GAP),
             gap: LAYOUT_GAP,
             extraHeight: itemExtraHeight,
           })
@@ -144,6 +144,13 @@ export function FilterGallery({
       return box ? [[item.id, box] as const] : [];
     }),
   );
+  const gridStyle = computed
+    ? { height: computed.totalHeight }
+    : layout === 'grid' && containerWidth !== null && containerWidth > 0
+      ? {
+          gridTemplateColumns: `repeat(${columnCountForWidth(containerWidth)}, minmax(0, 1fr))`,
+        }
+      : undefined;
 
   // Cleanup de solo-desmontaje (deps `[]`, no confundir con el layout effect de
   // abajo que corre en cada render): si FilterGallery se desmonta con alguna
@@ -162,7 +169,6 @@ export function FilterGallery({
   }, []);
 
   useEffect(() => {
-    if (layout === 'grid') return;
     const grid = gridRef.current;
     if (!grid || typeof ResizeObserver === 'undefined') return;
 
@@ -308,7 +314,7 @@ export function FilterGallery({
         className="mk-filter-gallery__grid"
         data-layout={layout}
         ref={gridRef}
-        style={computed ? { height: computed.totalHeight } : undefined}
+        style={gridStyle}
       >
         {renderedItems.map((item) => {
           const isExiting = !visibleIdSet.has(item.id);

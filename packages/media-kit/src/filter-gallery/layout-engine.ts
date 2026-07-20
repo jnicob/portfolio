@@ -102,3 +102,9 @@ export function columnCountForWidth(containerWidth: number): number {
   }
   return 2;
 }
+
+/** Ancho común de tile para el breakpoint activo, descontando los gaps. */
+export function columnWidthForWidth(containerWidth: number, gap: number): number {
+  const columns = columnCountForWidth(containerWidth);
+  return (containerWidth - gap * (columns - 1)) / columns;
+}

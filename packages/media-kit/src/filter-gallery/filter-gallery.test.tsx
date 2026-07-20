@@ -331,11 +331,14 @@ describe('layout masonry/justified', () => {
   });
 
   it('usa grid por defecto sin estilos de posicionamiento', () => {
+    stubResizeObserver();
     render(<FilterGallery items={ITEMS} label="Demo" />);
+    fireResize(700);
 
     const grid = screen.getByRole('list', { name: 'Demo' });
     expect(grid).toHaveAttribute('data-layout', 'grid');
     expect(grid.style.height).toBe('');
+    expect(grid.style.gridTemplateColumns).toBe('repeat(3, minmax(0, 1fr))');
   });
 
   it('masonry posiciona los ítems y fija la altura del contenedor', () => {

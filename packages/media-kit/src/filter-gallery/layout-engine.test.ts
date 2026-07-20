@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  columnWidthForWidth,
   columnCountForWidth,
   computeJustifiedLayout,
   computeMasonryLayout,
@@ -129,5 +130,10 @@ describe('columnCountForWidth', () => {
     expect(columnCountForWidth(880)).toBe(4);
     expect(columnCountForWidth(1199)).toBe(4);
     expect(columnCountForWidth(1200)).toBe(5);
+  });
+
+  it('deriva un ancho de tile comparable para todos los layouts', () => {
+    expect(columnWidthForWidth(700, 8)).toBe(228);
+    expect(columnWidthForWidth(1000, 8)).toBe(244);
   });
 });
