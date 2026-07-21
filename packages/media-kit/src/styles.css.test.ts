@@ -99,6 +99,7 @@ describe('FilterGallery: chips usan custom properties propias, no las de "contro
     const body = match?.[1] ?? '';
     expect(body).toMatch(/background:\s*var\(--mk-filter-bg\)/);
     expect(body).toMatch(/color:\s*var\(--mk-filter-color\)/);
+    expect(body).toMatch(/border:\s*1px solid currentColor/);
     expect(body).toMatch(/font:\s*inherit/);
     expect(body).not.toMatch(/--mk-control-bg/);
     expect(body).not.toMatch(/--mk-control-color/);

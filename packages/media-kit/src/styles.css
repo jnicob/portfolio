@@ -773,7 +773,7 @@
 }
 .mk-filter-gallery__filters button {
   padding: 6px 12px;
-  border: 0;
+  border: 1px solid currentColor;
   border-radius: 9999px;
   background: var(--mk-filter-bg);
   color: var(--mk-filter-color);
