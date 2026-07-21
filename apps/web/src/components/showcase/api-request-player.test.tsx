@@ -345,7 +345,7 @@ describe('ApiRequestPlayer', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: labels.run }));
 
-    await screen.findByText('400 Bad Request');
+    expect(await screen.findByText('400 Bad Request')).toHaveClass('bg-danger/15', 'text-danger');
     expect(screen.getByTestId('player-response-pane').textContent).toContain('validation_error');
   });
 

@@ -346,7 +346,7 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
           )}
           {state === 'done' && (
             <>
-              <Badge variant={example.status.startsWith('4') ? 'neutral' : 'accent'}>
+              <Badge variant={example.status.startsWith('4') ? 'danger' : 'accent'}>
                 {example.status}
               </Badge>
               <Button variant="ghost" size="sm" onClick={copy}>
