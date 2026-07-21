@@ -112,6 +112,28 @@ describe('GalleryDemo', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
+  it('el fullscreen de imagen arranca en cover y usa siempre la variante HD', () => {
+    render(<GalleryDemo locale="es" labels={labels} />);
+    fireEvent.click(screen.getAllByRole('button', { name: /Pantalla completa/ })[0]!);
+
+    expect(screen.getByRole('dialog')).toHaveAttribute('data-fit', 'cover');
+    expect(screen.getByRole('img', { name: /Google NBP/ })).toHaveAttribute(
+      'src',
+      expect.stringContaining('-hd.webp'),
+    );
+  });
+
+  it('el fullscreen de vídeo conserva el ajuste contain', () => {
+    render(<GalleryDemo locale="es" labels={labels} />);
+    const videoButton = screen
+      .getAllByRole('button', { name: /Pantalla completa/ })
+      .find((button) => button.getAttribute('aria-label')?.includes('Google Veo'));
+    expect(videoButton).toBeDefined();
+    fireEvent.click(videoButton!);
+
+    expect(screen.getByRole('dialog')).toHaveAttribute('data-fit', 'contain');
+  });
+
   it('categoría activa + búsqueda sin coincidencias en esa categoría muestra el empty state (fix review T11)', () => {
     render(<GalleryDemo locale="es" labels={labels} />);
     // Seedream son solo imágenes: filtrar por Audio + buscar "seedream" da 0 resultados

@@ -71,6 +71,14 @@ function toMediaSource(item: GalleryItem, title: string): MediaSource {
   return { src: item.poster, alt: title };
 }
 
+/** Fullscreen de imagen siempre usa el asset 2560px; solo se monta tras abrir el visor. */
+function toFullscreenImageSource(
+  item: Extract<GalleryItem, { type: 'image' }>,
+  title: string,
+): MediaSource {
+  return { src: item.hdSrc, fullSrc: item.hdSrc, alt: title };
+}
+
 /**
  * Réplica manual de `pickFullscreenSrc` (no exportada por el paquete) para el
  * caso audio: el lightbox usa `children` en vez de `media` (ver comentario en
@@ -234,7 +242,7 @@ export function GalleryDemo({ locale, labels }: Props) {
   const activeTitle = lightboxItem ? itemTitle(lightboxItem, locale) : '';
   const media =
     lightboxItem && lightboxItem.type === 'image'
-      ? toMediaSource(lightboxItem, activeTitle)
+      ? toFullscreenImageSource(lightboxItem, activeTitle)
       : undefined;
 
   return (
@@ -284,6 +292,7 @@ export function GalleryDemo({ locale, labels }: Props) {
         onClose={() => setLightboxItem(null)}
         label={activeTitle}
         labels={labels.lightbox}
+        fit={lightboxItem?.type === 'image' ? 'cover' : 'contain'}
         media={media}
       >
         {lightboxItem ? renderLightboxChildren(lightboxItem, activeTitle, labels) : null}
