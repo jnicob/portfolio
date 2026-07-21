@@ -96,6 +96,7 @@ export function FilterGallery({
   const previousVisibleIdsRef = useRef(visibleIds ? visibleIds.join('\u0000') : '');
   const previousLayoutRef = useRef(layout);
   const previousLayoutBoxesRef = useRef<Map<string, LayoutBox>>(new Map());
+  const previousGridRectRef = useRef<DOMRect | null>(null);
   const [internalFilter, setInternalFilter] = useState(defaultFilter);
 
   const activeFilter = filter !== undefined ? filter : internalFilter;
@@ -207,6 +208,20 @@ export function FilterGallery({
     const reentered = exitingIds.filter((id) => visibleIdSet.has(id));
     previousRenderedIdsRef.current = currentIds;
 
+    if (layout === 'grid' && previousGridRectRef.current) {
+      const gridRect = previousGridRectRef.current;
+      for (const id of removed) {
+        const itemRect = previousRectsRef.current.get(id);
+        if (!itemRect) continue;
+        previousLayoutBoxesRef.current.set(id, {
+          x: itemRect.left - gridRect.left,
+          y: itemRect.top - gridRect.top,
+          width: itemRect.width,
+          height: itemRect.height,
+        });
+      }
+    }
+
     if (reentered.length > 0) {
       for (const id of reentered) {
         exitAnimationsRef.current.get(id)?.cancel();
@@ -273,6 +288,7 @@ export function FilterGallery({
         .filter((el) => !el.hasAttribute('data-fg-exiting'))
         .map((el) => [el.dataset.fgId ?? '', el.getBoundingClientRect()]),
     );
+    previousGridRectRef.current = grid.getBoundingClientRect();
     previousLayoutBoxesRef.current = new Map([
       ...previousLayoutBoxesRef.current,
       ...currentLayoutBoxes,
@@ -329,7 +345,15 @@ export function FilterGallery({
               aria-hidden={isExiting ? true : undefined}
               inert={isExiting || undefined}
               style={
-                box ? { left: box.x, top: box.y, width: box.width, height: box.height } : undefined
+                box
+                  ? {
+                      position: isExiting ? 'absolute' : undefined,
+                      left: box.x,
+                      top: box.y,
+                      width: box.width,
+                      height: box.height,
+                    }
+                  : undefined
               }
             >
               {item.node}

@@ -416,4 +416,46 @@ describe('layout masonry/justified', () => {
     expect(screen.getByText('B').closest('li')?.style.top).toBe('0px');
     expect(screen.getByText('C').closest('li')?.style.top).toBe('0px');
   });
+
+  it('grid saca el ítem saliente del flujo en el mismo beat del filtrado', () => {
+    stubAnimateWithHandles();
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      const id = this.dataset.fgId;
+      const boxes: Record<string, { left: number; top: number; width: number; height: number }> = {
+        a: { left: 10, top: 20, width: 100, height: 100 },
+        b: { left: 110, top: 20, width: 100, height: 100 },
+        c: { left: 10, top: 120, width: 100, height: 100 },
+      };
+      const box = (id ? boxes[id] : undefined) ?? {
+        left: 10,
+        top: 20,
+        width: 300,
+        height: 200,
+      };
+      return {
+        ...box,
+        x: box.left,
+        y: box.top,
+        right: box.left + box.width,
+        bottom: box.top + box.height,
+        toJSON: () => ({}),
+      } as DOMRect;
+    });
+    const { rerender } = render(
+      <FilterGallery items={RATIO_ITEMS} filter={null} label="Demo" layout="grid" />,
+    );
+
+    rerender(<FilterGallery items={RATIO_ITEMS} filter="video" label="Demo" layout="grid" />);
+
+    const exiting = screen.getByText('A').closest('li');
+    expect(exiting).toHaveStyle({
+      position: 'absolute',
+      left: '0px',
+      top: '0px',
+      width: '100px',
+      height: '100px',
+    });
+  });
 });
