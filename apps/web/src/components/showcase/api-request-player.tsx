@@ -9,6 +9,7 @@ import {
 } from '@nicobehm/media-kit';
 import type { ApiDemoExample, ApiDemoExampleId, ApiDemoPreview } from '@/data/api-demo';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
+import { AlertTriangleIcon } from '@/components/icons/alert-triangle-icon';
 import { FullscreenIcon } from '@/components/icons/fullscreen-icon';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -76,8 +77,8 @@ function renderDonePreview(
   if (preview.kind === 'error') {
     return (
       <div className="flex h-64 flex-col items-center justify-center gap-2 rounded-control border border-border bg-surface p-4 text-center">
-        <span aria-hidden className="text-2xl">
-          ⚠
+        <span className="text-danger">
+          <AlertTriangleIcon />
         </span>
         <p className="text-sm text-fg-muted">{labels.previewError}</p>
       </div>
