@@ -70,6 +70,23 @@ describe('GalleryDemo', () => {
     expect(masonryButton).toHaveAttribute('aria-pressed', 'true');
   });
 
+  it('grid usa cajas visuales uniformes y cover para imagen, vídeo y audio', () => {
+    render(<GalleryDemo locale="es" labels={labels} />);
+    const grid = screen.getByRole('list', { name: labels.filterLabel });
+    const tiles = within(grid).getAllByRole('listitem');
+    const image = tiles[0]!.querySelector('img');
+    const video = tiles.find((tile) => tile.querySelector('.mk-hover-video'));
+    const audio = tiles.find((tile) =>
+      tile.querySelector('button[aria-label^="Reproducir Google Lyria"]'),
+    );
+
+    expect(image).toHaveClass('aspect-square', 'object-cover');
+    expect(video?.querySelector('.mk-hover-video')).toHaveClass('aspect-square');
+    expect(video?.querySelector('.mk-hover-video img')).toHaveClass('object-cover');
+    expect(audio?.querySelector('figure > div')).toHaveClass('aspect-square');
+    expect(audio?.querySelector('figure > div > img')).toHaveClass('object-cover');
+  });
+
   it('comparte el lenguaje visual de píldora y relleno activo de los filtros', () => {
     render(<GalleryDemo locale="es" labels={labels} />);
 

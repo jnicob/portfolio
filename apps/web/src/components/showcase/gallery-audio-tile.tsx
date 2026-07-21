@@ -19,6 +19,8 @@ type Props = {
    * Default `false` (tile de la grid, sin cambios).
    */
   hideCover?: boolean;
+  className?: string;
+  coverClassName?: string;
 };
 
 /**
@@ -39,7 +41,16 @@ type Props = {
  * Los toggles posteriores (ya montado) llaman a `play()`/`pause()`
  * directamente desde el handler.
  */
-export function GalleryAudioTile({ cover, src, width, height, labels, hideCover = false }: Props) {
+export function GalleryAudioTile({
+  cover,
+  src,
+  width,
+  height,
+  labels,
+  hideCover = false,
+  className,
+  coverClassName,
+}: Props) {
   const [mounted, setMounted] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -115,14 +126,14 @@ export function GalleryAudioTile({ cover, src, width, height, labels, hideCover 
   }
 
   return (
-    <div className="relative overflow-hidden rounded-card">
+    <div className={['relative overflow-hidden rounded-card', className].filter(Boolean).join(' ')}>
       <img
         src={cover}
         alt=""
         loading="lazy"
         width={width}
         height={height}
-        className="h-full w-full object-cover"
+        className={['h-full w-full object-cover', coverClassName].filter(Boolean).join(' ')}
       />
       <button
         type="button"

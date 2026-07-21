@@ -16,6 +16,8 @@ export type HoverVideoProps = {
   width: number;
   height: number;
   className?: string;
+  /** Clases del poster y del vídeo montado; permite definir el fit desde el consumidor. */
+  mediaClassName?: string;
 };
 
 const DEFAULT_DELAY = 300;
@@ -48,6 +50,7 @@ export function HoverVideo({
   width,
   height,
   className,
+  mediaClassName,
 }: HoverVideoProps) {
   const [playing, setPlaying] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -99,8 +102,17 @@ export function HoverVideo({
       onKeyDown={onKeyDown}
       onClick={toggle}
     >
-      <img src={poster} width={width} height={height} loading="lazy" alt="" />
-      {playing && <video src={src} autoPlay muted loop playsInline aria-hidden />}
+      <img
+        src={poster}
+        width={width}
+        height={height}
+        loading="lazy"
+        alt=""
+        className={mediaClassName}
+      />
+      {playing && (
+        <video src={src} autoPlay muted loop playsInline aria-hidden className={mediaClassName} />
+      )}
     </div>
   );
 }

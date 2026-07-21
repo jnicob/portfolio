@@ -291,15 +291,16 @@ duration isn't finite, it stays empty (and hidden via `:empty`).
 A poster/video facade: at rest, only an `<img poster>` exists — zero video bytes are downloaded
 until the user actually engages.
 
-| Prop        | Type     | Default     | Description                                                          |
-| ----------- | -------- | ----------- | -------------------------------------------------------------------- |
-| `src`       | `string` | —           | Video URL. Only fetched after activation (facade — 0 bytes at rest). |
-| `poster`    | `string` | —           | Image visible at rest.                                               |
-| `label`     | `string` | —           | Accessible name of the interactive area (`aria-label`).              |
-| `delay`     | `number` | `300`       | Milliseconds of sustained hover before the video activates.          |
-| `width`     | `number` | —           | Intrinsic poster width, set on the `<img>` for zero CLS.             |
-| `height`    | `number` | —           | Intrinsic poster height, set on the `<img>` for zero CLS.            |
-| `className` | `string` | `undefined` | Extra class name appended to the root element.                       |
+| Prop             | Type     | Default     | Description                                                          |
+| ---------------- | -------- | ----------- | -------------------------------------------------------------------- |
+| `src`            | `string` | —           | Video URL. Only fetched after activation (facade — 0 bytes at rest). |
+| `poster`         | `string` | —           | Image visible at rest.                                               |
+| `label`          | `string` | —           | Accessible name of the interactive area (`aria-label`).              |
+| `delay`          | `number` | `300`       | Milliseconds of sustained hover before the video activates.          |
+| `width`          | `number` | —           | Intrinsic poster width, set on the `<img>` for zero CLS.             |
+| `height`         | `number` | —           | Intrinsic poster height, set on the `<img>` for zero CLS.            |
+| `className`      | `string` | `undefined` | Extra class name appended to the root element.                       |
+| `mediaClassName` | `string` | `undefined` | Extra class name applied to both the poster and mounted video.       |
 
 `src`, `poster`, `label`, `width`, and `height` have no default — they are required props.
 

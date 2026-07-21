@@ -94,6 +94,7 @@ type TileProps = {
   item: GalleryItem;
   title: string;
   labels: GalleryDemoLabels;
+  layout: FilterGalleryLayout;
   onOpen: (item: GalleryItem) => void;
 };
 
@@ -102,13 +103,19 @@ type TileProps = {
  * (`alt=""`): el título visible vive en el `<figcaption>`, no duplicado para
  * lectores de pantalla (review T10).
  */
-function GalleryTile({ item, title, labels, onOpen }: TileProps) {
+function GalleryTile({ item, title, labels, layout, onOpen }: TileProps) {
+  const gridMediaClass = layout === 'grid' ? 'aspect-square h-full w-full object-cover' : undefined;
+
   function preload() {
     preloadFullSources([toMediaSource(item, title)]);
   }
 
   return (
-    <figure className="relative flex flex-col gap-2">
+    <figure
+      className={['relative flex flex-col gap-2', layout === 'grid' && 'h-full']
+        .filter(Boolean)
+        .join(' ')}
+    >
       {item.type === 'image' && (
         <img
           src={item.src}
@@ -116,7 +123,7 @@ function GalleryTile({ item, title, labels, onOpen }: TileProps) {
           loading="lazy"
           width={item.width}
           height={item.height}
-          className="rounded-card"
+          className={['rounded-card', gridMediaClass].filter(Boolean).join(' ')}
         />
       )}
       {item.type === 'video' && (
@@ -126,6 +133,8 @@ function GalleryTile({ item, title, labels, onOpen }: TileProps) {
           label={title}
           width={item.width}
           height={item.height}
+          className={layout === 'grid' ? 'aspect-square h-full w-full' : undefined}
+          mediaClassName={gridMediaClass}
         />
       )}
       {item.type === 'audio' && (
@@ -135,6 +144,8 @@ function GalleryTile({ item, title, labels, onOpen }: TileProps) {
           width={item.width}
           height={item.height}
           labels={{ play: fill(labels.audio.play, title), pause: fill(labels.audio.pause, title) }}
+          className={layout === 'grid' ? 'aspect-square h-full w-full' : undefined}
+          coverClassName={gridMediaClass}
         />
       )}
       <figcaption className="truncate text-sm text-fg-muted">{title}</figcaption>
@@ -236,7 +247,15 @@ export function GalleryDemo({ locale, labels }: Props) {
     id: item.id,
     categories: [item.type],
     aspectRatio: item.width / item.height,
-    node: <GalleryTile item={item} title={title} labels={labels} onOpen={setLightboxItem} />,
+    node: (
+      <GalleryTile
+        item={item}
+        title={title}
+        labels={labels}
+        layout={layout}
+        onOpen={setLightboxItem}
+      />
+    ),
   }));
 
   const activeTitle = lightboxItem ? itemTitle(lightboxItem, locale) : '';

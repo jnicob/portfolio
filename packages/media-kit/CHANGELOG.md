@@ -8,6 +8,8 @@
   posiciones derivadas de `aspectRatio` por ítem, columnas responsive 2→5 por ancho de
   contenedor y el orden DOM intacto. Las props aditivas `layout`, `itemExtraHeight` y
   `FilterGalleryItem.aspectRatio` conservan `grid` como comportamiento por defecto.
+- `HoverVideo.mediaClassName`: clase opcional compartida por el poster y el vídeo montado,
+  para que el consumidor pueda definir un mismo fit sin romper la facade ni duplicar estilos.
 
 ## 0.6.0 — 2026-07-18
 
