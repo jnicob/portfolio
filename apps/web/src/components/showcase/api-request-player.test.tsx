@@ -328,7 +328,9 @@ describe('ApiRequestPlayer', () => {
     fireEvent.click(screen.getByRole('button', { name: labels.run }));
     await screen.findByText(labels.done);
 
-    fireEvent.change(screen.getByRole('combobox', { name: labels.endpoint }), {
+    const endpointSelect = screen.getByRole('combobox', { name: labels.endpoint });
+    expect(endpointSelect).toHaveClass('transition-colors', 'hover:border-fg-muted');
+    fireEvent.change(endpointSelect, {
       target: { value: 'error' },
     });
 

@@ -13,6 +13,7 @@ import { AlertTriangleIcon } from '@/components/icons/alert-triangle-icon';
 import { FullscreenIcon } from '@/components/icons/fullscreen-icon';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Select } from '@/components/ui/select';
 import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
 import { GalleryAudioTile } from './gallery-audio-tile';
 
@@ -277,21 +278,19 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
         <div className="flex flex-col gap-2">
           <label className="flex h-9 items-center gap-2">
             <span className="text-sm text-fg-muted">{labels.endpoint}</span>
-            <select
+            <Select
               value={exampleId}
               onChange={(event) => {
                 const selected = examples.find((entry) => entry.id === event.target.value);
                 if (selected) selectExample(selected.id);
               }}
               aria-label={labels.endpoint}
-              className="h-9 min-w-0 flex-1 cursor-pointer rounded-control border border-border bg-surface px-2 font-mono text-sm text-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-            >
-              {examples.map((entry) => (
-                <option key={entry.id} value={entry.id}>
-                  {labels.examples[entry.id]}
-                </option>
-              ))}
-            </select>
+              options={examples.map((entry) => ({
+                value: entry.id,
+                label: labels.examples[entry.id],
+              }))}
+              className="h-9 min-w-0 flex-1 cursor-pointer px-2 font-mono"
+            />
           </label>
           <div className="flex items-center gap-2 font-mono text-sm text-fg-muted">
             <span className="font-semibold text-fg">{example.method}</span>
