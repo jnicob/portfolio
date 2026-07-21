@@ -100,8 +100,8 @@ const entries = [
       en: 'Freepik/Flaticon content backoffice',
     },
     summary: {
-      es: 'Sistemas internos de gestión de recursos gráficos y colaboradores: revisión, catalogación, moderación y publicación (Laravel + Nova y admin histórico), workflow de tareas de producción de contenido (ilustración, vector, PSD, 3D, IA), gestión de packs de iconos de Flaticon, portal fiscal de colaboradores y extensiones Chrome de productividad interna.',
-      en: 'Internal systems for managing graphic resources and contributors: review, cataloguing, moderation and publishing (Laravel + Nova and the legacy admin), content production task workflow (illustration, vector, PSD, 3D, AI), Flaticon icon-pack management, contributor tax portal and internal-productivity Chrome extensions.',
+      es: 'Suite interna para operar el contenido de Freepik/Flaticon: revisión, catalogación, moderación y publicación; producción; packs de iconos; fiscalidad de colaboradores y extensiones de productividad.',
+      en: 'Internal suite for Freepik/Flaticon content operations: review, cataloguing, moderation and publishing; production; icon packs; contributor tax and productivity extensions.',
     },
     role: { es: 'Ingeniero full-stack', en: 'Full-stack engineer' },
     stack: ['php', 'laravel', 'vue', 'typescript', 'kubernetes'],
