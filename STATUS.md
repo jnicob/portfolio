@@ -1,6 +1,6 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-21 · F3.8 CERRADA y mergeada a main (FF `5a09f0c`)
+> Actualizado: 2026-07-21 · F3.8 cerrada; polish visual posterior pendiente de merge
 
 ## Ahora
 
@@ -20,6 +20,8 @@ en `5a09f0c` (rama `feature/phase-3.8-advanced-showcase-project-details` pushead
   builds static + Node OK con 25 rutas.
 - Minors no bloqueantes anotados: badge solo detecta 4xx (5xx pintaría éxito), `w-full`
   redundante en Select, borde de chip activo con `currentColor`.
+- **Follow-up visual de Nico** implementado en `feature/post-f3.8-gallery-cv-polish`: imágenes
+  fullscreen HD en `cover` y grid uniforme en `cover`; 408 web + 242 media-kit verdes.
 
 ## Hecho
 
@@ -30,10 +32,11 @@ en `5a09f0c` (rama `feature/phase-3.8-advanced-showcase-project-details` pushead
 
 ## Siguiente acción
 
-1. **F4 — Playground** (siguiente fase del roadmap).
-2. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf, a enforcar en Phase 6) +
+1. Integrar `feature/post-f3.8-gallery-cv-polish` tras la validación de Nico.
+2. **F4 — Playground** (siguiente fase del roadmap).
+3. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf, a enforcar en Phase 6) +
    Escape anidado del skin filter (único ítem del backlog F3.7 fuera de F3.8).
-3. Follow-ups menores de F3.8 (no bloqueantes): endurecer badge de estado a `/^[45]/`,
+4. Follow-ups menores de F3.8 (no bloqueantes): endurecer badge de estado a `/^[45]/`,
    limpiar `w-full` redundante en Select, declarar borde del chip activo.
 
 ## Pendientes del usuario (no bloqueantes)
