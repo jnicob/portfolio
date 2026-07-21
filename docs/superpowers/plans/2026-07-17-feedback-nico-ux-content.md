@@ -92,6 +92,10 @@ Comentarios de revisión manual. Triage vigente (decisión de Nico 2026-07-18):
 
 ## G. Feedback 2026-07-18 (durante el cierre de F3.7 → F3.8)
 
+> **Resuelto en F3.8 (2026-07-21):** G1–G5 implementados y verificados. Punteros de
+> implementación y evidencia: plan F3.8, inventario transversal F3.7 y ledger
+> `.superpowers/sdd/progress.md` (Tasks 1–15).
+
 **Showcase**
 
 1. **Posible BUG tema+idioma**: al cambiar dark/light y a continuación cambiar idioma,
