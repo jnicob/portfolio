@@ -12,6 +12,7 @@ import {
   type MediaSource,
 } from '@nicobehm/media-kit';
 import { useState } from 'react';
+import { FullscreenIcon } from '@/components/icons/fullscreen-icon';
 import { Input } from '@/components/ui/input';
 import { galleryItems } from '@/data/gallery';
 import type { GalleryItem } from '@/data/schemas';
@@ -79,24 +80,6 @@ function toMediaSource(item: GalleryItem, title: string): MediaSource {
 function pickCoverSrc(item: AudioGalleryItem): string {
   if (typeof window === 'undefined') return item.cover;
   return shouldUseFullSrc(window.screen.width, window.devicePixelRatio) ? item.coverHd : item.cover;
-}
-
-function FullscreenIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width={16}
-      height={16}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3" />
-    </svg>
-  );
 }
 
 type TileProps = {
