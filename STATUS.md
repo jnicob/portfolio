@@ -1,21 +1,25 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-21 · F3.8 cerrada por Codex, pendiente review final y merge
+> Actualizado: 2026-07-21 · F3.8 CERRADA y mergeada a main (FF `5a09f0c`)
 
 ## Ahora
 
-**F3.8 (Showcase avanzado + detalle de proyectos) CERRADA POR CODEX.**
-Implementada por **Codex CLI** con review por bloques por Claude. Rama
-`feature/phase-3.8-advanced-showcase-project-details`; **sin merge a main**.
+**F3.8 (Showcase avanzado + detalle de proyectos) COMPLETA e integrada en main.**
+Implementada por **Codex CLI** con review por bloques por Claude. Merge FF a main
+en `5a09f0c` (rama `feature/phase-3.8-advanced-showcase-project-details` pusheada).
 
 - **Bloque 1 (T1-7)** ✅ revisado: fix G1 (bug tema+idioma) + motor masonry/justified
   (media-kit **0.7.0**) + selector de layouts + skill `masonry-layouts`.
 - **Bloque 2 (fixes Review 1 + T8-13)** ✅ revisado: unificación selector, reflow, densidad;
   API player con 4 ejemplos + previews/fullscreen; detalles G4/G5; backlog mecánico.
-- **Bloque 3 (Fase A + T14-15)** ✅: fixes del Review 2, inventario, gates, builds,
+- **Bloque 3 (Fase A + T14-15)** ✅ revisado: fixes del Review 2, inventario, gates, builds,
   verificación en vivo y cierre documental.
-- Code reviews: 0 Critical / 0 Important. Design reviews: fix-first.
-- Review final de rama + merge: pendientes y reservados para Claude Code.
+- **Review final (2026-07-21):** code-reviewer y design-reviewer → SHIP; qa-a11y-perf → PASS
+  con condiciones (los únicos MAJOR de perf son deuda pre-existente de main, +1,7 kB gzip de
+  delta, diferida a Phase 6). 647 tests verdes (405 web + 242 media-kit), lint 0 errores,
+  builds static + Node OK con 25 rutas.
+- Minors no bloqueantes anotados: badge solo detecta 4xx (5xx pintaría éxito), `w-full`
+  redundante en Select, borde de chip activo con `currentColor`.
 
 ## Hecho
 
@@ -26,11 +30,11 @@ Implementada por **Codex CLI** con review por bloques por Claude. Rama
 
 ## Siguiente acción
 
-1. **Review final por Claude** (design-reviewer + qa-a11y-perf + code-reviewer) sobre la rama
-   completa → **merge FF a main**. Codex no hace ese review ni el merge.
-2. **F4 — Playground**, después del review/merge de F3.8.
-3. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf) + Escape anidado del
-   skin filter (único ítem del backlog F3.7 fuera de F3.8).
+1. **F4 — Playground** (siguiente fase del roadmap).
+2. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf, a enforcar en Phase 6) +
+   Escape anidado del skin filter (único ítem del backlog F3.7 fuera de F3.8).
+3. Follow-ups menores de F3.8 (no bloqueantes): endurecer badge de estado a `/^[45]/`,
+   limpiar `w-full` redundante en Select, declarar borde del chip activo.
 
 ## Pendientes del usuario (no bloqueantes)
 
