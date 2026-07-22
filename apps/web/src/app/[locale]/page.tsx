@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import type { Skill } from '@/data/schemas';
+import { HomeBackground } from '@/components/home/home-background';
 import { Hero } from '@/components/home/hero';
 import { FeaturedProjects } from '@/components/home/featured-projects';
 import { SkillsSummary } from '@/components/home/skills-summary';
@@ -31,7 +32,7 @@ export default async function HomePage({ params }: Props) {
   const categoryLabels = tCv.raw('categories') as Record<Skill['category'], string>;
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4">
+    <HomeBackground>
       <JsonLd data={personJsonLd(locale)} />
       <Hero locale={locale} cvLabel={t('cvCta')} />
       <SkillsSummary
@@ -52,6 +53,6 @@ export default async function HomePage({ params }: Props) {
       >
         {t('showcaseCta')}
       </Link>
-    </main>
+    </HomeBackground>
   );
 }
