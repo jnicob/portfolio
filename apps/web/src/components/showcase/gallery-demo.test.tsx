@@ -57,21 +57,22 @@ beforeEach(() => {
 });
 
 describe('GalleryDemo', () => {
-  it('el selector de layout cambia la disposición de la galería', () => {
+  it('masonry es la disposición inicial y el selector permite cambiar a grid', () => {
     render(<GalleryDemo locale="es" labels={labels} />);
     const grid = screen.getByRole('list', { name: labels.filterLabel });
-    expect(grid).toHaveAttribute('data-layout', 'grid');
+    expect(grid).toHaveAttribute('data-layout', 'masonry');
 
     const masonryButton = screen.getByRole('button', { name: labels.layouts.masonry });
-    expect(masonryButton).toHaveAttribute('aria-pressed', 'false');
-    fireEvent.click(masonryButton);
-
-    expect(grid).toHaveAttribute('data-layout', 'masonry');
     expect(masonryButton).toHaveAttribute('aria-pressed', 'true');
+    fireEvent.click(screen.getByRole('button', { name: labels.layouts.grid }));
+
+    expect(grid).toHaveAttribute('data-layout', 'grid');
+    expect(masonryButton).toHaveAttribute('aria-pressed', 'false');
   });
 
   it('grid usa cajas visuales uniformes y cover para imagen, vídeo y audio', () => {
     render(<GalleryDemo locale="es" labels={labels} />);
+    fireEvent.click(screen.getByRole('button', { name: labels.layouts.grid }));
     const grid = screen.getByRole('list', { name: labels.filterLabel });
     const tiles = within(grid).getAllByRole('listitem');
     const image = tiles[0]!.querySelector('img');

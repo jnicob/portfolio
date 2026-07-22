@@ -226,7 +226,7 @@ export function GalleryDemo({ locale, labels }: Props) {
   // podía terminar mostrando 0 tiles (categoría + búsqueda sin coincidencias) sin que
   // este componente se enterara para mostrar el empty state.
   const [category, setCategory] = useState<string | null>(null);
-  const [layout, setLayout] = useState<FilterGalleryLayout>('grid');
+  const [layout, setLayout] = useState<FilterGalleryLayout>('masonry');
   const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
 
   const titledItems = galleryItems.map((item) => ({ item, title: itemTitle(item, locale) }));
