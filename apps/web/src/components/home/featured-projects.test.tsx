@@ -67,6 +67,17 @@ describe('FeaturedProjects', () => {
     expect(document.querySelectorAll('[data-tilt]')).toHaveLength(featured.length + 1);
   });
 
+  it('estira la superficie de cada proyecto destacado al alto completo de su fila', () => {
+    renderFeaturedProjects();
+
+    for (const project of featured) {
+      const card = screen
+        .getByRole('link', { name: project.title.en })
+        .closest('[data-tilt]')?.firstElementChild;
+      expect(card).toHaveClass('h-full');
+    }
+  });
+
   it('con un nº impar de destacados (768px, sm:grid-cols-2), la última card destacada no queda huérfana: spanea 2 columnas en sm y vuelve a 1 en lg (design review F3.6 T21, "card huérfana 768")', () => {
     // 3 destacados en un grid sm:grid-cols-2 lg:grid-cols-3: en el rango sm (640-1024,
     // incluye 768) la 3ª card quedaba sola en su fila con un hueco vacío al lado.

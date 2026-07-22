@@ -50,7 +50,7 @@ export function ProjectCard({
   animateMetrics = false,
 }: ProjectCardProps) {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle as={headingLevel}>
           <TitleLink project={project} locale={locale} />
