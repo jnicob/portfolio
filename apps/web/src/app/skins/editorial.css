@@ -2,6 +2,12 @@
  * Skin editorial — disposición «NYT» (spec F3.9 §2). Solo CSS: el DOM no
  * cambia; colores únicamente vía tokens; cada regla escopada a
  * [data-skin='editorial'] (invariantes en editorial-css.test.ts).
+ *
+ * Tradeoff de cascada: este parcial es CSS sin @layer, así que SIEMPRE gana
+ * a las utilities de Tailwind de los componentes (viven en @layer utilities,
+ * de menor prioridad que las reglas sin capa). Cambiar una utility de estos
+ * elementos en el componente (p. ej. la clase del <h1> del hero) no tendrá
+ * ningún efecto visible bajo data-skin='editorial'.
  */
 
 /* ── Home: masthead ─────────────────────────────────────────────────── */
@@ -21,10 +27,17 @@
   letter-spacing: -0.01em;
 }
 
-/* La entradilla del hero, en serif itálica de periódico. */
-[data-skin='editorial'] [data-home-content] > section:first-of-type p {
+/* La entradilla del hero, en serif itálica de periódico (solo el párrafo
+ * directo del hero: no hereda un futuro <p> anidado en el bloque). */
+[data-skin='editorial'] [data-home-content] > section:first-of-type > div > p {
   font-family: var(--font-serif);
   font-style: italic;
+}
+
+/* El row de Badge+CTA del hero, centrado bajo el titular (a 375px queda
+ * alineado a la izquierda por defecto; ver hero.tsx). */
+[data-skin='editorial'] [data-home-content] > section:first-of-type > div > div {
+  justify-content: center;
 }
 
 /* Secciones separadas por hairline. */
@@ -83,7 +96,7 @@
   letter-spacing: 0.14em;
 }
 
-[data-skin='editorial'] [data-project-article] h1 {
+[data-skin='editorial'] [data-project-article] > h1 {
   font-size: 2.5rem;
   font-weight: 800;
   letter-spacing: -0.02em;

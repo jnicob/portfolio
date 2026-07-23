@@ -24,7 +24,10 @@ function ruleSelectors(source: string): string[] {
 
 function sourceFiles(dir: string): string[] {
   return readdirSync(dir, { recursive: true, withFileTypes: true })
-    .filter((entry) => entry.isFile() && /\.(tsx?|css)$/.test(entry.name))
+    .filter(
+      (entry) =>
+        entry.isFile() && /\.(tsx?|css)$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name),
+    )
     .map((entry) => path.join(entry.parentPath, entry.name));
 }
 
@@ -39,6 +42,16 @@ describe('editorial.css (disposición del skin editorial)', () => {
 
   it('no contiene colores hex (solo tokens)', () => {
     expect(css).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
+  });
+
+  it('no contiene funciones de color (rgb/hsl/oklch/color/…) (solo tokens)', () => {
+    expect(css).not.toMatch(/\b(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(/i);
+  });
+
+  it('no contiene named colors sueltos (black/white/red/blue/gray/grey) (solo tokens)', () => {
+    // Límites que excluyen guiones para no disparar con identificadores CSS
+    // como `white-space` o `off-white` (no son el color named "white").
+    expect(css).not.toMatch(/(?<![\w-])(black|white|red|blue|gray|grey)(?![\w-])/i);
   });
 
   it('cada hook data-* que usa existe en el código de la app', () => {
