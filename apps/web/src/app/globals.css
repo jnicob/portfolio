@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import './skins/editorial.css';
 
 /*
  * Tokens semánticos (skill: tailwind-tokens).
