@@ -49,3 +49,27 @@
   flex: 0 0 3rem;
   border-top: 1px solid var(--fg);
 }
+
+/* ── CV: diario ─────────────────────────────────────────────────────── */
+
+/* Secciones del CV separadas por hairline con aire de columna. */
+[data-skin='editorial'] [data-cv-sections] > section + section {
+  border-top: 1px solid var(--border);
+  padding-top: 2rem;
+}
+
+/* La experiencia fluye a dos columnas en >=lg (orden column-major = orden
+ * de lectura de diario; el DOM y el Tab no cambian). */
+@media (min-width: 64rem) {
+  [data-skin='editorial'] [data-cv-experience] {
+    display: block;
+    columns: 2;
+    column-gap: 2.5rem;
+    column-rule: 1px solid var(--border);
+  }
+
+  [data-skin='editorial'] [data-cv-experience] > article {
+    break-inside: avoid;
+    margin-bottom: 2rem;
+  }
+}

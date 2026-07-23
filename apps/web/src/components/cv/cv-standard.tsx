@@ -34,10 +34,10 @@ export type CvViewProps = { locale: Locale; strings: CvStrings };
  */
 export function CvStandard({ locale, strings }: CvViewProps) {
   return (
-    <div className="flex flex-col gap-10">
+    <div data-cv-sections className="flex flex-col gap-10">
       <section className="flex flex-col gap-6">
         <h2 className="text-2xl font-semibold text-fg">{strings.experienceTitle}</h2>
-        <div className="flex flex-col gap-8">
+        <div data-cv-experience className="flex flex-col gap-8">
           {experience.map((entry) => (
             <ExperienceEntryBlock
               key={entry.id}

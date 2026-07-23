@@ -57,6 +57,12 @@ describe('las 3 vistas del CV', () => {
     expect(timelineList).toBeDefined();
     expect(timelineList!.children).toHaveLength(experience.length);
   });
+
+  it('CvStandard expone los hooks de disposición del skin editorial', () => {
+    const { container } = render(<CvStandard locale="en" strings={STRINGS} />);
+    expect(container.querySelector('[data-cv-sections]')).not.toBeNull();
+    expect(container.querySelector('[data-cv-experience]')).not.toBeNull();
+  });
 });
 
 describe('CvTimeline — fecha en badge', () => {
