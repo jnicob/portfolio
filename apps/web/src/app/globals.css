@@ -23,12 +23,14 @@
   --font-serif: var(--font-source-serif);
   --radius-card: var(--radius-card-value);
   --radius-control: var(--radius-control-value);
+  --radius-badge: var(--radius-badge-value);
 }
 
 /* Base: indirección de radios/fuentes que los skins (T21+) pueden redefinir. */
 :root {
   --radius-card-value: 0.75rem;
   --radius-control-value: 0.5rem;
+  --radius-badge-value: calc(infinity * 1px);
   --font-heading: var(--font-geist-sans);
   --font-body: var(--font-geist-sans);
 }
@@ -79,6 +81,7 @@
   --danger-fg: #121212;
   --radius-card-value: 0.125rem;
   --radius-control-value: 0;
+  --radius-badge-value: 0;
   --font-heading: var(--font-serif);
 }
 
@@ -96,6 +99,7 @@
   --danger-fg: #ffffff;
   --radius-card-value: 0.125rem;
   --radius-control-value: 0;
+  --radius-badge-value: 0;
   --font-heading: var(--font-serif);
 }
 
