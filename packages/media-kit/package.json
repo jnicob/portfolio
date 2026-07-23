@@ -3,6 +3,24 @@
   "version": "0.7.0",
   "description": "Accessible media components for React: before/after compare slider and fullscreen media lightbox.",
   "license": "MIT",
+  "author": "Nico Behm",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jnicob/portfolio.git",
+    "directory": "packages/media-kit"
+  },
+  "keywords": [
+    "react",
+    "compare-slider",
+    "before-after",
+    "lightbox",
+    "gallery",
+    "masonry",
+    "accessible"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
