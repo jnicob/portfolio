@@ -1,6 +1,6 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-21 · F3.8 cerrada; polish visual posterior pendiente de merge
+> Actualizado: 2026-07-22 · F3.8 y polish visual posterior integrados en main
 
 ## Ahora
 
@@ -20,23 +20,24 @@ en `5a09f0c` (rama `feature/phase-3.8-advanced-showcase-project-details` pushead
   builds static + Node OK con 25 rutas.
 - Minors no bloqueantes anotados: badge solo detecta 4xx (5xx pintaría éxito), `w-full`
   redundante en Select, borde de chip activo con `currentColor`.
-- **Follow-up visual de Nico** implementado en `feature/post-f3.8-gallery-cv-polish`: imágenes
-  fullscreen HD en `cover` y grid uniforme en `cover`; 408 web + 242 media-kit verdes.
+- **Follow-up visual de Nico** integrado: fullscreen HD en `cover`, grid uniforme en `cover`,
+  masonry inicial, fondo interactivo en todo el inicio y cards destacadas de igual alto por fila.
+  Gate final: 410 web + 242 media-kit verdes; lint/typecheck y builds static + Node OK.
 
 ## Hecho
 
-- ✅ Fases 0–3.8 implementadas (ver roadmap) · media-kit 0.6.0 en npm-ready (0.7.0 en
-  la feature branch).
+- ✅ Fases 0–3.8 implementadas (ver roadmap) · media-kit 0.6.0 en npm-ready (0.7.0
+  integrada en main).
 - ✅ F3.8 T1-15 + fixes de los Reviews 1-2 implementados y verificados en la feature branch.
+- ✅ Follow-up visual posterior a F3.8 integrado en main y verificado (652 tests).
 - ✅ Veredictos de review por bloque en el ledger `.superpowers/sdd/progress.md`.
 
 ## Siguiente acción
 
-1. Integrar `feature/post-f3.8-gallery-cv-polish` tras la validación de Nico.
-2. **F4 — Playground** (siguiente fase del roadmap).
-3. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf, a enforcar en Phase 6) +
+1. **F4 — Playground** (siguiente fase del roadmap).
+2. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf, a enforcar en Phase 6) +
    Escape anidado del skin filter (único ítem del backlog F3.7 fuera de F3.8).
-4. Follow-ups menores de F3.8 (no bloqueantes): endurecer badge de estado a `/^[45]/`,
+3. Follow-ups menores de F3.8 (no bloqueantes): endurecer badge de estado a `/^[45]/`,
    limpiar `w-full` redundante en Select, declarar borde del chip activo.
 
 ## Pendientes del usuario (no bloqueantes)
