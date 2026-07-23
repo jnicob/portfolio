@@ -14,4 +14,3 @@ export default defineConfig({
     fs.copyFileSync('src/styles.css', 'dist/styles.css');
   },
 });
-

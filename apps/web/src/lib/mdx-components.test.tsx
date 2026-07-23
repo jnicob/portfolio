@@ -15,13 +15,10 @@ describe('ExternalAwareLink', () => {
     },
   );
 
-  it.each(['/es/projects', '#seccion', 'mailto:a@b.c'])(
-    'deja %s como enlace normal',
-    (href) => {
-      render(<MdxLink href={href}>x</MdxLink>);
-      const link = screen.getByRole('link', { name: 'x' });
-      expect(link).not.toHaveAttribute('target');
-      expect(link).not.toHaveAttribute('rel');
-    },
-  );
+  it.each(['/es/projects', '#seccion', 'mailto:a@b.c'])('deja %s como enlace normal', (href) => {
+    render(<MdxLink href={href}>x</MdxLink>);
+    const link = screen.getByRole('link', { name: 'x' });
+    expect(link).not.toHaveAttribute('target');
+    expect(link).not.toHaveAttribute('rel');
+  });
 });

@@ -18,8 +18,8 @@ columna al filtrar y no hay control de posiciones. Los masonry de producción
    Packing determinista «columna más corta primero». Sin medir el DOM: las
    alturas se derivan de `width/height` CONOCIDOS del asset (exigirlos en los datos).
 2. **Orden DOM = orden de datos**: la posición es solo visual (`position:absolute`
-   + `left/top`); nunca reordenar el DOM ni repartir en wrappers por columna
-   (eso rompe el orden de lectura).
+   - `left/top`); nunca reordenar el DOM ni repartir en wrappers por columna
+     (eso rompe el orden de lectura).
 3. **Columnas por ancho de CONTENEDOR** (`ResizeObserver`), no de viewport:
    umbrales explícitos y testeados (aquí: 2 → 3 → 4 → 5, máx. 5).
 4. **Justified = mismo motor por filas**: alto objetivo, anchos ∝ aspect ratio,

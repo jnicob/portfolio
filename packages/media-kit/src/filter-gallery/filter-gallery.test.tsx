@@ -408,9 +408,7 @@ describe('layout masonry/justified', () => {
     );
     fireResize(200);
 
-    rerender(
-      <FilterGallery items={RATIO_ITEMS} filter="video" label="Demo" layout="masonry" />,
-    );
+    rerender(<FilterGallery items={RATIO_ITEMS} filter="video" label="Demo" layout="masonry" />);
 
     expect(screen.getByText('A').closest('li')).toHaveAttribute('data-fg-exiting');
     expect(screen.getByText('B').closest('li')?.style.top).toBe('0px');
