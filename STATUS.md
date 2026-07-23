@@ -1,11 +1,11 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-23 · F3.9 (skin Editorial NYT + puntero full-bleed) implementada
+> Actualizado: 2026-07-23 · F3.9 (skin Editorial NYT + puntero full-bleed) integrada en main
 
 ## Ahora
 
-**F3.9 (Skin Editorial «NYT» + puntero full-bleed) COMPLETA en la feature branch
-`feature/phase-3.9-editorial-nyt-fullbleed`, pendiente de merge a main.**
+**F3.9 (Skin Editorial «NYT» + puntero full-bleed) COMPLETA e integrada en main**
+(merge FF `d194a64..e868402`, main y feature branch pusheados a `github.com:jnicob/portfolio`).
 Implementada con subagent-driven development (6 tareas TDD, review por tarea en el ledger).
 
 - **T1** ✅ paleta NYT (B/N + azul, radios mínimos) en tokens de `globals.css`; test AA verde.
@@ -35,12 +35,13 @@ Implementada con subagent-driven development (6 tareas TDD, review por tarea en 
 
 ## Siguiente acción
 
-1. Merge de `feature/phase-3.9-editorial-nyt-fullbleed` a main (reviews de cierre ya en verde).
-2. **F4 — Playground** (siguiente fase del roadmap).
-3. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf, a enforcar en Phase 6) +
+1. **F4 — Playground** (siguiente fase del roadmap): brainstorm + spec + plan (just-in-time).
+2. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf, a enforcar en Phase 6) +
    Escape anidado del skin filter (único ítem del backlog F3.7 fuera de F3.8).
-4. Follow-ups menores de F3.8 (no bloqueantes): endurecer badge de estado a `/^[45]/`,
+3. Follow-ups menores de F3.8 (no bloqueantes): endurecer badge de estado a `/^[45]/`,
    limpiar `w-full` redundante en Select, declarar borde del chip activo.
+4. Backlog F3.9 (no bloqueante): byline del artículo con 2º dato, margen residual de la
+   columna 1 del CV, dueño único del ritmo hairline+gap.
 
 ## Pendientes del usuario (no bloqueantes)
 
