@@ -36,7 +36,7 @@ export default async function ProjectPage({ params }: Props) {
   const { frontmatter, content } = project;
   const t = await getTranslations('projects');
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <main data-project-article className="mx-auto max-w-3xl px-4 py-12">
       <Link href="/projects" className="text-sm text-fg-muted hover:text-fg">
         ← {t('backToList')}
       </Link>

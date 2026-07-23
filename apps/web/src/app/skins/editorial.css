@@ -73,3 +73,46 @@
     margin-bottom: 2rem;
   }
 }
+
+/* ── Detalle de proyecto: artículo ──────────────────────────────────── */
+
+/* El back-link hace de kicker: mayúsculas espaciadas sobre el titular. */
+[data-skin='editorial'] [data-project-article] > a:first-of-type {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+[data-skin='editorial'] [data-project-article] h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+/* La entradilla (summary) como bajada en serif itálica. */
+[data-skin='editorial'] [data-project-article] > p {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  font-style: italic;
+}
+
+/* Las métricas como byline entre hairlines. */
+[data-skin='editorial'] [data-project-article] > dl {
+  border-block: 1px solid var(--border);
+  padding-block: 0.75rem;
+}
+
+/* Prosa a medida de columna de periódico + drop cap. */
+[data-skin='editorial'] [data-project-article] .prose-portfolio {
+  max-width: 65ch;
+}
+
+[data-skin='editorial'] [data-project-article] .prose-portfolio > p:first-of-type::first-letter {
+  float: left;
+  padding-right: 0.08em;
+  font-family: var(--font-serif);
+  font-size: 3.4em;
+  font-weight: 700;
+  line-height: 0.85;
+}
