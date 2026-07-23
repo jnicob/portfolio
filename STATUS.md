@@ -1,43 +1,45 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-22 · F3.8 y polish visual posterior integrados en main
+> Actualizado: 2026-07-23 · F3.9 (skin Editorial NYT + puntero full-bleed) implementada
 
 ## Ahora
 
-**F3.8 (Showcase avanzado + detalle de proyectos) COMPLETA e integrada en main.**
-Implementada por **Codex CLI** con review por bloques por Claude. Merge FF a main
-en `5a09f0c` (rama `feature/phase-3.8-advanced-showcase-project-details` pusheada).
+**F3.9 (Skin Editorial «NYT» + puntero full-bleed) COMPLETA en la feature branch
+`feature/phase-3.9-editorial-nyt-fullbleed`, pendiente de merge a main.**
+Implementada con subagent-driven development (6 tareas TDD, review por tarea en el ledger).
 
-- **Bloque 1 (T1-7)** ✅ revisado: fix G1 (bug tema+idioma) + motor masonry/justified
-  (media-kit **0.7.0**) + selector de layouts + skill `masonry-layouts`.
-- **Bloque 2 (fixes Review 1 + T8-13)** ✅ revisado: unificación selector, reflow, densidad;
-  API player con 4 ejemplos + previews/fullscreen; detalles G4/G5; backlog mecánico.
-- **Bloque 3 (Fase A + T14-15)** ✅ revisado: fixes del Review 2, inventario, gates, builds,
-  verificación en vivo y cierre documental.
-- **Review final (2026-07-21):** code-reviewer y design-reviewer → SHIP; qa-a11y-perf → PASS
-  con condiciones (los únicos MAJOR de perf son deuda pre-existente de main, +1,7 kB gzip de
-  delta, diferida a Phase 6). 647 tests verdes (405 web + 242 media-kit), lint 0 errores,
-  builds static + Node OK con 25 rutas.
-- Minors no bloqueantes anotados: badge solo detecta 4xx (5xx pintaría éxito), `w-full`
-  redundante en Select, borde de chip activo con `currentColor`.
-- **Follow-up visual de Nico** integrado: fullscreen HD en `cover`, grid uniforme en `cover`,
-  masonry inicial, fondo interactivo en todo el inicio y cards destacadas de igual alto por fila.
-  Gate final: 410 web + 242 media-kit verdes; lint/typecheck y builds static + Node OK.
+- **T1** ✅ paleta NYT (B/N + azul, radios mínimos) en tokens de `globals.css`; test AA verde.
+- **T2** ✅ `HomeBackground` en dos capas: canvas del puntero full-bleed + contenido `max-w-5xl`
+  (hook `data-home-content`).
+- **T3** ✅ parcial `apps/web/src/app/skins/editorial.css` + test de invariantes
+  (scoping a `[data-skin='editorial']`, cero hex, hooks vivos) + masthead NYT en la home.
+- **T4** ✅ CV a dos columnas tipo diario (`columns: 2` en ≥lg con hairline central; CSS-only).
+- **T5** ✅ detalle de proyecto como artículo NYT (kicker, titular, bajada itálica,
+  byline de métricas entre hairlines, drop cap).
+- **T6** ✅ gate final: lint 0 errores, typecheck OK, 418 web + 242 media-kit tests,
+  builds static + Node con 25 rutas, home scripts gzip 274,6 KiB (no crece vs 275,5 de F3.8);
+  verificación en vivo Playwright (editorial × dark/light en home/CV/detalle, otros 3 skins
+  sin cambios, canvas full-bleed hasta los bordes).
+- **Reviews de cierre** ✅: design review (Opus) SHIP — su único Major (Badge `rounded-full`
+  hardcodeado) arreglado tokenizando `--radius-badge` (solo editorial lo pone a 0) y verificado
+  en navegador; code review final (Fable) «Ready to merge: Yes» — fixes minor aplicados
+  (invariantes de color ampliados, hooks vivos sin `.test.tsx`, selectores endurecidos,
+  meta-row del hero centrado en móvil) y spec enmendada con 3 divergencias adjudicadas
+  (drop cap, regla doble, entradilla serif).
 
 ## Hecho
 
-- ✅ Fases 0–3.8 implementadas (ver roadmap) · media-kit 0.6.0 en npm-ready (0.7.0
-  integrada en main).
-- ✅ F3.8 T1-15 + fixes de los Reviews 1-2 implementados y verificados en la feature branch.
-- ✅ Follow-up visual posterior a F3.8 integrado en main y verificado (652 tests).
-- ✅ Veredictos de review por bloque en el ledger `.superpowers/sdd/progress.md`.
+- ✅ Fases 0–3.9 implementadas (ver roadmap) · media-kit 0.7.0 integrada en main.
+- ✅ F3.9 T1-T6 con review Approved por tarea; veredictos en `.superpowers/sdd/progress.md`.
+- ✅ Follow-up visual posterior a F3.8 integrado en main y verificado.
 
 ## Siguiente acción
 
-1. **F4 — Playground** (siguiente fase del roadmap).
-2. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf, a enforcar en Phase 6) +
+1. Merge de `feature/phase-3.9-editorial-nyt-fullbleed` a main (reviews de cierre ya en verde).
+2. **F4 — Playground** (siguiente fase del roadmap).
+3. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf, a enforcar en Phase 6) +
    Escape anidado del skin filter (único ítem del backlog F3.7 fuera de F3.8).
-3. Follow-ups menores de F3.8 (no bloqueantes): endurecer badge de estado a `/^[45]/`,
+4. Follow-ups menores de F3.8 (no bloqueantes): endurecer badge de estado a `/^[45]/`,
    limpiar `w-full` redundante en Select, declarar borde del chip activo.
 
 ## Pendientes del usuario (no bloqueantes)
@@ -50,7 +52,6 @@ en `5a09f0c` (rama `feature/phase-3.8-advanced-showcase-project-details` pushead
 
 ## Fuentes de verdad
 
-- Plan F3.8: [docs/superpowers/plans/2026-07-20-phase-3.8-advanced-showcase-project-details.md](docs/superpowers/plans/2026-07-20-phase-3.8-advanced-showcase-project-details.md)
-- Spec F3.8 (§0 log del brainstorm): [docs/superpowers/specs/2026-07-19-phase-3.8-advanced-showcase-project-details-design.md](docs/superpowers/specs/2026-07-19-phase-3.8-advanced-showcase-project-details-design.md)
-- Feedback Nico (**A-G resuelto**): [docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md](docs/superpowers/plans/2026-07-17-feedback-nico-ux-content.md)
+- Plan F3.9: [docs/superpowers/plans/2026-07-23-phase-3.9-editorial-nyt-fullbleed.md](docs/superpowers/plans/2026-07-23-phase-3.9-editorial-nyt-fullbleed.md)
+- Spec F3.9: [docs/superpowers/specs/2026-07-23-phase-3.9-editorial-nyt-fullbleed-design.md](docs/superpowers/specs/2026-07-23-phase-3.9-editorial-nyt-fullbleed-design.md)
 - Roadmap: [docs/superpowers/plans/2026-07-10-portfolio-roadmap.md](docs/superpowers/plans/2026-07-10-portfolio-roadmap.md) · Ledger SDD: `.superpowers/sdd/progress.md`
