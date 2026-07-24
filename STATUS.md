@@ -35,7 +35,13 @@ Implementada con subagent-driven development (6 tareas TDD, review por tarea en 
 
 ## Siguiente acción
 
-1. **F4 — Playground** (siguiente fase del roadmap): brainstorm + spec + plan (just-in-time).
+1. **F4 — Playground REDEFINIDA (2026-07-24)**: el playground se separa como producto propio
+   → repo `github.com:jnicob/ai-playground` (spec aprobada:
+   `docs/superpowers/specs/2026-07-24-phase-4-playground-design.md`; brainstorm de 2 rondas,
+   decisiones: multi-proveedor mock|pollinations|google, API keys de usuario en sessionStorage,
+   Veo opt-in con aviso de coste, sin proxy). Próximo paso: plan de bootstrap del repo nuevo
+   (`nico-project-bootstrap` + writing-plans). En el portfolio F4 queda como integración
+   ligera (case study + CTA cuando haya URL desplegada); F5 pierde el proxy (roadmap AMENDED).
 2. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf, a enforcar en Phase 6) +
    Escape anidado del skin filter (único ítem del backlog F3.7 fuera de F3.8).
 3. Follow-ups menores de F3.8 (no bloqueantes): endurecer badge de estado a `/^[45]/`,
@@ -46,7 +52,7 @@ Implementada con subagent-driven development (6 tareas TDD, review por tarea en 
 ## Pendientes del usuario (no bloqueantes)
 
 - Dominio definitivo + `NEXT_PUBLIC_SITE_URL` (el build avisa si falta).
-- Publicar `@nicobehm/media-kit` en npm.
+- ~~Publicar `@nicobehm/media-kit` en npm~~ ✅ publicado (0.7.0 verificado en npm 2026-07-24).
 - Momento del deploy del badge de disponibilidad (visible desde F3.7).
 - Upgrade Node 22 (retirar pins de `docs/decisions/2026-07-10-dependency-pins.md`).
 - ¿Subir el skill `masonry-layouts` a ai-config? (recomendado; no propagado aún).
