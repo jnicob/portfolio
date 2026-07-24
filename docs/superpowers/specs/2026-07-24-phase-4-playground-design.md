@@ -16,6 +16,7 @@
 | F4 del portfolio | **Integración ligera**: proyecto destacado + case study del playground con CTA a la app desplegada. El desarrollo del playground vive en el repo nuevo con su propio ciclo spec→plan |
 | F5 del portfolio | El adaptador `proxy` y el handler `/api/ai-proxy` **salen del roadmap**: con keys de usuario en runtime no hay secretos de servidor que esconder. F5 queda como runtime dual + deploys |
 | Patrón ai-platform | Adoptar el patrón transversal de la plataforma (un archivo declarativo por servicio con schema + ejemplos + metadatos, consumido por factories: `ai-api-specs` 145 specs/modelo, `fc-apisix` registry YAML) → registry `PlaygroundService`. En el repo nuevo: skill `adding-a-provider` (checklist estilo «Adding New AI Model») + kit de skills de proceso inspirado en `fc-central-payments-api` |
+| Arquitectura (AMENDED 2026-07-24, 2ª discusión) | **Híbrido con API propia** (opción B): monorepo pnpm — `apps/web` (SPA Vite + React), `apps/api` (Hono sobre Cloudflare Workers) y `packages/core` (dominio compartido: tipos, registry, Zod, mock). API propia **task-based** (`POST /v1/services/{service}` → `{task_id}` → `GET /v1/tasks/{id}`) con spec OpenAPI publicada; los conectores a proveedores live viven server-side (elimina el techo de CORS y hace real la pestaña API); el **mock sigue client-side** (funciona offline sin API). Keys del usuario: pass-through por header por request, nunca almacenadas server-side (documentado en la UI). Razón: es la historia profesional de Nico en miniatura (spec → server → API task-based → frontend consumidor) y Workers free tier ≈ 0 € |
 
 Decisiones de la 1ª ronda que siguen vigentes: assets mock híbridos (set dedicado; los del
 showcase del portfolio solo si se copian al repo nuevo), modelos con IDs reales del proveedor,
@@ -58,10 +59,12 @@ ejemplos precargados, share-by-URL reproducible, gestión de API keys por provee
 - **Puerto** `GenerationService.generate(request, signal?)`; factory que resuelve el
   adaptador por proveedor seleccionado; decorador `withMockFallback(live, mock)`
   (timeout ~20 s o error → mock con `degraded: true`).
-- Adaptadores v1: `mock` (determinista contra manifiesto de assets, no puede fallar),
-  `pollinations` (GET URL; verificar lista viva de modelos del tier gratuito en el plan),
-  `google` (Gemini API REST con key del usuario; imagen síncrona, vídeo Veo long-running
-  con polling; aviso de coste antes de generar con Veo; sin key o error de billing → mock).
+- Adaptadores v1 (AMENDED arquitectura B): `mock` client-side (determinista contra manifiesto
+  de assets, no puede fallar) y `platform` client-side que consume la **API propia** (`apps/api`);
+  los conectores reales a proveedores (`pollinations` — verificar lista viva de modelos del tier
+  gratuito en el plan —, `google` Gemini/Veo con key del usuario en pass-through) viven
+  server-side detrás de la API task-based. Aviso de coste antes de generar con Veo; sin key o
+  error de billing → mock.
 
 ### 2.3 UI
 

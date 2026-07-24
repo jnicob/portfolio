@@ -1,86 +1,131 @@
-# ai-playground — Fase A: bootstrap + walking skeleton (mock) — Implementation Plan
+# ai-playground — Fase A: bootstrap monorepo + walking skeleton (mock) — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Crear el repo `ai-playground` (SPA Vite + React) con tooling en verde y un walking skeleton end-to-end del playground con el proveedor `mock` (generar imagen → resultado + traza API), más la exportación de agentes/skills a `ai-config`.
+**Goal:** Crear el monorepo `ai-playground` (SPA + API + core compartido) con tooling en verde y un walking skeleton end-to-end del playground con el proveedor `mock` (generar imagen → resultado + traza API) más un esqueleto de la API (`/health`) que valide el toolchain server-side, y la exportación de agentes/skills a `ai-config`.
 
-**Architecture:** SPA 100% client-side. Dominio puerto/adaptador (`GenerationService`), registry declarativo de servicios/proveedores validado con Zod, adaptador `mock` determinista contra un catálogo de assets locales, hook `useGeneration` con estado discriminado y UI de 3 zonas (rail · form · resultado con tabs Preview|API). Spec de producto: `docs/superpowers/specs/2026-07-24-phase-4-playground-design.md` (§2) del portfolio, que se migra al repo nuevo.
+**Architecture:** Opción B (híbrido con API propia, spec §0): monorepo pnpm con `packages/core` (dominio puerto/adaptador: tipos, registry declarativo Zod, adaptador mock determinista, factory, `withMockFallback`), `apps/web` (SPA Vite + React 19: i18n, tokens, hook `useGeneration`, UI de 3 zonas con tabs Preview|API) y `apps/api` (Hono sobre Cloudflare Workers; en fase A solo `/health` — la API task-based con OpenAPI y conectores llega en fase B). El mock corre client-side; los proveedores live pasarán por la API propia. Spec: `docs/superpowers/specs/2026-07-24-phase-4-playground-design.md` (§0 + §2) del portfolio, que se migra al repo nuevo.
 
-**Tech Stack:** pnpm · Vite 7 · React 19 · TypeScript strict · Tailwind CSS v4 (tokens semánticos) · Zod · Vitest + Testing Library · GitHub Actions.
+**Tech Stack:** pnpm workspaces · Vite 7 · React 19 · TypeScript strict · Tailwind CSS v4 (tokens semánticos) · Zod · Hono + Wrangler (Cloudflare Workers) · Vitest + Testing Library · GitHub Actions.
 
 ## Global Constraints
 
 - Repo destino: `~/workspace/formaciones/claude/superpowers/ai-playground` → `github.com:jnicob/ai-playground`. Node 22 (local: v22.23.1), pnpm 9.
-- TypeScript `strict: true`; lint + typecheck + tests en verde en cada commit; TDD para todo código con lógica.
+- TypeScript `strict: true` en todos los workspaces; lint + typecheck + tests en verde en cada commit; TDD para todo código con lógica.
 - Colores SOLO vía tokens semánticos (CSS vars + `data-theme`); prohibido color hardcodeado en componentes.
 - Prohibida cualquier dependencia privada/de empresa; solo OSS público o código propio. Cero referencias a Freepik/Magnific en código o docs del repo nuevo (clean-room).
-- Nunca secretos/API keys en repo, bundle o URLs compartidas (las keys de proveedor viven en `sessionStorage` — fase B, fuera de este plan).
+- Nunca secretos/API keys en repo, bundle o URLs compartidas. Las keys de usuario (fase B) viajan por header en pass-through y jamás se almacenan server-side.
+- `packages/core` NO depende de React ni del navegador (debe correr en Workers y en jsdom); `apps/web` y `apps/api` dependen de core, nunca al revés.
 - i18n es/en en toda UI visible; WCAG AA en ambos temas.
 - Commits convencionales (`feat:`, `fix:`, `docs:`, `test:`, `chore:`) y frecuentes.
-- El plan de fases del producto (A–D) vive en el repo nuevo; este plan cubre SOLO la fase A.
+- Este plan cubre SOLO la fase A del roadmap del producto (ver Task 2).
 
 ## Estructura de archivos del repo nuevo
 
 ```
 ai-playground/
-├── AGENTS.md                    # instrucciones agentes (CLAUDE.md symlink)
-├── STATUS.md                    # resumen operativo
+├── package.json                 # scripts raíz: pnpm -r
+├── pnpm-workspace.yaml
+├── tsconfig.base.json           # strict compartido
+├── eslint.config.js · .prettierrc.json
+├── AGENTS.md (CLAUDE.md symlink) · STATUS.md
 ├── docs/
-│   ├── specs/2026-07-24-ai-playground-design.md   # spec migrada
-│   └── plans/2026-07-24-product-roadmap.md        # fases A–D
+│   ├── specs/2026-07-24-ai-playground-design.md
+│   └── plans/2026-07-24-product-roadmap.md
 ├── skills/adding-a-provider/SKILL.md
 ├── .github/workflows/ci.yml
-├── index.html · vite.config.ts · tsconfig*.json · eslint.config.js · .prettierrc.json
-├── public/mocks/                # assets del adaptador mock
-└── src/
-    ├── main.tsx · app.tsx
-    ├── styles/globals.css       # tokens semánticos + Tailwind
-    ├── i18n/messages.ts · i18n.tsx
-    ├── domain/types.ts · registry.ts · factory.ts · with-mock-fallback.ts
-    ├── adapters/mock.ts · mock-catalog.ts
-    └── ui/generation-form.tsx · result-panel.tsx · api-trace-view.tsx · use-generation.ts
+├── packages/core/               # dominio compartido (sin React, sin browser APIs)
+│   ├── package.json · tsconfig.json · vitest.config.ts
+│   └── src/index.ts · types.ts · registry.ts · factory.ts · with-mock-fallback.ts
+│       └── adapters/mock.ts · mock-catalog.ts
+├── apps/api/                    # Hono + Wrangler (fase A: /health)
+│   ├── package.json · tsconfig.json · vitest.config.ts · wrangler.toml
+│   └── src/index.ts (+ index.test.ts)
+└── apps/web/                    # SPA Vite + React
+    ├── package.json · tsconfig*.json · vite.config.ts · vitest.config.ts · index.html
+    ├── public/mocks/            # assets del adaptador mock
+    └── src/main.tsx · app.tsx · styles/globals.css · test/setup.ts
+        ├── i18n/messages.ts · i18n.tsx
+        └── ui/generation-form.tsx · result-panel.tsx · api-trace-view.tsx · use-generation.ts
 ```
 
-Fases del producto (roadmap que crea la Task 3): **A** bootstrap + skeleton mock (este plan) · **B** proveedores live (pollinations, google imagen) + gestión de API keys + `withMockFallback` cableado · **C** servicios edit-image y generate-video (media-kit CompareSlider/MediaLightbox, Veo opt-in con aviso de coste) + ejemplos precargados + share-by-URL · **D** polish (a11y audit, qa, deploy Cloudflare Pages) + integración en portfolio (case study + CTA).
+Fases del producto (roadmap que crea la Task 2): **A** bootstrap monorepo + skeleton mock + API `/health` (este plan) · **B** API task-based propia (`POST /v1/services/{service}` → `{task_id}` → `GET /v1/tasks/{id}`) con spec OpenAPI + conectores server-side (pollinations, google imagen) + adaptador `platform` en core + panel de API keys pass-through · **C** servicios edit-image y generate-video (media-kit CompareSlider/MediaLightbox, Veo opt-in con aviso de coste) + ejemplos precargados + share-by-URL · **D** polish (a11y audit, qa, deploy Pages + Workers) + integración en portfolio (case study + CTA).
 
 ---
 
-### Task 1: Scaffold Vite + tooling de calidad
+### Task 1: Scaffold del monorepo + tooling + CI
 
 **Files:**
-- Create: repo completo vía `pnpm create vite`, `tsconfig.app.json` (strict extra), `eslint.config.js`, `.prettierrc.json`, `vitest.config.ts`, `src/test/setup.ts`, `.github/workflows/ci.yml`, `.gitignore`
-- Delete: `src/App.css`, `src/assets/`, contenido demo de `src/App.tsx`
+- Create: `package.json`, `pnpm-workspace.yaml`, `tsconfig.base.json`, `eslint.config.js`, `.prettierrc.json`, `.gitignore`, `.github/workflows/ci.yml`, `packages/core/{package.json,tsconfig.json,vitest.config.ts,src/index.ts}`, `apps/api/{package.json,tsconfig.json,vitest.config.ts,wrangler.toml,src/index.ts}`, `apps/web/` (scaffold Vite adaptado)
 
 **Interfaces:**
-- Produces: comandos `pnpm run dev|build|lint|format|typecheck|test`; alias `@/` → `src/`.
+- Produces: comandos raíz `pnpm run lint|format|typecheck|test|build` (recursivos); paquete `@ai-playground/core` importable desde web y api (`workspace:*`, exports a fuente TS); alias `@/` → `src/` dentro de web.
 
-- [ ] **Step 1: Scaffold y git init**
+- [ ] **Step 1: Raíz del monorepo**
 
 ```bash
-cd ~/workspace/formaciones/claude/superpowers
-pnpm create vite ai-playground --template react-ts
-cd ai-playground && git init -b main && pnpm install
+mkdir -p ~/workspace/formaciones/claude/superpowers/ai-playground
+cd ~/workspace/formaciones/claude/superpowers/ai-playground
+git init -b main
 ```
 
-- [ ] **Step 2: Endurecer TypeScript**
+`pnpm-workspace.yaml`:
 
-En `tsconfig.app.json`, dentro de `compilerOptions`, añadir/asegurar:
+```yaml
+packages:
+  - apps/*
+  - packages/*
+```
+
+`package.json` (raíz):
 
 ```json
 {
-  "strict": true,
-  "noUncheckedIndexedAccess": true,
-  "noImplicitOverride": true,
-  "exactOptionalPropertyTypes": true,
-  "baseUrl": ".",
-  "paths": { "@/*": ["src/*"] }
+  "name": "ai-playground",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "build": "pnpm -r run build",
+    "dev": "pnpm --filter @ai-playground/web run dev"
+  }
 }
 ```
 
-- [ ] **Step 3: Instalar y configurar tooling**
+`tsconfig.base.json`:
 
-```bash
-pnpm add -D prettier eslint-config-prettier vitest jsdom @testing-library/react @testing-library/user-event @testing-library/jest-dom @vitejs/plugin-react
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "exactOptionalPropertyTypes": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "noEmit": true
+  }
+}
+```
+
+`.gitignore`:
+
+```
+node_modules/
+dist/
+.wrangler/
+coverage/
+*.local
 ```
 
 `.prettierrc.json`:
@@ -89,9 +134,177 @@ pnpm add -D prettier eslint-config-prettier vitest jsdom @testing-library/react 
 { "singleQuote": true, "printWidth": 100 }
 ```
 
-`eslint.config.js`: al array generado por Vite, añadir al final `eslintConfigPrettier` (import de `eslint-config-prettier`).
+- [ ] **Step 2: Tooling raíz (ESLint flat + Prettier + Vitest)**
 
-`vite.config.ts`:
+```bash
+pnpm add -Dw eslint @eslint/js typescript typescript-eslint eslint-plugin-react-hooks eslint-plugin-react-refresh eslint-config-prettier prettier vitest globals
+```
+
+`eslint.config.js` (raíz, cubre los 3 workspaces):
+
+```js
+import js from '@eslint/js';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import prettier from 'eslint-config-prettier';
+
+export default tseslint.config(
+  { ignores: ['**/dist/**', '**/.wrangler/**'] },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    files: ['apps/web/**/*.{ts,tsx}'],
+    plugins: { 'react-hooks': reactHooks, 'react-refresh': reactRefresh },
+    rules: { ...reactHooks.configs.recommended.rules },
+    languageOptions: { globals: globals.browser },
+  },
+  prettier,
+);
+```
+
+- [ ] **Step 3: packages/core esqueleto**
+
+`packages/core/package.json`:
+
+```json
+{
+  "name": "@ai-playground/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": { "zod": "catalog:" }
+}
+```
+
+Nota: si `catalog:` no está configurado, usar `pnpm --filter @ai-playground/core add zod` (versión concreta) — no bloquearse en catalogs.
+
+`packages/core/tsconfig.json`:
+
+```json
+{ "extends": "../../tsconfig.base.json", "include": ["src"] }
+```
+
+`packages/core/vitest.config.ts`:
+
+```ts
+import { defineConfig } from 'vitest/config';
+export default defineConfig({ test: { environment: 'node' } });
+```
+
+`packages/core/src/index.ts` (placeholder que la Task 4 sustituye):
+
+```ts
+export const CORE_READY = true;
+```
+
+- [ ] **Step 4: apps/api esqueleto**
+
+```bash
+mkdir -p apps/api/src
+cd apps/api && pnpm add hono && pnpm add -D wrangler vitest && cd ../..
+```
+
+`apps/api/package.json` (ajustar al resultado del add; asegurar):
+
+```json
+{
+  "name": "@ai-playground/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "build": "wrangler deploy --dry-run --outdir dist"
+  }
+}
+```
+
+`apps/api/tsconfig.json`:
+
+```json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "types": ["@cloudflare/workers-types"] },
+  "include": ["src"]
+}
+```
+
+(añadir `pnpm --filter @ai-playground/api add -D @cloudflare/workers-types`)
+
+`apps/api/wrangler.toml`:
+
+```toml
+name = "ai-playground-api"
+main = "src/index.ts"
+compatibility_date = "2026-07-01"
+```
+
+`apps/api/vitest.config.ts`:
+
+```ts
+import { defineConfig } from 'vitest/config';
+export default defineConfig({ test: { environment: 'node' } });
+```
+
+`apps/api/src/index.ts` (la Task 10 lo completa con TDD; aquí solo el módulo vacío):
+
+```ts
+import { Hono } from 'hono';
+
+export const app = new Hono();
+
+export default app;
+```
+
+- [ ] **Step 5: apps/web scaffold**
+
+```bash
+cd apps && pnpm create vite web --template react-ts && cd ..
+pnpm --filter @ai-playground/web add @ai-playground/core@workspace:*
+pnpm --filter @ai-playground/web add -D jsdom @testing-library/react @testing-library/user-event @testing-library/jest-dom
+pnpm install
+```
+
+En `apps/web/package.json`: `"name": "@ai-playground/web"`, y scripts:
+
+```json
+{
+  "dev": "vite",
+  "build": "tsc -b && vite build",
+  "typecheck": "tsc -b",
+  "test": "vitest run",
+  "preview": "vite preview"
+}
+```
+
+`apps/web/tsconfig.app.json`: extender la base y añadir alias:
+
+```json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": { "@/*": ["src/*"] }
+  },
+  "include": ["src"]
+}
+```
+
+(mantener el `tsconfig.json` de references que genera Vite, apuntando a app y node)
+
+`apps/web/vite.config.ts`:
 
 ```ts
 import { defineConfig } from 'vite';
@@ -104,40 +317,28 @@ export default defineConfig({
 });
 ```
 
-`vitest.config.ts`:
+`apps/web/vitest.config.ts`:
 
 ```ts
 import { defineConfig, mergeConfig } from 'vitest/config';
 import viteConfig from './vite.config';
 
 export default mergeConfig(viteConfig, {
-  test: { environment: 'jsdom', setupFiles: ['./src/test/setup.ts'], globals: false },
+  test: { environment: 'jsdom', setupFiles: ['./src/test/setup.ts'], passWithNoTests: true },
 });
 ```
 
-`src/test/setup.ts`:
+`apps/web/src/test/setup.ts`:
 
 ```ts
 import '@testing-library/jest-dom/vitest';
 ```
 
-En `package.json`, scripts:
+Limpiar demo de Vite: borrar `src/App.css` y `src/assets/`; renombrar `src/App.tsx` → `src/app.tsx` con contenido `export default function App() { return <main>ai-playground</main>; }`; actualizar import en `src/main.tsx`. En `index.html`: `<html lang="en" data-theme="dark">`, `<title>ai-playground</title>`.
 
-```json
-{
-  "lint": "eslint .",
-  "format": "prettier --check .",
-  "format:fix": "prettier --write .",
-  "typecheck": "tsc -b",
-  "test": "vitest run"
-}
-```
+Añadir `passWithNoTests: true` también a los vitest.config.ts de core y api (hasta que tengan tests).
 
-- [ ] **Step 4: Limpiar demo de Vite**
-
-Borrar `src/App.css` y `src/assets/`; dejar `src/App.tsx` como `export default function App() { return <main>ai-playground</main>; }` y `src/index.css` vacío (la Task 4 lo sustituye por `styles/globals.css`). Renombrar `src/App.tsx` → `src/app.tsx` (convención kebab-case del proyecto) y actualizar el import en `src/main.tsx`.
-
-- [ ] **Step 5: CI**
+- [ ] **Step 6: CI**
 
 `.github/workflows/ci.yml`:
 
@@ -160,13 +361,13 @@ jobs:
       - run: pnpm run build
 ```
 
-- [ ] **Step 6: Verificar y commitear**
+- [ ] **Step 7: Verificar y commitear**
 
 Run: `pnpm run lint && pnpm run format:fix && pnpm run typecheck && pnpm run test && pnpm run build`
-Expected: todo en verde (test: "no test files found" NO es fallo si vitest sale 0; si sale 1, añadir `passWithNoTests: true` al bloque `test` de vitest.config.ts).
+Expected: verde en los 3 workspaces (tests: passWithNoTests).
 
 ```bash
-git add -A && git commit -m "chore: scaffold Vite + React + TS strict con tooling de calidad"
+git add -A && git commit -m "chore: scaffold monorepo pnpm (core + api Hono + web Vite) con tooling y CI"
 ```
 
 ---
@@ -177,20 +378,20 @@ git add -A && git commit -m "chore: scaffold Vite + React + TS strict con toolin
 - Create: `AGENTS.md`, `CLAUDE.md` (symlink), `STATUS.md`, `docs/specs/2026-07-24-ai-playground-design.md`, `docs/plans/2026-07-24-product-roadmap.md`, `skills/adding-a-provider/SKILL.md`, `.claude/skills` (symlink)
 
 **Interfaces:**
-- Consumes: spec §2 de `<portfolio>/docs/superpowers/specs/2026-07-24-phase-4-playground-design.md`.
-- Produces: fuentes de verdad del repo (spec, roadmap, STATUS) que citan las tasks siguientes.
+- Consumes: spec §0 (fila Arquitectura AMENDED incluida) y §2 de `<portfolio>/docs/superpowers/specs/2026-07-24-phase-4-playground-design.md`.
+- Produces: fuentes de verdad del repo que citan las tasks siguientes.
 
 - [ ] **Step 1: Migrar la spec**
 
-Copiar la sección «2. Diseño base del ai-playground» de la spec del portfolio a `docs/specs/2026-07-24-ai-playground-design.md`, quitando el encabezado «semilla para el repo nuevo» y las referencias al portfolio (rutas `apps/web`, F4/F5), y añadiendo cabecera: título `# ai-playground — spec de producto`, estado, y la tabla de decisiones §0 de la spec original (solo las filas Producto, Proveedores v1, API keys, Patrón ai-platform).
+Copiar a `docs/specs/2026-07-24-ai-playground-design.md`: la tabla §0 (filas Producto, Proveedores v1, API keys, Patrón ai-platform, Arquitectura) + la sección «2. Diseño base del ai-playground» completa de la spec del portfolio, quitando las referencias al portfolio (rutas `apps/web` del portfolio, F4/F5) y con cabecera `# ai-playground — spec de producto`.
 
 - [ ] **Step 2: Roadmap de producto**
 
-`docs/plans/2026-07-24-product-roadmap.md` con la tabla de fases A–D descrita arriba (sección «Estructura de archivos»), columnas `# | Fase | Estado | Depende de`, fase A `en curso`, y la nota «cada fase escribe su plan just-in-time con superpowers:writing-plans usando la spec como entrada».
+`docs/plans/2026-07-24-product-roadmap.md` con la tabla de fases A–D descrita en «Estructura de archivos» de este plan, columnas `# | Fase | Estado | Depende de`, fase A `en curso`, y la nota «cada fase escribe su plan just-in-time con superpowers:writing-plans usando la spec como entrada».
 
 - [ ] **Step 3: AGENTS.md + STATUS.md + symlinks**
 
-`AGENTS.md` (~50 líneas): qué es el repo, tabla de comandos (los scripts de Task 1), hard rules (las Global Constraints de este plan), routing a `skills/adding-a-provider`, punteros a spec/roadmap/STATUS.md. `STATUS.md`: sección Ahora (fase A en curso), Hecho, Siguiente acción, Fuentes de verdad.
+`AGENTS.md` (~50 líneas): qué es el repo (consola genérica de generación IA, monorepo web+api+core), tabla de comandos (los scripts raíz de Task 1), hard rules (las Global Constraints de este plan, incluida la regla de dependencia core⊥web/api), routing a `skills/adding-a-provider`, punteros a spec/roadmap/STATUS.md. `STATUS.md`: Ahora (fase A en curso), Hecho, Siguiente acción, Fuentes de verdad.
 
 ```bash
 ln -s AGENTS.md CLAUDE.md && mkdir -p .claude && ln -s ../skills .claude/skills
@@ -198,7 +399,7 @@ ln -s AGENTS.md CLAUDE.md && mkdir -p .claude && ln -s ../skills .claude/skills
 
 - [ ] **Step 4: Skill adding-a-provider**
 
-`skills/adding-a-provider/SKILL.md` con frontmatter (`name: adding-a-provider`, `description: Use when añadiendo un proveedor o servicio de generación nuevo al registry del playground`) y checklist: 1) añadir `ProviderDefinition` a `src/domain/registry.ts` (id, auth, models por servicio); 2) crear adaptador en `src/adapters/<provider>.ts` que implemente `GenerationService` y construya su `ApiTrace`; 3) registrarlo en `src/domain/factory.ts`; 4) si `auth: 'api-key'`, integrar con el panel de keys (fase B); 5) tests: payload/URL contra fetch mockeado, fallback a mock, catálogo de modelos; 6) i18n de labels en ambos idiomas; 7) verificar lista viva de modelos del proveedor y documentarla en la spec.
+`skills/adding-a-provider/SKILL.md` con frontmatter (`name: adding-a-provider`, `description: Use when añadiendo un proveedor o servicio de generación nuevo al playground`) y checklist: 1) añadir `ProviderDefinition` a `packages/core/src/registry.ts` (id, auth, models por servicio); 2) conector server-side en `apps/api` (fase B+) que implemente el contrato task-based y construya su `ApiTrace`, o adaptador client-side en `packages/core/src/adapters/` si no requiere secretos ni CORS; 3) registrarlo en `packages/core/src/factory.ts`; 4) si `auth: 'api-key'`, integrar con el panel de keys pass-through; 5) tests: payload/URL contra fetch mockeado, fallback a mock, catálogo de modelos; 6) i18n de labels en ambos idiomas (es/en); 7) verificar la lista viva de modelos del proveedor y documentarla en la spec.
 
 - [ ] **Step 5: Commit**
 
@@ -208,19 +409,21 @@ git add -A && git commit -m "docs: spec, roadmap, AGENTS.md, STATUS.md y skill a
 
 ---
 
-### Task 3: Tokens semánticos + i18n base (TDD)
+### Task 3: Tokens semánticos + i18n base en apps/web (TDD)
 
 **Files:**
-- Create: `src/styles/globals.css`, `src/i18n/messages.ts`, `src/i18n/i18n.tsx`
-- Test: `src/styles/tokens.test.ts`, `src/i18n/i18n.test.tsx`
-- Modify: `src/main.tsx` (importar globals.css), `index.html` (`<html lang="en" data-theme="dark">`, `<title>ai-playground</title>`)
+- Create: `apps/web/src/styles/globals.css`, `apps/web/src/i18n/messages.ts`, `apps/web/src/i18n/i18n.tsx`
+- Test: `apps/web/src/styles/tokens.test.ts`, `apps/web/src/i18n/i18n.test.tsx`
+- Modify: `apps/web/src/main.tsx` (importar globals.css), `apps/web/vite.config.ts` (plugin tailwind)
 
 **Interfaces:**
-- Produces: clases Tailwind `bg-bg`, `bg-surface`, `text-fg`, `text-muted`, `border-border`, `bg-accent`, `text-accent-fg`, `text-danger`; hook `useI18n(): { t: (key: MessageKey) => string; locale: Locale; setLocale(l: Locale): void }`; provider `<I18nProvider>`; tipo `MessageKey`.
+- Produces: clases Tailwind `bg-bg`, `bg-surface`, `text-fg`, `text-muted`, `border-border`, `bg-accent`, `text-accent-fg`, `text-danger`; `useI18n(): { t(key: MessageKey): string; locale: Locale; setLocale(l: Locale): void }`; `<I18nProvider>`; tipo `MessageKey`.
+
+> Todos los comandos de esta task y las siguientes de web se ejecutan con `pnpm --filter @ai-playground/web run test -- <patrón>` o desde `apps/web/`.
 
 - [ ] **Step 1: Test de contraste AA de tokens (falla)**
 
-`src/styles/tokens.test.ts` — parsea `globals.css` con regex y valida AA con luminancia relativa:
+`apps/web/src/styles/tokens.test.ts`:
 
 ```ts
 import { describe, expect, it } from 'vitest';
@@ -262,15 +465,15 @@ describe.each(['dark', 'light'] as const)('tokens %s', (theme) => {
 });
 ```
 
-Run: `pnpm run test -- tokens` → Expected: FAIL (globals.css no existe).
+Run: `pnpm --filter @ai-playground/web run test -- tokens` → Expected: FAIL (globals.css no existe).
 
 - [ ] **Step 2: Implementar tokens**
 
 ```bash
-pnpm add tailwindcss @tailwindcss/vite
+pnpm --filter @ai-playground/web add tailwindcss @tailwindcss/vite
 ```
 
-Añadir `tailwindcss()` a `plugins` de `vite.config.ts` (import de `@tailwindcss/vite`). `src/styles/globals.css`:
+Añadir `tailwindcss()` a `plugins` de `apps/web/vite.config.ts` (import de `@tailwindcss/vite`). `apps/web/src/styles/globals.css`:
 
 ```css
 @import 'tailwindcss';
@@ -309,20 +512,21 @@ Añadir `tailwindcss()` a `plugins` de `vite.config.ts` (import de `@tailwindcss
 }
 ```
 
-En `src/main.tsx` sustituir `import './index.css'` por `import './styles/globals.css'` y borrar `src/index.css`. Si algún ratio falla en el test, ajustar SOLO la lightness del token que falle hasta pasar.
+En `apps/web/src/main.tsx` sustituir `import './index.css'` por `import './styles/globals.css'` y borrar `src/index.css`. Si algún ratio falla en el test, ajustar SOLO la lightness del token que falle hasta pasar.
 
-Run: `pnpm run test -- tokens` → Expected: PASS.
+Run: `pnpm --filter @ai-playground/web run test -- tokens` → Expected: PASS.
 
 - [ ] **Step 3: Test de i18n (falla)**
 
-`src/i18n/i18n.test.tsx`:
+`apps/web/src/i18n/i18n.test.tsx`:
 
 ```tsx
 import { describe, expect, it } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { I18nProvider, useI18n } from './i18n';
-import { MESSAGES } from './messages';
+import { MESSAGES, type MessageKey } from './messages';
+import { SERVICES } from '@ai-playground/core';
 
 const wrapper = ({ children }: { children: ReactNode }) => <I18nProvider>{children}</I18nProvider>;
 
@@ -330,21 +534,34 @@ describe('i18n', () => {
   it('es y en tienen exactamente las mismas claves', () => {
     expect(Object.keys(MESSAGES.es).sort()).toEqual(Object.keys(MESSAGES.en).sort());
   });
+  it('todo labelKey del registry existe en el catálogo', () => {
+    for (const s of SERVICES) expect(MESSAGES.en[s.labelKey as MessageKey], s.labelKey).toBeDefined();
+  });
   it('traduce y cambia de locale persistiendo en localStorage', () => {
     const { result } = renderHook(() => useI18n(), { wrapper });
-    expect(result.current.t('app.title')).toBe(MESSAGES.en['app.title']);
+    expect(result.current.t('form.generate')).toBe(MESSAGES.en['form.generate']);
     act(() => result.current.setLocale('es'));
-    expect(result.current.t('app.title')).toBe(MESSAGES.es['app.title']);
+    expect(result.current.t('form.generate')).toBe(MESSAGES.es['form.generate']);
     expect(localStorage.getItem('ai-playground:locale')).toBe('es');
   });
 });
 ```
 
-Run: `pnpm run test -- i18n` → Expected: FAIL.
+Nota: este test importa `SERVICES` de `@ai-playground/core`, que la Task 4 implementa. Para que la Task 3 sea autónoma, añadir en este step a `packages/core/src/index.ts` la export mínima:
+
+```ts
+export const SERVICES: readonly { id: string; labelKey: string }[] = [
+  { id: 'generate-image', labelKey: 'service.generate-image' },
+];
+```
+
+(la Task 4 la sustituye por la definitiva tipada; el test no cambia).
+
+Run: `pnpm --filter @ai-playground/web run test -- i18n` → Expected: FAIL.
 
 - [ ] **Step 4: Implementar i18n**
 
-`src/i18n/messages.ts` (catálogo inicial; las Tasks 6–7 añaden claves aquí — SIEMPRE en ambos idiomas):
+`apps/web/src/i18n/messages.ts`:
 
 ```ts
 export const MESSAGES = {
@@ -400,7 +617,7 @@ export type Locale = keyof typeof MESSAGES;
 export type MessageKey = keyof (typeof MESSAGES)['en'];
 ```
 
-`src/i18n/i18n.tsx`:
+`apps/web/src/i18n/i18n.tsx`:
 
 ```tsx
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
@@ -439,33 +656,33 @@ export function useI18n(): I18nValue {
 }
 ```
 
-Nota: el test corre en jsdom donde `navigator.language` es `en-US` → default `en`, como asume el test.
+(jsdom: `navigator.language` es `en-US` → default `en`, como asume el test.)
 
-Run: `pnpm run test -- i18n` → Expected: PASS.
+Run: `pnpm --filter @ai-playground/web run test -- i18n` → Expected: PASS.
 
 - [ ] **Step 5: Verificar todo y commitear**
 
-Run: `pnpm run lint && pnpm run typecheck && pnpm run test`
-Expected: verde.
+Run: `pnpm run lint && pnpm run typecheck && pnpm run test` (raíz) → verde.
 
 ```bash
-git add -A && git commit -m "feat: tokens semánticos AA (dark/light) + i18n es/en tipado"
+git add -A && git commit -m "feat(web): tokens semánticos AA (dark/light) + i18n es/en tipado"
 ```
 
 ---
 
-### Task 4: Dominio — tipos y registry (TDD)
+### Task 4: Core — tipos y registry (TDD)
 
 **Files:**
-- Create: `src/domain/types.ts`, `src/domain/registry.ts`
-- Test: `src/domain/registry.test.ts`
+- Create: `packages/core/src/types.ts`, `packages/core/src/registry.ts`
+- Modify: `packages/core/src/index.ts` (re-exports definitivos)
+- Test: `packages/core/src/registry.test.ts`
 
 **Interfaces:**
-- Produces (las usan Tasks 5–8): tipos `PlaygroundMode`, `AspectRatio`, `ProviderId`, `GenerationRequest`, `ApiTraceStep`, `GenerationResult`, `GenerationService`; constantes `ASPECT_RATIOS`, `SERVICES`, `PROVIDERS`; schema `generationRequestSchema`.
+- Produces (las usan Tasks 5–9): tipos `PlaygroundMode`, `AspectRatio`, `ProviderId`, `GenerationRequest`, `ApiTraceStep`, `GenerationResult`, `GenerationService`, `ServiceDefinition`, `ProviderDefinition`; constantes `ASPECT_RATIOS`, `SERVICES`, `PROVIDERS`; schema `generationRequestSchema`. Todo exportado desde `@ai-playground/core`.
 
 - [ ] **Step 1: Test del registry (falla)**
 
-`src/domain/registry.test.ts`:
+`packages/core/src/registry.test.ts`:
 
 ```ts
 import { describe, expect, it } from 'vitest';
@@ -508,15 +725,11 @@ describe('registry', () => {
 });
 ```
 
-Run: `pnpm run test -- registry` → Expected: FAIL (módulos no existen).
+Run: `pnpm --filter @ai-playground/core run test` → Expected: FAIL (módulos no existen).
 
 - [ ] **Step 2: Implementar tipos y registry**
 
-```bash
-pnpm add zod
-```
-
-`src/domain/types.ts`:
+`packages/core/src/types.ts`:
 
 ```ts
 export const ASPECT_RATIOS = {
@@ -563,14 +776,13 @@ export type GenerationService = {
 };
 ```
 
-`src/domain/registry.ts` (fase A: 1 servicio, 1 provider; fases B–C amplían los enums y arrays — patrón declarativo: añadir proveedor = definición + adaptador):
+`packages/core/src/registry.ts` (fase A: 1 servicio, 1 provider; fases B–C amplían — patrón declarativo: añadir proveedor = definición + conector/adaptador):
 
 ```ts
 import { z } from 'zod';
-import type { MessageKey } from '@/i18n/messages';
 import type { PlaygroundMode, ProviderId } from './types';
 
-export type ServiceDefinition = { id: PlaygroundMode; labelKey: MessageKey };
+export type ServiceDefinition = { id: PlaygroundMode; labelKey: string };
 
 export type ProviderDefinition = {
   id: ProviderId;
@@ -596,48 +808,47 @@ export const generationRequestSchema = z.object({
 });
 ```
 
-Run: `pnpm run test -- registry` → Expected: PASS.
+`packages/core/src/index.ts`:
+
+```ts
+export * from './types';
+export * from './registry';
+```
+
+Run: `pnpm --filter @ai-playground/core run test` → Expected: PASS.
+Run también: `pnpm --filter @ai-playground/web run test -- i18n` → Expected: sigue PASS (labelKey compatible).
 
 - [ ] **Step 3: Verificar y commitear**
 
 Run: `pnpm run lint && pnpm run typecheck && pnpm run test` → verde.
 
 ```bash
-git add -A && git commit -m "feat: dominio — tipos, registry declarativo y schema de request"
+git add -A && git commit -m "feat(core): tipos, registry declarativo y schema de request"
 ```
 
 ---
 
-### Task 5: Adaptador mock + catálogo + assets (TDD)
+### Task 5: Core — adaptador mock + catálogo (TDD)
 
 **Files:**
-- Create: `src/adapters/mock-catalog.ts`, `src/adapters/mock.ts`, `public/mocks/*.webp` (6 imágenes)
-- Test: `src/adapters/mock.test.ts`
+- Create: `packages/core/src/adapters/mock-catalog.ts`, `packages/core/src/adapters/mock.ts`
+- Modify: `packages/core/src/index.ts` (export de `createMockAdapter`, `MOCK_CATALOG`)
+- Test: `packages/core/src/adapters/mock.test.ts`
 
 **Interfaces:**
 - Consumes: tipos y `ASPECT_RATIOS` de Task 4.
-- Produces: `createMockAdapter(options?: { latencyMs?: number }): GenerationService`; `MOCK_CATALOG: Record<AspectRatio, readonly string[]>`.
+- Produces: `createMockAdapter(options?: { latencyMs?: number }): GenerationService`; `MOCK_CATALOG: Record<AspectRatio, readonly string[]>` (paths `/mocks/*` servidos por apps/web).
 
-- [ ] **Step 1: Copiar assets desde el portfolio**
+- [ ] **Step 1: Test del adaptador (falla)**
 
-```bash
-mkdir -p public/mocks
-PF=~/workspace/formaciones/claude/superpowers/portfolio/apps/web/public/demo/gallery
-for f in "$PF"/*-hd.webp "$PF"/*.webp; do identify -format "%f %wx%h\n" "$f" 2>/dev/null || file "$f"; done | sort -u
-```
-
-Elegir 2 por ratio según dimensiones reportadas (cuadradas → `square-1.webp`/`square-2.webp`; apaisadas → `wide-1.webp`/`wide-2.webp`; verticales → `tall-1.webp`/`tall-2.webp`; preferir las variantes NO `-hd` por peso) y copiarlas con esos nombres a `public/mocks/`. Si no hay 2 candidatas de un ratio, usar también `~/workspace/.../portfolio/apps/web/public/demo/{landscape,portrait}.webp`. Presupuesto: ≤1,5 MB total en fase A.
-
-- [ ] **Step 2: Test del adaptador (falla)**
-
-`src/adapters/mock.test.ts`:
+`packages/core/src/adapters/mock.test.ts`:
 
 ```ts
 import { describe, expect, it } from 'vitest';
 import { createMockAdapter } from './mock';
 import { MOCK_CATALOG } from './mock-catalog';
-import { ASPECT_RATIOS, type AspectRatio, type GenerationRequest } from '@/domain/types';
-import { PROVIDERS } from '@/domain/registry';
+import { ASPECT_RATIOS, type AspectRatio, type GenerationRequest } from '../types';
+import { PROVIDERS } from '../registry';
 
 const req = (over: Partial<GenerationRequest> = {}): GenerationRequest => ({
   service: 'generate-image',
@@ -656,7 +867,7 @@ describe('mock adapter', () => {
     const [a, b] = await Promise.all([adapter.generate(req()), adapter.generate(req())]);
     expect(a.kind === 'image' && b.kind === 'image' && a.url === b.url).toBe(true);
   });
-  it('seeds distintas pueden dar assets distintos (cobertura del catálogo)', async () => {
+  it('seeds distintas cubren todo el catálogo del ratio', async () => {
     const urls = new Set<string>();
     for (let seed = 0; seed < 10; seed++) {
       const r = await adapter.generate(req({ seed }));
@@ -693,14 +904,14 @@ describe('mock adapter', () => {
 });
 ```
 
-Run: `pnpm run test -- adapters/mock` → Expected: FAIL.
+Run: `pnpm --filter @ai-playground/core run test -- mock` → Expected: FAIL.
 
-- [ ] **Step 3: Implementar catálogo y adaptador**
+- [ ] **Step 2: Implementar catálogo y adaptador**
 
-`src/adapters/mock-catalog.ts`:
+`packages/core/src/adapters/mock-catalog.ts`:
 
 ```ts
-import type { AspectRatio } from '@/domain/types';
+import type { AspectRatio } from '../types';
 
 export const MOCK_CATALOG: Record<AspectRatio, readonly string[]> = {
   square_1_1: ['/mocks/square-1.webp', '/mocks/square-2.webp'],
@@ -709,10 +920,16 @@ export const MOCK_CATALOG: Record<AspectRatio, readonly string[]> = {
 };
 ```
 
-`src/adapters/mock.ts`:
+`packages/core/src/adapters/mock.ts`:
 
 ```ts
-import { ASPECT_RATIOS, type ApiTraceStep, type GenerationRequest, type GenerationResult, type GenerationService } from '@/domain/types';
+import {
+  ASPECT_RATIOS,
+  type ApiTraceStep,
+  type GenerationRequest,
+  type GenerationResult,
+  type GenerationService,
+} from '../types';
 import { MOCK_CATALOG } from './mock-catalog';
 
 const DEFAULT_LATENCY_MS = 600;
@@ -741,11 +958,11 @@ function buildTrace(req: GenerationRequest, url: string): ApiTraceStep[] {
     {
       kind: 'request',
       method: 'POST',
-      url: `${base}/${req.service}`,
+      url: `${base}/services/${req.service}`,
       body: { prompt: req.prompt, model: req.model, aspect_ratio: req.aspectRatio, seed: req.seed },
     },
     { kind: 'status', state: 'IN_PROGRESS', taskId },
-    { kind: 'poll', method: 'GET', url: `${base}/${req.service}/${taskId}` },
+    { kind: 'poll', method: 'GET', url: `${base}/tasks/${taskId}` },
     { kind: 'completed', response: { task_id: taskId, status: 'COMPLETED', generated: [url] } },
   ];
 }
@@ -754,7 +971,7 @@ export function createMockAdapter(options: { latencyMs?: number } = {}): Generat
   const latencyMs = options.latencyMs ?? DEFAULT_LATENCY_MS;
   return {
     async generate(request, signal) {
-      const started = performance.now();
+      const started = Date.now();
       await sleep(latencyMs, signal);
       const assets = MOCK_CATALOG[request.aspectRatio];
       const url = assets[(request.seed + hashString(request.model)) % assets.length]!;
@@ -766,7 +983,7 @@ export function createMockAdapter(options: { latencyMs?: number } = {}): Generat
         height,
         provider: 'mock',
         degraded: false,
-        elapsedMs: Math.round(performance.now() - started),
+        elapsedMs: Date.now() - started,
         apiTrace: buildTrace(request, url),
       };
     },
@@ -774,31 +991,39 @@ export function createMockAdapter(options: { latencyMs?: number } = {}): Generat
 }
 ```
 
-Run: `pnpm run test -- adapters/mock` → Expected: PASS.
+Añadir a `packages/core/src/index.ts`:
 
-- [ ] **Step 4: Verificar y commitear**
+```ts
+export { createMockAdapter } from './adapters/mock';
+export { MOCK_CATALOG } from './adapters/mock-catalog';
+```
+
+Run: `pnpm --filter @ai-playground/core run test -- mock` → Expected: PASS.
+
+- [ ] **Step 3: Verificar y commitear**
 
 Run: `pnpm run lint && pnpm run typecheck && pnpm run test` → verde.
 
 ```bash
-git add -A && git commit -m "feat: adaptador mock determinista con catálogo de assets y traza task-based"
+git add -A && git commit -m "feat(core): adaptador mock determinista con catálogo y traza task-based"
 ```
 
 ---
 
-### Task 6: withMockFallback + factory (TDD)
+### Task 6: Core — withMockFallback + factory (TDD)
 
 **Files:**
-- Create: `src/domain/with-mock-fallback.ts`, `src/domain/factory.ts`
-- Test: `src/domain/with-mock-fallback.test.ts`, `src/domain/factory.test.ts`
+- Create: `packages/core/src/with-mock-fallback.ts`, `packages/core/src/factory.ts`
+- Modify: `packages/core/src/index.ts` (exports)
+- Test: `packages/core/src/with-mock-fallback.test.ts`, `packages/core/src/factory.test.ts`
 
 **Interfaces:**
 - Consumes: `GenerationService`, `createMockAdapter`.
-- Produces: `withMockFallback(live: GenerationService, mock: GenerationService, timeoutMs?: number): GenerationService`; `createGenerationService(provider: ProviderId): GenerationService`.
+- Produces: `withMockFallback(live, mock, timeoutMs?): GenerationService`; `createGenerationService(provider: ProviderId): GenerationService`.
 
 - [ ] **Step 1: Tests (fallan)**
 
-`src/domain/with-mock-fallback.test.ts`:
+`packages/core/src/with-mock-fallback.test.ts`:
 
 ```ts
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -850,7 +1075,7 @@ describe('withMockFallback', () => {
 });
 ```
 
-`src/domain/factory.test.ts`:
+`packages/core/src/factory.test.ts`:
 
 ```ts
 import { describe, expect, it } from 'vitest';
@@ -867,11 +1092,11 @@ describe('createGenerationService', () => {
 });
 ```
 
-Run: `pnpm run test -- domain` → Expected: FAIL.
+Run: `pnpm --filter @ai-playground/core run test` → Expected: FAIL.
 
 - [ ] **Step 2: Implementar**
 
-`src/domain/with-mock-fallback.ts` (fase A lo deja listo; se cablea a la factory en fase B con el primer provider live):
+`packages/core/src/with-mock-fallback.ts` (fase A lo deja listo; se cablea en fase B con el adaptador `platform`):
 
 ```ts
 import type { GenerationService } from './types';
@@ -904,10 +1129,10 @@ export function withMockFallback(
 }
 ```
 
-`src/domain/factory.ts`:
+`packages/core/src/factory.ts`:
 
 ```ts
-import { createMockAdapter } from '@/adapters/mock';
+import { createMockAdapter } from './adapters/mock';
 import type { GenerationService, ProviderId } from './types';
 
 const ADAPTERS: Partial<Record<ProviderId, () => GenerationService>> = {
@@ -921,37 +1146,44 @@ export function createGenerationService(provider: ProviderId): GenerationService
 }
 ```
 
-Run: `pnpm run test -- domain` → Expected: PASS.
+Añadir a `packages/core/src/index.ts`:
+
+```ts
+export { withMockFallback } from './with-mock-fallback';
+export { createGenerationService } from './factory';
+```
+
+Run: `pnpm --filter @ai-playground/core run test` → Expected: PASS.
 
 - [ ] **Step 3: Verificar y commitear**
 
 Run: `pnpm run lint && pnpm run typecheck && pnpm run test` → verde.
 
 ```bash
-git add -A && git commit -m "feat: withMockFallback con timeout/abort y factory de proveedores"
+git add -A && git commit -m "feat(core): withMockFallback con timeout/abort y factory de proveedores"
 ```
 
 ---
 
-### Task 7: Hook useGeneration (TDD)
+### Task 7: Web — hook useGeneration (TDD)
 
 **Files:**
-- Create: `src/ui/use-generation.ts`
-- Test: `src/ui/use-generation.test.ts`
+- Create: `apps/web/src/ui/use-generation.ts`
+- Test: `apps/web/src/ui/use-generation.test.ts`
 
 **Interfaces:**
-- Consumes: `GenerationService`, `GenerationRequest`, `GenerationResult`.
+- Consumes: `GenerationService`, `GenerationRequest`, `GenerationResult` de `@ai-playground/core`.
 - Produces: `useGeneration(service): { state: GenerationState; generate(req: GenerationRequest): void }` con `GenerationState = { status: 'idle' } | { status: 'loading' } | { status: 'success'; result: GenerationResult } | { status: 'error'; message: string }` (exportado).
 
 - [ ] **Step 1: Test (falla)**
 
-`src/ui/use-generation.test.ts`:
+`apps/web/src/ui/use-generation.test.ts`:
 
 ```ts
 import { describe, expect, it } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { useGeneration } from './use-generation';
-import type { GenerationRequest, GenerationResult, GenerationService } from '@/domain/types';
+import type { GenerationRequest, GenerationResult, GenerationService } from '@ai-playground/core';
 
 const REQ: GenerationRequest = {
   service: 'generate-image', provider: 'mock', prompt: 'x', model: 'flux',
@@ -998,15 +1230,15 @@ describe('useGeneration', () => {
 });
 ```
 
-Run: `pnpm run test -- use-generation` → Expected: FAIL.
+Run: `pnpm --filter @ai-playground/web run test -- use-generation` → Expected: FAIL.
 
 - [ ] **Step 2: Implementar**
 
-`src/ui/use-generation.ts`:
+`apps/web/src/ui/use-generation.ts`:
 
 ```ts
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { GenerationRequest, GenerationResult, GenerationService } from '@/domain/types';
+import type { GenerationRequest, GenerationResult, GenerationService } from '@ai-playground/core';
 
 export type GenerationState =
   | { status: 'idle' }
@@ -1043,31 +1275,31 @@ export function useGeneration(service: GenerationService) {
 }
 ```
 
-Run: `pnpm run test -- use-generation` → Expected: PASS.
+Run: `pnpm --filter @ai-playground/web run test -- use-generation` → Expected: PASS.
 
 - [ ] **Step 3: Verificar y commitear**
 
 Run: `pnpm run lint && pnpm run typecheck && pnpm run test` → verde.
 
 ```bash
-git add -A && git commit -m "feat: hook useGeneration con estado discriminado y cancelación"
+git add -A && git commit -m "feat(web): hook useGeneration con estado discriminado y cancelación"
 ```
 
 ---
 
-### Task 8: UI — form, panel de resultado y traza API (TDD)
+### Task 8: Web — form, panel de resultado y traza API (TDD)
 
 **Files:**
-- Create: `src/ui/generation-form.tsx`, `src/ui/result-panel.tsx`, `src/ui/api-trace-view.tsx`
-- Test: `src/ui/generation-form.test.tsx`, `src/ui/result-panel.test.tsx`
+- Create: `apps/web/src/ui/generation-form.tsx`, `apps/web/src/ui/result-panel.tsx`, `apps/web/src/ui/api-trace-view.tsx`
+- Test: `apps/web/src/ui/generation-form.test.tsx`, `apps/web/src/ui/result-panel.test.tsx`
 
 **Interfaces:**
-- Consumes: `useI18n`, registry (`SERVICES`, `PROVIDERS`), `GenerationState`, tipos del dominio.
-- Produces: `<GenerationForm service provider busy onGenerate />` (props: `service: ServiceDefinition`, `provider: ProviderDefinition`, `busy: boolean`, `onGenerate(req: GenerationRequest): void`); `<ResultPanel state onRetry />` (props: `state: GenerationState`, `onRetry(): void`); `<ApiTraceView trace />` (props: `trace: ApiTraceStep[]`).
+- Consumes: `useI18n`, `SERVICES`/`PROVIDERS`/tipos de `@ai-playground/core`, `GenerationState` de Task 7.
+- Produces: `<GenerationForm service provider busy onGenerate />` (`service: ServiceDefinition`, `provider: ProviderDefinition`, `busy: boolean`, `onGenerate(req: GenerationRequest): void`); `<ResultPanel state onRetry />` (`state: GenerationState`, `onRetry(): void`); `<ApiTraceView trace />` (`trace: ApiTraceStep[]`).
 
 - [ ] **Step 1: Tests (fallan)**
 
-`src/ui/generation-form.test.tsx`:
+`apps/web/src/ui/generation-form.test.tsx`:
 
 ```tsx
 import { describe, expect, it, vi } from 'vitest';
@@ -1076,8 +1308,7 @@ import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { GenerationForm } from './generation-form';
 import { I18nProvider } from '@/i18n/i18n';
-import { PROVIDERS, SERVICES } from '@/domain/registry';
-import type { GenerationRequest } from '@/domain/types';
+import { PROVIDERS, SERVICES, type GenerationRequest } from '@ai-playground/core';
 
 const wrap = (ui: ReactNode) => render(<I18nProvider>{ui}</I18nProvider>);
 const service = SERVICES[0]!;
@@ -1123,13 +1354,12 @@ describe('GenerationForm', () => {
 });
 ```
 
-`src/ui/result-panel.test.tsx`:
+`apps/web/src/ui/result-panel.test.tsx`:
 
 ```tsx
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { ReactNode } from 'react';
 import { ResultPanel } from './result-panel';
 import { I18nProvider } from '@/i18n/i18n';
 import type { GenerationState } from './use-generation';
@@ -1179,17 +1409,22 @@ describe('ResultPanel', () => {
 });
 ```
 
-Run: `pnpm run test -- src/ui` → Expected: FAIL.
+Run: `pnpm --filter @ai-playground/web run test -- src/ui` → Expected: FAIL.
 
 - [ ] **Step 2: Implementar los tres componentes**
 
-`src/ui/generation-form.tsx`:
+`apps/web/src/ui/generation-form.tsx`:
 
 ```tsx
 import { useState, type FormEvent } from 'react';
 import { useI18n } from '@/i18n/i18n';
-import type { ProviderDefinition, ServiceDefinition } from '@/domain/registry';
-import { ASPECT_RATIOS, type AspectRatio, type GenerationRequest } from '@/domain/types';
+import {
+  ASPECT_RATIOS,
+  type AspectRatio,
+  type GenerationRequest,
+  type ProviderDefinition,
+  type ServiceDefinition,
+} from '@ai-playground/core';
 
 type Props = {
   service: ServiceDefinition;
@@ -1278,10 +1513,10 @@ export function GenerationForm({ service, provider, busy, onGenerate }: Props) {
 }
 ```
 
-`src/ui/api-trace-view.tsx`:
+`apps/web/src/ui/api-trace-view.tsx`:
 
 ```tsx
-import type { ApiTraceStep } from '@/domain/types';
+import type { ApiTraceStep } from '@ai-playground/core';
 
 const label = (step: ApiTraceStep): string => {
   switch (step.kind) {
@@ -1308,7 +1543,7 @@ export function ApiTraceView({ trace }: { trace: ApiTraceStep[] }) {
 }
 ```
 
-`src/ui/result-panel.tsx`:
+`apps/web/src/ui/result-panel.tsx`:
 
 ```tsx
 import { useState } from 'react';
@@ -1365,7 +1600,7 @@ export function ResultPanel({ state, onRetry }: Props) {
               />
               <figcaption className="font-mono text-xs text-muted">
                 <span className="rounded-sm border border-border px-1.5 py-0.5">
-                  {result.degraded ? t('result.origin.degraded') : t(`result.origin.${result.provider}` as 'result.origin.mock')}
+                  {result.degraded ? t('result.origin.degraded') : t('result.origin.mock')}
                 </span>{' '}
                 · {result.elapsedMs} ms
               </figcaption>
@@ -1379,37 +1614,50 @@ export function ResultPanel({ state, onRetry }: Props) {
 }
 ```
 
-Run: `pnpm run test -- src/ui` → Expected: PASS.
+Nota fase B: cuando haya más proveedores, el badge usará un mapa `ProviderId → MessageKey` en vez del literal `result.origin.mock`.
+
+Run: `pnpm --filter @ai-playground/web run test -- src/ui` → Expected: PASS.
 
 - [ ] **Step 3: Verificar y commitear**
 
 Run: `pnpm run lint && pnpm run typecheck && pnpm run test` → verde.
 
 ```bash
-git add -A && git commit -m "feat: GenerationForm, ResultPanel con tabs Preview|API y ApiTraceView"
+git add -A && git commit -m "feat(web): GenerationForm, ResultPanel con tabs Preview|API y ApiTraceView"
 ```
 
 ---
 
-### Task 9: App integrada (rail + theme/locale toggles) + verificación visual
+### Task 9: Web — App integrada + assets mock + verificación visual
 
 **Files:**
-- Modify: `src/app.tsx`, `src/main.tsx`
-- Test: `src/app.test.tsx`
+- Modify: `apps/web/src/app.tsx`
+- Create: `apps/web/public/mocks/*.webp` (6 imágenes)
+- Test: `apps/web/src/app.test.tsx`
 
 **Interfaces:**
 - Consumes: todo lo anterior. `App` acepta `service?: GenerationService` (inyección para tests; default `createGenerationService('mock')`).
 
-- [ ] **Step 1: Test de integración (falla)**
+- [ ] **Step 1: Copiar assets desde el portfolio**
 
-`src/app.test.tsx`:
+```bash
+mkdir -p apps/web/public/mocks
+PF=~/workspace/formaciones/claude/superpowers/portfolio/apps/web/public/demo/gallery
+for f in "$PF"/*.webp; do identify -format "%f %wx%h\n" "$f" 2>/dev/null || file "$f"; done | sort -u
+```
+
+Elegir 2 por ratio según dimensiones reportadas (cuadradas → `square-1.webp`/`square-2.webp`; apaisadas → `wide-1.webp`/`wide-2.webp`; verticales → `tall-1.webp`/`tall-2.webp`; preferir variantes NO `-hd` por peso) y copiarlas con esos nombres a `apps/web/public/mocks/`. Si falta un ratio, usar también `.../portfolio/apps/web/public/demo/{landscape,portrait}.webp`. Presupuesto: ≤1,5 MB total.
+
+- [ ] **Step 2: Test de integración (falla)**
+
+`apps/web/src/app.test.tsx`:
 
 ```tsx
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './app';
-import { createMockAdapter } from './adapters/mock';
+import { createMockAdapter } from '@ai-playground/core';
 
 describe('App', () => {
   it('flujo completo: prompt → Generate → imagen mock + traza en tab API', async () => {
@@ -1427,18 +1675,24 @@ describe('App', () => {
 });
 ```
 
-Run: `pnpm run test -- app` → Expected: FAIL.
+Run: `pnpm --filter @ai-playground/web run test -- app` → Expected: FAIL.
 
-- [ ] **Step 2: Implementar App**
+- [ ] **Step 3: Implementar App**
 
-`src/app.tsx`:
+`apps/web/src/app.tsx`:
 
 ```tsx
 import { useMemo, useRef, useState } from 'react';
 import { I18nProvider, useI18n } from './i18n/i18n';
-import { PROVIDERS, SERVICES } from './domain/registry';
-import { createGenerationService } from './domain/factory';
-import type { GenerationRequest, GenerationService, PlaygroundMode } from './domain/types';
+import {
+  PROVIDERS,
+  SERVICES,
+  createGenerationService,
+  type GenerationRequest,
+  type GenerationService,
+  type PlaygroundMode,
+} from '@ai-playground/core';
+import type { MessageKey } from './i18n/messages';
 import { GenerationForm } from './ui/generation-form';
 import { ResultPanel } from './ui/result-panel';
 import { useGeneration } from './ui/use-generation';
@@ -1484,7 +1738,7 @@ function Playground({ service }: { service: GenerationService }) {
               aria-current={s.id === activeService ? 'true' : undefined}
               className="rounded-md px-3 py-2 text-left text-sm text-muted aria-[current]:bg-surface aria-[current]:text-fg"
             >
-              {t(s.labelKey)}
+              {t(s.labelKey as MessageKey)}
             </button>
           ))}
         </nav>
@@ -1510,9 +1764,9 @@ export default function App({ service }: { service?: GenerationService }) {
 }
 ```
 
-Run: `pnpm run test -- app` → Expected: PASS.
+Run: `pnpm --filter @ai-playground/web run test -- app` → Expected: PASS.
 
-- [ ] **Step 3: Verificación visual**
+- [ ] **Step 4: Verificación visual**
 
 ```bash
 pnpm run dev
@@ -1520,18 +1774,77 @@ pnpm run dev
 
 Abrir la URL, verificar manualmente (o con Playwright MCP): generar con seed fija → misma imagen; tab API muestra la traza; toggles de tema e idioma funcionan; estados loading/empty visibles. Cerrar el server.
 
-- [ ] **Step 4: Verificar todo y commitear**
+- [ ] **Step 5: Verificar todo y commitear**
 
 Run: `pnpm run lint && pnpm run format && pnpm run typecheck && pnpm run test && pnpm run build`
 Expected: verde.
 
 ```bash
-git add -A && git commit -m "feat: App integrada — rail de servicios, toggles y flujo mock end-to-end"
+git add -A && git commit -m "feat(web): App integrada — rail, toggles y flujo mock end-to-end con assets"
 ```
 
 ---
 
-### Task 10: Repo en GitHub + CI verde
+### Task 10: API — endpoint /health (TDD)
+
+**Files:**
+- Modify: `apps/api/src/index.ts`
+- Test: `apps/api/src/index.test.ts`
+
+**Interfaces:**
+- Produces: `GET /health` → `200 {"status":"ok","service":"ai-playground-api"}`. Valida el toolchain Hono+Wrangler para la fase B (API task-based).
+
+- [ ] **Step 1: Test (falla)**
+
+`apps/api/src/index.test.ts`:
+
+```ts
+import { describe, expect, it } from 'vitest';
+import { app } from './index';
+
+describe('api', () => {
+  it('GET /health responde ok', async () => {
+    const res = await app.request('/health');
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ status: 'ok', service: 'ai-playground-api' });
+  });
+  it('ruta desconocida → 404', async () => {
+    const res = await app.request('/nope');
+    expect(res.status).toBe(404);
+  });
+});
+```
+
+Run: `pnpm --filter @ai-playground/api run test` → Expected: FAIL.
+
+- [ ] **Step 2: Implementar**
+
+`apps/api/src/index.ts`:
+
+```ts
+import { Hono } from 'hono';
+
+export const app = new Hono();
+
+app.get('/health', (c) => c.json({ status: 'ok', service: 'ai-playground-api' }));
+
+export default app;
+```
+
+Run: `pnpm --filter @ai-playground/api run test` → Expected: PASS.
+Run: `pnpm --filter @ai-playground/api run build` → Expected: dry-run de wrangler OK (bundle generado en dist/ sin necesidad de cuenta).
+
+- [ ] **Step 3: Verificar y commitear**
+
+Run: `pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build` → verde.
+
+```bash
+git add -A && git commit -m "feat(api): esqueleto Hono con /health y build wrangler dry-run"
+```
+
+---
+
+### Task 11: Repo en GitHub + CI verde
 
 **Files:**
 - Modify: `STATUS.md` del repo nuevo (fase A hecha)
@@ -1550,7 +1863,7 @@ Run: `gh run watch --exit-status` (o comprobar en la web) → Expected: workflow
 
 - [ ] **Step 3: Actualizar STATUS.md del repo nuevo y commitear**
 
-Marcar fase A como hecha, siguiente acción = plan de fase B (pollinations + google + keys, just-in-time).
+Marcar fase A como hecha, siguiente acción = plan de fase B (API task-based + OpenAPI + conectores pollinations/google + panel de keys, just-in-time).
 
 ```bash
 git add STATUS.md && git commit -m "docs: cierra fase A en STATUS" && git push
@@ -1558,7 +1871,7 @@ git add STATUS.md && git commit -m "docs: cierra fase A en STATUS" && git push
 
 ---
 
-### Task 11: Exportación a ai-config (agentes generalizados + evaluación de skills)
+### Task 12: Exportación a ai-config (agentes generalizados + evaluación de skills)
 
 **Files:**
 - Create (en `~/workspace/ai-config`): agentes `design-reviewer` y `qa-a11y-perf` generalizados; skills nuevas SOLO si la evaluación las justifica
@@ -1577,7 +1890,7 @@ Localizar dónde viven agents/skills exportados (si no hay convención, crear `a
 
 - [ ] **Step 2: Generalizar los dos agentes del portfolio**
 
-Copiar `agents/design-reviewer.md` y `agents/qa-a11y-perf.md` del portfolio a ai-config eliminando toda referencia específica del portfolio (rutas `apps/web`, nombres de skins, comandos pnpm concretos → parametrizarlos como «los comandos del repo»); mantener frontmatter compatible con subagentes Claude. Criterio de éxito: un agente aplicable tal cual en ai-playground.
+Copiar `agents/design-reviewer.md` y `agents/qa-a11y-perf.md` del portfolio a ai-config eliminando toda referencia específica del portfolio (rutas `apps/web` del portfolio, nombres de skins, comandos pnpm concretos → parametrizarlos como «los comandos del repo»); mantener frontmatter compatible con subagentes Claude. Criterio de éxito: un agente aplicable tal cual en ai-playground.
 
 - [ ] **Step 3: Evaluar las 8 skills de fc-central-payments-api (clean-room)**
 
