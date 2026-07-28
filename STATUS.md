@@ -51,6 +51,9 @@ Implementada con subagent-driven development (6 tareas TDD, review por tarea en 
 
 ## Pendientes del usuario (no bloqueantes)
 
+- Actualizar en LinkedIn la intro (About) y el CV completo para alinearlos con la
+  intro nueva del portfolio (`profile.ts`, 2026-07-29: foco en rol de desarrollador,
+  15+ años, EE. UU. y Latinoamérica, sin liderazgo/mentoría). Apoyo: `/audit`.
 - Dominio definitivo + `NEXT_PUBLIC_SITE_URL` (el build avisa si falta).
 - ~~Publicar `@nicobehm/media-kit` en npm~~ ✅ publicado (0.7.0 verificado en npm 2026-07-24).
 - Momento del deploy del badge de disponibilidad (visible desde F3.7).
