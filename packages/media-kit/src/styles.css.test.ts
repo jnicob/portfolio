@@ -122,6 +122,14 @@ describe('FilterGallery: chips usan custom properties propias, no las de "contro
     expect(body).toMatch(/background:\s*var\(--mk-filter-active-bg\)/);
     expect(body).toMatch(/color:\s*var\(--mk-filter-active-color\)/);
   });
+
+  it('el chip activo declara su border-color en vez de heredar el currentColor del chip base', () => {
+    const match = css.match(
+      /\.mk-filter-gallery__filters button\[aria-pressed='true'\]\s*\{([^}]*)\}/,
+    );
+    expect(match).not.toBeNull();
+    expect(match?.[1]).toMatch(/border-color:\s*var\(--mk-filter-active-color\)/);
+  });
 });
 
 // Regresión (BUG F1, F3.7, feedback de Nico): el ejemplo de retrato (color/B-N) del

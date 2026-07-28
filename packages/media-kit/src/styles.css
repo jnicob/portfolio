@@ -788,6 +788,9 @@
 .mk-filter-gallery__filters button[aria-pressed='true'] {
   background: var(--mk-filter-active-bg);
   color: var(--mk-filter-active-color);
+  /* Mismo valor que resolvía el currentColor heredado del chip base, pero declarado:
+     el borde del chip activo sigue al texto activo por decisión, no por accidente. */
+  border-color: var(--mk-filter-active-color);
 }
 .mk-filter-gallery__filters button:focus-visible {
   outline: 2px solid var(--mk-focus-ring);
