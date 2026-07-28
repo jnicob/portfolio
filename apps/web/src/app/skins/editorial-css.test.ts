@@ -54,6 +54,22 @@ describe('editorial.css (disposición del skin editorial)', () => {
     expect(css).not.toMatch(/(?<![\w-])(black|white|red|blue|gray|grey)(?![\w-])/i);
   });
 
+  it('el ritmo vertical del CV tiene dueño único: editorial anula el gap del layout y declara el total', () => {
+    // Higiene adjudicada en el design review de F3.9: los 4.5rem entre secciones
+    // (2.5rem sobre la hairline + 2rem bajo ella) viven ENTEROS en este parcial,
+    // no repartidos entre el gap-10 del layout base y este padding.
+    const container = css.match(/\[data-skin='editorial'\] \[data-cv-sections\]\s*\{([^}]*)\}/);
+    expect(container).not.toBeNull();
+    expect(container?.[1]).toMatch(/row-gap:\s*0/);
+
+    const sections = css.match(
+      /\[data-skin='editorial'\] \[data-cv-sections\] > section \+ section\s*\{([^}]*)\}/,
+    );
+    expect(sections).not.toBeNull();
+    expect(sections?.[1]).toMatch(/margin-top:\s*2\.5rem/);
+    expect(sections?.[1]).toMatch(/padding-top:\s*2rem/);
+  });
+
   it('cada hook data-* que usa existe en el código de la app', () => {
     const hooks = [...new Set(css.match(/data-(?!skin|theme)[\w-]+/g) ?? [])];
     expect(hooks.length).toBeGreaterThan(0);

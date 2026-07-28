@@ -65,9 +65,17 @@
 
 /* ── CV: diario ─────────────────────────────────────────────────────── */
 
-/* Secciones del CV separadas por hairline con aire de columna. */
+/* Secciones del CV separadas por hairline con aire de columna. Dueño único del
+ * ritmo vertical (design review F3.9): se anula el gap-10 del layout base y este
+ * bloque declara el total — 2.5rem sobre la hairline + 2rem bajo ella = 4.5rem,
+ * el aire de diario adjudicado. Mismo cómputo que antes (gap 2.5 + padding 2). */
+[data-skin='editorial'] [data-cv-sections] {
+  row-gap: 0;
+}
+
 [data-skin='editorial'] [data-cv-sections] > section + section {
   border-top: 1px solid var(--border);
+  margin-top: 2.5rem;
   padding-top: 2rem;
 }
 
