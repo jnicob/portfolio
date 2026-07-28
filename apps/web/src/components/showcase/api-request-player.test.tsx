@@ -351,6 +351,23 @@ describe('ApiRequestPlayer', () => {
     expect(screen.getByTestId('player-response-pane').textContent).toContain('validation_error');
   });
 
+  it('un status 5xx también pinta el badge danger (no solo 4xx)', async () => {
+    stubReducedMotion(true);
+    const withServerError = apiDemoExamples.map((entry) =>
+      entry.id === 'error' ? { ...entry, status: '500 Internal Server Error' } : entry,
+    );
+    render(<ApiRequestPlayer examples={withServerError} labels={labels} />);
+    fireEvent.change(screen.getByRole('combobox', { name: labels.endpoint }), {
+      target: { value: 'error' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: labels.run }));
+
+    expect(await screen.findByText('500 Internal Server Error')).toHaveClass(
+      'bg-danger/15',
+      'text-danger',
+    );
+  });
+
   it('conserva las cajas de altura fija al cambiar de endpoint', () => {
     renderPlayer();
     const requestPane = screen.getByTestId('player-request-pane');

@@ -329,7 +329,7 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
           )}
           {state === 'done' && (
             <>
-              <Badge variant={example.status.startsWith('4') ? 'danger' : 'accent'}>
+              <Badge variant={/^[45]/.test(example.status) ? 'danger' : 'accent'}>
                 {example.status}
               </Badge>
               <Button variant="ghost" size="sm" onClick={copy}>
