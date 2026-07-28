@@ -1,6 +1,6 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-29 · deuda técnica saldada en rama `fix/tech-debt` (pendiente de merge)
+> Actualizado: 2026-07-29 · deuda técnica saldada e integrada en main (rama `fix/tech-debt`)
 
 ## Ahora
 
@@ -42,11 +42,14 @@ Implementada con subagent-driven development (6 tareas TDD, review por tarea en 
    Veo opt-in con aviso de coste, sin proxy). Próximo paso: plan de bootstrap del repo nuevo
    (`nico-project-bootstrap` + writing-plans). En el portfolio F4 queda como integración
    ligera (case study + CTA cuando haya URL desplegada); F5 pierde el proxy (roadmap AMENDED).
-2. Deuda técnica saldada en la rama `fix/tech-debt` (2026-07-29, pendiente de merge):
+2. Deuda técnica saldada en la rama `fix/tech-debt` → integrada en main (2026-07-29):
    - First Load JS de la home: 274,6 → **211,4 KiB gzip** (−63,2; zod fuera del bundle
-     cliente vía `data/constants.ts`). Sin el polyfill `noModule` (39,5 KiB que los
-     navegadores modernos no descargan): 172,8 KiB. El presupuesto de 130 KiB sigue
-     excedido por el suelo del framework (react-dom 70,9 + router 47,8) → Phase 6.
+     compartido y de la home vía `data/constants.ts`). OJO: la ruta `/cv` sigue
+     embarcando zod en su chunk (~64,7 KiB; `cv-content.tsx` importa datos que hacen
+     `schema.parse()` en module scope) — palanca para Phase 6 junto al resto: sin el
+     polyfill `noModule` (38,6 KiB que los navegadores modernos no descargan) quedan
+     172,8 KiB; el presupuesto de 130 KiB sigue excedido por el suelo del framework
+     (react-dom 70,9 + router 47,8).
    - Escape anidado del skin filter (backlog F3.7) arreglado con test de integración.
    - Follow-ups F3.8: badge `/^[45]/`, `w-full` muerto del Select del endpoint,
      border-color declarado del chip activo (media-kit).
