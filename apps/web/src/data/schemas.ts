@@ -1,4 +1,9 @@
 import { z } from 'zod';
+import { CV_VIEWS, SKILL_CATEGORIES, SKINS, THEMES } from './constants';
+
+// Compat de tipos para consumidores existentes (los VALORES se importan de
+// './constants' — importarlos desde aquí metería zod en el bundle cliente).
+export type { CvView, Skin, SkillCategory, Theme } from './constants';
 
 /** Un dato, dos idiomas: imposible desincronizar es/en. */
 export const localizedStringSchema = z
@@ -49,7 +54,6 @@ export const educationEntrySchema = z
   .strict();
 export type EducationEntry = z.infer<typeof educationEntrySchema>;
 
-export const SKILL_CATEGORIES = ['backend', 'frontend', 'ai', 'platform', 'tooling'] as const;
 export const skillSchema = z
   .object({
     name: z.string().min(1),
@@ -98,18 +102,10 @@ export const projectFrontmatterSchema = z
   .strict();
 export type ProjectFrontmatter = z.infer<typeof projectFrontmatterSchema>;
 
-/** Enums de apariencia (spec §5): los reutiliza lib/appearance.ts (T20). */
-export const THEMES = ['dark', 'light'] as const;
+/** Enums de apariencia (spec §5): validación server-side; el cliente usa './constants'. */
 export const themeSchema = z.enum(THEMES);
-export type Theme = z.infer<typeof themeSchema>;
-
-export const SKINS = ['dev-tool', 'editorial', 'terminal', 'vibrant'] as const;
 export const skinSchema = z.enum(SKINS);
-export type Skin = z.infer<typeof skinSchema>;
-
-export const CV_VIEWS = ['standard', 'compact', 'timeline'] as const;
 export const cvViewSchema = z.enum(CV_VIEWS);
-export type CvView = z.infer<typeof cvViewSchema>;
 
 /** Campos comunes a los 3 tipos de ítem de la galería IA (spec §7). */
 const galleryItemBase = {

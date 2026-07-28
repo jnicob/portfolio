@@ -1,6 +1,5 @@
-import type { ZodType } from 'zod';
-import { cvViewSchema, skinSchema, themeSchema } from '@/data/schemas';
-import type { CvView, Skin, Theme } from '@/data/schemas';
+import { CV_VIEWS, SKINS, THEMES } from '@/data/constants';
+import type { CvView, Skin, Theme } from '@/data/constants';
 
 export type Appearance = { theme: Theme; skin: Skin };
 
@@ -8,10 +7,12 @@ export const DEFAULT_APPEARANCE: Appearance = { theme: 'dark', skin: 'dev-tool' 
 
 export const STORAGE_KEYS = { theme: 'theme', skin: 'skin', cvView: 'cv-view' } as const;
 
-function parseValid<T>(schema: ZodType<T>, value: string | null): T | undefined {
-  if (value === null) return undefined;
-  const result = schema.safeParse(value);
-  return result.success ? result.data : undefined;
+/** Valor validado contra una const-union, sin zod (este módulo va al bundle cliente). */
+export function parseValid<T extends string>(
+  options: readonly T[],
+  value: string | null,
+): T | undefined {
+  return options.find((option) => option === value);
 }
 
 /** Precedencia URL > localStorage > default; inválidos caen en cascada al siguiente nivel. */
@@ -26,15 +27,12 @@ export function resolveAppearance(input: {
   const urlView = params.get('view');
 
   const theme =
-    parseValid(themeSchema, urlTheme) ??
-    parseValid(themeSchema, stored.theme) ??
+    parseValid(THEMES, urlTheme) ??
+    parseValid(THEMES, stored.theme) ??
     (prefersLight ? 'light' : 'dark');
   const skin =
-    parseValid(skinSchema, urlSkin) ??
-    parseValid(skinSchema, stored.skin) ??
-    DEFAULT_APPEARANCE.skin;
-  const view =
-    parseValid(cvViewSchema, urlView) ?? parseValid(cvViewSchema, stored.view) ?? 'standard';
+    parseValid(SKINS, urlSkin) ?? parseValid(SKINS, stored.skin) ?? DEFAULT_APPEARANCE.skin;
+  const view = parseValid(CV_VIEWS, urlView) ?? parseValid(CV_VIEWS, stored.view) ?? 'standard';
 
   return {
     theme,
@@ -63,15 +61,14 @@ export function applyAppearance(appearance: Appearance): void {
 /** Skin actualmente aplicado al DOM (dataset ausente = 'dev-tool'), validado. */
 export function currentSkin(): Skin {
   return (
-    parseValid(skinSchema, document.documentElement.dataset.skin ?? null) ?? DEFAULT_APPEARANCE.skin
+    parseValid(SKINS, document.documentElement.dataset.skin ?? null) ?? DEFAULT_APPEARANCE.skin
   );
 }
 
 /** Theme actualmente aplicado al DOM, validado (fallback al default si el dataset falta). */
 export function currentTheme(): Theme {
   return (
-    parseValid(themeSchema, document.documentElement.dataset.theme ?? null) ??
-    DEFAULT_APPEARANCE.theme
+    parseValid(THEMES, document.documentElement.dataset.theme ?? null) ?? DEFAULT_APPEARANCE.theme
   );
 }
 
@@ -98,8 +95,8 @@ export function reapplyStoredAppearance(fallback: Appearance): void {
     /* almacenamiento no disponible: re-aplica el fallback de la primera carga */
   }
   applyAppearance({
-    theme: parseValid(themeSchema, storedTheme) ?? fallback.theme,
-    skin: parseValid(skinSchema, storedSkin) ?? fallback.skin,
+    theme: parseValid(THEMES, storedTheme) ?? fallback.theme,
+    skin: parseValid(SKINS, storedSkin) ?? fallback.skin,
   });
 }
 

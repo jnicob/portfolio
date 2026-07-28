@@ -3,13 +3,14 @@
 import { useEffect } from 'react';
 import {
   applyAppearance,
+  parseValid,
   persistCvView,
   reapplyStoredAppearance,
   resolveAppearance,
   STORAGE_KEYS,
 } from '@/lib/appearance';
-import { cvViewSchema } from '@/data/schemas';
-import type { CvView, Skin, Theme } from '@/data/schemas';
+import { CV_VIEWS } from '@/data/constants';
+import type { CvView, Skin, Theme } from '@/data/constants';
 
 type Props = { onView?: (view: CvView) => void };
 
@@ -54,7 +55,7 @@ function resolveAndApplyOnce(): void {
 
   // view del deep link: consumida una vez — persistir aquí; storage manda en adelante.
   const urlView = params.get('view');
-  if (urlView !== null && cvViewSchema.safeParse(urlView).success) {
+  if (parseValid(CV_VIEWS, urlView) !== undefined) {
     persistCvView(view);
   }
 
@@ -73,8 +74,7 @@ function resolveAndApplyOnce(): void {
 /** View fresca en cada montaje: storage > default (la URL ya fue consumida por el one-shot). */
 function currentView(): CvView {
   const stored = localStorage.getItem(STORAGE_KEYS.cvView);
-  const parsed = cvViewSchema.safeParse(stored);
-  return parsed.success ? parsed.data : 'standard';
+  return parseValid(CV_VIEWS, stored) ?? 'standard';
 }
 
 /**

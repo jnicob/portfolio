@@ -1,8 +1,8 @@
 'use client';
 
 import { useId } from 'react';
-import { CV_VIEWS } from '@/data/schemas';
-import type { CvView } from '@/data/schemas';
+import { CV_VIEWS } from '@/data/constants';
+import type { CvView } from '@/data/constants';
 import { cn } from '@/lib/cn';
 
 export type CvViewSwitcherLabels = Record<CvView, string> & { groupLabel: string };

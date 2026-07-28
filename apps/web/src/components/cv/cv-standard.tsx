@@ -4,7 +4,7 @@ import { profile } from '@/data/profile';
 import { experience } from '@/data/experience';
 import { education } from '@/data/education';
 import { skills } from '@/data/skills';
-import { SKILL_CATEGORIES } from '@/data/schemas';
+import { SKILL_CATEGORIES } from '@/data/constants';
 import { ExperienceEntryBlock } from './experience-entry';
 import { SkillGroup } from './skill-group';
 import { EducationList } from './education-list';

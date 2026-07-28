@@ -1,4 +1,5 @@
-import { SKILL_CATEGORIES, type Skill } from '@/data/schemas';
+import { SKILL_CATEGORIES } from '@/data/constants';
+import type { Skill } from '@/data/schemas';
 import { skills } from '@/data/skills';
 import type { Locale } from '@/i18n/routing';
 import { SkillLevel } from '@/components/cv/skill-level';

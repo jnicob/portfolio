@@ -3,8 +3,8 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
 import { FilterableList, type FilterableItem } from '@/components/ui/filterable-list';
 import { applySkin, currentSkin } from '@/lib/appearance';
-import { SKINS } from '@/data/schemas';
-import type { Skin } from '@/data/schemas';
+import { SKINS } from '@/data/constants';
+import type { Skin } from '@/data/constants';
 
 type SkinItem = FilterableItem & { id: Skin };
 

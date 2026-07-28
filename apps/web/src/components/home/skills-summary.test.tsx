@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { SKILL_CATEGORIES } from '@/data/schemas';
+import { SKILL_CATEGORIES } from '@/data/constants';
 import { skills } from '@/data/skills';
 import { SkillsSummary } from './skills-summary';
 
