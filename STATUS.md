@@ -1,6 +1,6 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-07-23 · F3.9 (skin Editorial NYT + puntero full-bleed) integrada en main
+> Actualizado: 2026-07-29 · deuda técnica saldada en rama `fix/tech-debt` (pendiente de merge)
 
 ## Ahora
 
@@ -42,12 +42,18 @@ Implementada con subagent-driven development (6 tareas TDD, review por tarea en 
    Veo opt-in con aviso de coste, sin proxy). Próximo paso: plan de bootstrap del repo nuevo
    (`nico-project-bootstrap` + writing-plans). En el portfolio F4 queda como integración
    ligera (case study + CTA cuando haya URL desplegada); F5 pierde el proxy (roadmap AMENDED).
-2. F4 arrastra: First Load JS >2× presupuesto (palanca real del perf, a enforcar en Phase 6) +
-   Escape anidado del skin filter (único ítem del backlog F3.7 fuera de F3.8).
-3. Follow-ups menores de F3.8 (no bloqueantes): endurecer badge de estado a `/^[45]/`,
-   limpiar `w-full` redundante en Select, declarar borde del chip activo.
-4. Backlog F3.9 (no bloqueante): byline del artículo con 2º dato, margen residual de la
-   columna 1 del CV, dueño único del ritmo hairline+gap.
+2. Deuda técnica saldada en la rama `fix/tech-debt` (2026-07-29, pendiente de merge):
+   - First Load JS de la home: 274,6 → **211,4 KiB gzip** (−63,2; zod fuera del bundle
+     cliente vía `data/constants.ts`). Sin el polyfill `noModule` (39,5 KiB que los
+     navegadores modernos no descargan): 172,8 KiB. El presupuesto de 130 KiB sigue
+     excedido por el suelo del framework (react-dom 70,9 + router 47,8) → Phase 6.
+   - Escape anidado del skin filter (backlog F3.7) arreglado con test de integración.
+   - Follow-ups F3.8: badge `/^[45]/`, `w-full` muerto del Select del endpoint,
+     border-color declarado del chip activo (media-kit).
+   - F3.9 «dueño único del ritmo hairline+gap» hecho (editorial.css + invariante).
+3. Backlog F3.9 restante (no bloqueante): byline del artículo con 2º dato — necesita una
+   métrica REAL del usuario (no se inventan cifras); margen residual de la columna 1 del
+   CV — won't fix, adjudicado «artefacto típico de columns, no forzar» en el design review.
 
 ## Pendientes del usuario (no bloqueantes)
 
