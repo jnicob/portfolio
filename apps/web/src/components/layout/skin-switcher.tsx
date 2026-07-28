@@ -71,15 +71,16 @@ export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
     closeAndFocusButton();
   }
 
-  // El combobox ya limpia el filtro con Escape (T22); si ya estaba vacío, esta
-  // Escape cierra el panel en su lugar (misma tecla, dos pasos). stopPropagation
-  // en ese cierre evita que el mismo keydown siga subiendo y cierre también un
-  // disclosure ancestro (p.ej. el MobileMenu, cuando este switcher vive dentro
-  // de su panel) — cierre por capas, de adentro hacia afuera.
+  // Cierre por capas, de adentro hacia afuera (misma tecla, tres pasos): Escape
+  // con texto → el combobox limpia el filtro (T22); con el filtro ya vacío →
+  // se cierra este panel. En AMBOS casos el keydown se consume aquí con
+  // stopPropagation: si siguiera subiendo, cerraría también un disclosure
+  // ancestro (p.ej. el MobileMenu, cuando este switcher vive dentro de su
+  // panel) en el mismo golpe de tecla.
   function handlePanelKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key !== 'Escape') return;
+    event.stopPropagation();
     if (findComboboxInput(panelRef.current)?.value === '') {
-      event.stopPropagation();
       closeAndFocusButton();
     }
   }

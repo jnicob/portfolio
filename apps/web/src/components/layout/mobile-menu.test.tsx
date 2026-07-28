@@ -91,4 +91,25 @@ describe('MobileMenu', () => {
       'true',
     );
   });
+
+  it('Escape con texto en el filtro del skin solo limpia el filtro: ni el dropdown ni el menú se cierran', () => {
+    render(
+      <MobileMenu labels={labels}>
+        <SkinSwitcher labels={SKIN_LABELS} />
+      </MobileMenu>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Abrir menú' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Skin' }));
+    const combobox = screen.getByRole('combobox', { name: 'Filter skins' });
+    fireEvent.change(combobox, { target: { value: 'term' } });
+
+    fireEvent.keyDown(combobox, { key: 'Escape' });
+
+    expect(screen.getByRole('combobox', { name: 'Filter skins' })).toHaveValue('');
+    expect(screen.getByRole('button', { name: 'Cerrar menú' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
+  });
 });
