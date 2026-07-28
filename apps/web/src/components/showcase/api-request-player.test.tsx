@@ -330,6 +330,9 @@ describe('ApiRequestPlayer', () => {
 
     const endpointSelect = screen.getByRole('combobox', { name: labels.endpoint });
     expect(endpointSelect).toHaveClass('transition-colors', 'hover:border-fg-muted');
+    // flex-1 gobierna el ancho: el w-full por defecto del Select queda muerto y no debe llegar al DOM.
+    expect(endpointSelect).toHaveClass('flex-1');
+    expect(endpointSelect).not.toHaveClass('w-full');
     fireEvent.change(endpointSelect, {
       target: { value: 'error' },
     });

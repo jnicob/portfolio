@@ -289,7 +289,9 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
                 value: entry.id,
                 label: labels.examples[entry.id],
               }))}
-              className="h-9 min-w-0 flex-1 cursor-pointer px-2 font-mono"
+              // w-auto anula (vía tailwind-merge) el w-full por defecto del Select: aquí
+              // el ancho lo gobierna flex-1 y el w-full quedaba como utility muerta.
+              className="h-9 w-auto min-w-0 flex-1 cursor-pointer px-2 font-mono"
             />
           </label>
           <div className="flex items-center gap-2 font-mono text-sm text-fg-muted">
