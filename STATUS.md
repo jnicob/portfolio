@@ -35,13 +35,16 @@ Implementada con subagent-driven development (6 tareas TDD, review por tarea en 
 
 ## Siguiente acción
 
-1. **F4 — Playground REDEFINIDA (2026-07-24)**: el playground se separa como producto propio
-   → repo `github.com:jnicob/ai-playground` (spec aprobada:
-   `docs/superpowers/specs/2026-07-24-phase-4-playground-design.md`; brainstorm de 2 rondas,
-   decisiones: multi-proveedor mock|pollinations|google, API keys de usuario en sessionStorage,
-   Veo opt-in con aviso de coste, sin proxy). Próximo paso: plan de bootstrap del repo nuevo
-   (`nico-project-bootstrap` + writing-plans). En el portfolio F4 queda como integración
-   ligera (case study + CTA cuando haya URL desplegada); F5 pierde el proxy (roadmap AMENDED).
+1. **F4 — ai-playground fase A COMPLETADA y publicada (2026-07-29)**: repo público
+   `github.com/jnicob/ai-playground` con CI verde — monorepo pnpm (core + api Hono/Workers +
+   web Vite/React 19), walking skeleton mock end-to-end (43 tests), MIT, README. Ejecutada
+   con SDD (12 tasks, review por task + review final). Exportados a ai-config: agentes
+   design-reviewer y qa-a11y-perf generalizados + skill nueva `nico-vitest` + extensiones a
+   nico-security/testing/typescript/verification. Próximo paso: plan de fase B just-in-time
+   (API task-based + conectores pollinations/google imagen + panel de keys); referencia de
+   paridad de features en `../playground-parity-inventory.md` (privado, fuera de repos).
+   En el portfolio F4 queda como integración ligera (case study + CTA cuando haya URL
+   desplegada); F5 pierde el proxy (roadmap AMENDED).
 2. Deuda técnica saldada en la rama `fix/tech-debt` → integrada en main (2026-07-29):
    - First Load JS de la home: 274,6 → **211,4 KiB gzip** (−63,2; zod fuera del bundle
      compartido y de la home vía `data/constants.ts`). OJO: la ruta `/cv` sigue
@@ -66,7 +69,8 @@ Implementada con subagent-driven development (6 tareas TDD, review por tarea en 
 - Dominio definitivo + `NEXT_PUBLIC_SITE_URL` (el build avisa si falta).
 - ~~Publicar `@nicobehm/media-kit` en npm~~ ✅ publicado (0.7.0 verificado en npm 2026-07-24).
 - Momento del deploy del badge de disponibilidad (visible desde F3.7).
-- Upgrade Node 22 (retirar pins de `docs/decisions/2026-07-10-dependency-pins.md`).
+- Upgrade Node 22: ya corre localmente (v22.23.1, ai-playground lo exige) — queda evaluar
+  retirar los pins de `docs/decisions/2026-07-10-dependency-pins.md`.
 - ¿Subir el skill `masonry-layouts` a ai-config? (recomendado; no propagado aún).
 
 ## Fuentes de verdad
