@@ -65,6 +65,8 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
   const [errors, setErrors] = useState<Partial<Record<keyof ContactInput, string>>>({});
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [serverError, setServerError] = useState<string | null>(null);
+  // Timestamp anti-bot: registra cuándo se cargó el formulario
+  const [formStartTs] = useState(() => Date.now());
 
   const handleFieldChange = (
     field: keyof ContactInput,
@@ -129,49 +131,28 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
         return;
       }
 
-      const web3FormsKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+      // Endpoint configurable: PHP en producción, Route Handler Node en dev local
+      const endpoint =
+        process.env.NEXT_PUBLIC_CONTACT_ENDPOINT || '/api/contact.php';
 
-      if (web3FormsKey) {
-        // Envío directo a Web3Forms desde el navegador (funciona en estático y producción)
-        const response = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            access_key: web3FormsKey,
-            subject: `[Portfolio Contacto] ${parseResult.data.subject}`,
-            from_name: parseResult.data.email,
-            email: parseResult.data.email,
-            phone: parseResult.data.phone || '',
-            message: parseResult.data.message,
-          }),
-        });
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...parseResult.data,
+          ts: formStartTs,
+        }),
+      });
 
-        if (response.ok) {
-          setStatus('success');
-          setFormData(INITIAL_FORM);
-          setErrors({});
-        } else {
-          const data = await response.json().catch(() => null);
-          setServerError(data?.message || labels.status.errorMessage);
-          setStatus('error');
-        }
+      const data = await response.json().catch(() => null);
+
+      if (response.ok && data?.ok !== false) {
+        setStatus('success');
+        setFormData(INITIAL_FORM);
+        setErrors({});
       } else {
-        // Fallback: envío vía Route Handler /api/contact (solo modo Node local)
-        const response = await fetch('/api/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(parseResult.data),
-        });
-
-        if (response.ok) {
-          setStatus('success');
-          setFormData(INITIAL_FORM);
-          setErrors({});
-        } else {
-          const data = await response.json().catch(() => null);
-          setServerError(data?.error || labels.status.errorMessage);
-          setStatus('error');
-        }
+        setServerError(data?.error || labels.status.errorMessage);
+        setStatus('error');
       }
     } catch {
       setServerError(labels.status.errorMessage);
