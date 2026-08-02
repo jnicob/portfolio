@@ -72,6 +72,35 @@ const entries = [
     tags: ['react', 'nextjs', 'nodejs', 'express', 'postgresql'],
   },
   {
+    id: 'municipalidad-general-pueyrredon',
+    company: 'Municipalidad de General Pueyrredon',
+    role: {
+      es: 'Analista Programador Full-Stack',
+      en: 'Full-Stack Analyst Programmer',
+    },
+    start: '2012-07',
+    end: '2021-03',
+    summary: {
+      es: 'Análisis, diseño, desarrollo e implementación del Sistema de Gestión Hospitalaria Municipal (HIS).',
+      en: 'Analysis, design, development and implementation of the Municipal Hospital Information System (HIS).',
+    },
+    highlights: [
+      {
+        es: 'Electronic Health Record (EHR) y mensajería HL7 V2 (ADT, OML, ORL, ORU) con Mirth Connect; Master Patient Index (MPI) y Health Information Exchange (HIE).',
+        en: 'Electronic Health Record (EHR) and HL7 V2 messaging (ADT, OML, ORL, ORU) with Mirth Connect; Master Patient Index (MPI) and Health Information Exchange (HIE).',
+      },
+      {
+        es: 'Interfaces de comunicación con otros sistemas clínicos (RIS, LIS) y de georreferenciación (GIS).',
+        en: 'Communication interfaces with other clinical (RIS, LIS) and geo-referencing (GIS) systems.',
+      },
+      {
+        es: 'Stack: PHP / CodeIgniter / Doctrine ORM, JavaScript / jQuery / AJAX, RESTful API, MySQL / SQL Server.',
+        en: 'Stack: PHP / CodeIgniter / Doctrine ORM, JavaScript / jQuery / AJAX, RESTful API, MySQL / SQL Server.',
+      },
+    ],
+    tags: ['php', 'javascript', 'codeigniter', 'hl7', 'healthcare-it', 'mysql'],
+  },
+  {
     id: 'iac-internacional',
     company: 'IAC Internacional S.R.L.',
     role: {
@@ -101,35 +130,6 @@ const entries = [
     tags: ['php', 'embedded', 'arduino', 'project-management'],
   },
   {
-    id: 'municipalidad-general-pueyrredon',
-    company: 'Municipalidad de General Pueyrredon',
-    role: {
-      es: 'Analista Programador Full-Stack',
-      en: 'Full-Stack Analyst Programmer',
-    },
-    start: '2012-07',
-    end: '2021-03',
-    summary: {
-      es: 'Análisis, diseño, desarrollo e implementación del Sistema de Gestión Hospitalaria Municipal (HIS).',
-      en: 'Analysis, design, development and implementation of the Municipal Hospital Information System (HIS).',
-    },
-    highlights: [
-      {
-        es: 'Electronic Health Record (EHR) y mensajería HL7 V2 (ADT, OML, ORL, ORU) con Mirth Connect; Master Patient Index (MPI) y Health Information Exchange (HIE).',
-        en: 'Electronic Health Record (EHR) and HL7 V2 messaging (ADT, OML, ORL, ORU) with Mirth Connect; Master Patient Index (MPI) and Health Information Exchange (HIE).',
-      },
-      {
-        es: 'Interfaces de comunicación con otros sistemas clínicos (RIS, LIS) y de georreferenciación (GIS).',
-        en: 'Communication interfaces with other clinical (RIS, LIS) and geo-referencing (GIS) systems.',
-      },
-      {
-        es: 'Stack: PHP / CodeIgniter / Doctrine ORM, RESTful API, MySQL / SQL Server.',
-        en: 'Stack: PHP / CodeIgniter / Doctrine ORM, RESTful API, MySQL / SQL Server.',
-      },
-    ],
-    tags: ['php', 'codeigniter', 'hl7', 'healthcare-it', 'mysql'],
-  },
-  {
     id: 'fares-taie-biotecnologia',
     company: 'Fares Taie Biotecnología',
     role: {
@@ -148,8 +148,8 @@ const entries = [
         en: 'HL7 Infobuttons and interoperability with controlled medical vocabularies (SNOMED CT, LOINC, ICD-10) and a Clinical Decision Support System (CDSS).',
       },
       {
-        es: 'Stack: PHP / Laravel / WordPress, JavaScript / React / jQuery, RESTful API, PHPUnit / Jest.',
-        en: 'Stack: PHP / Laravel / WordPress, JavaScript / React / jQuery, RESTful API, PHPUnit / Jest.',
+        es: 'Stack: PHP / Laravel / WordPress / Delphi, JavaScript / jQuery, RESTful API.',
+        en: 'Stack: PHP / Laravel / WordPress / Delphi, JavaScript / jQuery, RESTful API.',
       },
       {
         es: 'Administración de servidores Linux Debian con Apache y virtualización Xen.',

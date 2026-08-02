@@ -121,16 +121,16 @@ describe('CvContent', () => {
         <CvContent locale="en" strings={STRINGS} switcherLabels={SWITCHER_LABELS} />
       </>,
     );
-    expect(screen.getByRole('radio', { name: 'Timeline' })).toBeChecked();
+    expect(screen.getAllByRole('radio', { name: 'Timeline' })[0]).toBeChecked();
 
     // El usuario cambia a Compact (persistida) y navega fuera (unmount de la página).
-    await user.click(screen.getByRole('radio', { name: 'Compact' }));
+    await user.click(screen.getAllByRole('radio', { name: 'Compact' })[0]!);
     first.unmount();
 
     // Vuelve a /cv por navegación client: MISMO módulo (sin resetModules), CvContent remonta.
     render(<CvContent locale="en" strings={STRINGS} switcherLabels={SWITCHER_LABELS} />);
 
-    expect(screen.getByRole('radio', { name: 'Compact' })).toBeChecked();
+    expect(screen.getAllByRole('radio', { name: 'Compact' })[0]!).toBeChecked();
   });
 
   it('cambiar la vista desde el switcher persiste la elección', async () => {
@@ -178,5 +178,28 @@ describe('CvContent', () => {
     await user.click(screen.getByRole('button', { name: SHARE_LABELS.share }));
 
     expect(writeText).toHaveBeenCalledWith(expect.stringContaining('view=compact'));
+  });
+
+  it('con printLabel, renderiza el botón de imprimir que llama a window.print()', async () => {
+    const user = userEvent.setup();
+    const printSpy = vi.spyOn(window, 'print').mockImplementation(() => {});
+    const { CvContent } = await importFreshComponents();
+
+    render(
+      <CvContent
+        locale="en"
+        strings={STRINGS}
+        switcherLabels={SWITCHER_LABELS}
+        printLabel="Print CV"
+      />,
+    );
+
+    const button = screen.getByRole('button', { name: 'Print CV' });
+    expect(button).toBeInTheDocument();
+
+    await user.click(button);
+    expect(printSpy).toHaveBeenCalledTimes(1);
+
+    printSpy.mockRestore();
   });
 });

@@ -17,7 +17,7 @@ import type { CvViewProps } from './cv-standard';
  */
 export function CvTimeline({ locale, strings }: CvViewProps) {
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-6">
       <section className="flex flex-col gap-6">
         <h2 className="text-2xl font-semibold text-fg">{strings.experienceTitle}</h2>
         <ol className="relative flex flex-col gap-6 pl-6 before:absolute before:inset-y-1 before:left-[3px] before:w-px before:rounded-full before:bg-gradient-to-b before:from-accent/60 before:to-accent/10 before:content-['']">
@@ -55,7 +55,7 @@ export function CvTimeline({ locale, strings }: CvViewProps) {
 
       <section className="flex flex-col gap-6">
         <h2 className="text-2xl font-semibold text-fg">{strings.skillsTitle}</h2>
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 print:grid print:grid-cols-3 print:gap-x-6 print:gap-y-4">
           {SKILL_CATEGORIES.map((category) => {
             const categorySkills = skills.filter((skill) => skill.category === category);
             if (categorySkills.length === 0) return null;
@@ -70,30 +70,6 @@ export function CvTimeline({ locale, strings }: CvViewProps) {
               />
             );
           })}
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-4">
-        <h2 className="text-2xl font-semibold text-fg">{strings.contactTitle}</h2>
-        <div className="flex gap-4 text-sm">
-          <a
-            href={profile.links.github}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`${strings.contactGithub} — ${profile.name}`}
-            className="text-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-          >
-            {strings.contactGithub}
-          </a>
-          <a
-            href={profile.links.linkedin}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`${strings.contactLinkedin} — ${profile.name}`}
-            className="text-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-          >
-            {strings.contactLinkedin}
-          </a>
         </div>
       </section>
     </div>

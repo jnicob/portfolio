@@ -79,9 +79,9 @@
   padding-top: 2rem;
 }
 
-/* La experiencia fluye a dos columnas en >=lg (orden column-major = orden
+/* La experiencia fluye a dos columnas en >=lg o al imprimir (orden column-major = orden
  * de lectura de diario; el DOM y el Tab no cambian). */
-@media (min-width: 64rem) {
+@media (min-width: 64rem), print {
   [data-skin='editorial'] [data-cv-experience] {
     display: block;
     columns: 2;

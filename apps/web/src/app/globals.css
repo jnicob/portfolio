@@ -188,23 +188,60 @@
 }
 
 /* Impresión (T24): oculta chrome interactivo (header/footer/switcher/share, `.no-print`)
- * y fuerza tinta legible en papel — únicos hex fuera de bloques de tema, es definición
- * global de impresión, no de un componente. */
+ * y fuerza estética impecable de tema light en papel. */
 @media print {
+  @page {
+    margin: 0.8cm 1.2cm;
+    background: #ffffff;
+  }
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
   .no-print {
     display: none !important;
   }
+  html,
   body {
-    background: #fff;
-    color: #000;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #17171c !important;
+    font-size: 11.5px !important;
+    line-height: 1.35 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  h1 {
+    font-size: 24px !important;
+    color: #17171c !important;
+  }
+  h2 {
+    font-size: 14px !important;
+    color: #17171c !important;
+    margin-top: 0.4rem !important;
+    margin-bottom: 0.2rem !important;
+  }
+  h3 {
+    font-size: 12px !important;
+    color: #17171c !important;
+  }
+  p, li, span {
+    color: #333338 !important;
   }
   a {
     text-decoration: none;
-    color: inherit;
+    color: #17171c !important;
   }
   main {
-    max-width: none;
-    padding: 0;
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  /* Evitar saltos de página arbitrarios y permitir flujo natural continuo */
+  section, article, header {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
   }
 }
 

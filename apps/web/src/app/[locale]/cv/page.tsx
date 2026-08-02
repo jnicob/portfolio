@@ -37,6 +37,9 @@ export default async function CvPage({ params }: Props) {
     contactTitle: t('contactTitle'),
     contactGithub: tFooter('github'),
     contactLinkedin: tFooter('linkedin'),
+    briefTitle: t('briefTitle'),
+    showBrief: t('showBrief'),
+    hideBrief: t('hideBrief'),
     categories: categoryLabels,
   };
 
@@ -48,13 +51,13 @@ export default async function CvPage({ params }: Props) {
   };
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-col gap-10 px-4 py-12">
+    <main className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8">
       <JsonLd data={personJsonLd(locale)} />
-      <h1 className="text-3xl font-semibold text-fg">{t('title')}</h1>
       <CvContent
         locale={locale}
         strings={strings}
         switcherLabels={switcherLabels}
+        printLabel={t('print')}
         shareLabels={{ share: tShare('share'), copied: tShare('copied'), error: tShare('error') }}
       />
     </main>

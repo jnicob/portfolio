@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CvView } from '@/data/schemas';
 import { buildShareUrl, currentSkin, currentTheme } from '@/lib/appearance';
+import { ShareIcon } from '@/components/icons/share-icon';
 import { Button } from '@/components/ui/button';
 
 const FEEDBACK_TIMEOUT_MS = 2000;
@@ -61,8 +62,15 @@ export function ShareViewButton({ view, labels }: ShareViewButtonProps) {
 
   return (
     <div className="no-print flex items-center gap-2">
-      <Button variant="secondary" size="sm" onClick={handleClick}>
-        {labels.share}
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={handleClick}
+        title={labels.share}
+        aria-label={labels.share}
+      >
+        <ShareIcon />
+        <span className="hidden sm:inline">{labels.share}</span>
       </Button>
       <span aria-live="polite" className="text-sm text-fg-muted">
         {feedback}
@@ -70,3 +78,4 @@ export function ShareViewButton({ view, labels }: ShareViewButtonProps) {
     </div>
   );
 }
+

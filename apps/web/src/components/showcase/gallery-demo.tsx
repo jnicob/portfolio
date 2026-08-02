@@ -123,7 +123,7 @@ function GalleryTile({ item, title, labels, layout, onOpen }: TileProps) {
           loading="lazy"
           width={item.width}
           height={item.height}
-          className={['rounded-card', gridMediaClass].filter(Boolean).join(' ')}
+          className={['rounded-card', layout === 'grid' ? 'aspect-square h-full w-full object-cover' : 'w-full h-auto'].filter(Boolean).join(' ')}
         />
       )}
       {item.type === 'video' && (

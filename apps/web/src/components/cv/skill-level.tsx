@@ -17,7 +17,7 @@ type SkillLevelProps = {
  */
 export function SkillLevel({ level, label }: SkillLevelProps) {
   return (
-    <span role="img" aria-label={label} className="flex gap-1">
+    <span role="img" aria-label={label} className="flex gap-1 print:hidden">
       {LEVEL_DOTS.map((dot) => (
         <span
           key={dot}

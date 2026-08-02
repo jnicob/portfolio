@@ -3,12 +3,32 @@ import { profileSchema } from './schemas';
 export const profile = profileSchema.parse({
   name: 'Nico Behm',
   headline: {
-    es: 'Ingeniero full-stack — plataformas de API de IA end-to-end',
-    en: 'Full-stack engineer — end-to-end AI API platforms',
+    es: 'Ingeniero en Informática - desarrollador web full-stack',
+    en: 'Computer Engineer - full-stack web developer',
   },
   summary: {
-    es: 'Ingeniero en Informática con más de 15 años construyendo software full-stack en entornos muy distintos: salud (historia clínica electrónica e interoperabilidad HL7), productos internacionales para clientes de EE. UU. y Latinoamérica, sistemas de gestión internos, webs de alta demanda y plataformas públicas de APIs de IA, incluido el desarrollo de sistemas con agentes de IA. Perfil de punta a punta: del spec y el backend al frontend, la documentación y el ciclo completo del producto, con más de 1.000 PRs en los últimos cuatro años. Cómodo en equipos multidisciplinarios y distribuidos.',
-    en: 'Computer engineer with 15+ years building full-stack software across very different environments: healthcare (EHR and HL7 interoperability), international products for clients in the US and Latin America, internal management systems, high-traffic web platforms and public AI API platforms — including building systems with AI agents. End-to-end profile: from spec and backend to frontend, documentation and the full product cycle, with 1,000+ PRs over the last four years. Comfortable in multidisciplinary, distributed teams.',
+    es: `Ingeniero en Informática con más de 15 años construyendo software full-stack en entornos diversos y de alta escala: plataformas públicas de APIs de IA, e-commerce, sistemas de salud e interoperabilidad HL7 y soluciones internacionales para clientes de EE. UU. y Latinoamérica.
+
+Perfil de punta a punta: desde la especificación OpenAPI, arquitectura backend y gateways de APIs hasta el frontend, la documentación y el ciclo completo de producto. Pionero en la integración y orquestación de sistemas basados en Agentes de IA para automatización de specs, código y reglas de negocio, acumulando más de 1.000 PRs en los últimos cuatro años.
+
+Core Tech & Dominio:
+• Lenguajes & Frameworks: TypeScript, JavaScript (ES2024), Python (FastAPI), PHP (Laravel, CodeIgniter), Node.js (Express), React / Next.js, Vue 2/3.
+• AI & API Platform: OpenAPI, Gateway APISIX (rate limits, billing/credits, API keys), Orquestación de Agentes de IA (Claude, Codex, Gemini).
+• Data & Middleware: MySQL, SQL Server, PostgreSQL, RESTful APIs, Mirth Connect, HL7 V2, SNOMED CT.
+• Tooling & CSS: Tailwind CSS, Jest, PHPUnit, Git, Docker, CI/CD plataform, Linux, Apache.
+
+Cómodo trabajando en equipos multidisciplinarios, remotos y distribuidos.`,
+    en: `Computer Engineer with 15+ years of experience building full-stack software across diverse and high-scale environments: public AI API platforms, e-commerce, healthcare & HL7 interoperability systems, and international products for US and Latin American clients.
+
+End-to-end profile: from OpenAPI specs, backend architecture, and API gateways to frontend, documentation, and full product lifecycle. Pioneer in orchestrating AI Agent systems to automate specs, code generation, and business rules, delivering 1,000+ PRs over the last four years.
+
+Core Tech & Expertise:
+• Languages & Frameworks: TypeScript, JavaScript (ES2024), Python (FastAPI), PHP (Laravel, CodeIgniter), Node.js (Express), React / Next.js, Vue 2/3.
+• AI & API Platform: OpenAPI, APISIX Gateway (rate limits, billing/credits, API keys), AI Agent Orchestration (Claude, Codex, Gemini).
+• Data & Middleware: MySQL, SQL Server, PostgreSQL, RESTful APIs, Mirth Connect, HL7 V2, SNOMED CT.
+• Tooling & Styling: Tailwind CSS, Jest, PHPUnit, Git, Docker, CI/CD plataform, Linux, Apache.
+
+Experienced in multidisciplinary, remote, and distributed teams.`,
   },
   location: { es: 'España', en: 'Spain' },
   links: {

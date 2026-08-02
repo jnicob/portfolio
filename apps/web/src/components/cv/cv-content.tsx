@@ -4,8 +4,10 @@ import { useState, type ReactNode } from 'react';
 import type { CvView } from '@/data/schemas';
 import type { Locale } from '@/i18n/routing';
 import { AppearanceInit } from '@/components/layout/appearance-init';
+import { PrintButton } from '@/components/layout/print-button';
 import { ShareViewButton, type ShareViewButtonLabels } from '@/components/layout/share-view-button';
 import { persistCvView } from '@/lib/appearance';
+import { CvHeader } from './cv-header';
 import { CvStandard, type CvStrings } from './cv-standard';
 import { CvCompact } from './cv-compact';
 import { CvTimeline } from './cv-timeline';
@@ -15,6 +17,8 @@ type CvContentProps = {
   locale: Locale;
   strings: CvStrings;
   switcherLabels: CvViewSwitcherLabels;
+  /** Etiqueta para el botón de imprimir en el CV */
+  printLabel?: string;
   /**
    * Labels del botón "Compartir esta vista" (T25). Si se pasa, `CvContent` renderiza
    * `ShareViewButton` con la vista activa (vive en este estado, no en el caller).
@@ -33,6 +37,7 @@ export function CvContent({
   locale,
   strings,
   switcherLabels,
+  printLabel,
   shareLabels,
   shareSlot,
 }: CvContentProps) {
@@ -46,9 +51,16 @@ export function CvContent({
   return (
     <>
       <AppearanceInit onView={setView} />
+      <CvHeader
+        locale={locale}
+        briefTitle={strings.briefTitle}
+        showBriefLabel={strings.showBrief}
+        hideBriefLabel={strings.hideBrief}
+      />
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <CvViewSwitcher view={view} onChange={handleChange} labels={switcherLabels} />
         <div className="flex items-center gap-3">
+          {printLabel && <PrintButton label={printLabel} />}
           {shareLabels && <ShareViewButton view={view} labels={shareLabels} />}
           {shareSlot}
         </div>

@@ -75,6 +75,10 @@
       "tooling": "Tooling"
     },
     "viewsLabel": "CV view",
+    "print": "Print CV",
+    "briefTitle": "Professional Summary",
+    "showBrief": "Show summary",
+    "hideBrief": "Hide summary",
     "views": {
       "standard": "Standard",
       "compact": "Compact",

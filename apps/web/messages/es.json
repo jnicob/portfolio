@@ -75,6 +75,10 @@
       "tooling": "Tooling"
     },
     "viewsLabel": "Vista del CV",
+    "print": "Imprimir CV",
+    "briefTitle": "Resumen Profesional",
+    "showBrief": "Mostrar resumen",
+    "hideBrief": "Ocultar resumen",
     "views": {
       "standard": "Estándar",
       "compact": "Compacto",

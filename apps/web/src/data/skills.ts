@@ -10,7 +10,7 @@ const entries = [
   },
   { name: 'TypeScript', level: 4, category: 'frontend', tags: ['typescript', 'javascript'] },
   { name: 'Vue 2/3', level: 3, category: 'frontend', tags: ['vue', 'typescript', 'ui'] },
-  { name: 'PHP / Laravel', level: 5, category: 'backend', tags: ['php', 'laravel', 'rest-api'] },
+  { name: 'PHP / Laravel', level: 4, category: 'backend', tags: ['php', 'laravel', 'rest-api'] },
   {
     name: 'Node.js / Express',
     level: 4,
@@ -25,17 +25,17 @@ const entries = [
   },
   {
     name: 'Python / FastAPI',
-    level: 3,
+    level: 2,
     category: 'backend',
     tags: ['python', 'fastapi', 'openapi'],
   },
   {
-    name: 'AI API platform design',
+    name: 'AI Engineering & Agent Orchestration',
     level: 4,
     category: 'ai',
-    tags: ['openapi', 'ai-models', 'api-design'],
+    tags: ['openapi', 'ai-agents', 'llm', 'api-design'],
   },
-  { name: 'Anthropic Claude', level: 3, category: 'ai', tags: ['claude', 'llm', 'anthropic'] },
+  { name: 'Claude / Codex / Gemini', level: 3, category: 'ai', tags: ['claude', 'codex', 'gemini', 'llm'] },
   {
     name: 'Gateway APISIX',
     level: 3,
@@ -55,16 +55,28 @@ const entries = [
     tags: ['hl7', 'mirth-connect', 'snomed-ct'],
   },
   {
-    name: 'Docker / Kubernetes',
+    name: 'CI/CD Pipelines (GitHub Actions / Jenkins)',
     level: 3,
     category: 'platform',
-    tags: ['docker', 'kubernetes', 'helm'],
+    tags: ['cicd', 'github-actions', 'jenkins', 'tekton', 'spinnaker'],
   },
   {
-    name: 'Testing (Jest / PHPUnit)',
+    name: 'Observability & Product Analytics',
+    level: 3,
+    category: 'platform',
+    tags: ['opensearch', 'gcp-logs', 'posthog', 'calibre', 'web-vitals'],
+  },
+  {
+    name: 'Testing (Jest / PHPUnit / Vitest)',
+    level: 3,
+    category: 'tooling',
+    tags: ['jest', 'phpunit', 'vitest', 'testing'],
+  },
+  {
+    name: 'Tailwind CSS',
     level: 4,
     category: 'tooling',
-    tags: ['jest', 'phpunit', 'testing'],
+    tags: ['tailwind', 'css', 'ui'],
   },
   { name: 'Git', level: 5, category: 'tooling', tags: ['git', 'version-control'] },
 ];

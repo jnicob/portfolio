@@ -5,17 +5,17 @@ const entries = [
   {
     slug: 'freepik-api-platform',
     title: {
-      es: 'Plataforma de APIs de Freepik/Magnific',
-      en: 'Freepik/Magnific API Platform',
+      es: 'Plataforma de APIs de Freepik/Magnific y Landings Públicas',
+      en: 'Freepik/Magnific API Platform & Public Landings',
     },
     summary: {
-      es: 'Diseño e implementación end-to-end de la plataforma pública de APIs de Freepik/Magnific: generación de IA (imagen, vídeo, audio), stock, estado de tareas y cuenta. Especificación OpenAPI, servidor FastAPI, gateway APISIX (rate limits, costes, API keys), facturación y documentación pública.',
-      en: "End-to-end design and implementation of Freepik/Magnific's public API platform: AI generation (image, video, audio), stock content, task status and account APIs. OpenAPI specification, FastAPI server, APISIX gateway (rate limits, cost tracking, API keys), billing and public documentation.",
+      es: 'Diseño e implementación end-to-end de la plataforma pública de APIs de Freepik/Magnific: generación de IA (imagen, vídeo, audio), stock, estado de tareas, billing/créditos por modelo, Landings públicas de productos API (/api, /image-generation, /image-upscaler, /api/pricing, /api/playground), spec OpenAPI, servidor FastAPI, gateway APISIX (rate limits, costes, API keys) y documentación.',
+      en: "End-to-end design and implementation of Freepik/Magnific's public API platform: AI generation (image, video, audio), stock content, task status, model billing/credits, public API landings (/api, /image-generation, /image-upscaler, /api/pricing, /api/playground), OpenAPI specification, FastAPI server, APISIX gateway (rate limits, cost tracking, API keys) and documentation.",
     },
-    role: { es: 'Ingeniero de plataforma de APIs', en: 'API Platform Engineer' },
-    stack: ['openapi', 'fastapi', 'python', 'apisix', 'rest-api'],
+    role: { es: 'Ingeniero de plataforma de APIs & Landings', en: 'API Platform & Landings Engineer' },
+    stack: ['openapi', 'fastapi', 'python', 'apisix', 'nextjs', 'react', 'rest-api'],
     links: {
-      live: 'https://www.freepik.com/api',
+      live: 'https://www.magnific.com/api',
       docs: 'https://docs.magnific.com',
     },
     metrics: [

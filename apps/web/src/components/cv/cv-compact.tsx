@@ -33,7 +33,7 @@ export function CvCompact({ locale, strings }: CvViewProps) {
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-fg">{strings.skillsTitle}</h2>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 print:grid print:grid-cols-3 print:gap-x-6 print:gap-y-4">
           {SKILL_CATEGORIES.map((category) => {
             const categorySkills = skills.filter((skill) => skill.category === category);
             if (categorySkills.length === 0) return null;
@@ -55,30 +55,6 @@ export function CvCompact({ locale, strings }: CvViewProps) {
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-fg">{strings.educationTitle}</h2>
         <EducationList education={education} locale={locale} />
-      </section>
-
-      <section className="flex flex-col gap-2">
-        <h2 className="text-lg font-semibold text-fg">{strings.contactTitle}</h2>
-        <div className="flex gap-4 text-sm">
-          <a
-            href={profile.links.github}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`${strings.contactGithub} — ${profile.name}`}
-            className="text-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-          >
-            {strings.contactGithub}
-          </a>
-          <a
-            href={profile.links.linkedin}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`${strings.contactLinkedin} — ${profile.name}`}
-            className="text-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-          >
-            {strings.contactLinkedin}
-          </a>
-        </div>
       </section>
     </div>
   );

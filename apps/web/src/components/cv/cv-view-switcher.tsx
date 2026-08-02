@@ -32,7 +32,8 @@ export function CvViewSwitcher({ view, onChange, labels }: CvViewSwitcherProps) 
           key={option}
           className={cn(
             'cursor-pointer rounded-control px-3 py-1 text-sm text-fg-muted transition-colors',
-            'has-[:checked]:bg-accent has-[:checked]:text-accent-fg',
+            'hover:text-fg hover:bg-surface/50',
+            'has-[:checked]:bg-accent has-[:checked]:text-accent-fg has-[:checked]:hover:bg-accent',
             'has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring',
           )}
         >
