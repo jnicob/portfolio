@@ -6,9 +6,9 @@ describe('siteUrl', () => {
     vi.unstubAllEnvs();
   });
 
-  it('devuelve el placeholder documentado sin NEXT_PUBLIC_SITE_URL', () => {
+  it('devuelve el dominio por defecto jnicob.dev sin NEXT_PUBLIC_SITE_URL', () => {
     vi.stubEnv('NEXT_PUBLIC_SITE_URL', undefined);
-    expect(siteUrl()).toBe('https://example-placeholder.dev');
+    expect(siteUrl()).toBe('https://jnicob.dev');
   });
 
   it('devuelve NEXT_PUBLIC_SITE_URL cuando está definida', () => {

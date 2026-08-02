@@ -55,8 +55,8 @@ const entries = [
     tags: ['hl7', 'mirth-connect', 'snomed-ct'],
   },
   {
-    name: 'CI/CD Pipelines (GitHub Actions / Jenkins)',
-    level: 3,
+    name: 'CI/CD (GitHub Actions / Tekton / Jenkins)',
+    level: 2,
     category: 'platform',
     tags: ['cicd', 'github-actions', 'jenkins', 'tekton', 'spinnaker'],
   },
