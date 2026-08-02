@@ -129,28 +129,53 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
         return;
       }
 
-      // Endpoint API real o fallback seguro
-      const endpoint = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT || '/api/contact';
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(parseResult.data),
-      });
+      const web3FormsKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
 
-      if (response.ok) {
-        setStatus('success');
-        setFormData(INITIAL_FORM);
-        setErrors({});
+      if (web3FormsKey) {
+        // Envío directo a Web3Forms desde el navegador (funciona en estático y producción)
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_key: web3FormsKey,
+            subject: `[Portfolio Contacto] ${parseResult.data.subject}`,
+            from_name: parseResult.data.email,
+            email: parseResult.data.email,
+            phone: parseResult.data.phone || '',
+            message: parseResult.data.message,
+          }),
+        });
+
+        if (response.ok) {
+          setStatus('success');
+          setFormData(INITIAL_FORM);
+          setErrors({});
+        } else {
+          const data = await response.json().catch(() => null);
+          setServerError(data?.message || labels.status.errorMessage);
+          setStatus('error');
+        }
       } else {
-        const data = await response.json().catch(() => null);
-        setServerError(data?.error || labels.status.errorMessage);
-        setStatus('error');
+        // Fallback: envío vía Route Handler /api/contact (solo modo Node local)
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(parseResult.data),
+        });
+
+        if (response.ok) {
+          setStatus('success');
+          setFormData(INITIAL_FORM);
+          setErrors({});
+        } else {
+          const data = await response.json().catch(() => null);
+          setServerError(data?.error || labels.status.errorMessage);
+          setStatus('error');
+        }
       }
     } catch {
-      // Fallback estático gracioso si la llamada a API no está activa
-      setStatus('success');
-      setFormData(INITIAL_FORM);
-      setErrors({});
+      setServerError(labels.status.errorMessage);
+      setStatus('error');
     }
   };
 
