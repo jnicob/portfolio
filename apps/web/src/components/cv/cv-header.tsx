@@ -12,16 +12,10 @@ type CvHeaderProps = {
   hideBriefLabel?: string;
 };
 
-// Datos opcionales locales (no expuestos en repositorio público)
-const LOCAL_CONTACT = {
-  phone: process.env.NEXT_PUBLIC_CV_PHONE || '672 814 490',
-  email: process.env.NEXT_PUBLIC_CV_EMAIL || 'j.nico.b@gmail.com',
-};
-
 /**
  * Cabecera principal del CV (pantalla e impresión):
  * - Muestra el nombre grande ("Nico Behm") y el titular profesional.
- * - Muestra los links de contacto explícitos (GitHub y LinkedIn) + datos locales configurables.
+ * - Muestra los links de contacto públicos (GitHub, LinkedIn) y el acceso al formulario de contacto.
  * - Toggle interactivo con animación suave para ver/ocultar el resumen/brief profesional.
  * - Respeta estrictamente el estado del toggle en impresión (si está oculto, NO se imprime).
  */
@@ -70,27 +64,15 @@ export function CvHeader({
               {profile.links.linkedin}
             </a>
           </div>
-          {LOCAL_CONTACT.phone && (
-            <div className="flex items-center gap-2">
-              <svg viewBox="0 0 24 24" width={15} height={15} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0 text-fg-muted print:text-fg">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <a href={`tel:${LOCAL_CONTACT.phone.replace(/\s+/g, '')}`} className="hover:underline">
-                {LOCAL_CONTACT.phone}
-              </a>
-            </div>
-          )}
-          {LOCAL_CONTACT.email && (
-            <div className="flex items-center gap-2">
-              <svg viewBox="0 0 24 24" width={15} height={15} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0 text-fg-muted print:text-fg">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                <polyline points="22,6 12,13 2,6" />
-              </svg>
-              <a href={`mailto:${LOCAL_CONTACT.email}`} className="hover:underline">
-                {LOCAL_CONTACT.email}
-              </a>
-            </div>
-          )}
+          <div className="flex items-center gap-2 no-print">
+            <svg viewBox="0 0 24 24" width={15} height={15} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0 text-fg-muted">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            <a href={`/${locale}/contact`} className="text-accent hover:underline font-medium">
+              {locale === 'es' ? 'Formulario de contacto' : 'Contact form'}
+            </a>
+          </div>
         </div>
       </div>
 

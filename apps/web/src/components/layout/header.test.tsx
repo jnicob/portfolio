@@ -30,6 +30,7 @@ describe('SiteHeader', () => {
     expect(screen.getByRole('link', { name: 'CV' })).toHaveAttribute('href', '/cv');
     expect(screen.getByRole('link', { name: 'Proyectos' })).toHaveAttribute('href', '/projects');
     expect(screen.getByRole('link', { name: 'Showcase' })).toHaveAttribute('href', '/showcase');
+    expect(screen.getByRole('link', { name: 'Contacto' })).toHaveAttribute('href', '/contact');
   });
 
   it('renderiza la navegación con nombre accesible y enlaces en inglés, junto al ThemeSwitcher', () => {
@@ -40,6 +41,7 @@ describe('SiteHeader', () => {
     expect(screen.getByRole('link', { name: 'CV' })).toHaveAttribute('href', '/cv');
     expect(screen.getByRole('link', { name: 'Projects' })).toHaveAttribute('href', '/projects');
     expect(screen.getByRole('link', { name: 'Showcase' })).toHaveAttribute('href', '/showcase');
-    expect(screen.getByRole('button', { name: /switch to/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Contact' })).toHaveAttribute('href', '/contact');
+    expect(screen.getAllByRole('button', { name: /switch to/i })[0]).toBeInTheDocument();
   });
 });

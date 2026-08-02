@@ -14,14 +14,11 @@
 - ✅ Fases 0–3.9 implementadas (ver roadmap) · media-kit 0.7.0 integrada en main.
 - ✅ F3.9 T1-T6 con review Approved por tarea; veredictos en `.superpowers/sdd/progress.md`.
 - ✅ Configuración de dominio `jnicob.dev` y despliegue inicial en GoDaddy.
+- ✅ Formulario de contacto y privacidad de datos de contacto (PII oculta, validación Zod, nico-security rate-limiting/honeypot/sanitización y UX i18n accesible).
 
 ## Siguiente acción
 
-1. **Formulario de contacto y privacidad de datos de contacto**:
-   - Ocultar/retirar teléfono y correo directo explícito de la UI pública.
-   - Implementar Formulario de Contacto (con validaciones frontend Zod + sanitización/seguridad en backend/endpoint).
-   - Requisitos: Asunto (obligatorio), Email (obligatorio), Teléfono (opcional), Mensaje.
-   - Referencia visual y funcional: Form de contacto en `hotel.montecervino.net/contacto/` y `manosactivas.es/contacto/`.
+1. Despliegue de actualización en `jnicob.dev` e inspección final.
 
 ## Pendientes del usuario (no bloqueantes)
 

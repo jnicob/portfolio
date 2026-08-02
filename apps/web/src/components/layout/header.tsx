@@ -16,6 +16,7 @@ export function SiteHeader() {
       <NavLink href="/cv">{t('cv')}</NavLink>
       <NavLink href="/projects">{t('projects')}</NavLink>
       <NavLink href="/showcase">{t('showcase')}</NavLink>
+      <NavLink href="/contact">{t('contact')}</NavLink>
     </>
   );
 
@@ -50,12 +51,14 @@ export function SiteHeader() {
           {navLinks}
         </nav>
         <div className="hidden flex-wrap items-center gap-2 sm:flex">{switchers}</div>
-        <MobileMenu labels={{ open: t('menuOpen'), close: t('menuClose') }}>
-          <nav aria-label={t('label')} className="flex flex-col gap-3 text-sm">
-            {navLinks}
-          </nav>
-          <div className="flex flex-wrap items-center gap-2">{switchers}</div>
-        </MobileMenu>
+        <div className="flex flex-wrap items-center gap-2 sm:hidden">
+          {switchers}
+          <MobileMenu labels={{ open: t('menuOpen'), close: t('menuClose') }}>
+            <nav aria-label={t('label')} className="flex flex-col gap-3 text-sm">
+              {navLinks}
+            </nav>
+          </MobileMenu>
+        </div>
       </div>
     </header>
   );

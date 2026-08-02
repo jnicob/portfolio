@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  contactSchema,
   cvViewSchema,
   educationEntrySchema,
   experienceEntrySchema,
@@ -435,3 +436,46 @@ describe('enums de apariencia', () => {
     expect(cvViewSchema.safeParse('full').success).toBe(false);
   });
 });
+
+describe('contactSchema (nico-zod)', () => {
+  const validContact = {
+    subject: 'Consulta sobre proyecto',
+    email: 'contacto@example.com',
+    phone: '+34 600 000 000',
+    message: 'Hola Nico, nos gustaría conversar sobre una colaboración.',
+    honeypot: '',
+  };
+
+  it('acepta datos válidos con o sin teléfono', () => {
+    expect(contactSchema.safeParse(validContact).success).toBe(true);
+    expect(contactSchema.safeParse({ ...validContact, phone: '' }).success).toBe(true);
+    expect(contactSchema.safeParse({ ...validContact, phone: undefined }).success).toBe(true);
+    expect(contactSchema.safeParse({ ...validContact, phone: '672814490' }).success).toBe(true);
+    expect(contactSchema.safeParse({ ...validContact, phone: '(011) 4567-8900' }).success).toBe(true);
+  });
+
+  it('rechaza teléfonos con letras, pocos dígitos o formato inválido', () => {
+    expect(contactSchema.safeParse({ ...validContact, phone: '12345' }).success).toBe(false);
+    expect(contactSchema.safeParse({ ...validContact, phone: 'telefono123456' }).success).toBe(false);
+    expect(contactSchema.safeParse({ ...validContact, phone: '++34--999' }).success).toBe(false);
+  });
+
+  it('rechaza email inválido o ausente', () => {
+    expect(contactSchema.safeParse({ ...validContact, email: 'invalido' }).success).toBe(false);
+    expect(contactSchema.safeParse({ ...validContact, email: '' }).success).toBe(false);
+  });
+
+  it('rechaza asunto o mensaje demasiado corto', () => {
+    expect(contactSchema.safeParse({ ...validContact, subject: 'Hi' }).success).toBe(false);
+    expect(contactSchema.safeParse({ ...validContact, message: 'Hola' }).success).toBe(false);
+  });
+
+  it('detecta bot si honeypot no está vacío', () => {
+    expect(contactSchema.safeParse({ ...validContact, honeypot: 'spam bot' }).success).toBe(false);
+  });
+
+  it('rechaza campos desconocidos extra (strict)', () => {
+    expect(contactSchema.safeParse({ ...validContact, unknownField: 123 }).success).toBe(false);
+  });
+});
+

@@ -5,6 +5,7 @@
     "cv": "CV",
     "projects": "Projects",
     "showcase": "Showcase",
+    "contact": "Contact",
     "menuOpen": "Open menu",
     "menuClose": "Close menu"
   },
@@ -263,5 +264,45 @@
       "showing": "Showing: {section}",
       "showingAll": "Showing all sections"
     }
+  },
+  "contact": {
+    "meta": {
+      "title": "Contact — Nico Behm",
+      "description": "Get in touch with Nico Behm for projects, consulting, or collaborations."
+    },
+    "title": "Contact",
+    "subtitle": "Have a project idea or want to collaborate? Send me a message and I'll reply promptly.",
+    "badge": "Let's talk",
+    "form": {
+      "subjectLabel": "Subject",
+      "subjectPlaceholder": "e.g., AI Platform Project / Full-stack Consulting",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "your.email@example.com",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "+34 600 000 000",
+      "phoneHint": "Optional — for direct contact",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Describe your project, inquiry, or proposal...",
+      "submit": "Send message",
+      "submitting": "Sending...",
+      "charCount": "{current} / {max} characters",
+      "errors": {
+        "subjectRequired": "Subject must be at least 3 characters",
+        "emailInvalid": "Please enter a valid email",
+        "messageRequired": "Message must be at least 10 characters"
+      }
+    },
+    "status": {
+      "successTitle": "Message sent successfully!",
+      "successMessage": "Thank you for reaching out. I have received your message and will respond as soon as possible.",
+      "exploreTitle": "While you wait, I invite you to explore my work:",
+      "viewCv": "View CV",
+      "viewProjects": "View Projects",
+      "linkedin": "Connect on LinkedIn",
+      "errorTitle": "Something went wrong",
+      "errorMessage": "Unable to deliver message right now. Please try again.",
+      "retry": "Try again"
+    }
   }
 }
+

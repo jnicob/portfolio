@@ -5,6 +5,7 @@
     "cv": "CV",
     "projects": "Proyectos",
     "showcase": "Showcase",
+    "contact": "Contacto",
     "menuOpen": "Abrir menú",
     "menuClose": "Cerrar menú"
   },
@@ -263,5 +264,45 @@
       "showing": "Mostrando: {section}",
       "showingAll": "Mostrando todas las secciones"
     }
+  },
+  "contact": {
+    "meta": {
+      "title": "Contacto — Nico Behm",
+      "description": "Ponte en contacto con Nico Behm para proyectos, consultoría o colaboraciones."
+    },
+    "title": "Contacto",
+    "subtitle": "¿Tienes una propuesta o quieres colaborar? Envíame un mensaje y te responderé lo antes posible.",
+    "badge": "Hablemos",
+    "form": {
+      "subjectLabel": "Asunto",
+      "subjectPlaceholder": "Ej: Proyecto de plataforma de IA / Consultoría full-stack",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "tu.email@ejemplo.com",
+      "phoneLabel": "Teléfono",
+      "phonePlaceholder": "+34 600 000 000",
+      "phoneHint": "Opcional — para contacto directo",
+      "messageLabel": "Mensaje",
+      "messagePlaceholder": "Describe tu proyecto, dudas o propuesta...",
+      "submit": "Enviar mensaje",
+      "submitting": "Enviando...",
+      "charCount": "{current} / {max} caracteres",
+      "errors": {
+        "subjectRequired": "El asunto debe tener al menos 3 caracteres",
+        "emailInvalid": "Introduce un email válido",
+        "messageRequired": "El mensaje debe tener al menos 10 caracteres"
+      }
+    },
+    "status": {
+      "successTitle": "¡Mensaje enviado con éxito!",
+      "successMessage": "Gracias por ponerte en contacto. He recibido tu mensaje y te responderé lo antes posible.",
+      "exploreTitle": "Mientras respondo, te invito a explorar mi trabajo:",
+      "viewCv": "Ver CV",
+      "viewProjects": "Ver Proyectos",
+      "linkedin": "Conectar en LinkedIn",
+      "errorTitle": "Ocurrió un problema",
+      "errorMessage": "No se pudo entregar el mensaje en este momento. Por favor, inténtalo de nuevo.",
+      "retry": "Volver a intentar"
+    }
   }
 }
+
