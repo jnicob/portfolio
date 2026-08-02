@@ -1,17 +1,27 @@
 import type { AnchorHTMLAttributes } from 'react';
+import { Link } from '@/i18n/navigation';
 
 /** Externo = absoluto http(s) o protocolo-relativo, que hereda el esquema. */
 const EXTERNAL_HREF = /^(https?:)?\/\//;
 
-/** Enlace `<a>` de contenido MDX: externo abre en pestaña nueva con rel seguro, interno se comporta como enlace normal. */
-function ExternalAwareLink({ href, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) {
-  const isExternal = href !== undefined && EXTERNAL_HREF.test(href);
+/** Enlace `<a>` de contenido MDX: externo abre en pestaña nueva con rel seguro, interno usa Link de i18n. */
+function ExternalAwareLink({ href = '', children, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) {
+  const isExternal = EXTERNAL_HREF.test(href);
+  if (isExternal) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+        {children}
+      </a>
+    );
+  }
+
+  // Normaliza enlaces relativos de MDX (ej: ./freepik-api-platform → /projects/freepik-api-platform)
+  const normalizedHref = href.startsWith('./') ? href.replace(/^\.\//, '/projects/') : href;
+
   return (
-    <a
-      href={href}
-      {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-      {...props}
-    />
+    <Link href={normalizedHref} {...props}>
+      {children}
+    </Link>
   );
 }
 

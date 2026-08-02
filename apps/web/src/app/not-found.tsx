@@ -30,11 +30,13 @@ const THEME_INIT_SCRIPT = `(function () {
  */
 export default function NotFound() {
   return (
-    <>
-      <meta name="robots" content="noindex" />
-      <title>404 — Nico Behm</title>
-      <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-      <main className="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center gap-4 bg-bg px-4 text-center text-fg">
+    <html lang="en" data-theme="dark" suppressHydrationWarning>
+      <head>
+        <meta name="robots" content="noindex" />
+        <title>404 — Nico Behm</title>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
+      <body className="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center gap-4 bg-bg px-4 text-center text-fg">
         <p className="text-sm text-fg-muted">404</p>
         <h1 className="text-2xl font-semibold">Page not found · Página no encontrada</h1>
         <div className="flex flex-col gap-2 text-sm">
@@ -51,7 +53,7 @@ export default function NotFound() {
             Versión en español →
           </a>
         </div>
-      </main>
-    </>
+      </body>
+    </html>
   );
 }
