@@ -51,13 +51,13 @@ export function SiteHeader() {
           {navLinks}
         </nav>
         <div className="hidden flex-wrap items-center gap-2 sm:flex">{switchers}</div>
-        <div className="flex flex-wrap items-center gap-2 sm:hidden">
-          {switchers}
+        <div className="flex w-full items-center justify-between gap-2 sm:hidden">
           <MobileMenu labels={{ open: t('menuOpen'), close: t('menuClose') }}>
             <nav aria-label={t('label')} className="flex flex-col gap-3 text-sm">
               {navLinks}
             </nav>
           </MobileMenu>
+          <div className="flex items-center gap-2">{switchers}</div>
         </div>
       </div>
     </header>
