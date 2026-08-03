@@ -11,6 +11,7 @@ if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_SITE_URL) 
 }
 
 const nextConfig: NextConfig = {
+  trailingSlash: true,
   // Modo 'export': estático puro (hosting compartido). Modo 'node': SSR + route handlers.
   ...(mode === 'export' ? { output: 'export' as const } : {}),
   // output:'export' no soporta el optimizador de imágenes server-side.

@@ -48,6 +48,7 @@ Read the matching skill in `skills/<name>/SKILL.md` BEFORE working on a matching
 | masonry, justified, galería de alturas variables, columnas responsive, waterfall | `masonry-layouts` |
 | refactor, readability, SOLID, module size, naming, single responsibility, code review | `code-principles` |
 | TypeScript, types, hooks rules, naming, imports, constants, test conventions | `code-conventions` |
+| deploy, ssh, scp, ftp, hosting, godaddy, cpanel, htaccess, env.php.local, producción | `deploy-shared-hosting` |
 
 ## Review lenses (agents)
 
