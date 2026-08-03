@@ -104,4 +104,3 @@ export function MediaKitDemo({ labels, strings }: Props) {
     </div>
   );
 }
-

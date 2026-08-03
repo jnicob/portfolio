@@ -19,17 +19,19 @@ export type RateLimitResult = {
  */
 export function sanitizeText(input: string): string {
   if (!input) return '';
-  return input
-    .trim()
-    // Elimina etiquetas <script> e <iframe> con su contenido
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
-    // Reemplaza caracteres HTML clave por sus entidades seguras
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;');
+  return (
+    input
+      .trim()
+      // Elimina etiquetas <script> e <iframe> con su contenido
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+      // Reemplaza caracteres HTML clave por sus entidades seguras
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;')
+  );
 }
 
 /**

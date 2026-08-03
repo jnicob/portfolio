@@ -148,7 +148,11 @@ export type GalleryItem = z.infer<typeof galleryItemSchema>;
 /** Esquema del Formulario de Contacto (nico-zod): Asunto y Email obligatorios, Teléfono opcional, Mensaje obligatorio, Honeypot trampas. */
 export const contactSchema = z
   .object({
-    subject: z.string().trim().min(3, 'El asunto debe tener al menos 3 caracteres').max(100, 'El asunto no puede superar 100 caracteres'),
+    subject: z
+      .string()
+      .trim()
+      .min(3, 'El asunto debe tener al menos 3 caracteres')
+      .max(100, 'El asunto no puede superar 100 caracteres'),
     email: z.string().trim().email('Introduce un email válido'),
     phone: z
       .string()
@@ -160,14 +164,20 @@ export const contactSchema = z
           const digitsCount = (val.match(/\d/g) || []).length;
           return validChars && digitsCount >= 6;
         },
-        { message: 'El teléfono debe contener al menos 6 dígitos y solo caracteres válidos (+, -, espacios, paréntesis)' },
+        {
+          message:
+            'El teléfono debe contener al menos 6 dígitos y solo caracteres válidos (+, -, espacios, paréntesis)',
+        },
       )
       .optional()
       .or(z.literal('')),
-    message: z.string().trim().min(10, 'El mensaje debe tener al menos 10 caracteres').max(2000, 'El mensaje no puede superar 2000 caracteres'),
+    message: z
+      .string()
+      .trim()
+      .min(10, 'El mensaje debe tener al menos 10 caracteres')
+      .max(2000, 'El mensaje no puede superar 2000 caracteres'),
     honeypot: z.string().max(0, 'Bot detected').optional().or(z.literal('')),
   })
   .strict();
 
 export type ContactInput = z.infer<typeof contactSchema>;
-

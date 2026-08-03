@@ -227,7 +227,9 @@
     font-size: 12px !important;
     color: #17171c !important;
   }
-  p, li, span {
+  p,
+  li,
+  span {
     color: #333338 !important;
   }
   a {
@@ -239,7 +241,9 @@
     padding: 0 !important;
   }
   /* Evitar saltos de página arbitrarios y permitir flujo natural continuo */
-  section, article, header {
+  section,
+  article,
+  header {
     break-inside: auto !important;
     page-break-inside: auto !important;
   }

@@ -43,8 +43,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "deploy.tar.gz"
-          target: "~/"
+          source: 'deploy.tar.gz'
+          target: '~/'
 
       - name: Extract & publish on remote server
         if: ${{ secrets.SSH_HOST != '' && secrets.SSH_USER != '' && secrets.SSH_PRIVATE_KEY != '' }}

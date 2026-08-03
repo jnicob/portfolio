@@ -35,7 +35,12 @@ const entries = [
     category: 'ai',
     tags: ['openapi', 'ai-agents', 'llm', 'api-design'],
   },
-  { name: 'Claude / Codex / Gemini', level: 3, category: 'ai', tags: ['claude', 'codex', 'gemini', 'llm'] },
+  {
+    name: 'Claude / Codex / Gemini',
+    level: 3,
+    category: 'ai',
+    tags: ['claude', 'codex', 'gemini', 'llm'],
+  },
   {
     name: 'Gateway APISIX',
     level: 3,

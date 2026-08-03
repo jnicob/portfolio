@@ -5,7 +5,11 @@ import { Link } from '@/i18n/navigation';
 const EXTERNAL_HREF = /^(https?:)?\/\//;
 
 /** Enlace `<a>` de contenido MDX: externo abre en pestaña nueva con rel seguro, interno usa Link de i18n. */
-function ExternalAwareLink({ href = '', children, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) {
+function ExternalAwareLink({
+  href = '',
+  children,
+  ...props
+}: AnchorHTMLAttributes<HTMLAnchorElement>) {
   const isExternal = EXTERNAL_HREF.test(href);
   if (isExternal) {
     return (

@@ -62,9 +62,13 @@ describe('ContactForm', () => {
 
     await user.click(screen.getByRole('button', { name: /Enviar mensaje/i }));
 
-    expect(await screen.findByText(/El asunto debe tener al menos 3 caracteres/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/El asunto debe tener al menos 3 caracteres/i),
+    ).toBeInTheDocument();
     expect(await screen.findByText(/Introduce un email válido/i)).toBeInTheDocument();
-    expect(await screen.findByText(/El mensaje debe tener al menos 10 caracteres/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/El mensaje debe tener al menos 10 caracteres/i),
+    ).toBeInTheDocument();
   });
 
   it('procesa el envío exitosamente cuando los campos son válidos', async () => {
@@ -75,7 +79,10 @@ describe('ContactForm', () => {
 
     await user.type(screen.getByLabelText(/Asunto/i), 'Consulta sobre desarrollo');
     await user.type(screen.getByLabelText(/Correo electrónico/i), 'cliente@ejemplo.com');
-    await user.type(screen.getByLabelText(/Mensaje/i), 'Hola Nico, queremos presupuestar un proyecto web.');
+    await user.type(
+      screen.getByLabelText(/Mensaje/i),
+      'Hola Nico, queremos presupuestar un proyecto web.',
+    );
 
     await user.click(screen.getByRole('button', { name: /Enviar mensaje/i }));
 
@@ -91,8 +98,14 @@ describe('ContactForm', () => {
 
     expect(await screen.findByText('¡Mensaje enviado!')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Ver CV' })).toHaveAttribute('href', '/cv');
-    expect(screen.getByRole('link', { name: 'Ver Proyectos' })).toHaveAttribute('href', '/projects');
-    expect(screen.getByRole('link', { name: /Conectar en LinkedIn/i })).toHaveAttribute('href', 'https://www.linkedin.com/in/nicobehm');
+    expect(screen.getByRole('link', { name: 'Ver Proyectos' })).toHaveAttribute(
+      'href',
+      '/projects',
+    );
+    expect(screen.getByRole('link', { name: /Conectar en LinkedIn/i })).toHaveAttribute(
+      'href',
+      'https://www.linkedin.com/in/nicobehm',
+    );
   });
 
   it('maneja el honeypot tramposo sin llamar al servidor', async () => {

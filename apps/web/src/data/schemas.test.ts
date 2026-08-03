@@ -451,12 +451,16 @@ describe('contactSchema (nico-zod)', () => {
     expect(contactSchema.safeParse({ ...validContact, phone: '' }).success).toBe(true);
     expect(contactSchema.safeParse({ ...validContact, phone: undefined }).success).toBe(true);
     expect(contactSchema.safeParse({ ...validContact, phone: '672814490' }).success).toBe(true);
-    expect(contactSchema.safeParse({ ...validContact, phone: '(011) 4567-8900' }).success).toBe(true);
+    expect(contactSchema.safeParse({ ...validContact, phone: '(011) 4567-8900' }).success).toBe(
+      true,
+    );
   });
 
   it('rechaza teléfonos con letras, pocos dígitos o formato inválido', () => {
     expect(contactSchema.safeParse({ ...validContact, phone: '12345' }).success).toBe(false);
-    expect(contactSchema.safeParse({ ...validContact, phone: 'telefono123456' }).success).toBe(false);
+    expect(contactSchema.safeParse({ ...validContact, phone: 'telefono123456' }).success).toBe(
+      false,
+    );
     expect(contactSchema.safeParse({ ...validContact, phone: '++34--999' }).success).toBe(false);
   });
 
@@ -478,4 +482,3 @@ describe('contactSchema (nico-zod)', () => {
     expect(contactSchema.safeParse({ ...validContact, unknownField: 123 }).success).toBe(false);
   });
 });
-

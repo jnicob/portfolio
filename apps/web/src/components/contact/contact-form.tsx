@@ -69,10 +69,7 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
   // Timestamp anti-bot: registra cuándo se cargó el formulario
   const [formStartTs] = useState(() => Date.now());
 
-  const handleFieldChange = (
-    field: keyof ContactInput,
-    value: string,
-  ) => {
+  const handleFieldChange = (field: keyof ContactInput, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
     // Limpia el error del campo al editar
@@ -133,8 +130,7 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
       }
 
       // Endpoint configurable: PHP en producción, Route Handler Node en dev local
-      const endpoint =
-        process.env.NEXT_PUBLIC_CONTACT_ENDPOINT || '/api/contact.php';
+      const endpoint = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT || '/api/contact.php';
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -167,9 +163,22 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
   return (
     <Card className="p-6 sm:p-8 max-w-2xl mx-auto shadow-sm border-border bg-surface">
       {status === 'success' ? (
-        <div className="flex flex-col items-center justify-center text-center py-6 gap-4" role="status">
+        <div
+          className="flex flex-col items-center justify-center text-center py-6 gap-4"
+          role="status"
+        >
           <div className="w-14 h-14 rounded-full bg-accent/10 text-accent flex items-center justify-center">
-            <svg viewBox="0 0 24 24" width={28} height={28} fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <svg
+              viewBox="0 0 24 24"
+              width={28}
+              height={28}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
@@ -227,8 +236,22 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
           </div>
 
           {serverError && (
-            <div className="p-4 rounded-control bg-danger/10 border border-danger/30 text-danger text-sm flex items-start gap-3" role="alert">
-              <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5" aria-hidden>
+            <div
+              className="p-4 rounded-control bg-danger/10 border border-danger/30 text-danger text-sm flex items-start gap-3"
+              role="alert"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width={18}
+                height={18}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="shrink-0 mt-0.5"
+                aria-hidden
+              >
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />
                 <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -254,7 +277,9 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
                 required
                 placeholder={labels.form.subjectPlaceholder}
                 value={formData.subject}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => handleFieldChange('subject', e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleFieldChange('subject', e.target.value)
+                }
                 onBlur={() => handleBlur('subject')}
                 aria-invalid={Boolean(errors.subject)}
                 aria-describedby={errors.subject ? 'contact-subject-error' : undefined}
@@ -263,11 +288,7 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
             </Field>
 
             {/* Campo Email */}
-            <Field
-              label={labels.form.emailLabel}
-              htmlFor="contact-email"
-              error={errors.email}
-            >
+            <Field label={labels.form.emailLabel} htmlFor="contact-email" error={errors.email}>
               <Input
                 id="contact-email"
                 name="email"
@@ -275,7 +296,9 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
                 required
                 placeholder={labels.form.emailPlaceholder}
                 value={formData.email}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => handleFieldChange('email', e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleFieldChange('email', e.target.value)
+                }
                 onBlur={() => handleBlur('email')}
                 aria-invalid={Boolean(errors.email)}
                 aria-describedby={errors.email ? 'contact-email-error' : undefined}
@@ -297,7 +320,9 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
               type="tel"
               placeholder={labels.form.phonePlaceholder}
               value={formData.phone || ''}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => handleFieldChange('phone', e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                handleFieldChange('phone', e.target.value)
+              }
               onBlur={() => handleBlur('phone')}
               aria-invalid={Boolean(errors.phone)}
               aria-describedby={errors.phone ? 'contact-phone-error' : undefined}
@@ -306,11 +331,7 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
           </Field>
 
           {/* Campo Mensaje */}
-          <Field
-            label={labels.form.messageLabel}
-            htmlFor="contact-message"
-            error={errors.message}
-          >
+          <Field label={labels.form.messageLabel} htmlFor="contact-message" error={errors.message}>
             <div className="flex flex-col gap-1">
               <Textarea
                 id="contact-message"
@@ -319,14 +340,18 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
                 rows={5}
                 placeholder={labels.form.messagePlaceholder}
                 value={formData.message}
-                onChange={(e: ChangeEvent<HTMLTextAreaElement>) => handleFieldChange('message', e.target.value)}
+                onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                  handleFieldChange('message', e.target.value)
+                }
                 onBlur={() => handleBlur('message')}
                 aria-invalid={Boolean(errors.message)}
                 aria-describedby={errors.message ? 'contact-message-error' : undefined}
                 disabled={status === 'submitting'}
               />
               <div className="text-right text-xs text-fg-muted">
-                {labels.form.charCount.replace('{current}', String(currentChars)).replace('{max}', String(maxChars))}
+                {labels.form.charCount
+                  .replace('{current}', String(currentChars))
+                  .replace('{max}', String(maxChars))}
               </div>
             </div>
           </Field>
@@ -339,9 +364,26 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
           >
             {status === 'submitting' ? (
               <span className="flex items-center gap-2">
-                <svg className="animate-spin -ml-1 mr-1 h-4 w-4 text-accent-fg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden>
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                <svg
+                  className="animate-spin -ml-1 mr-1 h-4 w-4 text-accent-fg"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  aria-hidden
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
                 </svg>
                 {labels.form.submitting}
               </span>

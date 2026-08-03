@@ -9,7 +9,8 @@ import {
 
 export async function POST(request: Request) {
   try {
-    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'anonymous';
+    const ip =
+      request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'anonymous';
 
     // 1. Rate-limiting check
     const rateLimit = checkRateLimit(ip);

@@ -78,4 +78,3 @@ export function ShareViewButton({ view, labels }: ShareViewButtonProps) {
     </div>
   );
 }
-

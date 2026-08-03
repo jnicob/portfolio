@@ -12,7 +12,10 @@ const entries = [
       es: 'Diseño e implementación end-to-end de la plataforma pública de APIs de Freepik/Magnific: generación de IA (imagen, vídeo, audio), stock, estado de tareas, billing/créditos por modelo, Landings públicas de productos API (/api, /image-generation, /image-upscaler, /api/pricing, /api/playground), spec OpenAPI, servidor FastAPI, gateway APISIX (rate limits, costes, API keys) y documentación.',
       en: "End-to-end design and implementation of Freepik/Magnific's public API platform: AI generation (image, video, audio), stock content, task status, model billing/credits, public API landings (/api, /image-generation, /image-upscaler, /api/pricing, /api/playground), OpenAPI specification, FastAPI server, APISIX gateway (rate limits, cost tracking, API keys) and documentation.",
     },
-    role: { es: 'Ingeniero de plataforma de APIs & Landings', en: 'API Platform & Landings Engineer' },
+    role: {
+      es: 'Ingeniero de plataforma de APIs & Landings',
+      en: 'API Platform & Landings Engineer',
+    },
     stack: ['openapi', 'fastapi', 'python', 'apisix', 'nextjs', 'react', 'rest-api'],
     links: {
       live: 'https://www.magnific.com/api',
