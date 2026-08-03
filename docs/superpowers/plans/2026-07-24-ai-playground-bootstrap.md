@@ -56,9 +56,11 @@ Fases del producto (roadmap que crea la Task 2): **A** bootstrap monorepo + skel
 ### Task 1: Scaffold del monorepo + tooling + CI
 
 **Files:**
+
 - Create: `package.json`, `pnpm-workspace.yaml`, `tsconfig.base.json`, `eslint.config.js`, `.prettierrc.json`, `.gitignore`, `.github/workflows/ci.yml`, `packages/core/{package.json,tsconfig.json,vitest.config.ts,src/index.ts}`, `apps/api/{package.json,tsconfig.json,vitest.config.ts,wrangler.toml,src/index.ts}`, `apps/web/` (scaffold Vite adaptado)
 
 **Interfaces:**
+
 - Produces: comandos raíz `pnpm run lint|format|typecheck|test|build` (recursivos); paquete `@ai-playground/core` importable desde web y api (`workspace:*`, exports a fuente TS); alias `@/` → `src/` dentro de web.
 
 - [ ] **Step 1: Raíz del monorepo**
@@ -375,9 +377,11 @@ git add -A && git commit -m "chore: scaffold monorepo pnpm (core + api Hono + we
 ### Task 2: Docs, AGENTS.md y skill adding-a-provider
 
 **Files:**
+
 - Create: `AGENTS.md`, `CLAUDE.md` (symlink), `STATUS.md`, `docs/specs/2026-07-24-ai-playground-design.md`, `docs/plans/2026-07-24-product-roadmap.md`, `skills/adding-a-provider/SKILL.md`, `.claude/skills` (symlink)
 
 **Interfaces:**
+
 - Consumes: spec §0 (fila Arquitectura AMENDED incluida) y §2 de `<portfolio>/docs/superpowers/specs/2026-07-24-phase-4-playground-design.md`.
 - Produces: fuentes de verdad del repo que citan las tasks siguientes.
 
@@ -412,11 +416,13 @@ git add -A && git commit -m "docs: spec, roadmap, AGENTS.md, STATUS.md y skill a
 ### Task 3: Tokens semánticos + i18n base en apps/web (TDD)
 
 **Files:**
+
 - Create: `apps/web/src/styles/globals.css`, `apps/web/src/i18n/messages.ts`, `apps/web/src/i18n/i18n.tsx`
 - Test: `apps/web/src/styles/tokens.test.ts`, `apps/web/src/i18n/i18n.test.tsx`
 - Modify: `apps/web/src/main.tsx` (importar globals.css), `apps/web/vite.config.ts` (plugin tailwind)
 
 **Interfaces:**
+
 - Produces: clases Tailwind `bg-bg`, `bg-surface`, `text-fg`, `text-muted`, `border-border`, `bg-accent`, `text-accent-fg`, `text-danger`; `useI18n(): { t(key: MessageKey): string; locale: Locale; setLocale(l: Locale): void }`; `<I18nProvider>`; tipo `MessageKey`.
 
 > Todos los comandos de esta task y las siguientes de web se ejecutan con `pnpm --filter @ai-playground/web run test -- <patrón>` o desde `apps/web/`.
@@ -432,8 +438,11 @@ import { readFileSync } from 'node:fs';
 const css = readFileSync(new URL('./globals.css', import.meta.url), 'utf8');
 
 function tokensOf(theme: 'dark' | 'light'): Record<string, string> {
-  const block = css.match(new RegExp(String.raw`:root\[data-theme='${theme}'\]\s*{([^}]*)}`))?.[1] ?? '';
-  return Object.fromEntries([...block.matchAll(/--([\w-]+):\s*(#[0-9a-fA-F]{6})/g)].map((m) => [m[1], m[2]]));
+  const block =
+    css.match(new RegExp(String.raw`:root\[data-theme='${theme}'\]\s*{([^}]*)}`))?.[1] ?? '';
+  return Object.fromEntries(
+    [...block.matchAll(/--([\w-]+):\s*(#[0-9a-fA-F]{6})/g)].map((m) => [m[1], m[2]]),
+  );
 }
 
 function luminance(hex: string): number {
@@ -535,7 +544,8 @@ describe('i18n', () => {
     expect(Object.keys(MESSAGES.es).sort()).toEqual(Object.keys(MESSAGES.en).sort());
   });
   it('todo labelKey del registry existe en el catálogo', () => {
-    for (const s of SERVICES) expect(MESSAGES.en[s.labelKey as MessageKey], s.labelKey).toBeDefined();
+    for (const s of SERVICES)
+      expect(MESSAGES.en[s.labelKey as MessageKey], s.labelKey).toBeDefined();
   });
   it('traduce y cambia de locale persistiendo en localStorage', () => {
     const { result } = renderHook(() => useI18n(), { wrapper });
@@ -673,11 +683,13 @@ git add -A && git commit -m "feat(web): tokens semánticos AA (dark/light) + i18
 ### Task 4: Core — tipos y registry (TDD)
 
 **Files:**
+
 - Create: `packages/core/src/types.ts`, `packages/core/src/registry.ts`
 - Modify: `packages/core/src/index.ts` (re-exports definitivos)
 - Test: `packages/core/src/registry.test.ts`
 
 **Interfaces:**
+
 - Produces (las usan Tasks 5–9): tipos `PlaygroundMode`, `AspectRatio`, `ProviderId`, `GenerationRequest`, `ApiTraceStep`, `GenerationResult`, `GenerationService`, `ServiceDefinition`, `ProviderDefinition`; constantes `ASPECT_RATIOS`, `SERVICES`, `PROVIDERS`; schema `generationRequestSchema`. Todo exportado desde `@ai-playground/core`.
 
 - [ ] **Step 1: Test del registry (falla)**
@@ -831,11 +843,13 @@ git add -A && git commit -m "feat(core): tipos, registry declarativo y schema de
 ### Task 5: Core — adaptador mock + catálogo (TDD)
 
 **Files:**
+
 - Create: `packages/core/src/adapters/mock-catalog.ts`, `packages/core/src/adapters/mock.ts`
 - Modify: `packages/core/src/index.ts` (export de `createMockAdapter`, `MOCK_CATALOG`)
 - Test: `packages/core/src/adapters/mock.test.ts`
 
 **Interfaces:**
+
 - Consumes: tipos y `ASPECT_RATIOS` de Task 4.
 - Produces: `createMockAdapter(options?: { latencyMs?: number }): GenerationService`; `MOCK_CATALOG: Record<AspectRatio, readonly string[]>` (paths `/mocks/*` servidos por apps/web).
 
@@ -1013,11 +1027,13 @@ git add -A && git commit -m "feat(core): adaptador mock determinista con catálo
 ### Task 6: Core — withMockFallback + factory (TDD)
 
 **Files:**
+
 - Create: `packages/core/src/with-mock-fallback.ts`, `packages/core/src/factory.ts`
 - Modify: `packages/core/src/index.ts` (exports)
 - Test: `packages/core/src/with-mock-fallback.test.ts`, `packages/core/src/factory.test.ts`
 
 **Interfaces:**
+
 - Consumes: `GenerationService`, `createMockAdapter`.
 - Produces: `withMockFallback(live, mock, timeoutMs?): GenerationService`; `createGenerationService(provider: ProviderId): GenerationService`.
 
@@ -1031,12 +1047,23 @@ import { withMockFallback } from './with-mock-fallback';
 import type { GenerationRequest, GenerationResult, GenerationService } from './types';
 
 const REQ: GenerationRequest = {
-  service: 'generate-image', provider: 'mock', prompt: 'x', model: 'flux',
-  aspectRatio: 'square_1_1', seed: 1,
+  service: 'generate-image',
+  provider: 'mock',
+  prompt: 'x',
+  model: 'flux',
+  aspectRatio: 'square_1_1',
+  seed: 1,
 };
 
 const result = (url: string): GenerationResult => ({
-  kind: 'image', url, width: 1, height: 1, provider: 'mock', degraded: false, elapsedMs: 0, apiTrace: [],
+  kind: 'image',
+  url,
+  width: 1,
+  height: 1,
+  provider: 'mock',
+  degraded: false,
+  elapsedMs: 0,
+  apiTrace: [],
 });
 
 const stub = (fn: GenerationService['generate']): GenerationService => ({ generate: fn });
@@ -1046,28 +1073,49 @@ afterEach(() => vi.useRealTimers());
 
 describe('withMockFallback', () => {
   it('devuelve el resultado live si responde', async () => {
-    const svc = withMockFallback(stub(async () => result('/live')), stub(async () => result('/mock')));
+    const svc = withMockFallback(
+      stub(async () => result('/live')),
+      stub(async () => result('/mock')),
+    );
     await expect(svc.generate(REQ)).resolves.toMatchObject({ url: '/live', degraded: false });
   });
   it('cae a mock con degraded=true si live lanza', async () => {
-    const svc = withMockFallback(stub(async () => { throw new Error('boom'); }), stub(async () => result('/mock')));
+    const svc = withMockFallback(
+      stub(async () => {
+        throw new Error('boom');
+      }),
+      stub(async () => result('/mock')),
+    );
     await expect(svc.generate(REQ)).resolves.toMatchObject({ url: '/mock', degraded: true });
   });
   it('cae a mock si live supera el timeout', async () => {
-    const never = stub((_r, signal) => new Promise((_res, rej) =>
-      signal?.addEventListener('abort', () => rej(new DOMException('Aborted', 'AbortError'))),
-    ));
-    const svc = withMockFallback(never, stub(async () => result('/mock')), 20_000);
+    const never = stub(
+      (_r, signal) =>
+        new Promise((_res, rej) =>
+          signal?.addEventListener('abort', () => rej(new DOMException('Aborted', 'AbortError'))),
+        ),
+    );
+    const svc = withMockFallback(
+      never,
+      stub(async () => result('/mock')),
+      20_000,
+    );
     const promise = svc.generate(REQ);
     await vi.advanceTimersByTimeAsync(20_001);
     await expect(promise).resolves.toMatchObject({ url: '/mock', degraded: true });
   });
   it('si el CALLER aborta, propaga el abort sin degradar', async () => {
-    const never = stub((_r, signal) => new Promise((_res, rej) =>
-      signal?.addEventListener('abort', () => rej(new DOMException('Aborted', 'AbortError'))),
-    ));
+    const never = stub(
+      (_r, signal) =>
+        new Promise((_res, rej) =>
+          signal?.addEventListener('abort', () => rej(new DOMException('Aborted', 'AbortError'))),
+        ),
+    );
     const controller = new AbortController();
-    const svc = withMockFallback(never, stub(async () => result('/mock')));
+    const svc = withMockFallback(
+      never,
+      stub(async () => result('/mock')),
+    );
     const promise = svc.generate(REQ, controller.signal);
     controller.abort();
     await expect(promise).rejects.toThrow(/abort/i);
@@ -1168,10 +1216,12 @@ git add -A && git commit -m "feat(core): withMockFallback con timeout/abort y fa
 ### Task 7: Web — hook useGeneration (TDD)
 
 **Files:**
+
 - Create: `apps/web/src/ui/use-generation.ts`
 - Test: `apps/web/src/ui/use-generation.test.ts`
 
 **Interfaces:**
+
 - Consumes: `GenerationService`, `GenerationRequest`, `GenerationResult` de `@ai-playground/core`.
 - Produces: `useGeneration(service): { state: GenerationState; generate(req: GenerationRequest): void }` con `GenerationState = { status: 'idle' } | { status: 'loading' } | { status: 'success'; result: GenerationResult } | { status: 'error'; message: string }` (exportado).
 
@@ -1186,13 +1236,23 @@ import { useGeneration } from './use-generation';
 import type { GenerationRequest, GenerationResult, GenerationService } from '@ai-playground/core';
 
 const REQ: GenerationRequest = {
-  service: 'generate-image', provider: 'mock', prompt: 'x', model: 'flux',
-  aspectRatio: 'square_1_1', seed: 1,
+  service: 'generate-image',
+  provider: 'mock',
+  prompt: 'x',
+  model: 'flux',
+  aspectRatio: 'square_1_1',
+  seed: 1,
 };
 
 const ok: GenerationResult = {
-  kind: 'image', url: '/mocks/square-1.webp', width: 1024, height: 1024,
-  provider: 'mock', degraded: false, elapsedMs: 5, apiTrace: [],
+  kind: 'image',
+  url: '/mocks/square-1.webp',
+  width: 1024,
+  height: 1024,
+  provider: 'mock',
+  degraded: false,
+  elapsedMs: 5,
+  apiTrace: [],
 };
 
 describe('useGeneration', () => {
@@ -1205,7 +1265,11 @@ describe('useGeneration', () => {
     await waitFor(() => expect(result.current.state.status).toBe('success'));
   });
   it('error con mensaje', async () => {
-    const service: GenerationService = { generate: async () => { throw new Error('boom'); } };
+    const service: GenerationService = {
+      generate: async () => {
+        throw new Error('boom');
+      },
+    };
     const { result } = renderHook(() => useGeneration(service));
     act(() => result.current.generate(REQ));
     await waitFor(() => expect(result.current.state).toEqual({ status: 'error', message: 'boom' }));
@@ -1217,7 +1281,9 @@ describe('useGeneration', () => {
         new Promise((resolve, reject) => {
           calls += 1;
           if (calls === 1)
-            signal?.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')));
+            signal?.addEventListener('abort', () =>
+              reject(new DOMException('Aborted', 'AbortError')),
+            );
           else resolve(ok);
         }),
     };
@@ -1263,7 +1329,10 @@ export function useGeneration(service: GenerationService) {
         })
         .catch((error: unknown) => {
           if (controller.signal.aborted) return;
-          setState({ status: 'error', message: error instanceof Error ? error.message : String(error) });
+          setState({
+            status: 'error',
+            message: error instanceof Error ? error.message : String(error),
+          });
         });
     },
     [service],
@@ -1290,10 +1359,12 @@ git add -A && git commit -m "feat(web): hook useGeneration con estado discrimina
 ### Task 8: Web — form, panel de resultado y traza API (TDD)
 
 **Files:**
+
 - Create: `apps/web/src/ui/generation-form.tsx`, `apps/web/src/ui/result-panel.tsx`, `apps/web/src/ui/api-trace-view.tsx`
 - Test: `apps/web/src/ui/generation-form.test.tsx`, `apps/web/src/ui/result-panel.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `useI18n`, `SERVICES`/`PROVIDERS`/tipos de `@ai-playground/core`, `GenerationState` de Task 7.
 - Produces: `<GenerationForm service provider busy onGenerate />` (`service: ServiceDefinition`, `provider: ProviderDefinition`, `busy: boolean`, `onGenerate(req: GenerationRequest): void`); `<ResultPanel state onRetry />` (`state: GenerationState`, `onRetry(): void`); `<ApiTraceView trace />` (`trace: ApiTraceStep[]`).
 
@@ -1317,19 +1388,27 @@ const provider = PROVIDERS[0]!;
 describe('GenerationForm', () => {
   it('envía la request con seed explícita', async () => {
     const onGenerate = vi.fn<(r: GenerationRequest) => void>();
-    wrap(<GenerationForm service={service} provider={provider} busy={false} onGenerate={onGenerate} />);
+    wrap(
+      <GenerationForm service={service} provider={provider} busy={false} onGenerate={onGenerate} />,
+    );
     await userEvent.type(screen.getByLabelText('Prompt'), 'a red fox');
     await userEvent.selectOptions(screen.getByLabelText('Model'), 'turbo');
     await userEvent.type(screen.getByLabelText('Seed'), '42');
     await userEvent.click(screen.getByRole('button', { name: 'Generate' }));
     expect(onGenerate).toHaveBeenCalledWith({
-      service: 'generate-image', provider: 'mock', prompt: 'a red fox',
-      model: 'turbo', aspectRatio: 'square_1_1', seed: 42,
+      service: 'generate-image',
+      provider: 'mock',
+      prompt: 'a red fox',
+      model: 'turbo',
+      aspectRatio: 'square_1_1',
+      seed: 42,
     });
   });
   it('sin seed, resuelve una aleatoria (0..999999)', async () => {
     const onGenerate = vi.fn<(r: GenerationRequest) => void>();
-    wrap(<GenerationForm service={service} provider={provider} busy={false} onGenerate={onGenerate} />);
+    wrap(
+      <GenerationForm service={service} provider={provider} busy={false} onGenerate={onGenerate} />,
+    );
     await userEvent.type(screen.getByLabelText('Prompt'), 'x');
     await userEvent.click(screen.getByRole('button', { name: 'Generate' }));
     const seed = onGenerate.mock.calls[0]?.[0]?.seed;
@@ -1374,8 +1453,13 @@ const wrap = (state: GenerationState, onRetry = vi.fn()) =>
 const success: GenerationState = {
   status: 'success',
   result: {
-    kind: 'image', url: '/mocks/square-1.webp', width: 1024, height: 1024,
-    provider: 'mock', degraded: false, elapsedMs: 12,
+    kind: 'image',
+    url: '/mocks/square-1.webp',
+    width: 1024,
+    height: 1024,
+    provider: 'mock',
+    degraded: false,
+    elapsedMs: 12,
     apiTrace: [{ kind: 'status', state: 'IN_PROGRESS', taskId: 'task_1' }],
   },
 };
@@ -1397,7 +1481,10 @@ describe('ResultPanel', () => {
   });
   it('success: imagen + badge de origen + tab API con la traza', async () => {
     wrap(success);
-    expect(screen.getByRole('img', { name: 'Generated image' })).toHaveAttribute('src', '/mocks/square-1.webp');
+    expect(screen.getByRole('img', { name: 'Generated image' })).toHaveAttribute(
+      'src',
+      '/mocks/square-1.webp',
+    );
     expect(screen.getByText('mock')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('tab', { name: 'API' }));
     expect(screen.getByText(/IN_PROGRESS/)).toBeInTheDocument();
@@ -1460,42 +1547,66 @@ export function GenerationForm({ service, provider, busy, onGenerate }: Props) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <label htmlFor="prompt" className="text-sm text-muted">{t('form.prompt')}</label>
+        <label htmlFor="prompt" className="text-sm text-muted">
+          {t('form.prompt')}
+        </label>
         <textarea
-          id="prompt" rows={4} value={prompt} onChange={(e) => setPrompt(e.target.value)}
+          id="prompt"
+          rows={4}
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
           className="rounded-md border border-border bg-surface p-2 text-fg"
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor="model" className="text-sm text-muted">{t('form.model')}</label>
+        <label htmlFor="model" className="text-sm text-muted">
+          {t('form.model')}
+        </label>
         <select
-          id="model" value={model} onChange={(e) => setModel(e.target.value)}
+          id="model"
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
           className="rounded-md border border-border bg-surface p-2 text-fg"
         >
-          {models.map((m) => <option key={m}>{m}</option>)}
-        </select>
-      </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="aspect" className="text-sm text-muted">{t('form.aspectRatio')}</label>
-        <select
-          id="aspect" value={aspectRatio} onChange={(e) => setAspectRatio(e.target.value as AspectRatio)}
-          className="rounded-md border border-border bg-surface p-2 text-fg"
-        >
-          {(Object.keys(ASPECT_RATIOS) as AspectRatio[]).map((ar) => (
-            <option key={ar} value={ar}>{t(`aspect.${ar}`)}</option>
+          {models.map((m) => (
+            <option key={m}>{m}</option>
           ))}
         </select>
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor="seed" className="text-sm text-muted">{t('form.seed')}</label>
+        <label htmlFor="aspect" className="text-sm text-muted">
+          {t('form.aspectRatio')}
+        </label>
+        <select
+          id="aspect"
+          value={aspectRatio}
+          onChange={(e) => setAspectRatio(e.target.value as AspectRatio)}
+          className="rounded-md border border-border bg-surface p-2 text-fg"
+        >
+          {(Object.keys(ASPECT_RATIOS) as AspectRatio[]).map((ar) => (
+            <option key={ar} value={ar}>
+              {t(`aspect.${ar}`)}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="flex flex-col gap-1">
+        <label htmlFor="seed" className="text-sm text-muted">
+          {t('form.seed')}
+        </label>
         <div className="flex gap-2">
           <input
-            id="seed" type="number" min={0} max={MAX_SEED} value={seedInput}
+            id="seed"
+            type="number"
+            min={0}
+            max={MAX_SEED}
+            value={seedInput}
             onChange={(e) => setSeedInput(e.target.value)}
             className="w-32 rounded-md border border-border bg-surface p-2 text-fg"
           />
           <button
-            type="button" onClick={() => setSeedInput(String(randomSeed()))}
+            type="button"
+            onClick={() => setSeedInput(String(randomSeed()))}
             className="rounded-md border border-border px-3 text-sm text-muted"
           >
             {t('form.seed.random')}
@@ -1503,7 +1614,8 @@ export function GenerationForm({ service, provider, busy, onGenerate }: Props) {
         </div>
       </div>
       <button
-        type="submit" disabled={busy}
+        type="submit"
+        disabled={busy}
         className="rounded-md bg-accent px-4 py-2 font-medium text-accent-fg disabled:opacity-60"
       >
         {busy ? t('form.generating') : t('form.generate')}
@@ -1520,10 +1632,14 @@ import type { ApiTraceStep } from '@ai-playground/core';
 
 const label = (step: ApiTraceStep): string => {
   switch (step.kind) {
-    case 'request': return `${step.method} ${step.url}`;
-    case 'status': return `status: ${step.state}`;
-    case 'poll': return `${step.method} ${step.url}`;
-    case 'completed': return 'response';
+    case 'request':
+      return `${step.method} ${step.url}`;
+    case 'status':
+      return `status: ${step.state}`;
+    case 'poll':
+      return `${step.method} ${step.url}`;
+    case 'completed':
+      return 'response';
   }
 };
 
@@ -1534,7 +1650,11 @@ export function ApiTraceView({ trace }: { trace: ApiTraceStep[] }) {
         <li key={i}>
           <p className="font-mono text-xs text-muted">{label(step)}</p>
           <pre className="overflow-x-auto rounded-md border border-border bg-surface p-3 font-mono text-xs text-fg">
-            {JSON.stringify('body' in step ? step.body : 'response' in step ? step.response : step, null, 2)}
+            {JSON.stringify(
+              'body' in step ? step.body : 'response' in step ? step.response : step,
+              null,
+              2,
+            )}
           </pre>
         </li>
       ))}
@@ -1568,7 +1688,10 @@ export function ResultPanel({ state, onRetry }: Props) {
       <div role="tablist" className="flex gap-1 border-b border-border">
         {tabs.map(({ id, label }) => (
           <button
-            key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}
+            key={id}
+            role="tab"
+            aria-selected={tab === id}
+            onClick={() => setTab(id)}
             className="px-3 py-1.5 text-sm text-muted aria-selected:border-b-2 aria-selected:border-accent aria-selected:text-fg"
           >
             {label}
@@ -1586,8 +1709,13 @@ export function ResultPanel({ state, onRetry }: Props) {
           )}
           {state.status === 'error' && (
             <div role="alert" className="flex flex-col items-start gap-2">
-              <p className="text-danger">{t('result.error')} ({state.message})</p>
-              <button onClick={onRetry} className="rounded-md border border-border px-3 py-1.5 text-fg">
+              <p className="text-danger">
+                {t('result.error')} ({state.message})
+              </p>
+              <button
+                onClick={onRetry}
+                className="rounded-md border border-border px-3 py-1.5 text-fg"
+              >
                 {t('result.retry')}
               </button>
             </div>
@@ -1595,7 +1723,10 @@ export function ResultPanel({ state, onRetry }: Props) {
           {result?.kind === 'image' && (
             <figure className="flex flex-col gap-2">
               <img
-                src={result.url} alt={t('result.alt')} width={result.width} height={result.height}
+                src={result.url}
+                alt={t('result.alt')}
+                width={result.width}
+                height={result.height}
                 className="max-w-full rounded-md border border-border"
               />
               <figcaption className="font-mono text-xs text-muted">
@@ -1631,11 +1762,13 @@ git add -A && git commit -m "feat(web): GenerationForm, ResultPanel con tabs Pre
 ### Task 9: Web — App integrada + assets mock + verificación visual
 
 **Files:**
+
 - Modify: `apps/web/src/app.tsx`
 - Create: `apps/web/public/mocks/*.webp` (6 imágenes)
 - Test: `apps/web/src/app.test.tsx`
 
 **Interfaces:**
+
 - Consumes: todo lo anterior. `App` acepta `service?: GenerationService` (inyección para tests; default `createGenerationService('mock')`).
 
 - [ ] **Step 1: Copiar assets desde el portfolio**
@@ -1670,7 +1803,10 @@ describe('App', () => {
   });
   it('el rail lista los servicios del registry y marca el activo', () => {
     render(<App service={createMockAdapter({ latencyMs: 0 })} />);
-    expect(screen.getByRole('button', { name: 'Generate image' })).toHaveAttribute('aria-current', 'true');
+    expect(screen.getByRole('button', { name: 'Generate image' })).toHaveAttribute(
+      'aria-current',
+      'true',
+    );
   });
 });
 ```
@@ -1720,12 +1856,18 @@ function Playground({ service }: { service: GenerationService }) {
       <header className="flex items-center justify-between border-b border-border px-6 py-3">
         <h1 className="font-semibold">{t('app.title')}</h1>
         <div className="flex gap-2">
-          <button onClick={() => setLocale(locale === 'es' ? 'en' : 'es')}
-            className="rounded-md border border-border px-2 py-1 text-sm text-muted" aria-label="Locale">
+          <button
+            onClick={() => setLocale(locale === 'es' ? 'en' : 'es')}
+            className="rounded-md border border-border px-2 py-1 text-sm text-muted"
+            aria-label="Locale"
+          >
             {locale.toUpperCase()}
           </button>
-          <button onClick={toggleTheme}
-            className="rounded-md border border-border px-2 py-1 text-sm text-muted" aria-label="Theme">
+          <button
+            onClick={toggleTheme}
+            className="rounded-md border border-border px-2 py-1 text-sm text-muted"
+            aria-label="Theme"
+          >
             ◐
           </button>
         </div>
@@ -1734,7 +1876,8 @@ function Playground({ service }: { service: GenerationService }) {
         <nav aria-label="Services" className="flex flex-col gap-1">
           {SERVICES.map((s) => (
             <button
-              key={s.id} onClick={() => setActiveService(s.id)}
+              key={s.id}
+              onClick={() => setActiveService(s.id)}
               aria-current={s.id === activeService ? 'true' : undefined}
               className="rounded-md px-3 py-2 text-left text-sm text-muted aria-[current]:bg-surface aria-[current]:text-fg"
             >
@@ -1743,7 +1886,10 @@ function Playground({ service }: { service: GenerationService }) {
           ))}
         </nav>
         <GenerationForm
-          service={serviceDef} provider={provider} busy={state.status === 'loading'} onGenerate={handleGenerate}
+          service={serviceDef}
+          provider={provider}
+          busy={state.status === 'loading'}
+          onGenerate={handleGenerate}
         />
         <ResultPanel
           state={state}
@@ -1788,10 +1934,12 @@ git add -A && git commit -m "feat(web): App integrada — rail, toggles y flujo 
 ### Task 10: API — endpoint /health (TDD)
 
 **Files:**
+
 - Modify: `apps/api/src/index.ts`
 - Test: `apps/api/src/index.test.ts`
 
 **Interfaces:**
+
 - Produces: `GET /health` → `200 {"status":"ok","service":"ai-playground-api"}`. Valida el toolchain Hono+Wrangler para la fase B (API task-based).
 
 - [ ] **Step 1: Test (falla)**
@@ -1847,6 +1995,7 @@ git add -A && git commit -m "feat(api): esqueleto Hono con /health y build wrang
 ### Task 11: Repo en GitHub + CI verde
 
 **Files:**
+
 - Modify: `STATUS.md` del repo nuevo (fase A hecha)
 
 - [ ] **Step 1: Crear repo remoto y push**
@@ -1874,10 +2023,12 @@ git add STATUS.md && git commit -m "docs: cierra fase A en STATUS" && git push
 ### Task 12: Exportación a ai-config (agentes generalizados + evaluación de skills)
 
 **Files:**
+
 - Create (en `~/workspace/ai-config`): agentes `design-reviewer` y `qa-a11y-perf` generalizados; skills nuevas SOLO si la evaluación las justifica
 - Modify: índice/README de ai-config donde corresponda (inspeccionar su estructura primero)
 
 **Interfaces:**
+
 - Consumes: `<portfolio>/agents/design-reviewer.md`, `<portfolio>/agents/qa-a11y-perf.md`, `~/workspace/freepik/fc-central-payments-api/.claude/skills/*` (SOLO lectura para evaluación clean-room).
 
 - [ ] **Step 1: Inspeccionar estructura de ai-config**

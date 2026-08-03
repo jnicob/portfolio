@@ -537,7 +537,7 @@ describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
         before={<img src="/b.png" alt="b" />}
         after={<img src="/a.png" alt="" />}
         mode="hover"
-      />
+      />,
     );
     const slider = screen.getByRole('slider');
     const container = slider.closest('.mk-compare') as HTMLElement;
@@ -553,7 +553,7 @@ describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
         before={<img src="/b.png" alt="b" />}
         after={<img src="/a.png" alt="" />}
         mode="drag"
-      />
+      />,
     );
     expect(container).not.toHaveAttribute('data-paused');
 
@@ -565,11 +565,18 @@ describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
         after={<img src="/a.png" alt="" />}
         mode="drag"
         onPositionChange={onPositionChange}
-      />
+      />,
     );
 
     vi.spyOn(container, 'hasPointerCapture').mockReturnValue(true);
-    const eventInit = { clientX: 50, clientY: 50, button: 0, isPrimary: true, pointerId: 2, pointerType: 'mouse' };
+    const eventInit = {
+      clientX: 50,
+      clientY: 50,
+      button: 0,
+      isPrimary: true,
+      pointerId: 2,
+      pointerType: 'mouse',
+    };
     fireEvent.pointerDown(container, eventInit);
     fireEvent.pointerMove(container, { ...eventInit, clientX: 70 });
     expect(onPositionChange).toHaveBeenCalledWith(35);

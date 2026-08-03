@@ -96,4 +96,3 @@ NEXT_OUTPUT_MODE=node pnpm run build
 ## 📄 License
 
 MIT © [Nico Behm](https://github.com/jnicob)
-

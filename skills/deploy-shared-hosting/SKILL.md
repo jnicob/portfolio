@@ -81,6 +81,8 @@ ssh montecervino@montecervino.net "
   curl -sI https://jnicob.dev/api/contact.php | head -1
 "
 ```
+
 **Resultado Esperado**:
+
 - Rutas públicas: `HTTP/2 200`
 - Endpoint API PHP: `HTTP/2 405` (método GET no permitido, `allow: POST, OPTIONS`)

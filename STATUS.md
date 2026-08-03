@@ -5,6 +5,7 @@
 ## Ahora
 
 **Plan de Mejora para Showcase en Móviles (Próxima Sesión)**
+
 - Optimización UX móvil para `/showcase` y `@nicobehm/media-kit`.
 
 ## Hecho
