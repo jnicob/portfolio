@@ -62,7 +62,6 @@ export async function POST(request: Request) {
     // 5. Envío seguro de email (Resend / Web3Forms / Webhook / Log dev)
     const destinationEmail = process.env.CONTACT_DESTINATION_EMAIL || 'j.nico.b@gmail.com';
     const resendApiKey = process.env.RESEND_API_KEY;
-    const web3FormsKey = process.env.WEB3FORMS_KEY;
     const webhookUrl = process.env.CONTACT_WEBHOOK;
 
     let emailSent = false;
@@ -100,27 +99,6 @@ export async function POST(request: Request) {
         }
       } catch (err) {
         console.error('[Contact API] Excepción al llamar a Resend API:', err);
-      }
-    }
-
-    // B) Envío vía Web3Forms (si está configurada la clave Web3Forms)
-    if (!emailSent && web3FormsKey) {
-      try {
-        const w3fResponse = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            access_key: web3FormsKey,
-            subject: `[Portfolio Contacto] ${cleanSubject}`,
-            from_name: cleanEmail,
-            email: cleanEmail,
-            phone: cleanPhone,
-            message: cleanMessage,
-          }),
-        });
-        if (w3fResponse.ok) emailSent = true;
-      } catch (err) {
-        console.error('[Contact API] Excepción al llamar a Web3Forms:', err);
       }
     }
 

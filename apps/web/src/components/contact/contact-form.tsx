@@ -3,6 +3,7 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { contactSchema, type ContactInput } from '@/data/schemas';
 import { profile } from '@/data/profile';
+import { Link } from '@/i18n/navigation';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -178,18 +179,18 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
           <div className="w-full max-w-md mt-4 pt-6 border-t border-border flex flex-col items-center gap-3">
             <p className="text-sm font-medium text-fg">{labels.status.exploreTitle}</p>
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <a
+              <Link
                 href="/cv"
                 className="inline-flex h-9 items-center justify-center rounded-control border border-border bg-surface px-4 text-sm font-medium text-fg hover:border-fg-muted transition-colors"
               >
                 {labels.status.viewCv}
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/projects"
                 className="inline-flex h-9 items-center justify-center rounded-control border border-border bg-surface px-4 text-sm font-medium text-fg hover:border-fg-muted transition-colors"
               >
                 {labels.status.viewProjects}
-              </a>
+              </Link>
               <a
                 href={profile.links.linkedin}
                 target="_blank"

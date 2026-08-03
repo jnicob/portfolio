@@ -3,6 +3,12 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { ContactForm, type ContactFormLabels } from './contact-form';
 
+vi.mock('@/i18n/navigation', () => ({
+  Link: (props: Record<string, unknown>) => <a {...props} />,
+  usePathname: () => '/',
+  useRouter: () => ({ replace: vi.fn() }),
+}));
+
 const MOCK_LABELS: ContactFormLabels = {
   badge: 'Hablemos',
   title: 'Contacto',
