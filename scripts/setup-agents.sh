@@ -73,7 +73,7 @@ validate() {
     tmp="$(mktemp)"
     trap 'rm -f "$tmp"' RETURN
     generate_copilot_to "$tmp"
-    if ! diff -q "$tmp" "$COPILOT_FILE" >/dev/null; then
+    if ! diff -qw "$tmp" "$COPILOT_FILE" >/dev/null; then
       echo "FAIL: $COPILOT_FILE is stale (run --copilot)" >&2
       ok=1
     fi
