@@ -41,13 +41,23 @@ describe('SpotlightReveal', () => {
     expect(root).not.toHaveAttribute('data-active');
   });
 
-  it('el puntero posiciona la lente', () => {
+  it('el puntero posiciona la lente en pointerMove', () => {
     render(<SpotlightReveal base={<div />} reveal={<div />} label="S" />);
     const root = screen.getByLabelText('S');
     mockRect(root, { left: 0, top: 0, width: 200, height: 100 });
     fireEvent.pointerMove(root, { clientX: 100, clientY: 25 });
     expect(root.style.getPropertyValue('--mk-spot-x')).toBe('50%');
     expect(root.style.getPropertyValue('--mk-spot-y')).toBe('25%');
+  });
+
+  it('el toque/presión táctil en pointerDown activa y posiciona la lente inmediatamente', () => {
+    render(<SpotlightReveal base={<div />} reveal={<div />} label="S" />);
+    const root = screen.getByLabelText('S');
+    mockRect(root, { left: 0, top: 0, width: 200, height: 100 });
+    fireEvent.pointerDown(root, { clientX: 100, clientY: 50 });
+    expect(root.style.getPropertyValue('--mk-spot-x')).toBe('50%');
+    expect(root.style.getPropertyValue('--mk-spot-y')).toBe('50%');
+    expect(root).toHaveAttribute('data-active');
   });
 
   it('Home centra la lente y la activa', () => {

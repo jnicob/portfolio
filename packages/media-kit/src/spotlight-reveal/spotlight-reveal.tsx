@@ -115,6 +115,7 @@ export function SpotlightReveal({
       aria-roledescription="spotlight"
       data-active={active || undefined}
       style={style}
+      onPointerDown={onPointerMove}
       onPointerMove={onPointerMove}
       onPointerLeave={() => setActive(false)}
       onFocus={() => setActive(true)}

@@ -42,7 +42,7 @@ export function SiteHeader() {
   );
 
   return (
-    <header className="no-print border-b border-border">
+    <header className="relative no-print border-b border-border">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3">
         <nav
           aria-label={t('label')}

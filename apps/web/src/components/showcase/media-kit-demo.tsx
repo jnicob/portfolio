@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import {
   CompareSlider,
   type CompareSliderExpand,
@@ -15,8 +16,8 @@ import { PortraitCompareDemo } from './portrait-compare-demo';
  * descargar siempre el asset completo.
  */
 const LANDSCAPE_SRC_SET = '/demo/landscape-840.webp 840w, /demo/landscape.webp 1600w';
-/** Dos columnas desde `md` (grid gap-4): cada imagen ocupa ~50% menos el gap; una sola columna debajo. */
-const GRID_SIZES = '(min-width: 768px) calc(50vw - 2rem), calc(100vw - 3rem)';
+/** Ancho de imagen según viewport. */
+const GRID_SIZES = '(min-width: 768px) calc(100vw - 4rem), calc(100vw - 3rem)';
 
 export type MediaKitDemoStrings = {
   beforeAfterAlt: string;
@@ -37,77 +38,63 @@ type Props = {
 };
 
 export function MediaKitDemo({ labels, strings }: Props) {
+  const [hoverMode, setHoverMode] = useState(true);
+
   const expand: CompareSliderExpand = {
     lightboxLabel: strings.compareLightboxLabel,
     buttonLabel: strings.fullScreen,
     lightboxLabels: labels,
   };
 
+  const mode = hoverMode ? 'hover' : 'drag';
+  const label = hoverMode ? strings.hoverCompareLabel : strings.dragCompareLabel;
+  const caption = hoverMode ? strings.hoverCaption : strings.dragCaption;
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid gap-4 md:grid-cols-2">
-        <figure className="flex flex-col gap-2">
-          <CompareSlider
-            before={
-              <img
-                src="/demo/landscape.webp"
-                srcSet={LANDSCAPE_SRC_SET}
-                sizes={GRID_SIZES}
-                alt={strings.beforeAfterAlt}
-                width={1600}
-                height={900}
-                loading="lazy"
-                style={{ filter: 'saturate(0.12) contrast(0.92) brightness(0.96)' }}
-              />
-            }
-            after={
-              <img
-                src="/demo/landscape.webp"
-                srcSet={LANDSCAPE_SRC_SET}
-                sizes={GRID_SIZES}
-                alt=""
-                width={1600}
-                height={900}
-                loading="lazy"
-              />
-            }
-            label={strings.dragCompareLabel}
-            expand={expand}
-          />
-          <figcaption className="text-sm text-fg-muted">{strings.dragCaption}</figcaption>
-        </figure>
-        <figure className="flex flex-col gap-2">
-          <CompareSlider
-            mode="hover"
-            before={
-              <img
-                src="/demo/landscape.webp"
-                srcSet={LANDSCAPE_SRC_SET}
-                sizes={GRID_SIZES}
-                alt={strings.beforeAfterAlt}
-                width={1600}
-                height={900}
-                loading="lazy"
-                style={{ filter: 'saturate(0.12) contrast(0.92) brightness(0.96)' }}
-              />
-            }
-            after={
-              <img
-                src="/demo/landscape.webp"
-                srcSet={LANDSCAPE_SRC_SET}
-                sizes={GRID_SIZES}
-                alt=""
-                width={1600}
-                height={900}
-                loading="lazy"
-              />
-            }
-            label={strings.hoverCompareLabel}
-            expand={expand}
-          />
-          <figcaption className="text-sm text-fg-muted">{strings.hoverCaption}</figcaption>
-        </figure>
-      </div>
+      <figure className="flex flex-col gap-2">
+        <div className="flex items-center justify-between gap-4">
+          <label className="hidden items-center gap-2 text-sm text-fg-muted cursor-pointer [@media(hover:hover)]:flex">
+            <input
+              type="checkbox"
+              checked={hoverMode}
+              onChange={(e) => setHoverMode(e.target.checked)}
+              className="rounded border-border text-accent focus:ring-ring"
+            />
+            <span>{strings.hoverCompareLabel}</span>
+          </label>
+        </div>
+        <CompareSlider
+          key={mode}
+          mode={mode}
+          before={
+            <img
+              src="/demo/landscape.webp"
+              srcSet={LANDSCAPE_SRC_SET}
+              sizes={GRID_SIZES}
+              alt={strings.beforeAfterAlt}
+              width={1600}
+              height={900}
+              loading="lazy"
+              style={{ filter: 'saturate(0.12) contrast(0.92) brightness(0.96)' }}
+            />
+          }
+          after={
+            <img
+              src="/demo/landscape.webp"
+              srcSet={LANDSCAPE_SRC_SET}
+              sizes={GRID_SIZES}
+              alt=""
+              width={1600}
+              height={900}
+              loading="lazy"
+            />
+          }
+          label={label}
+          expand={expand}
+        />
+        <figcaption className="text-sm text-fg-muted">{caption}</figcaption>
+      </figure>
       <PortraitCompareDemo
         beforeAlt={strings.portraitBeforeAlt}
         compareLabel={strings.portraitCompareLabel}
@@ -117,3 +104,4 @@ export function MediaKitDemo({ labels, strings }: Props) {
     </div>
   );
 }
+

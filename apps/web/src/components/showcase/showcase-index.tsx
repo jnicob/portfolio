@@ -1,6 +1,7 @@
 'use client';
 
 import { FilterableList, type FilterableItem } from '@/components/ui/filterable-list';
+import { Select } from '@/components/ui/select';
 
 export type ShowcaseIndexProps = {
   items: readonly FilterableItem[];
@@ -23,13 +24,26 @@ export function ShowcaseIndex({
   selectedId,
 }: ShowcaseIndexProps) {
   return (
-    <FilterableList
-      items={items}
-      inputLabel={inputLabel}
-      emptyMessage={emptyMessage}
-      placeholder={placeholder}
-      selectedId={selectedId}
-      onSelect={(item) => onSelect(item.id)}
-    />
+    <>
+      <div className="sm:hidden">
+        <Select
+          aria-label={inputLabel}
+          value={selectedId ?? items[0]?.id ?? ''}
+          onChange={(e) => onSelect(e.target.value)}
+          options={items.map((item) => ({ value: item.id, label: item.label }))}
+        />
+      </div>
+      <div className="hidden sm:block">
+        <FilterableList
+          items={items}
+          inputLabel={inputLabel}
+          emptyMessage={emptyMessage}
+          placeholder={placeholder}
+          selectedId={selectedId}
+          onSelect={(item) => onSelect(item.id)}
+        />
+      </div>
+    </>
   );
 }
+

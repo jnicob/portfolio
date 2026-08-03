@@ -10,7 +10,7 @@ import {
 export async function POST(request: Request) {
   try {
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'anonymous';
-    
+
     // 1. Rate-limiting check
     const rateLimit = checkRateLimit(ip);
     if (!rateLimit.allowed) {
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     const cleanPhone = phone ? sanitizeHeader(phone) : '';
     const cleanMessage = sanitizeText(message);
 
-    // 5. Envío seguro de email (Resend / Web3Forms / Webhook / Log dev)
+    // 5. Envío seguro de email (Resend / Webhook / Log dev)
     const destinationEmail = process.env.CONTACT_DESTINATION_EMAIL || 'j.nico.b@gmail.com';
     const resendApiKey = process.env.RESEND_API_KEY;
     const webhookUrl = process.env.CONTACT_WEBHOOK;

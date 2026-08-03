@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { NextIntlClientProvider, useTranslations } from 'next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ShowcaseView, type ShowcaseSection, type ShowcaseViewLabels } from './showcase-view';
@@ -48,7 +48,8 @@ describe('ShowcaseView', () => {
 
   it('seleccionar una sección en el índice muestra solo esa y lo anuncia', () => {
     renderView();
-    fireEvent.click(screen.getByRole('option', { name: /card/i }));
+    const listbox = screen.getByRole('listbox');
+    fireEvent.click(within(listbox).getByRole('option', { name: /card/i }));
     expect(screen.queryByLabelText('Button')).toBeNull();
     expect(screen.getByLabelText('Card')).toBeInTheDocument();
     expect(screen.getByRole('status')).toHaveTextContent(/card/i);
@@ -56,8 +57,9 @@ describe('ShowcaseView', () => {
 
   it('la opción "Todas" restaura todo', () => {
     renderView();
-    fireEvent.click(screen.getByRole('option', { name: /card/i }));
-    fireEvent.click(screen.getByRole('option', { name: /todas/i }));
+    const listbox = screen.getByRole('listbox');
+    fireEvent.click(within(listbox).getByRole('option', { name: /card/i }));
+    fireEvent.click(within(listbox).getByRole('option', { name: /todas/i }));
     expect(screen.getByLabelText('Button')).toBeInTheDocument();
     expect(screen.getByLabelText('Card')).toBeInTheDocument();
     expect(screen.getByRole('status')).toHaveTextContent(LABELS.showingAll);
@@ -65,10 +67,11 @@ describe('ShowcaseView', () => {
 
   it('refleja el filtro en el hash de la URL para deep-linking', () => {
     renderView();
-    fireEvent.click(screen.getByRole('option', { name: /card/i }));
+    const listbox = screen.getByRole('listbox');
+    fireEvent.click(within(listbox).getByRole('option', { name: /card/i }));
     expect(window.location.hash).toBe('#card');
 
-    fireEvent.click(screen.getByRole('option', { name: /todas/i }));
+    fireEvent.click(within(listbox).getByRole('option', { name: /todas/i }));
     expect(window.location.hash).toBe('');
   });
 
@@ -78,11 +81,12 @@ describe('ShowcaseView', () => {
   it('al restaurar "Todas", conserva el query string de la URL (no solo el pathname)', () => {
     window.history.pushState({}, '', '/es/showcase?foo=bar');
     renderView();
+    const listbox = screen.getByRole('listbox');
 
-    fireEvent.click(screen.getByRole('option', { name: /card/i }));
+    fireEvent.click(within(listbox).getByRole('option', { name: /card/i }));
     expect(window.location.hash).toBe('#card');
 
-    fireEvent.click(screen.getByRole('option', { name: /todas/i }));
+    fireEvent.click(within(listbox).getByRole('option', { name: /todas/i }));
     expect(window.location.hash).toBe('');
     expect(window.location.search).toBe('?foo=bar');
     expect(window.location.pathname).toBe('/es/showcase');
@@ -116,8 +120,9 @@ describe('ShowcaseView', () => {
     renderView();
     // Sin ninguna clase "hidden" bloqueándolo, el listbox del índice es alcanzable
     // y operable independientemente del breakpoint (jsdom no mide layout real).
-    expect(screen.getByRole('listbox')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('option', { name: /card/i }));
+    const listbox = screen.getByRole('listbox');
+    expect(listbox).toBeInTheDocument();
+    fireEvent.click(within(listbox).getByRole('option', { name: /card/i }));
     expect(screen.queryByLabelText('Button')).toBeNull();
     expect(screen.getByLabelText('Card')).toBeInTheDocument();
   });

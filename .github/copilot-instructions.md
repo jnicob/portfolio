@@ -49,6 +49,7 @@ Read the matching skill in `skills/<name>/SKILL.md` BEFORE working on a matching
 | masonry, justified, galería de alturas variables, columnas responsive, waterfall | `masonry-layouts` |
 | refactor, readability, SOLID, module size, naming, single responsibility, code review | `code-principles` |
 | TypeScript, types, hooks rules, naming, imports, constants, test conventions | `code-conventions` |
+| deploy, ssh, scp, ftp, hosting, godaddy, cpanel, htaccess, env.php.local, prod, production, producción | `deploy-shared-hosting` |
 
 ## Review lenses (agents)
 
@@ -82,12 +83,14 @@ Symlinks and the generated Copilot file are managed by `scripts/setup-agents.sh`
 without developer mode), run `pnpm run agents:setup` after enabling symlinks or read the
 root sources directly.
 
+
 ## Skills index (full content in skills/<name>/SKILL.md)
 
 - **accessibility**: WCAG AA checklist applied during build and review. Use when building interactive components, reviewing UI, or auditing pages for keyboard, ARIA, contrast.
 - **code-conventions**: Concrete TypeScript, React hooks and code-style conventions for this repo. Use when writing or reviewing any TypeScript/React code — types, hooks, naming, imports, component internals, test conventions.
 - **code-principles**: Readability, SOLID, single responsibility and module-size rules for this repo. Use when writing, refactoring or reviewing any code.
 - **component-patterns**: Component conventions — composition, cva variants, headless patterns, accessible forms, explicit empty/loading/error states. Use when creating or refactoring any UI component.
+- **deploy-shared-hosting**: Deployment procedures for shared hosting (GoDaddy/cPanel) via SSH/SCP/FTP, handling Windows/Linux path & tar compatibility, Apache .htaccess routing, PHP .env.php.local security, and HTTP status verification.
 - **masonry-layouts**: Use when building or reviewing gallery layouts — masonry, justified rows, responsive column counts, or any variable-height media grid
 - **nextjs-static-dual**: Next.js 16 App Router with dual runtime — static export (default) and optional Node mode. Use when creating routes/pages, choosing RSC vs client components, or touching next.config, route handlers, images or anything runtime-dependent.
 - **performance**: Core Web Vitals, image discipline, bundle budget and code splitting for a static-first Next.js site. Use when adding dependencies, images, fonts, client components, or investigating slowness.

@@ -55,6 +55,27 @@ export function VideoScrubPreview({
     setProgress(clamped * 100);
   }
 
+  function onPointerDown(event: PointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== 'mouse') {
+      try {
+        event.currentTarget.setPointerCapture(event.pointerId);
+      } catch {
+        // Ignorar en entornos sin soporte
+      }
+    }
+    onPointerMove(event);
+  }
+
+  function onPointerEnd(event: PointerEvent<HTMLDivElement>) {
+    if (event.currentTarget.hasPointerCapture?.(event.pointerId)) {
+      try {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      } catch {
+        // Ignorar
+      }
+    }
+  }
+
   function onPointerMove(event: PointerEvent<HTMLDivElement>) {
     const rect = rootRef.current?.getBoundingClientRect();
     if (!rect || rect.width === 0) return;
@@ -66,7 +87,9 @@ export function VideoScrubPreview({
     });
   }
 
-  function onPointerLeave() {
+  function onPointerLeave(event: PointerEvent<HTMLDivElement>) {
+    // Si el elemento mantiene captura de puntero (gesto táctil activo), no reiniciamos el vídeo.
+    if (event.currentTarget.hasPointerCapture?.(event.pointerId)) return;
     if (frameRef.current != null) cancelAnimationFrame(frameRef.current);
     frameRef.current = null;
     const video = videoRef.current;
@@ -98,7 +121,10 @@ export function VideoScrubPreview({
       tabIndex={scrubOnFocus ? 0 : undefined}
       aria-label={label}
       style={style}
+      onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
+      onPointerUp={onPointerEnd}
+      onPointerCancel={onPointerEnd}
       onPointerLeave={onPointerLeave}
       onKeyDown={onKeyDown}
     >

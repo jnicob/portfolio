@@ -267,6 +267,15 @@ export function CompareSlider({
     return () => observer.disconnect();
   }, [compareMode]);
 
+  // Sincronizar y resetear estado de pausa de forma inmediata durante el render si el modo cambia
+  const [prevMode, setPrevMode] = useState(mode);
+  if (mode !== prevMode) {
+    setPrevMode(mode);
+    if (mode !== 'hover') {
+      setPaused(false);
+    }
+  }
+
   function update(next: number) {
     const clamped = clamp(next);
     setPosition(clamped);
@@ -363,7 +372,7 @@ export function CompareSlider({
     // En pausa (C6), la superficie no reposiciona el divisor con ningún puntero: el
     // down queda registrado SOLO para clasificar en pointerup el click que reanuda
     // (sin capture ni update, el divisor no salta a la posición del click).
-    if (paused) return;
+    if (mode === 'hover' && paused) return;
     event.currentTarget.setPointerCapture(event.pointerId);
     update(positionFromPointer(event));
   }
@@ -418,7 +427,7 @@ export function CompareSlider({
       data-orientation={orientation}
       data-compare-mode={compareMode}
       data-blink-side={compareMode === 'blink' ? (blinkShowsAfter ? 'after' : 'before') : undefined}
-      data-paused={paused ? '' : undefined}
+      data-paused={mode === 'hover' && paused ? '' : undefined}
       data-loading={loading ? '' : undefined}
       data-stacked={compareMode === 'side-by-side' && stacked ? 'true' : undefined}
       style={{ ['--mk-compare-pos' as string]: `${position}%` }}

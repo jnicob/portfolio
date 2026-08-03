@@ -324,6 +324,7 @@
   background: var(--mk-overlay-bg);
   backdrop-filter: blur(4px);
   animation: mk-fade-in 150ms ease-out;
+  touch-action: none;
 }
 
 .mk-lightbox__viewport {
@@ -333,6 +334,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  touch-action: none;
 }
 
 .mk-lightbox__media {
@@ -342,6 +344,10 @@
      es equivalente y evita toggles de compositing en pleno gesto. */
   will-change: transform;
   transition: transform 120ms ease-out;
+}
+
+.mk-lightbox__media[data-gesturing='true'] {
+  transition: none;
 }
 
 .mk-lightbox__media :is(img, video) {
@@ -706,7 +712,7 @@
   position: relative;
   overflow: hidden;
   border-radius: var(--mk-radius);
-  touch-action: none;
+  touch-action: pan-y;
   cursor: crosshair;
   transition: --mk-spot-active-radius 160ms ease-out;
 }
@@ -820,6 +826,7 @@
   position: relative;
   overflow: hidden;
   border-radius: var(--mk-radius);
+  touch-action: pan-y;
   cursor: ew-resize;
 }
 .mk-scrub:focus-visible {

@@ -531,6 +531,50 @@ describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
     expect(container).not.toHaveAttribute('data-paused');
   });
 
+  it('al cambiar de mode="hover" (pausado) a mode="drag", la pausa se desactiva y el drag funciona', () => {
+    const { rerender } = render(
+      <CompareSlider
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+        mode="hover"
+      />
+    );
+    const slider = screen.getByRole('slider');
+    const container = slider.closest('.mk-compare') as HTMLElement;
+    mockRect(container);
+
+    // Pausar
+    click(container, { clientX: 100, clientY: 50 });
+    expect(container).toHaveAttribute('data-paused');
+
+    // Cambiar a drag
+    rerender(
+      <CompareSlider
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+        mode="drag"
+      />
+    );
+    expect(container).not.toHaveAttribute('data-paused');
+
+    // El drag funciona
+    const onPositionChange = vi.fn();
+    rerender(
+      <CompareSlider
+        before={<img src="/b.png" alt="b" />}
+        after={<img src="/a.png" alt="" />}
+        mode="drag"
+        onPositionChange={onPositionChange}
+      />
+    );
+
+    vi.spyOn(container, 'hasPointerCapture').mockReturnValue(true);
+    const eventInit = { clientX: 50, clientY: 50, button: 0, isPrimary: true, pointerId: 2, pointerType: 'mouse' };
+    fireEvent.pointerDown(container, eventInit);
+    fireEvent.pointerMove(container, { ...eventInit, clientX: 70 });
+    expect(onPositionChange).toHaveBeenCalledWith(35);
+  });
+
   it('un click en el botón expand no pausa el hover (su pointerdown detiene la propagación)', async () => {
     render(
       <CompareSlider

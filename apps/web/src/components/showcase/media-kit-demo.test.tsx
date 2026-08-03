@@ -50,9 +50,20 @@ describe('MediaKitDemo', () => {
     expect(screen.queryByText('Ampliar con zoom')).not.toBeInTheDocument();
   });
 
-  it('renders one expand button per CompareSlider demo, using the passed strings', () => {
+  it('renders one expand button per CompareSlider demo (landscape y portrait)', () => {
     render(<MediaKitDemo labels={enLabels} strings={enStrings} />);
-    expect(screen.getAllByRole('button', { name: enStrings.fullScreen })).toHaveLength(3);
+    expect(screen.getAllByRole('button', { name: enStrings.fullScreen })).toHaveLength(2);
+  });
+
+  it('permite cambiar de modo entre drag y hover usando el checkbox', async () => {
+    const user = userEvent.setup();
+    render(<MediaKitDemo labels={enLabels} strings={enStrings} />);
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).toBeChecked();
+
+    await user.click(checkbox);
+    expect(checkbox).not.toBeChecked();
+    expect(screen.getByText(enStrings.dragCaption)).toBeInTheDocument();
   });
 
   it('opens the compare-lightbox showing the passed EN labels, without falling back to Spanish', async () => {
@@ -64,13 +75,13 @@ describe('MediaKitDemo', () => {
     expect(screen.queryByRole('button', { name: 'Cerrar' })).not.toBeInTheDocument();
   });
 
-  it('renders the real landscape photo on both sides of the drag and hover demos, desaturating the before side with a CSS filter', () => {
+  it('renders the real landscape photo on both sides of the consolidated demo, desaturating the before side with a CSS filter', () => {
     const { container } = render(<MediaKitDemo labels={enLabels} strings={enStrings} />);
     const landscapeImages = Array.from(
       container.querySelectorAll<HTMLImageElement>('img[src="/demo/landscape.webp"]'),
     );
-    // 2 demos (drag, hover) x 2 sides (before, after)
-    expect(landscapeImages).toHaveLength(4);
+    // 1 demo (consolidada) x 2 sides (before, after)
+    expect(landscapeImages).toHaveLength(2);
     for (const img of landscapeImages) {
       expect(img).toHaveAttribute('width', '1600');
       expect(img).toHaveAttribute('height', '900');
@@ -78,19 +89,15 @@ describe('MediaKitDemo', () => {
     const desaturatedImages = landscapeImages.filter((img) =>
       img.style.filter.includes('saturate'),
     );
-    expect(desaturatedImages).toHaveLength(2);
+    expect(desaturatedImages).toHaveLength(1);
   });
 
-  // Perf (T30/qa-B1): landscape.webp es 1600×900 pero en mobile (single-column bajo md)
-  // el CompareSlider se renderiza a un ancho de contenido mucho menor — sin srcset, el
-  // navegador descargaba siempre el asset completo. La variante ~840w deja elegir al
-  // navegador según el ancho real renderizado.
-  it('las 4 imágenes de landscape ofrecen una variante ~840w vía srcSet, con sizes acorde al grid', () => {
+  it('las imágenes de landscape ofrecen una variante ~840w vía srcSet, con sizes acorde al grid', () => {
     const { container } = render(<MediaKitDemo labels={enLabels} strings={enStrings} />);
     const landscapeImages = Array.from(
       container.querySelectorAll<HTMLImageElement>('img[src="/demo/landscape.webp"]'),
     );
-    expect(landscapeImages).toHaveLength(4);
+    expect(landscapeImages).toHaveLength(2);
     for (const img of landscapeImages) {
       expect(img).toHaveAttribute(
         'srcset',

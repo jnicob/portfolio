@@ -76,13 +76,20 @@ export function MobileMenu({
         )}
       </button>
       {open && (
-        <div
-          id={panelId}
-          onClick={handlePanelClick}
-          className="flex flex-col gap-4 border-t border-border py-4"
-        >
-          {children}
-        </div>
+        <>
+          {/* Backdrop blurred layer below header (approx. 61px height header) */}
+          <div
+            className="fixed inset-x-0 bottom-0 top-[61px] z-40 bg-background/40 backdrop-blur-sm transition-opacity"
+            onClick={closeAndFocusButton}
+          />
+          <div
+            id={panelId}
+            onClick={handlePanelClick}
+            className="absolute left-0 right-0 top-full z-50 border-b border-border bg-surface px-6 py-4 flex flex-col gap-4"
+          >
+            {children}
+          </div>
+        </>
       )}
     </div>
   );

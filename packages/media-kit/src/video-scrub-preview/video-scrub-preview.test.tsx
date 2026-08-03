@@ -39,10 +39,18 @@ describe('VideoScrubPreview', () => {
     vi.restoreAllMocks();
   });
 
-  it('el puntero hace scrub proporcional', () => {
+  it('el puntero hace scrub proporcional en pointerMove', () => {
     const { root, video } = setupVideo(10);
     fireEvent.pointerMove(root, { clientX: 100, clientY: 10 });
     expect(video.currentTime).toBeCloseTo(5);
+  });
+
+  it('el toque en pointerDown activa el scrub y solicita setPointerCapture', () => {
+    const { root, video } = setupVideo(10);
+    root.setPointerCapture = vi.fn();
+    fireEvent.pointerDown(root, { pointerId: 1, pointerType: 'touch', clientX: 150, clientY: 10 });
+    expect(video.currentTime).toBeCloseTo(7.5);
+    expect(root.setPointerCapture).toHaveBeenCalledWith(1);
   });
 
   it('al salir vuelve al inicio', () => {

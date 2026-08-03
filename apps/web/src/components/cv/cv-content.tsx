@@ -53,7 +53,6 @@ export function CvContent({
       <AppearanceInit onView={setView} />
       <CvHeader
         locale={locale}
-        briefTitle={strings.briefTitle}
         showBriefLabel={strings.showBrief}
         hideBriefLabel={strings.hideBrief}
       />

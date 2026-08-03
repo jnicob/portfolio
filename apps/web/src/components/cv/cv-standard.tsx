@@ -1,6 +1,5 @@
 import type { Skill } from '@/data/schemas';
 import type { Locale } from '@/i18n/routing';
-import { profile } from '@/data/profile';
 import { experience } from '@/data/experience';
 import { education } from '@/data/education';
 import { skills } from '@/data/skills';

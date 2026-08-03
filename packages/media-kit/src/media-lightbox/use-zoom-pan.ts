@@ -144,6 +144,20 @@ export function useZoomPan(
       };
     };
 
+    const onTouchMove = (event: TouchEvent) => {
+      if (event.touches.length > 1 || scaleRef.current > 1.01) {
+        event.preventDefault();
+      }
+    };
+
+    const setGesturing = (active: boolean) => {
+      const ct = contentRef.current;
+      if (ct) {
+        if (active) ct.setAttribute('data-gesturing', 'true');
+        else ct.removeAttribute('data-gesturing');
+      }
+    };
+
     const onWheel = (event: WheelEvent) => {
       event.preventDefault();
       const factor = Math.pow(1.1, -event.deltaY / 100);
@@ -157,17 +171,6 @@ export function useZoomPan(
 
     const onPointerDown = (event: PointerEvent) => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
-      // T13/T25: escape hatch genérico — gestos originados en un control interactivo
-      // (botón, enlace, `<video controls>`/`<audio>` nativos, el handle del
-      // compare-slider marcado con [data-mk-drag-exempt]…) no deben iniciar el pan
-      // del visor NI capturar el puntero. `setPointerCapture` redirige TODOS los
-      // eventos de puntero subsiguientes de ese pointerId (incluido el click
-      // sintético) al elemento que capturó, aunque el puntero siga físicamente sobre
-      // el control original — eso es lo que hacía que play/pause del audio o los
-      // controles nativos del vídeo cerraran el lightbox en vez de operar el medio
-      // (t25-qa-a11y.md). Estos listeners son NATIVOS (addEventListener), por lo que
-      // el stopPropagation de React en el handler del elemento hijo NO los frena; el
-      // filtro debe vivir aquí.
       if (event.target instanceof Element && event.target.closest(INTERACTIVE_SELECTOR)) {
         interactiveDownRef.current = true;
         return;
@@ -182,6 +185,7 @@ export function useZoomPan(
         ];
         pinch = { dist: Math.hypot(b.x - a.x, b.y - a.y), scale: scaleRef.current };
         pan = null;
+        setGesturing(true);
       } else if (pointers.size === 1) {
         pan = { x: event.clientX, y: event.clientY };
         downAt = { x: event.clientX, y: event.clientY };
@@ -201,11 +205,13 @@ export function useZoomPan(
           zoomTo(pinch.scale * (dist / pinch.dist), anchorFrom((a.x + b.x) / 2, (a.y + b.y) / 2));
         }
         draggedRef.current = true;
+        setGesturing(true);
       } else if (pan) {
         panBy(event.clientX - pan.x, event.clientY - pan.y);
         pan = { x: event.clientX, y: event.clientY };
         if (downAt && Math.hypot(event.clientX - downAt.x, event.clientY - downAt.y) > 4) {
           draggedRef.current = true;
+          setGesturing(true);
         }
       }
     };
@@ -216,27 +222,23 @@ export function useZoomPan(
       if (pointers.size === 0) {
         pan = null;
         downAt = null;
+        setGesturing(false);
       } else if (pointers.size === 1) {
         const [rest] = [...pointers.values()] as [{ x: number; y: number }];
         pan = { x: rest.x, y: rest.y };
       }
     };
 
-    // C4 (auditoría pan con ratón): el drag nativo HTML5 de <img>/<video> (draggable
-    // por defecto) cancela a mitad de gesto los pointermove del pan con ratón real —
-    // el mecanismo de pan en sí funciona (ver tests), el drag nativo lo interrumpe.
     const onDragStart = (event: DragEvent) => {
       event.preventDefault();
     };
 
-    // El viewport puede cambiar de tamaño sin remontar el hook (entrar/salir de
-    // fullscreen, resize de ventana): re-clampamos el estado a los límites vivos
-    // para que tx/ty y canPan no queden obsoletos tras el cambio.
     const onViewportResize = () => {
       setState((current) => clampState(current));
     };
 
     vp.addEventListener('wheel', onWheel, { passive: false });
+    vp.addEventListener('touchmove', onTouchMove, { passive: false });
     vp.addEventListener('dblclick', onDblClick);
     vp.addEventListener('pointerdown', onPointerDown);
     vp.addEventListener('pointermove', onPointerMove);
@@ -246,7 +248,9 @@ export function useZoomPan(
     window.addEventListener('resize', onViewportResize);
     document.addEventListener('fullscreenchange', onViewportResize);
     return () => {
+      setGesturing(false);
       vp.removeEventListener('wheel', onWheel);
+      vp.removeEventListener('touchmove', onTouchMove);
       vp.removeEventListener('dblclick', onDblClick);
       vp.removeEventListener('pointerdown', onPointerDown);
       vp.removeEventListener('pointermove', onPointerMove);
@@ -256,7 +260,7 @@ export function useZoomPan(
       window.removeEventListener('resize', onViewportResize);
       document.removeEventListener('fullscreenchange', onViewportResize);
     };
-  }, [clampState, panBy, reset, viewportRef, zoomTo]);
+  }, [clampState, contentRef, panBy, reset, viewportRef, zoomTo]);
 
   const { maxTx, maxTy } = bounds(state.scale);
   const canPan = maxTx > 0 || maxTy > 0;

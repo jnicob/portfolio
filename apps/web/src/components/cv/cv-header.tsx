@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 
 type CvHeaderProps = {
   locale: Locale;
-  briefTitle?: string;
   showBriefLabel?: string;
   hideBriefLabel?: string;
 };
@@ -21,7 +20,6 @@ type CvHeaderProps = {
  */
 export function CvHeader({
   locale,
-  briefTitle = 'Resumen Profesional',
   showBriefLabel = 'Mostrar resumen',
   hideBriefLabel = 'Ocultar resumen',
 }: CvHeaderProps) {
