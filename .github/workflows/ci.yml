@@ -24,6 +24,7 @@ jobs:
       - run: pnpm run agents:validate
       - run: pnpm run lint
       - run: pnpm run format
+      - run: pnpm run build
       - run: pnpm run typecheck
       - run: pnpm run test
 
