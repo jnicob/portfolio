@@ -24,5 +24,11 @@ export default tseslint.config(
       ...nextPlugin.configs['core-web-vitals'].rules,
     },
   },
+  {
+    files: ['apps/web/src/components/showcase/**/*.{ts,tsx}'],
+    rules: {
+      '@next/next/no-img-element': 'off',
+    },
+  },
   prettier,
 );
