@@ -35,20 +35,16 @@ export function ExperienceEntryBlock({
   hideDates = false,
 }: ExperienceEntryBlockProps) {
   return (
-    <article className={cn('flex flex-col', dense ? 'gap-1 print:gap-0.5' : 'gap-2')}>
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 print:gap-y-0">
-        <h3 className="font-semibold text-fg print:text-[11.5px] print:leading-tight">
+    <article className={cn('flex flex-col', dense ? 'gap-1' : 'gap-2')}>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h3 className="font-semibold text-fg">
           {entry.role[locale]}, <span>{entry.company}</span>
         </h3>
         {!hideDates && (
-          <p className="text-sm text-fg-muted print:text-[10px]">
-            {formatExperienceRange(entry, presentLabel)}
-          </p>
+          <p className="text-sm text-fg-muted">{formatExperienceRange(entry, presentLabel)}</p>
         )}
       </div>
-      <p className="text-fg-muted print:text-[10.5px] print:leading-tight">
-        {entry.summary[locale]}
-      </p>
+      <p className="text-fg-muted">{entry.summary[locale]}</p>
       {!dense && (
         <ul className="flex list-disc flex-col gap-1 pl-5 text-fg-muted">
           {entry.highlights.map((highlight) => (
@@ -56,7 +52,7 @@ export function ExperienceEntryBlock({
           ))}
         </ul>
       )}
-      <ul className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-fg-muted print:gap-x-2 print:gap-y-0 print:text-[9.5px]">
+      <ul className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-fg-muted">
         {entry.tags.map((tag) => (
           <li key={tag}>{tag}</li>
         ))}

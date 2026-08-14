@@ -22,13 +22,13 @@ type SkillGroupProps = {
  */
 export function SkillGroup({ categoryLabel, skills, showLevel = true }: SkillGroupProps) {
   return (
-    <div className="flex flex-col gap-2 print:gap-0.5">
-      <h3 className="text-sm font-semibold uppercase tracking-wide text-fg-muted print:text-[10px] print:font-bold">
+    <div className="flex flex-col gap-2">
+      <h3 className="text-sm font-semibold uppercase tracking-wide text-fg-muted">
         {categoryLabel}
       </h3>
-      <ul className="flex flex-col gap-1.5 print:gap-0 print:text-[10px]">
+      <ul className="flex flex-col gap-1.5">
         {skills.map((skill) => (
-          <li key={skill.name} className="flex items-center justify-between gap-4 print:gap-1">
+          <li key={skill.name} className="flex items-center justify-between gap-4">
             <span>{skill.name}</span>
             {showLevel && (
               <SkillLevel level={skill.level} label={`${skill.name}: ${skill.level}/5`} />

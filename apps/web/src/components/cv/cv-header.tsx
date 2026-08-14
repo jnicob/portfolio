@@ -26,18 +26,18 @@ export function CvHeader({
   const [showBrief, setShowBrief] = useState(false);
 
   return (
-    <header className="flex flex-col gap-2 border-b border-border pb-2.5 print:pb-1.5 print:gap-1">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between print:gap-1">
+    <header className="flex flex-col gap-2 border-b border-border pb-2.5 print:pb-2 print:gap-1.5">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-5xl font-bold tracking-tight text-fg print:text-2xl print:leading-tight">
+          <h1 className="text-5xl font-bold tracking-tight text-fg print:text-4xl">
             {profile.name}
           </h1>
-          <p className="text-xl text-fg-muted print:text-xs font-medium">
+          <p className="text-xl text-fg-muted print:text-base font-medium">
             {profile.headline[locale]}
           </p>
         </div>
-        <div className="flex flex-col gap-1.5 text-sm text-fg-muted items-start print:text-[11px] print:gap-0.5">
-          <div className="flex items-center gap-2 print:gap-1">
+        <div className="flex flex-col gap-1.5 text-sm text-fg-muted items-start print:text-xs">
+          <div className="flex items-center gap-2">
             <svg
               viewBox="0 0 24 24"
               width={15}
@@ -62,7 +62,7 @@ export function CvHeader({
               {profile.links.github}
             </a>
           </div>
-          <div className="flex items-center gap-2 print:gap-1">
+          <div className="flex items-center gap-2">
             <svg
               viewBox="0 0 24 24"
               width={15}
