@@ -26,20 +26,22 @@ describe('CvHeader', () => {
     );
   });
 
-  it('permite alternar la visibilidad del resumen profesional con el botón toggle', async () => {
+  it('muestra el resumen profesional por defecto y permite alternar su visibilidad', async () => {
     const user = userEvent.setup();
     render(
       <CvHeader locale="es" showBriefLabel="Mostrar resumen" hideBriefLabel="Ocultar resumen" />,
     );
 
-    const toggleButton = screen.getByRole('button', { name: 'Mostrar resumen' });
+    // Visible inicialmente
+    const toggleButton = screen.getByRole('button', { name: 'Ocultar resumen' });
     expect(toggleButton).toBeInTheDocument();
-
-    await user.click(toggleButton);
-
-    expect(screen.getByRole('button', { name: 'Ocultar resumen' })).toBeInTheDocument();
     expect(
       screen.getByText((content) => content.includes('Perfil de punta a punta')),
     ).toBeInTheDocument();
+
+    // Al hacer click, se oculta
+    await user.click(toggleButton);
+
+    expect(screen.getByRole('button', { name: 'Mostrar resumen' })).toBeInTheDocument();
   });
 });

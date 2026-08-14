@@ -23,7 +23,7 @@ export function CvHeader({
   showBriefLabel = 'Mostrar resumen',
   hideBriefLabel = 'Ocultar resumen',
 }: CvHeaderProps) {
-  const [showBrief, setShowBrief] = useState(false);
+  const [showBrief, setShowBrief] = useState(true);
 
   return (
     <header className="flex flex-col gap-2 border-b border-border pb-2.5 print:gap-1.5">
