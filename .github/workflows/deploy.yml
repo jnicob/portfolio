@@ -24,14 +24,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build packages and static export
+        run: pnpm run build
+
       - name: Run quality checks
         run: |
           pnpm run lint
           pnpm run typecheck
           pnpm run test
-
-      - name: Build static export
-        run: pnpm run build
 
       - name: Compress build output
         run: tar -czf deploy.tar.gz -C apps/web/out .
