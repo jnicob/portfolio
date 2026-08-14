@@ -36,32 +36,17 @@ jobs:
       - name: Compress build output
         run: tar -czf deploy.tar.gz -C apps/web/out .
 
-      - name: Upload to remote server
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy to production via SSH
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         if: env.SSH_HOST != '' && env.SSH_USER != '' && env.SSH_KEY != ''
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: 'deploy.tar.gz'
-          target: '~/'
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
 
-      - name: Extract & publish on remote server
-        uses: appleboy/ssh-action@v1.2.0
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        if: env.SSH_HOST != '' && env.SSH_USER != '' && env.SSH_KEY != ''
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ~/public_html/jnicob.dev
-            tar -xzf ~/deploy.tar.gz
-            rm ~/deploy.tar.gz
+          scp -i ~/.ssh/id_deploy deploy.tar.gz "$SSH_USER@$SSH_HOST:~/deploy-portfolio.tar.gz"
+          ssh -i ~/.ssh/id_deploy "$SSH_USER@$SSH_HOST" "cd ~/public_html/jnicob.dev && tar -xzf ~/deploy-portfolio.tar.gz && rm ~/deploy-portfolio.tar.gz"
