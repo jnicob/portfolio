@@ -10,6 +10,12 @@ describe('CvHeader', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: profile.name })).toBeInTheDocument();
     expect(screen.getByText(profile.headline.es)).toBeInTheDocument();
+    if (profile.links.website) {
+      expect(screen.getByRole('link', { name: profile.links.website })).toHaveAttribute(
+        'href',
+        profile.links.website,
+      );
+    }
     expect(screen.getByRole('link', { name: profile.links.github })).toHaveAttribute(
       'href',
       profile.links.github,

@@ -14,14 +14,20 @@ export type LocalizedString = z.infer<typeof localizedStringSchema>;
 const yearMonth = z.string().regex(/^\d{4}-\d{2}$/, 'formato YYYY-MM');
 const dateish = z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/, 'formato YYYY-MM o YYYY-MM-DD');
 
-/** Contacto público SOLO GitHub/LinkedIn — strict() hace imposible añadir email/teléfono. */
+/** Contacto público SOLO GitHub/LinkedIn/website — strict() hace imposible añadir email/teléfono. */
 export const profileSchema = z
   .object({
     name: z.string().min(1),
     headline: localizedStringSchema,
     summary: localizedStringSchema,
     location: localizedStringSchema,
-    links: z.object({ github: z.url(), linkedin: z.url() }).strict(),
+    links: z
+      .object({
+        github: z.url(),
+        linkedin: z.url(),
+        website: z.url().optional(),
+      })
+      .strict(),
   })
   .strict();
 export type Profile = z.infer<typeof profileSchema>;

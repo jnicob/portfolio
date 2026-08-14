@@ -26,8 +26,10 @@ export function CvHeader({
   const [showBrief, setShowBrief] = useState(false);
 
   return (
-    <header className="flex flex-col gap-2 border-b border-border pb-2.5 print:pb-2 print:gap-1.5">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <header className="flex flex-col gap-2 border-b border-border pb-2.5 print:gap-1.5">
+      <div
+        className={`flex flex-col pb-2.5 gap-4 sm:flex-row sm:items-start sm:justify-between ${showBrief ? 'border-b border-border' : ''}`}
+      >
         <div>
           <h1 className="text-5xl font-bold tracking-tight text-fg print:text-4xl">
             {profile.name}
@@ -36,7 +38,35 @@ export function CvHeader({
             {profile.headline[locale]}
           </p>
         </div>
-        <div className="flex flex-col gap-1.5 text-sm text-fg-muted items-start print:text-xs">
+        <div className="flex flex-col gap-1.5 text-sm text-fg-muted items-start">
+          {profile.links.website && (
+            <div className="flex items-center gap-2">
+              <svg
+                viewBox="0 0 24 24"
+                width={15}
+                height={15}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+                className="shrink-0 text-fg-muted print:text-fg"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+              <a
+                href={profile.links.website}
+                target="_blank"
+                rel="noreferrer"
+                className="text-accent hover:underline print:text-fg print:underline"
+              >
+                {profile.links.website}
+              </a>
+            </div>
+          )}
           <div className="flex items-center gap-2">
             <svg
               viewBox="0 0 24 24"
@@ -169,7 +199,7 @@ export function CvHeader({
         }`}
       >
         <div className="overflow-hidden">
-          <div className="whitespace-pre-line text-sm text-fg leading-relaxed print:text-xs print:text-fg print:leading-snug">
+          <div className="whitespace-pre-line text-sm text-fg leading-relaxed print:text-fg print:leading-snug">
             {profile.summary[locale]}
           </div>
         </div>

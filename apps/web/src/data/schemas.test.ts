@@ -42,8 +42,14 @@ describe('profileSchema — guardia de PII', () => {
     links: { github: 'https://github.com/jnicob', linkedin: 'https://www.linkedin.com/in/x' },
   };
 
-  it('acepta el perfil público', () => {
+  it('acepta el perfil público con o sin website', () => {
     expect(profileSchema.safeParse(base).success).toBe(true);
+    expect(
+      profileSchema.safeParse({
+        ...base,
+        links: { ...base.links, website: 'https://jnicob.dev' },
+      }).success,
+    ).toBe(true);
   });
 
   it('RECHAZA claves extra (email/teléfono imposibles por construcción)', () => {
