@@ -26,18 +26,18 @@ export function CvHeader({
   const [showBrief, setShowBrief] = useState(false);
 
   return (
-    <header className="flex flex-col gap-2 border-b border-border pb-2.5 print:pb-2 print:gap-1.5">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <header className="flex flex-col gap-2 border-b border-border pb-2.5 print:pb-1.5 print:gap-1">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between print:gap-1">
         <div>
-          <h1 className="text-5xl font-bold tracking-tight text-fg print:text-4xl">
+          <h1 className="text-5xl font-bold tracking-tight text-fg print:text-2xl print:leading-tight">
             {profile.name}
           </h1>
-          <p className="text-xl text-fg-muted print:text-base font-medium">
+          <p className="text-xl text-fg-muted print:text-xs font-medium">
             {profile.headline[locale]}
           </p>
         </div>
-        <div className="flex flex-col gap-1.5 text-sm text-fg-muted items-start print:text-xs">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-1.5 text-sm text-fg-muted items-start print:text-[11px] print:gap-0.5">
+          <div className="flex items-center gap-2 print:gap-1">
             <svg
               viewBox="0 0 24 24"
               width={15}
@@ -62,7 +62,7 @@ export function CvHeader({
               {profile.links.github}
             </a>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 print:gap-1">
             <svg
               viewBox="0 0 24 24"
               width={15}
@@ -164,12 +164,12 @@ export function CvHeader({
       <div
         className={`grid transition-all duration-300 ease-in-out ${
           showBrief
-            ? 'grid-rows-[1fr] opacity-100 mt-1 mb-2'
+            ? 'grid-rows-[1fr] opacity-100 mt-1 mb-2 print:my-1'
             : 'grid-rows-[0fr] opacity-0 mt-0 mb-0 print:hidden'
         }`}
       >
         <div className="overflow-hidden">
-          <div className="whitespace-pre-line text-sm text-fg leading-relaxed print:text-xs">
+          <div className="whitespace-pre-line text-sm text-fg leading-relaxed print:text-xs print:text-fg print:leading-snug">
             {profile.summary[locale]}
           </div>
         </div>

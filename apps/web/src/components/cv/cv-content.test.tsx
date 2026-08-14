@@ -202,4 +202,20 @@ describe('CvContent', () => {
 
     printSpy.mockRestore();
   });
+
+  it('el contenedor de la barra de controles (switcher, print, share) tiene la clase no-print', async () => {
+    const { CvContent } = await importFreshComponents();
+    render(
+      <CvContent
+        locale="en"
+        strings={STRINGS}
+        switcherLabels={SWITCHER_LABELS}
+        printLabel="Print CV"
+      />,
+    );
+
+    const switcherGroup = screen.getByRole('radiogroup', { name: SWITCHER_LABELS.groupLabel });
+    const controlsContainer = switcherGroup.parentElement;
+    expect(controlsContainer).toHaveClass('no-print');
+  });
 });

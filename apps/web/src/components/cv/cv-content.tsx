@@ -56,7 +56,7 @@ export function CvContent({
         showBriefLabel={strings.showBrief}
         hideBriefLabel={strings.hideBrief}
       />
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="no-print flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <CvViewSwitcher view={view} onChange={handleChange} labels={switcherLabels} />
         <div className="flex items-center gap-3">
           {printLabel && <PrintButton label={printLabel} />}

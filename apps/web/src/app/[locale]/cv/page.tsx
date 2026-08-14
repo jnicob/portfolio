@@ -51,7 +51,7 @@ export default async function CvPage({ params }: Props) {
   };
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8">
+    <main className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8 print:gap-1.5 print:p-0">
       <JsonLd data={personJsonLd(locale)} />
       <CvContent
         locale={locale}

@@ -188,10 +188,24 @@
 }
 
 /* Impresión (T24): oculta chrome interactivo (header/footer/switcher/share, `.no-print`)
- * y fuerza estética impecable de tema light en papel. */
+ * y fuerza estética impecable de tema light en papel sin importar el modo dark activo. */
 @media print {
+  :root,
+  :root[data-theme='dark'],
+  :root[data-theme='light'] {
+    color-scheme: light !important;
+    --bg: #ffffff !important;
+    --surface: #ffffff !important;
+    --fg: #17171c !important;
+    --fg-muted: #4a4a55 !important;
+    --border: #dcdcd4 !important;
+    --ring: #5b4bd6 !important;
+    --accent: #17171c !important;
+    --accent-hover: #17171c !important;
+    --accent-fg: #ffffff !important;
+  }
   @page {
-    margin: 0.8cm 1.2cm;
+    margin: 0.6cm 0.8cm;
     background: #ffffff;
   }
   *,
@@ -208,28 +222,38 @@
     background-color: #ffffff !important;
     background: #ffffff !important;
     color: #17171c !important;
-    font-size: 11.5px !important;
-    line-height: 1.35 !important;
+    font-size: 11px !important;
+    line-height: 1.28 !important;
     margin: 0 !important;
     padding: 0 !important;
   }
   h1 {
-    font-size: 24px !important;
+    font-size: 18px !important;
+    line-height: 1.2 !important;
     color: #17171c !important;
+    margin: 0 !important;
   }
   h2 {
-    font-size: 14px !important;
+    font-size: 12.5px !important;
+    line-height: 1.2 !important;
     color: #17171c !important;
-    margin-top: 0.4rem !important;
-    margin-bottom: 0.2rem !important;
+    margin-top: 0.25rem !important;
+    margin-bottom: 0.15rem !important;
   }
   h3 {
-    font-size: 12px !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
     color: #17171c !important;
+    margin: 0 !important;
   }
   p,
   li,
-  span {
+  span,
+  div {
+    color: #17171c;
+  }
+  p,
+  li {
     color: #333338 !important;
   }
   a {
