@@ -41,10 +41,14 @@ export function ExperienceEntryBlock({
           {entry.role[locale]}, <span>{entry.company}</span>
         </h3>
         {!hideDates && (
-          <p className="text-sm text-fg-muted print:text-[10px]">{formatExperienceRange(entry, presentLabel)}</p>
+          <p className="text-sm text-fg-muted print:text-[10px]">
+            {formatExperienceRange(entry, presentLabel)}
+          </p>
         )}
       </div>
-      <p className="text-fg-muted print:text-[10.5px] print:leading-tight">{entry.summary[locale]}</p>
+      <p className="text-fg-muted print:text-[10.5px] print:leading-tight">
+        {entry.summary[locale]}
+      </p>
       {!dense && (
         <ul className="flex list-disc flex-col gap-1 pl-5 text-fg-muted">
           {entry.highlights.map((highlight) => (

@@ -16,7 +16,9 @@ export function CvCompact({ locale, strings }: CvViewProps) {
   return (
     <div className="flex flex-col gap-6 print:gap-1.5">
       <section className="flex flex-col gap-3 print:gap-1">
-        <h2 className="text-lg font-semibold text-fg print:text-xs print:font-bold">{strings.experienceTitle}</h2>
+        <h2 className="text-lg font-semibold text-fg print:text-xs print:font-bold">
+          {strings.experienceTitle}
+        </h2>
         <div className="flex flex-col gap-3 print:gap-1">
           {experience.map((entry) => (
             <ExperienceEntryBlock
@@ -31,7 +33,9 @@ export function CvCompact({ locale, strings }: CvViewProps) {
       </section>
 
       <section className="flex flex-col gap-3 print:gap-1">
-        <h2 className="text-lg font-semibold text-fg print:text-xs print:font-bold">{strings.skillsTitle}</h2>
+        <h2 className="text-lg font-semibold text-fg print:text-xs print:font-bold">
+          {strings.skillsTitle}
+        </h2>
         <div className="flex flex-col gap-3 print:grid print:grid-cols-3 print:gap-x-4 print:gap-y-1">
           {SKILL_CATEGORIES.map((category) => {
             const categorySkills = skills.filter((skill) => skill.category === category);
@@ -52,7 +56,9 @@ export function CvCompact({ locale, strings }: CvViewProps) {
       </section>
 
       <section className="flex flex-col gap-3 print:gap-1">
-        <h2 className="text-lg font-semibold text-fg print:text-xs print:font-bold">{strings.educationTitle}</h2>
+        <h2 className="text-lg font-semibold text-fg print:text-xs print:font-bold">
+          {strings.educationTitle}
+        </h2>
         <EducationList education={education} locale={locale} />
       </section>
     </div>

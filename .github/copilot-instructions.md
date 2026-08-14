@@ -83,7 +83,6 @@ Symlinks and the generated Copilot file are managed by `scripts/setup-agents.sh`
 without developer mode), run `pnpm run agents:setup` after enabling symlinks or read the
 root sources directly.
 
-
 ## Skills index (full content in skills/<name>/SKILL.md)
 
 - **accessibility**: WCAG AA checklist applied during build and review. Use when building interactive components, reviewing UI, or auditing pages for keyboard, ARIA, contrast.

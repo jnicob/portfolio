@@ -23,11 +23,7 @@ describe('CvHeader', () => {
   it('permite alternar la visibilidad del resumen profesional con el botón toggle', async () => {
     const user = userEvent.setup();
     render(
-      <CvHeader
-        locale="es"
-        showBriefLabel="Mostrar resumen"
-        hideBriefLabel="Ocultar resumen"
-      />,
+      <CvHeader locale="es" showBriefLabel="Mostrar resumen" hideBriefLabel="Ocultar resumen" />,
     );
 
     const toggleButton = screen.getByRole('button', { name: 'Mostrar resumen' });
