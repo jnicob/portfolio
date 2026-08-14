@@ -51,11 +51,6 @@ export function CvContent({
   return (
     <>
       <AppearanceInit onView={setView} />
-      <CvHeader
-        locale={locale}
-        showBriefLabel={strings.showBrief}
-        hideBriefLabel={strings.hideBrief}
-      />
       <div className="no-print flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <CvViewSwitcher view={view} onChange={handleChange} labels={switcherLabels} />
         <div className="flex items-center gap-3">
@@ -64,6 +59,11 @@ export function CvContent({
           {shareSlot}
         </div>
       </div>
+      <CvHeader
+        locale={locale}
+        showBriefLabel={strings.showBrief}
+        hideBriefLabel={strings.hideBrief}
+      />
       {view === 'standard' && <CvStandard locale={locale} strings={strings} />}
       {view === 'compact' && <CvCompact locale={locale} strings={strings} />}
       {view === 'timeline' && <CvTimeline locale={locale} strings={strings} />}

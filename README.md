@@ -48,7 +48,11 @@ This monorepo uses `pnpm` workspaces:
 ### Installation
 
 ```bash
+# Install dependencies
 pnpm install
+
+# Build workspace packages
+pnpm run build
 ```
 
 ### Local Development

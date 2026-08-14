@@ -5,14 +5,14 @@ const entries = [
     id: 'freepik',
     company: 'Freepik/Magnific',
     role: {
-      es: 'Ingeniero full-stack — plataforma de APIs',
-      en: 'Full-stack engineer — API platform',
+      es: 'Senior FullStack / Frontend Developer',
+      en: 'Senior FullStack / Frontend Developer',
     },
     start: '2022-07',
     end: '2026-07',
     summary: {
-      es: 'Plataforma pública de APIs de Freepik/Magnific (IA, stock, estado de tareas) y su web: specs, servidor, gateway, facturación, documentación, Playground y panel de desarrollador. Antes, backoffice de contenido y colaboradores.',
-      en: 'Freepik/Magnific public API platform (AI, stock, task status) and its web: specs, server, gateway, billing, documentation, Playground and developer dashboard. Previously, content and contributor backoffice.',
+      es: 'Plataforma pública de APIs de Freepik/Magnific (IA, stock, estado de tareas) y su web: specs, servidor, gateway, facturación, documentación, Playground y panel de desarrollador. Antes, plataformas de gestión de contenido, colaboradores y fiscal.',
+      en: 'Freepik/Magnific public API platform (AI, stock, task status) and its web: specs, server, gateway, billing, documentation, Playground and developer dashboard. Previously, content and contributor management platforms.',
     },
     highlights: [
       {
