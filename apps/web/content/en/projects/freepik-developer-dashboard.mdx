@@ -1,50 +1,37 @@
 ---
-title: API developer dashboard
-summary: 'Freepik/Magnific API developer dashboard: usage and budget with consumption charts, rate limits, billing and API key management, including enterprise member rules.'
-role: Frontend engineer
-stack: [nextjs, react, typescript, react-query]
+title: API Developer Dashboard
+summary: 'Interactive dashboard for Freepik/Magnific API developers and enterprise clients: real-time consumption charts, budget and quota management, error monitoring, and autonomous API key governance with multi-user enterprise support.'
+role: Frontend Engineer — component architecture, data integration, and reactive state
+stack: [nextjs, react, typescript, react-query, tailwind]
 links:
-  docs: https://docs.magnific.com/introduction
+  live: https://www.magnific.com/api
+  docs: https://docs.magnific.com
 metrics: []
 # No publicly evidenced project date: start of the Freepik/Magnific period (= projects.ts)
 date: '2022-07'
 ---
 
-## The product
+## Context and Product Overview
 
-Building on the Freepik/Magnific API takes more than endpoints: developers
-need to understand what they consume, what remains, what is failing and
-how to manage their credentials. The developer dashboard provides that
-management and analytics layer—the operational face of the platform for
-B2B customers and individual developers—across the developer hub and the
-account profile area.
+Developers and enterprise clients building products on top of the **[Freepik/Magnific API Platform](./freepik-api-platform)** require operational visibility and autonomous control over their integrations: tracking credit balances, monitoring live request volumes, reviewing rate limit quotas, and managing credentials securely.
 
-## Usage and budget
+The developer dashboard acts as the operational analytics cockpit of the platform, designed to serve both individual developers and enterprise organizations integrating generative AI models at high scale.
 
-- Consumption charts by period make each integration's activity and
-  per-service detail visible at a glance.
-- Rate limits are visible in context: each plan has its own limits, and
-  the dashboard shows where customers stand before a limit becomes an error.
-- The credit budget compares accumulated usage with the contracted amount,
-  helping customers expand capacity before running out.
+## Usage Analytics, Consumption & Budget
 
-## API keys and teams
+- **Real-Time Analytics**: Visual time-series charts breaking down request volumes and credit expenditure per model family (image, video, audio, and upscalers).
+- **Predictive Budget Management**: Live tracking of accumulated credit consumption against tier limits, enabling teams to top up before encountering service interruption.
+- **Contextual Rate Limiting**: Clear visibility into per-minute and daily request quotas based on the active subscription tier (Free, Pro, Enterprise), preventing unexpected 429 errors.
 
-- Create, rotate and revoke API keys without contacting support.
-- Enterprise member rules let large teams control who can create keys and
-  spend credits, with the organisation—not the individual—as the billing unit.
+## API Key Governance and Enterprise Teams
 
-## B2B: credits and plans
+- **Autonomous Credential Management**: Instant generation, scheduled rotation, and immediate revocation of API keys (`x-magnific-api-key`) directly from the dashboard without contacting support.
+- **Enterprise Team Rules**: Granular permissions for organization members, allowing technical teams to provision scoped keys while keeping billing centralized at the organization level.
 
-The same dashboard serves an individual developer on an entry plan and an
-organisation with an enterprise agreement. Consumption, limits and billing
-adapt to the contracted plan. Deciding what appears, what can be expanded
-and where limits apply is part of the product rather than an added sales layer.
+## Frontend Architecture & Developer Experience
 
-## One connected platform
+The dashboard was built using Next.js, React, TypeScript, and TanStack Query (`react-query`):
 
-The dashboard is the last mile of the [API platform](./freepik-api-platform):
-what developers subscribe to and consume there is what the public pages explain.
-
-- [Documentation](https://docs.magnific.com/introduction) — the public API reference.
-- [Pricing](https://www.magnific.com/pricing) — plans and credits.
+- **Reactive State Management**: Optimistic caching and background synchronization of live consumption metrics and billing status.
+- **Modular, Responsive UI**: Accessible components optimized for fast data rendering and interactive metric filtering across timeframes.
+- **Ecosystem Integration**: Seamless alignment with the [official documentation](https://docs.magnific.com) and [public product landings](https://www.magnific.com/api).
