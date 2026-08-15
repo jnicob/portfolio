@@ -1,73 +1,90 @@
 ---
 title: Freepik/Magnific API Platform
-summary: "End-to-end design and implementation of Freepik/Magnific's public API platform: AI generation (image, video, audio), stock content, task status and account APIs. OpenAPI specification, FastAPI server, APISIX gateway (rate limits, cost tracking, API keys), billing and public documentation."
-role: API Platform Engineer — specs, server, gateway, billing, docs
-stack: [python, fastapi, openapi, apisix, php]
+summary: "End-to-end design and implementation of Freepik/Magnific's public API platform: multimodal AI catalog (image, video, audio, upscale, and editing), distributed architecture with OpenAPI as the single source of truth, asynchronous FastAPI server, APISIX gateway (API keys, rate limits, pricing, and mUSD credit reservation), multi-repo synchronization, and interactive documentation."
+role: API Platform Engineer — OpenAPI specs, FastAPI server, APISIX gateway, async lifecycle, and docs
+stack: [python, fastapi, openapi, apisix, php, typescript]
 links:
   live: https://www.freepik.com/api
   docs: https://docs.magnific.com
-metrics: []
+metrics:
+  - label: AI models served
+    value: '40+'
+  - label: Catalog endpoints
+    value: '350+'
+  - label: Pipeline phases
+    value: '3'
 # No publicly evidenced project date: start of the Freepik/Magnific period (= projects.ts)
 date: '2022-07'
 ---
 
 ## Context
 
-Freepik/Magnific runs a public AI API platform that exposes image and video
-generation models to developers building products on top of Freepik/Magnific's
-AI stack. As the platform grew from a handful of endpoints to dozens of AI
-models, the underlying process — from an OpenAPI spec to a production
-endpoint, with billing and public docs — needed a consistent, repeatable
-path instead of one-off work per endpoint.
+Freepik/Magnific operates a public AI API platform exposing multimodal models (image generation, text-to-video, image-to-video, audio generation, upscalers, and editing tools) to external developers, B2B enterprise clients, and internal Freepik ecosystem products (such as Pikaso and creative suites).
 
-## What I built
+As the platform scaled from an initial set of endpoints to an ecosystem of over 350 endpoints and dozens of cutting-edge AI models from both external providers and internal engines, the system required a distributed, resilient, and strictly governed architecture to ensure every new model moved smoothly from contract definition to production with accurate metering, low-latency edge routing, and consistent interactive public documentation.
 
-I worked across the full lifecycle of this platform: authoring and evolving
-the OpenAPI specification that defines every endpoint's parameters and
-responses, implementing the FastAPI server that turns specs into working
-endpoints, wiring rate limits and per-model billing into the gateway, and
-shipping the public API reference that developers use to integrate.
+## Architecture and 3-Phase Lifecycle
 
-This includes the API keys and billing surface: generating and revoking
-keys, tracking usage per plan (free / pro / enterprise), and translating
-model-specific pricing (per generation, per second of video, per
-resolution) into gateway-level cost rules.
+I designed and implemented the platform's architecture structured into three decoupled phases, orchestrated from a centralized OpenAPI specification serving as the strict _Single Source of Truth_:
 
-## Architecture
+```
++-------------------------------------------------------------------------+
+|                        PHASE 1: DEFINITION (SPEC)                       |
+|   Centralized OpenAPI contract · Unified naming · Runtime validation    |
++-------------------------------------------------------------------------+
+                                    |
+                  +-----------------+-----------------+
+                  |                                   |
+                  v                                   v
++-----------------------------------+   +---------------------------------+
+|  PHASE 2: PUBLISHING & GATEWAY    |   |  PHASE 3: ASYNC CONSUMPTION     |
+|  - APISIX: Auth, Rate Limits,     |   |  - B2B clients, Web apps & SDKs |
+|    credit hold/debit (mUSD)       |   |  - 202 Accepted + Task ID       |
+|  - FastAPI: Server & Validations  |   |  - Webhook / Polling delivery   |
+|  - Public docs & Playground       |   |  - Wallet reconciliation        |
++-----------------------------------+   +---------------------------------+
+```
 
-The pipeline has four stages that map cleanly to four concerns:
+### 1. Phase 1: Definition (Contract-First OpenAPI)
 
-1. **Specification** — an OpenAPI contract defines each endpoint's
-   request/response shape, kept in sync as new models and parameters are
-   added.
-2. **Server** — a FastAPI application implements the contract: request
-   validation, task orchestration and webhook delivery for long-running
-   generations.
-3. **Gateway** — an open-source API gateway (Apache APISIX) sits in front
-   of the server, enforcing per-tier rate limits and computing
-   usage-based cost per request.
-4. **Docs** — the public API reference is generated from the same spec,
-   so documentation never drifts from what the gateway actually accepts.
+The entire platform is governed from the formal OpenAPI contract:
 
-A billing service (implemented in PHP) reads gateway usage data and
-product definitions to bill customers per plan, keeping the pricing model
-decoupled from the request-handling path.
+- **Single Source of Truth**: Request/response schemas, data types, required/optional parameters, and cost metadata are authoritatively defined before backend or gateway code is written.
+- **Standardization & Consistency**: Homogeneous naming conventions (`snake_case`), standardized HTTP error models (400, 401, 402, 422, 429, 500), and predictable response envelopes across the entire suite.
 
-## Integrations: beyond one model per call
+### 2. Phase 2: Publishing & Infrastructure Governance
 
-The platform exposes more than AI generation models. On the same
-spec → server → gateway → docs pipeline it also serves stock content
-APIs (search and download), task-status endpoints and account
-utilities — plus the **Flows API**, the orchestration layer that chains
-multiple models behind a single call: a flow describes a sequence of
-steps (e.g. generate → upscale → convert to video) and the platform runs
-it as a single task, metering usage per step so cost reflects the models
-actually invoked.
+- **Perimeter API Gateway (Apache APISIX)**:
+  - **Authentication & Identity**: Centralized verification of developer credentials (`X-Freepik-Api-Key`).
+  - **Rate Limiting Policies**: Tiered request quotas and concurrency limits (Free, Pro, Enterprise).
+  - **Pricing & Credit Metering**: Real-time cost calculation in base currency units (mUSD) with an upfront _credit hold_ upon request ingestion and final reconciliation post-execution.
+- **Application Server (FastAPI)**:
+  - Asynchronous Python controllers and services with Pydantic models generated from the specification.
+  - Strict runtime payload validation, upstream inference provider routing, and execution state persistence.
+- **Live Documentation & Playground**:
+  - Automated generation of public and B2B API reference documentation from the spec.
+  - Seamless integration with the web-based interactive Playground, ensuring trial consoles and schemas match production behavior exactly.
 
-## Outcome
+### 3. Phase 3: Consumption & Async Task Lifecycle
 
-The result is a public AI API platform serving image and video generation
-models at scale, with a documented, repeatable process for adding new
-capability without touching billing or gateway code by hand. The
-[production version](https://www.freepik.com/api) is live, with full
-reference docs at [docs.magnific.com](https://docs.magnific.com).
+Generative AI workloads (such as high-definition video or audio generation) have non-instantaneous processing times. I standardized the asynchronous consumption lifecycle to guarantee resilience and high concurrency:
+
+1. **Immediate Ingestion (`202 Accepted`)**: The client submits a payload; the gateway validates credentials and reserves estimated credits; the server issues a unique `task_id` and immediately responds with `202 Accepted` without blocking HTTP connections.
+2. **Dual Delivery Pattern**:
+   - **HTTP Webhooks**: Reactive delivery of the completed payload directly to the client's configured callback URL as soon as inference finishes.
+   - **Structured Polling**: Dedicated status endpoint queried by `task_id` for browser clients or environments without inbound webhook reception.
+3. **Credit Settlement & Reconciliation**: Upon successful completion, the exact consumed cost is deducted from the user's wallet. If a task fails or encounters an upstream timeout, reserved credits are automatically released.
+
+## Multi-Repository Governance & Continuous Synchronization
+
+To eliminate drift across independent repositories (specification, backend server, gateway configuration, public documentation, and interactive playground), I established an automated synchronization workflow:
+
+- The OpenAPI specification is linked as a submodule and authoritative reference across application and documentation repositories.
+- Automated validation and code-generation tooling verify that no gateway route or FastAPI model diverges from the active specification.
+- CI/CD pipelines run full unit, integration, and schema validation suites before any production deployment.
+
+## Outcome & Impact
+
+- **Robust, Scalable Platform**: Over 350 governed endpoints and 40+ multimodal AI models serving high-concurrency traffic with real-time cost protection and high availability.
+- **Consistent Developer Experience**: Type-safe contracts, predictable response times through asynchronous lifecycle patterns, and interactive documentation perfectly aligned with production behavior.
+- **Streamlined Onboarding**: Repeatable, automated process to integrate new AI model families without custom ad-hoc modifications to billing or gateway infrastructure.

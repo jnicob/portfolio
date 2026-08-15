@@ -9,8 +9,8 @@ const entries = [
       en: 'Freepik/Magnific API Platform & Public Landings',
     },
     summary: {
-      es: 'Diseño e implementación end-to-end de la plataforma pública de APIs de Freepik/Magnific: generación de IA (imagen, vídeo, audio), stock, estado de tareas, billing/créditos por modelo, Landings públicas de productos API (/api, /image-generation, /image-upscaler, /api/pricing, /api/playground), spec OpenAPI, servidor FastAPI, gateway APISIX (rate limits, costes, API keys) y documentación.',
-      en: "End-to-end design and implementation of Freepik/Magnific's public API platform: AI generation (image, video, audio), stock content, task status, model billing/credits, public API landings (/api, /image-generation, /image-upscaler, /api/pricing, /api/playground), OpenAPI specification, FastAPI server, APISIX gateway (rate limits, cost tracking, API keys) and documentation.",
+      es: 'Diseño e implementación end-to-end de la plataforma pública de APIs de Freepik/Magnific: catálogo multimodal de IA (imagen, vídeo, audio, upscale y edición), arquitectura distribuida con OpenAPI como única fuente de verdad, servidor FastAPI asíncrono, gateway APISIX (rate limits, costes y reserva de créditos en mUSD), Landings públicas y documentación interactiva.',
+      en: "End-to-end design and implementation of Freepik/Magnific's public API platform: multimodal AI catalog (image, video, audio, upscale, and editing), distributed architecture with OpenAPI as the single source of truth, asynchronous FastAPI server, APISIX gateway (rate limits, pricing, and mUSD credit reservation), public landings, and interactive documentation.",
     },
     role: {
       es: 'Ingeniero de plataforma de APIs & Landings',
@@ -18,12 +18,13 @@ const entries = [
     },
     stack: ['openapi', 'fastapi', 'python', 'apisix', 'nextjs', 'react', 'rest-api'],
     links: {
-      live: 'https://www.magnific.com/api',
+      live: 'https://www.freepik.com/api',
       docs: 'https://docs.magnific.com',
     },
     metrics: [
       { label: { es: 'Modelos de IA servidos', en: 'AI models served' }, value: '40+' },
-      { label: { es: 'Endpoints públicos', en: 'Public endpoints' }, value: '100+' },
+      { label: { es: 'Endpoints en catálogo', en: 'Catalog endpoints' }, value: '350+' },
+      { label: { es: 'Fases del pipeline', en: 'Pipeline phases' }, value: '3' },
     ],
     featured: true,
     caseStudy: true,
