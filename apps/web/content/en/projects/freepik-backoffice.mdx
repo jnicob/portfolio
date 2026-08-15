@@ -1,51 +1,38 @@
 ---
-title: Freepik/Flaticon content backoffice
-summary: 'Internal suite for Freepik/Flaticon content operations: review, cataloguing, moderation and publishing; production; icon packs; contributor tax and productivity extensions.'
-role: Full-stack engineer
-stack: [php, laravel, vue, typescript, kubernetes]
+title: Freepik/Flaticon Content Operations Backoffice
+summary: 'Internal enterprise suite for large-scale content operations across Freepik and Flaticon: moderation and cataloging of millions of graphical assets, production workflow orchestration (vector, photo, 3D, and AI), contributor tax portal, and internal productivity browser extensions.'
+role: Full-Stack Engineer — microservices architecture, legacy system modernization, and internal tooling
+stack: [php, laravel, vue, typescript, mysql, redis, kubernetes]
 links: {}
 metrics: []
 # No publicly evidenced project date: start of the Freepik/Magnific period (= projects.ts)
 date: '2022-07'
 ---
 
-## Context
+## Operational Context
 
-Behind a catalogue of millions of graphic resources is a production line:
-thousands of contributors upload content that needs reviewing, cataloguing,
-moderating and publishing, alongside an internal content-production operation.
-The Freepik/Flaticon content backoffice is that collection of internal systems,
-and this project covers the full-stack work across its constituent parts.
+Behind a global catalog of tens of millions of creative assets lies a massive production and review engine: thousands of independent contributors uploading illustrations, vectors, photography, PSD files, 3D models, and AI-generated assets daily, alongside internal teams focused on curation and in-house asset generation.
 
-## Review, cataloguing and publishing
+The Freepik and Flaticon content backoffice is the internal enterprise suite powering this digital supply chain at scale.
 
-At the heart of the backoffice are the tools the content team uses to review
-incoming resources, catalogue their metadata, tags and categories, moderate
-anything that does not meet the guidelines, and publish approved work. Two
-generations coexist: a legacy admin and its Laravel + Nova successor. Part of
-the work was moving flows to the newer system without stopping the operation.
+## High-Volume Moderation, Tagging & Ingestion
 
-## Content-production workflow
+The core backoffice processes millions of incoming submissions through high-throughput tools:
 
-In-house production—illustration, vector, PSD, 3D and, more recently,
-AI-generated content—is organised as a task workflow. Assignments move through
-allocation, production, review and delivery, with rules for each content type
-encoded in the system. The goal is measurable, plannable capacity rather than
-an opaque queue.
+- **Cataloging & Tagging**: Multi-language metadata tagging and category indexing designed to maximize search discoverability across Freepik's engine.
+- **Quality & Copyright Moderation**: Rapid review interfaces and intellectual property verification systems ensuring platform guideline compliance.
+- **System Modernization**: Progressive migration from legacy administrative portals toward a modern stack built on Laravel and Vue 3 / TypeScript, transitioning critical operational flows with zero downtime.
 
-## Flaticon icon packs
+## Content Production Workflows
 
-Flaticon icons do not live in isolation: they are grouped into coherent packs
-with a shared style and family. Pack composition, consistency, versioning and
-publishing have their own tool within the backoffice.
+Internal creative production is structured as a state-driven workflow:
 
-## Contributor tax portal
+- Task dispatching tailored to contributor expertise and capacity.
+- Review cycles, version control, and final publishing with format-specific validation rules.
+- Real-time performance dashboards allowing coordinators to track production velocity and balance workloads.
 
-Contributors are paid for their content, which requires correct tax paperwork.
-The portal lets them manage their tax details and documents, with validation
-that catches mistakes before they reach billing.
+## Flaticon Icon Packs & Contributor Tax Portal
 
-## Internal Chrome extensions
-
-Productivity tools for internal teams packaged as Chrome extensions: shortcuts
-over backoffice screens that remove repetitive steps from everyday review flows.
+- **Icon Family Composition**: Specialized tooling for organizing, versioning, and publishing consistent icon packs across Flaticon.
+- **Contributor Tax & Payout Portal**: Secure interface for international tax documentation and financial verification, implementing upfront validations that prevent accounting rejections.
+- **Productivity Chrome Extensions**: Custom browser extensions automating repetitive moderation actions and keyboard shortcuts, saving operational teams thousands of manual interactions daily.

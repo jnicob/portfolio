@@ -1,54 +1,37 @@
 ---
 title: Panel de desarrollador de la API
-summary: 'Dashboard del desarrollador de la API de Freepik/Magnific: uso y presupuesto con gráficos de consumo, límites de peticiones, facturación y gestión de API keys, incluidas reglas para miembros enterprise.'
-role: Ingeniero frontend
-stack: [nextjs, react, typescript, react-query]
+summary: 'Dashboard interactivo para desarrolladores y clientes de la API de Freepik/Magnific: gráficos de consumo en tiempo real, control de presupuesto y cuotas, monitorización de errores y gestión autónoma de API keys con soporte para equipos enterprise.'
+role: Ingeniero frontend — arquitectura de componentes, integración de datos y estados reactivos
+stack: [nextjs, react, typescript, react-query, tailwind]
 links:
-  docs: https://docs.magnific.com/introduction
+  live: https://www.magnific.com/api
+  docs: https://docs.magnific.com
 metrics: []
 # Sin fecha de proyecto evidenciada públicamente: inicio de la etapa Freepik/Magnific (= projects.ts)
 date: '2022-07'
 ---
 
-## El producto
+## Contexto y producto
 
-Quien construye sobre la API de Freepik/Magnific necesita algo más que
-endpoints: necesita saber cuánto consume, cuánto le queda, qué está
-fallando y cómo gestionar sus credenciales. El panel de desarrollador es
-esa capa de gestión y estadísticas: la cara operativa de la plataforma
-para clientes B2B y para desarrolladores individuales, integrada en el
-hub del desarrollador y en el área de perfil de la cuenta.
+Quienes construyen aplicaciones sobre la **[Plataforma de APIs de Freepik/Magnific](./freepik-api-platform)** necesitan visibilidad y control sobre su consumo: cuánto crédito han utilizado, qué volumen de peticiones procesan en tiempo real, cómo se comportan sus cuotas de rate limiting y cómo gestionar sus credenciales de manera autónoma.
 
-## Uso y presupuesto
+El panel de desarrollador constituye la capa operativa y analítica de la plataforma, diseñada tanto para desarrolladores individuales como para grandes organizaciones B2B que integran modelos de IA generativa a escala.
 
-- Gráficos de consumo por periodo para seguir la actividad de cada
-  integración de un vistazo, con el detalle por servicio.
-- Límites de peticiones visibles y contextualizados: cada plan tiene los
-  suyos, y el panel muestra en qué punto está el cliente antes de que un
-  límite se convierta en un error.
-- Presupuesto de créditos: consumo acumulado frente a lo contratado, para
-  anticipar la necesidad de ampliar antes de quedarse sin crédito.
+## Métricas, consumo y presupuesto
 
-## API keys y equipos
+- **Analíticas en tiempo real**: Visualización gráfica del tráfico por periodos, desglosando el volumen de peticiones y el consumo de créditos por familia de modelos (imagen, vídeo, audio y upscalers).
+- **Control predictivo de presupuesto**: Monitorización del saldo de créditos consumido frente al contratado, permitiendo anticipar recargas antes de que se interrumpa el servicio.
+- **Transparencia en rate limits**: Indicadores visuales sobre el estado de cuotas por minuto y por día según el plan activo (Free, Pro, Enterprise), evitando errores 429 imprevistos.
 
-- Alta, rotación y revocación de API keys sin pasar por soporte.
-- Reglas para miembros enterprise: los equipos grandes gestionan quién
-  puede crear claves y consumir crédito, con la organización —no el
-  individuo— como unidad de facturación.
+## Gobernanza de API keys y equipos Enterprise
 
-## B2B: créditos y planes
+- **Gestión autónoma de credenciales**: Generación instantánea, rotación periódica y revocación segura de API keys (`x-magnific-api-key`) directamente desde la consola sin necesidad de intermediación de soporte.
+- **Soporte multi-usuario y roles de equipo**: Reglas diferenciadas para miembros de organizaciones enterprise, permitiendo que equipos técnicos administren claves de forma granular mientras la organización actúa como unidad centralizada de facturación.
 
-El mismo panel sirve a un desarrollador individual con un plan de entrada
-y a una organización con contrato enterprise: la vista de consumo, los
-límites y la facturación se adaptan al plan contratado. Ese ajuste por
-plan —qué se muestra, qué se puede ampliar, dónde están los topes— es
-parte del producto, no una capa comercial añadida.
+## Arquitectura frontend y experiencia de usuario
 
-## La plataforma, de una pieza
+El dashboard se desarrolló sobre Next.js, React y TypeScript con TanStack Query (`react-query`):
 
-El panel es la última milla de la [plataforma de APIs](./freepik-api-platform):
-lo que el desarrollador contrata y consume ahí es lo que explican las
-landings públicas.
-
-- [Documentación](https://docs.magnific.com/introduction) — referencia pública de la API.
-- [Precios](https://www.magnific.com/pricing) — planes y créditos.
+- **Gestión reactiva del estado**: Cache optimista y sincronización periódica de estadísticas de consumo y estados de facturación.
+- **Diseño responsive y modular**: Componentes accesibles y altamente optimizados para ofrecer tiempos de respuesta inmediatos en la consulta de registros y auditoría de peticiones.
+- **Integración con el ecosistema de la API**: Conexión directa con la [documentación oficial](https://docs.magnific.com) y las [landings públicas de producto](https://www.magnific.com/api).

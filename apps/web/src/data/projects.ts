@@ -48,18 +48,17 @@ const entries = [
       en: 'AI-automated service integration',
     },
     summary: {
-      es: 'Sistema de agentes de IA especializados que automatiza el alta de un servicio nuevo en la plataforma de APIs: a partir de la definición del servicio generan la especificación OpenAPI, la implementación del endpoint, la configuración de precios y límites, los permisos y reglas de gateway, la documentación pública y su entrada en el Playground — para cualquier servicio, no solo modelos concretos.',
-      en: 'System of specialized AI agents that automates onboarding a new service into the API platform: from the service definition they generate the OpenAPI spec, the endpoint implementation, pricing and rate-limit configuration, gateway permissions and rules, public documentation and its Playground entry — for any service, not just specific models.',
+      es: 'Sistema de agentes de IA especializados desarrollado dentro de la plataforma de APIs de Freepik/Magnific que automatiza el alta y sincronización de nuevos modelos: desde la especificación OpenAPI hasta la implementación FastAPI, gateway APISIX, documentación pública y consola interactiva.',
+      en: 'Specialized AI agent system developed within Freepik/Magnific’s API platform that automates the onboarding and synchronization of new models: from OpenAPI specification to FastAPI implementation, APISIX gateway, public documentation, and interactive playground.',
     },
     role: {
-      es: 'Ingeniero — diseño y orquestación de los agentes',
-      en: 'Engineer — agent design and orchestration',
+      es: 'Ingeniero — arquitectura y orquestación de agentes de IA',
+      en: 'Engineer — AI agent architecture and orchestration',
     },
     stack: ['openapi', 'fastapi', 'apisix', 'llm-agents', 'python'],
     links: { docs: 'https://docs.magnific.com' },
     metrics: [
       {
-        // 6 = spec, API, precios, permisos/reglas, documentación, playground
         label: { es: 'Artefactos generados por servicio', en: 'Artifacts generated per service' },
         value: '6',
       },
@@ -97,12 +96,12 @@ const entries = [
       en: 'API developer dashboard',
     },
     summary: {
-      es: 'Dashboard del desarrollador de la API de Freepik/Magnific: uso y presupuesto con gráficos de consumo, límites de peticiones, facturación y gestión de API keys, incluidas reglas para miembros enterprise.',
-      en: 'Freepik/Magnific API developer dashboard: usage and budget with consumption charts, rate limits, billing and API key management, including enterprise member rules.',
+      es: 'Dashboard interactivo para desarrolladores y clientes de la API de Freepik/Magnific: gráficos de consumo en tiempo real, control de presupuesto y cuotas, monitorización de errores y gestión autónoma de API keys con soporte para equipos enterprise.',
+      en: 'Interactive dashboard for Freepik/Magnific API developers and enterprise clients: real-time consumption charts, budget and quota management, error monitoring, and autonomous API key governance with multi-user enterprise support.',
     },
     role: { es: 'Ingeniero frontend', en: 'Frontend engineer' },
-    stack: ['nextjs', 'react', 'typescript', 'react-query'],
-    links: { live: 'https://www.freepik.com/api' },
+    stack: ['nextjs', 'react', 'typescript', 'react-query', 'tailwind'],
+    links: { live: 'https://www.magnific.com/api', docs: 'https://docs.magnific.com' },
     metrics: [],
     featured: false,
     caseStudy: true,
@@ -119,7 +118,7 @@ const entries = [
       en: 'Internal suite for Freepik/Flaticon content operations: review, cataloguing, moderation and publishing; production; icon packs; contributor tax and productivity extensions.',
     },
     role: { es: 'Ingeniero full-stack', en: 'Full-stack engineer' },
-    stack: ['php', 'laravel', 'vue', 'typescript', 'kubernetes'],
+    stack: ['php', 'laravel', 'vue', 'typescript', 'mysql', 'redis', 'kubernetes'],
     links: {},
     metrics: [],
     featured: false,

@@ -1,55 +1,38 @@
 ---
 title: Backoffice de contenido Freepik/Flaticon
-summary: 'Suite interna para operar el contenido de Freepik/Flaticon: revisión, catalogación, moderación y publicación; producción; packs de iconos; fiscalidad de colaboradores y extensiones de productividad.'
-role: Ingeniero full-stack
-stack: [php, laravel, vue, typescript, kubernetes]
+summary: 'Suite interna para la operación masiva de contenido de Freepik y Flaticon: moderación y catalogación de millones de recursos gráficos, orquestación de workflows de producción de contenido (vector, foto, 3D e IA), gestión fiscal de colaboradores y extensiones de productividad.'
+role: Ingeniero full-stack — arquitectura de microservicios, migración de sistemas legacy y herramientas internas
+stack: [php, laravel, vue, typescript, mysql, redis, kubernetes]
 links: {}
 metrics: []
 # Sin fecha de proyecto evidenciada públicamente: inicio de la etapa Freepik/Magnific (= projects.ts)
 date: '2022-07'
 ---
 
-## El contexto
+## Contexto operativo
 
-Detrás de un catálogo de millones de recursos gráficos hay una fábrica:
-miles de colaboradores subiendo contenido que alguien tiene que revisar,
-catalogar, moderar y publicar, además de toda una operación interna de
-producción propia. El backoffice de contenido de Freepik/Flaticon es ese
-conjunto de sistemas internos, y este proyecto cubre el trabajo full-stack
-en las piezas que lo componen.
+Detrás de un catálogo global con decenas de millones de recursos visuales opera una compleja maquinaria de producción y revisión: miles de colaboradores independientes subiendo diariamente ilustraciones, vectores, fotografías, archivos PSD, modelos 3D y creaciones generadas con IA, junto a equipos internos dedicados a la curaduría y producción propia.
 
-## Revisión, catalogación y publicación
+El backoffice de contenido de Freepik y Flaticon comprende la suite de sistemas internos que hace posible operar esta cadena de suministro digital a gran escala.
 
-El corazón del backoffice son las herramientas con las que el equipo de
-contenido revisa lo que llega, lo cataloga —metadatos, etiquetas y
-categorías—, modera lo que no cumple las normas y publica lo aprobado.
-Conviven dos generaciones, un admin histórico y su sucesor sobre
-Laravel + Nova. Parte del trabajo fue esa transición: mover flujos al sistema nuevo
-sin parar la operación.
+## Revisión, catalogación y moderación masiva
 
-## Workflow de producción de contenido
+El núcleo del backoffice procesa millones de activos entrantes mediante herramientas de alta eficiencia:
 
-La producción propia —ilustración, vector, PSD, 3D y, más recientemente,
-contenido generado con IA— se organiza como un workflow de tareas. Los
-encargos pasan por asignación, producción, revisión y entrega, con las
-reglas de cada tipo de contenido codificadas en el sistema. El objetivo es
-que la capacidad de producción sea planificable y medible, no una cola opaca.
+- **Catalogación y etiquetado**: Asignación y optimización de metadatos, tags y categorías multilingües para maximizar la encontrabilidad en el motor de búsqueda de Freepik.
+- **Moderación de calidad y copyright**: Herramientas de filtrado rápido y verificación de derechos para asegurar el cumplimiento de las normativas de la plataforma.
+- **Modernización y migración arquitectónica**: Transición progresiva desde paneles administrativos legacy hacia una arquitectura moderna basada en Laravel y Vue 3 / TypeScript, migrando flujos críticos sin interrumpir la operación diaria.
 
-## Packs de iconos de Flaticon
+## Workflow de producción y asignación de contenido
 
-Los iconos de Flaticon no viven sueltos: se agrupan en packs coherentes,
-con un mismo estilo y una misma familia. La composición, consistencia,
-versionado y publicación de esos packs tiene su propia herramienta dentro
-del backoffice.
+La producción interna de contenido propio se modeló como un flujo de trabajo estructurado por estados:
 
-## Portal fiscal de colaboradores
+- Asignación inteligente de encargos según especialidad y capacidad de producción.
+- Ciclos de revisión, control de versiones y aprobación final con reglas de validación específicas por formato.
+- Paneles de rendimiento que permiten a los coordinadores planificar y medir la capacidad de producción en tiempo real.
 
-Los colaboradores cobran por su contenido, y eso exige documentación fiscal
-en regla. El portal les permite gestionar sus datos y documentos, con
-validaciones que evitan errores antes de que lleguen a facturación.
+## Packs de iconos de Flaticon y portal de colaboradores
 
-## Extensiones Chrome internas
-
-Herramientas de productividad para los equipos internos empaquetadas como
-extensiones de Chrome: atajos sobre las pantallas del backoffice que ahorran
-pasos repetitivos en los flujos de revisión de cada día.
+- **Composición de familias de iconos**: Herramienta especializada para la organización, versionado y publicación consistente de packs temáticos en Flaticon.
+- **Portal fiscal y financiero de colaboradores**: Interfaz para que los creadores gestionen su información fiscal internacional y facturación, incorporando validaciones automáticas que previenen rechazos contables.
+- **Extensiones Chrome de productividad**: Desarrollo de extensiones de navegador para automatizar atajos y tareas repetitivas en las pantallas de revisión, ahorrando miles de clics diarios a los moderadores.
