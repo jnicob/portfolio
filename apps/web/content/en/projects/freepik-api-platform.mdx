@@ -1,8 +1,8 @@
 ---
-title: Freepik/Magnific API Platform
-summary: "End-to-end design and implementation of Freepik/Magnific's public API platform: multimodal AI catalog (image, video, audio, upscale, and editing), distributed architecture with OpenAPI as the single source of truth, asynchronous FastAPI server, APISIX gateway (API keys, rate limits, pricing, and mUSD credit reservation), multi-repo synchronization, and interactive documentation."
-role: API Platform Engineer — OpenAPI specs, FastAPI server, APISIX gateway, async lifecycle, and docs
-stack: [python, fastapi, openapi, apisix, php, typescript]
+title: Freepik/Magnific API Platform & Public Landings
+summary: "End-to-end design and implementation of Freepik/Magnific's public API platform: multimodal AI catalog (image, video, audio, upscale, and editing), frontend engineering of public product landings (/api, /api/image-generation, /api/image-upscaler), API key management and analytics dashboards (Next.js & PHP with DDD), contract-first OpenAPI architecture, asynchronous FastAPI server, APISIX gateway (rate limits, pricing, and mUSD credit reservation), and pipeline automation via specialized AI agents."
+role: API Platform & Frontend Engineer — public landings, management dashboards, OpenAPI specs, backend microservices (PHP DDD / FastAPI), APISIX gateway, and AI agents
+stack: [nextjs, react, typescript, php, python, openapi, apisix, mysql, gcp, redis]
 links:
   live: https://www.magnific.com/api
   docs: https://docs.magnific.com
@@ -21,7 +21,25 @@ date: '2022-07'
 
 Magnific operates a public AI API platform exposing multimodal models (image generation, text-to-video, image-to-video, audio generation, upscalers, and editing tools) to external developers, B2B enterprise clients, and internal products (such as Pikaso and creative suites).
 
-As the platform scaled from an initial set of endpoints to an ecosystem of over 350 endpoints and dozens of cutting-edge AI models from external providers and internal engines, the team implemented a distributed, resilient, and strictly governed architecture to ensure every new model moves smoothly from contract definition to production with accurate metering, low-latency edge routing, and consistent interactive public documentation.
+As the platform scaled from an initial set of endpoints to an ecosystem of over 350 endpoints and dozens of cutting-edge AI models from external providers and internal engines, the team implemented a distributed, resilient, and strictly governed architecture. The scope spanned from the frontend engineering of public product landings and management dashboards to gateway infrastructure, backend management microservices using DDD, contract specifications, and automated service onboarding using AI agents.
+
+## Public Surface and Product Landings (Frontend)
+
+As a core part of the API frontend engineering effort, the team built and evolved the public product landings where developers and enterprise teams explore platform capabilities:
+
+- **[Main API Landing](https://www.magnific.com/api)**: Commercial and technical gateway showcasing the full suite of models, integration architecture, use cases, and pricing tiers.
+- **[Image Generation API](https://www.magnific.com/api/image-generation)**: Specialized product landing featuring interactive visual sliders, style selectors, resolution controls, and rendering parameters.
+- **[Image Upscaler API](https://www.magnific.com/api/image-upscaler)**: Landing dedicated to super-resolution and detail enhancement tools with real-time before/after comparison controls.
+- **Interactive Playground (Next.js) & Documentation (Mintlify)**: In-browser test console allowing live execution of models and unified technical reference docs for B2B integrators.
+
+Frontend development focused on crafting performant, reusable component architectures in Next.js, React, and TypeScript, prioritizing fast load times, smooth transitions, and intuitive presentation of complex generative parameters.
+
+## API Key Management Dashboards & Analytics (Full-Stack)
+
+To allow developers and enterprise clients to manage integrations and monitor consumption in real time, a complete suite of dashboards was designed and built:
+
+- **Frontend (Next.js / React)**: Intuitive and secure control panel for issuing, rotating, and revoking API keys, live monitoring of real-time usage metrics, granular analytics by model and resolution, and tracking billing balances and tier quotas.
+- **Backend (PHP / Domain-Driven Design)**: Decoupled microservices engineered under hexagonal architecture and _Domain-Driven Design_ (DDD) principles, handling identity governance, consumption event auditing, MySQL persistence, and distributed caching / rate-limiting via Redis on Google Cloud Platform (GCP) infrastructure.
 
 ## Architecture and 3-Phase Lifecycle
 
@@ -61,9 +79,6 @@ The entire platform is governed from the formal OpenAPI contract:
 - **Application Server (FastAPI)**:
   - Asynchronous Python controllers and services with Pydantic models generated from the specification.
   - Strict runtime payload validation, upstream inference provider routing, and execution state persistence.
-- **Documentation (Mintlify) & Playground (Next.js)**:
-  - Automated generation of public and B2B API reference documentation from the spec.
-  - Seamless integration with the web-based interactive Playground, ensuring trial consoles and schemas match production behavior exactly.
 
 ### 3. Phase 3: Consumption & Async Task Lifecycle
 
@@ -108,6 +123,8 @@ To eliminate drift across independent repositories (specification, backend serve
 
 ## Outcome & Impact
 
+- **High-Impact Public Surface**: Production-grade, high-performance visual product landings ([magnific.com/api](https://www.magnific.com/api), [image-generation](https://www.magnific.com/api/image-generation), [image-upscaler](https://www.magnific.com/api/image-upscaler)).
+- **Analytics & Management Dashboards**: High-availability reactive interfaces and DDD backend services for secure credential administration and real-time usage statistics.
 - **Robust, Scalable Platform**: Over 350 governed endpoints and 40+ multimodal AI models serving high-concurrency traffic with real-time cost protection and high availability.
 - **Consistent Developer Experience**: Type-safe contracts, predictable response times through asynchronous lifecycle patterns, and interactive documentation perfectly aligned with production behavior.
-- **Streamlined Onboarding**: Repeatable, automated process to integrate new AI model families without custom ad-hoc modifications to billing or gateway infrastructure.
+- **Streamlined Onboarding**: Repeatable, automated process using AI agents to integrate new AI model families without custom ad-hoc modifications to billing or gateway infrastructure.
