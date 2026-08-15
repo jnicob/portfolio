@@ -52,9 +52,9 @@ export function ProfileSummary({
               )}
             >
               {bullets.map((bullet, index) => (
-                <li key={index} className="flex flex-wrap gap-x-1.5 items-baseline">
-                  <span className="shrink-0">•</span>
-                  <span className="font-semibold text-fg">{bullet.label[locale]}:</span>
+                <li key={index}>
+                  <span className="shrink-0 mr-1">•</span>
+                  <span className="font-semibold mr-1 text-fg">{bullet.label[locale]}:</span>
                   <span>{bullet.value[locale]}</span>
                 </li>
               ))}

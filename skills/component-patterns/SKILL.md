@@ -15,11 +15,13 @@ metadata:
 - Composition over configuration: prefer `children`/slots over boolean-prop explosions.
   Behavior-only (headless) logic goes in hooks; the visual layer stays swappable.
 
-## Variants
+## Variants & Styling
 
 - Use `cva` for variants; export the variant type:
   `type ButtonProps = VariantProps<typeof buttonVariants> & ComponentProps<'button'>`.
 - Variant classes use ONLY semantic token utilities (see `tailwind-tokens`).
+- Prefer `cn(...)` (`@/lib/cn`) over template literal string interpolation (``${a} ${b}``) for conditional or dynamic CSS classes.
+
 
 ## States are part of the API
 
