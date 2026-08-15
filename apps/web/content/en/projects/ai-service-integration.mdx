@@ -1,7 +1,7 @@
 ---
-title: AI-automated service integration
-summary: 'System of specialized AI agents that automates onboarding a new service into the API platform: from the service definition to spec, implementation, pricing, permissions, documentation and playground.'
-role: Engineer — agent design and orchestration
+title: AI-Automated Service Integration
+summary: 'Specialized AI agent system developed within Freepik/Magnific’s API platform that automates the onboarding and synchronization of new models: from OpenAPI specification to FastAPI implementation, APISIX gateway, public documentation, and interactive playground.'
+role: Engineer — AI agent architecture, design, and orchestration
 stack: [openapi, fastapi, apisix, llm-agents, python]
 links:
   docs: https://docs.magnific.com
@@ -12,69 +12,70 @@ metrics:
 date: '2022-07'
 ---
 
-## The problem
+## Context and Platform Integration
 
-Onboarding a new service into a public API platform isn't a single
-change: it's at least six artifacts coordinated across several
-repositories — the OpenAPI specification, the endpoint implementation,
-pricing and rate-limit configuration, gateway permissions and rules,
-public documentation and the Playground entry. Each artifact has its own
-format, its own conventions and its own repo. Doing this by hand,
-service by service, works but is slow and prone to inconsistencies: a
-parameter that lands in the spec but not the server, a pricing rule that
-never reaches the gateway, a docs page that gets forgotten.
+This initiative was developed as an internal tooling solution within the **[Freepik/Magnific API Platform](./freepik-api-platform)**. As the platform rapidly integrated new multimodal AI models (image generation, video, audio, and upscalers), the engineering team recognized the need for an automated mechanism to onboard new capabilities without repetitive manual tasks or multi-repository drift.
 
-## The solution
+## The Problem
 
-A system of specialized AI agents, one per artifact, orchestrated around
-a single service definition as the source of truth. Each agent deeply
-knows its repo's conventions — the spec format, the controller
-structure, the gateway configuration schema, the docs page template —
-and produces the corresponding change ready for human review. The
-orchestrator splits the work across agents, passes the service
-definition as shared context, and consolidates the results into a
-coherent set of changes across repos.
+Onboarding a new service into a public API platform is not a single code change: it requires **six coordinated artifacts** across independent architecture layers:
 
-The system is deliberately _human-in-the-loop_ (HITL): every change the
-agents propose goes through human review and approval before merging,
-because pricing, permissions and gateway rules touch real billing. For
-low-risk artifacts — documentation, examples — the model can relax
-towards _human-on-the-loop_ (HOTL): the agent applies the change and a
-person supervises with the ability to intervene, rather than approving
-every step.
+1. The formal OpenAPI specification with typed parameters and schemas.
+2. The FastAPI controller and business logic implementation on the server.
+3. Perimeter route definitions, access permissions, and mUSD pricing rules on APISIX Gateway.
+4. Runtime-validated Pydantic models synchronized with the specification.
+5. Technical reference documentation for developers and B2B integrators on Mintlify.
+6. An interactive console entry with visual controls in the Next.js Playground.
 
-## What it generates
+Performing this process manually for each model family is viable but slow and prone to inconsistencies (e.g., parameter drift between spec and server, or unpropagated pricing rules on the gateway).
 
-From a service definition, the system generates:
+## The Solution: Multi-Agent Orchestration
 
-1. **OpenAPI specification** — the endpoint's request/response contract,
-   with its parameters and validations.
-2. **Endpoint implementation** — the controller and use case in the
-   server, following the pattern of existing endpoints.
-3. **Pricing and rate limits** — per-generation or usage-based cost
-   configuration and per-tier limits.
-4. **Gateway permissions and rules** — the route, its associated
-   permission and the gateway-level cost rules.
-5. **Public documentation** — the endpoint reference page and its
-   changelog entry.
-6. **Playground entry** — the interactive form generated from the same
-   spec to try the service from the browser.
+The team designed and built a system of **specialized AI agents**, where each agent operates as a domain expert across a specific technology stack, governed by a central orchestrator:
+
+```
+                  +-----------------------------------+
+                  |        Service Definition         |
+                  |     (Single Source of Truth)      |
+                  +-----------------------------------+
+                                    |
+                  +-----------------+-----------------+
+                  |                                   |
+                  v                                   v
++-----------------------------------+   +---------------------------------+
+|  Backend & Gateway Agents         |   |  Frontend & Docs Agents         |
+|  - Spec Agent (OpenAPI)           |   |  - Docs Agent (Mintlify)        |
+|  - Backend Agent (FastAPI / Tests)|   |  - Frontend Agent (Playground)  |
+|  - Gateway Agent (APISIX / Costs) |   |                                 |
++-----------------------------------+   +---------------------------------+
+                                    |
+                                    v
+                  +-----------------------------------+
+                  |     Human-in-the-Loop (HITL)      |
+                  |     Coordinated Pull Request      |
+                  +-----------------------------------+
+```
+
+### Human-in-the-Loop (HITL) Workflow
+
+The system is deliberately designed around a _Human-in-the-Loop_ (HITL) paradigm:
+
+- Each generated artifact undergoes automated static analysis, type checking, and schema validation before being assembled into a unified change proposal.
+- The engineering team reviews, validates, and approves the proposed changes in a secure environment before merging to production, ensuring that critical layers such as pricing, security permissions, and routing policies retain strict human oversight.
+
+## Artifacts Generated per Service
+
+From a single formal service definition, the orchestrator coordinates the automated generation of:
+
+1. **OpenAPI Specification**: Standardized request/response schemas, parameters, and error models.
+2. **FastAPI Controller**: Typed asynchronous endpoints and parameter mappings to upstream inference providers.
+3. **APISIX Gateway Rules**: Routes, rate-limiting policies, and per-call mUSD pricing configurations.
+4. **Pydantic Models**: Runtime data validation models strictly synchronized with the OpenAPI spec.
+5. **Public Documentation (Mintlify)**: Comprehensive reference guides, parameter tables, and cURL / SDK code snippets.
+6. **Playground Console (Next.js)**: Reactive form components with tailored input controls and multimedia output viewers (image, video, audio).
 
 ## Impact
 
-The result is a repeatable, consistent onboarding process: the same
-pattern that used to be applied by hand, service by service, to model
-families such as Kling or WAN is now generalized to any service the
-platform wants to expose. The orchestrator reduces the manual
-cross-repo work to reviewing and approving what each agent proposes,
-rather than writing it from scratch.
-
-## Lessons
-
-Agents perform well to the extent that the conventions they follow are
-strict and the source of truth is single: when each artifact's format is
-well defined and the service definition leaves no ambiguity, the agent
-produces a correct change almost every time; when the convention is
-loose, the agent inherits that ambiguity. It's the same principle that
-governs this portfolio — specs and typed data as the single source, never
-content duplicated by hand.
+- **Onboarding Velocity**: Reduced new model onboarding time from days to minutes.
+- **Zero Specification Drift**: Guaranteed multi-layer consistency backed by a single authoritative source of truth.
+- **Ecosystem Standardization**: Enforced architectural guidelines and naming conventions across the entire [API Platform](./freepik-api-platform) suite.

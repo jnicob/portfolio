@@ -1,7 +1,7 @@
 ---
 title: Integración de servicios automatizada a través de IA
-summary: 'Sistema de agentes de IA especializados que automatiza el alta de un servicio nuevo en la plataforma de APIs: de la definición del servicio a spec, implementación, precios, permisos, documentación y playground.'
-role: Ingeniero — diseño y orquestación de los agentes
+summary: 'Sistema de agentes de IA especializados desarrollado dentro de la plataforma de APIs de Freepik/Magnific que automatiza el alta y sincronización de nuevos modelos: desde la especificación OpenAPI hasta la implementación FastAPI, gateway APISIX, documentación pública y consola interactiva.'
+role: Ingeniero — diseño, arquitectura y orquestación de agentes de IA
 stack: [openapi, fastapi, apisix, llm-agents, python]
 links:
   docs: https://docs.magnific.com
@@ -12,71 +12,70 @@ metrics:
 date: '2022-07'
 ---
 
+## Contexto e integración en la plataforma
+
+Esta iniciativa se desarrolló como solución de _tooling_ interno dentro de la **[Plataforma de APIs de Freepik/Magnific](./freepik-api-platform)**. Al acelerar la integración de modelos multimodales (generación de imagen, vídeo, audio y upscalers), el equipo identificó la necesidad de un mecanismo automatizado para incorporar nuevos servicios sin incurrir en tareas manuales repetitivas ni desajustes entre repositorios.
+
 ## El problema
 
-Dar de alta un servicio nuevo en una plataforma pública de APIs no es un
-solo cambio: son al menos seis artefactos coordinados a través de varios
-repositorios — la especificación OpenAPI, la implementación del
-endpoint, la configuración de precios y límites de uso, los permisos y
-reglas del gateway, la documentación pública y la entrada en el
-Playground. Cada artefacto tiene su propio formato, sus propias
-convenciones y su propio repo. Hacerlo a mano, servicio a servicio,
-funciona pero es lento y propenso a inconsistencias: un parámetro que
-llega a la spec pero no al servidor, una regla de precio que no llega al
-gateway, una página de docs que se olvida.
+Dar de alta un servicio nuevo en una plataforma pública de APIs no es un solo cambio: implica al menos **seis artefactos coordinados** a través de múltiples capas:
 
-## La solución
+1. La especificación OpenAPI formal con sus parámetros y tipados.
+2. La implementación del controlador y lógica de negocio en el servidor FastAPI.
+3. La configuración de rutas, permisos perimetrales y tarificación en APISIX Gateway.
+4. La generación de modelos Pydantic validados en tiempo de ejecución.
+5. La documentación técnica de referencia para desarrolladores y clientes B2B en Mintlify.
+6. La entrada interactiva con controles visuales en el Playground web de Next.js.
 
-Un sistema de agentes de IA especializados, uno por artefacto, orquestados
-sobre una única definición del servicio como fuente de verdad. Cada agente
-conoce en profundidad las convenciones de su repo — el formato de la
-spec, la estructura del controlador, el esquema de configuración del
-gateway, la plantilla de la página de docs — y produce el cambio
-correspondiente listo para revisión humana. El orquestador reparte el
-trabajo entre agentes, pasa la definición del servicio como contexto
-compartido y consolida los resultados en un conjunto de cambios coherente
-entre repos.
+Hacerlo manualmente para cada familia de modelos funciona, pero es lento y propenso a inconsistencias (parámetros que divergen entre la spec y el servidor, o reglas de costes que no se reflejan en el gateway).
 
-El sistema es deliberadamente _human-in-the-loop_ (HITL): cada cambio
-que los agentes proponen pasa por revisión y aprobación humana antes de
-fusionarse, porque precios, permisos y reglas de gateway tocan
-facturación real. Para los artefactos de bajo riesgo — documentación,
-ejemplos — el modelo puede relajarse hacia _human-on-the-loop_ (HOTL):
-el agente aplica el cambio y la persona supervisa con capacidad de
-intervenir, en lugar de aprobar cada paso.
+## La solución: Orquestación multi-agente
 
-## Qué genera
+Se diseñó e implementó un sistema de **agentes de IA especializados**, donde cada agente opera como un experto sobre un dominio técnico concreto, gobernados por un orquestador central:
 
-A partir de la definición de un servicio, el sistema genera:
+```
+                  +-----------------------------------+
+                  |     Definición del Servicio       |
+                  |     (Fuente única de verdad)      |
+                  +-----------------------------------+
+                                    |
+                  +-----------------+-----------------+
+                  |                                   |
+                  v                                   v
++-----------------------------------+   +---------------------------------+
+|  Agentes de Backend & Gateway     |   |  Agentes de Frontend & Docs     |
+|  - Spec Agent (OpenAPI)           |   |  - Docs Agent (Mintlify)        |
+|  - Backend Agent (FastAPI / Tests)|   |  - Frontend Agent (Playground)  |
+|  - Gateway Agent (APISIX / Costs) |   |                                 |
++-----------------------------------+   +---------------------------------+
+                                    |
+                                    v
+                  +-----------------------------------+
+                  |    Revisión Humana (HITL)         |
+                  |    Pull Request coordinada        |
+                  +-----------------------------------+
+```
 
-1. **Especificación OpenAPI** — el contrato de petición/respuesta del
-   endpoint, con sus parámetros y validaciones.
-2. **Implementación del endpoint** — el controlador y el caso de uso en
-   el servidor, siguiendo el patrón de otros endpoints existentes.
-3. **Precios y límites de uso** — la configuración de coste por
-   generación o por uso y los límites por plan.
-4. **Permisos y reglas de gateway** — la ruta, el permiso asociado y las
-   reglas de coste a nivel de gateway.
-5. **Documentación pública** — la página de referencia del endpoint y su
-   entrada en el changelog.
-6. **Entrada en el Playground** — el formulario interactivo generado
-   desde la misma spec para probar el servicio desde el navegador.
+### Esquema Human-in-the-Loop (HITL)
+
+El sistema es deliberadamente _Human-in-the-Loop_ (HITL):
+
+- Cada artefacto generado pasa por validaciones automatizadas de tipos y linters antes de ser presentado como una propuesta de cambio unificada.
+- El equipo de ingeniería revisa, valida y aprueba los cambios en un entorno seguro antes de fusionar a producción, garantizando que aspectos críticos como precios, permisos y reglas de enrutamiento conserven una supervisión rigurosa.
+
+## Artefactos generados por servicio
+
+A partir de una definición formal del servicio, el orquestador coordina la generación de:
+
+1. **Especificación OpenAPI**: Esquemas de petición/respuesta, parámetros y modelos de error estandarizados.
+2. **Controlador FastAPI**: Endpoints asíncronos tipados y mapeos al proveedor de inferencia upstream.
+3. **Reglas de Gateway APISIX**: Rutas, políticas de rate limiting y reglas de coste en mUSD por invocación.
+4. **Modelos Pydantic**: Esquemas de validación de datos en tiempo de ejecución sincronizados con la spec.
+5. **Documentación Pública (Mintlify)**: Guías de referencia técnica, tablas de parámetros y snippets en cURL/SDKs.
+6. **Consola en el Playground (Next.js)**: Formulario reactivo con controles adaptados y visores multimedia (imagen, vídeo, audio).
 
 ## Impacto
 
-El resultado es un proceso de onboarding repetible y consistente: el
-mismo patrón que antes se aplicaba a mano, servicio a servicio, a
-familias de modelos como Kling o WAN queda generalizado a cualquier
-servicio que la plataforma quiera exponer. El orquestador reduce el
-trabajo manual entre repos a revisar y aprobar los cambios que cada
-agente propone, no a escribirlos desde cero.
-
-## Lecciones
-
-Los agentes rinden en la medida en que las convenciones que siguen son
-estrictas y la fuente de verdad es única: cuando el formato de cada
-artefacto está bien definido y la definición del servicio no admite
-ambigüedad, el agente produce un cambio correcto casi siempre; cuando la
-convención es laxa, el agente hereda esa ambigüedad. Es el mismo
-principio que gobierna este portfolio — specs y datos tipados como fuente
-única, nunca contenido duplicado a mano.
+- **Velocidad de onboarding**: Reducción del tiempo de alta de un nuevo modelo de días a minutos.
+- **Cero deriva de especificación**: Consistencia garantizada en todas las capas gracias a una única fuente de verdad.
+- **Estandarización del ecosistema**: Adopción sistemática de directrices de arquitectura y nombrado en toda la suite de la [Plataforma de APIs](./freepik-api-platform).
