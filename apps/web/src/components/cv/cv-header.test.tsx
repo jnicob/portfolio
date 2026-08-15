@@ -36,7 +36,7 @@ describe('CvHeader', () => {
     const toggleButton = screen.getByRole('button', { name: 'Ocultar resumen' });
     expect(toggleButton).toBeInTheDocument();
     expect(
-      screen.getByText((content) => content.includes('Perfil de punta a punta')),
+      screen.getByText((content) => content.includes(profile.summary.es.slice(0, 30))),
     ).toBeInTheDocument();
 
     // Al hacer click, se oculta

@@ -7,25 +7,27 @@ export const profile = profileSchema.parse({
     en: 'Computer Engineer - full-stack web developer',
   },
   summary: {
-    es: `Ingeniero en Informática con más de 15 años construyendo software full-stack en entornos diversos y de alta escala: plataformas públicas de APIs de IA, e-commerce, sistemas de salud e interoperabilidad HL7 y soluciones internacionales para clientes de EE. UU. y Latinoamérica.
+    es: `Ingeniero en Informática con más de 15 años de experiencia en análisis, arquitectura y desarrollo de software full-stack. He trabajado en soluciones para empresas y proyectos de España, EE. UU. y Latinoamérica, abarcando plataformas web a medida, servicios de API, e-commerce, sistemas de gestión, citas, historias clínicas e interoperabilidad en salud.
 
-Perfil de punta a punta: desde la especificación OpenAPI, arquitectura backend y gateways de APIs hasta el frontend, la documentación y el ciclo completo de producto. Pionero en la integración y orquestación de sistemas basados en Agentes de IA para automatización de specs, código y reglas de negocio, acumulando más de 1.000 PRs en los últimos cuatro años. Experiencia trabajando en equipos multidisciplinarios y remotos.
+Aplico e integro activamente flujos de trabajo con Agentes de IA y skills especializadas para la automatización de especificaciones, desarrollo guiado y reglas de negocio. Experiencia trabajando en equipos multidisciplinarios, distribuidos y remotos.
 
 Core Tech & Dominio:
-• Lenguajes & Frameworks: TypeScript, JavaScript (ES2024), Python (FastAPI), PHP (Laravel, CodeIgniter), Node.js (Express), React / Next.js, Vue 2/3.
-• AI & API Platform: OpenAPI, Gateway APISIX (rate limits, billing/credits, API keys), Orquestación de Agentes de IA (Claude, Codex, Gemini).
-• Data & Middleware: MySQL, SQL Server, PostgreSQL, RESTful APIs, Mirth Connect, HL7 V2, SNOMED CT.
-• Tooling & CSS: Tailwind CSS, Jest, PHPUnit, Git, Docker, CI/CD plataform, Linux, Apache.
+• Lenguajes & Frameworks: TypeScript, JavaScript, Node.js, React / Next.js, Vue 2/3, PHP (Laravel, CodeIgniter, WordPress), Python (FastAPI).
+• AI & API Platform: API Gateways (APISIX), Orquestación de Agentes de IA (Claude, Codex, Gemini), OpenAPI, automatización con skills.
+• Datos & Middleware: PostgreSQL, MySQL, SQL Server, RESTful APIs, Mirth Connect, HL7, SNOMED CT.
+• Tooling & Calidad: Tailwind CSS, Vitest / Jest, PHPUnit, Git, Docker, CI/CD.
+• Arquitectura & Prácticas: TDD, SOLID, Clean Code, patrones de diseño (MVC, DDD), metodologías ágiles.
 `,
-    en: `Computer Engineer with 15+ years of experience building full-stack software across diverse and high-scale environments: public AI API platforms, e-commerce, healthcare & HL7 interoperability systems, and international products for US and Latin American clients.
+    en: `Computer Engineer with 15+ years of experience in software analysis, architecture, and full-stack development. Worked on solutions for companies and projects across Spain, the US, and Latin America, covering custom web platforms, API services, e-commerce, management systems, appointment scheduling, EHR/clinical records, and healthcare interoperability.
 
-End-to-end profile: from OpenAPI specs, backend architecture, and API gateways to frontend, documentation, and full product lifecycle. Pioneer in orchestrating AI Agent systems to automate specs, code generation, and business rules, delivering 1,000+ PRs over the last four years. Experienced in multidisciplinary, remote, and distributed teams.
+Actively integrating AI Agent workflows and custom skills to automate specifications, code generation, and business rules. Proven experience collaborating in multidisciplinary, distributed, and remote teams.
 
 Core Tech & Expertise:
-• Languages & Frameworks: TypeScript, JavaScript (ES2024), Python (FastAPI), PHP (Laravel, CodeIgniter), Node.js (Express), React / Next.js, Vue 2/3.
-• AI & API Platform: OpenAPI, APISIX Gateway (rate limits, billing/credits, API keys), AI Agent Orchestration (Claude, Codex, Gemini).
-• Data & Middleware: MySQL, SQL Server, PostgreSQL, RESTful APIs, Mirth Connect, HL7 V2, SNOMED CT.
-• Tooling & Styling: Tailwind CSS, Jest, PHPUnit, Git, Docker, CI/CD plataform, Linux, Apache.
+• Languages & Frameworks: TypeScript, JavaScript, Node.js, React / Next.js, Vue 2/3, PHP (Laravel, CodeIgniter, WordPress), Python (FastAPI).
+• AI & API Platform: API Gateways (APISIX), AI Agent Orchestration (Claude, Codex, Gemini), OpenAPI, custom skill automation.
+• Data & Middleware: PostgreSQL, MySQL, SQL Server, RESTful APIs, Mirth Connect, HL7, SNOMED CT.
+• Tooling & Quality: Tailwind CSS, Vitest / Jest, PHPUnit, Git, Docker, CI/CD.
+• Architecture & Practices: TDD, SOLID, Clean Code, design patterns (MVC, DDD), agile methodologies.
 `,
   },
   location: { es: 'España', en: 'Spain' },
