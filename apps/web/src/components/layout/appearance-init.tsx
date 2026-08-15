@@ -12,6 +12,20 @@ import {
 import { CV_VIEWS } from '@/data/constants';
 import type { CvView, Skin, Theme } from '@/data/constants';
 
+// Suprime falso positivo de React 19 en desarrollo al reconciliar el script de inicialización de tema en soft navigations
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  const origError = console.error;
+  console.error = (...args: unknown[]) => {
+    if (
+      typeof args[0] === 'string' &&
+      args[0].includes('Encountered a script tag while rendering React component')
+    ) {
+      return;
+    }
+    origError.apply(console, args);
+  };
+}
+
 type Props = { onView?: (view: CvView) => void };
 
 type ResolvedAppearance = { theme: Theme; skin: Skin };
