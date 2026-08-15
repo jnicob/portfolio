@@ -219,6 +219,38 @@ const entries = [
     caseStudy: false,
     date: '2020-09',
   },
+  // ——— Proyectos independientes / Freelance ———
+  {
+    slug: 'manos-activas',
+    title: {
+      es: 'Manos Activas — plataforma web de terapia ocupacional',
+      en: 'Manos Activas — occupational therapy web platform',
+    },
+    summary: {
+      es: 'Plataforma web clínica y divulgativa de terapia ocupacional (manosactivas.es) desarrollada con metodología guiada por IA (specs y skills para agentes). Integra un backend WordPress a medida (PHP/MySQL) acoplado a componentes React, TypeScript y TailwindCSS. Incluye pasarela de pago Stripe API (con entrega tokenizada de PDFs de pago), módulo de reservas clínicas con Cal.com, sistema de modo oscuro/claro con variables CSS semánticas y entorno Dockerizado.',
+      en: 'Occupational therapy web platform (manosactivas.es) built with AI spec-driven architecture and custom agent skills. Integrates a custom WordPress backend (PHP/MySQL) bridged with React, TypeScript, and TailwindCSS components. Features Stripe API integration (tokenized paid PDF downloads), Cal.com clinical booking module, semantic dark/light mode, and Docker containerization.',
+    },
+    role: {
+      es: 'Desarrollador full-stack & arquitecto de la solución',
+      en: 'Full-stack developer & solution architect',
+    },
+    stack: [
+      'wordpress',
+      'react',
+      'typescript',
+      'php',
+      'mysql',
+      'stripe',
+      'docker',
+      'tailwind',
+      'llm-agents',
+    ],
+    links: { live: 'https://manosactivas.es' },
+    metrics: [{ label: { es: 'Recursos clínicos', en: 'Clinical resources' }, value: '190+' }],
+    featured: false,
+    caseStudy: false,
+    date: '2024-01',
+  },
   // ——— Etapa salud / Argentina ———
   {
     slug: 'his-municipal',

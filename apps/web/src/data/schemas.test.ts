@@ -332,7 +332,7 @@ describe('datos reales', () => {
     expect(experience.length).toBeGreaterThanOrEqual(2);
     expect(education.length).toBeGreaterThanOrEqual(1);
     expect(skills.length).toBeGreaterThanOrEqual(8);
-    expect(projects).toHaveLength(14);
+    expect(projects).toHaveLength(15);
     expect(projects.map((p) => p.slug)).toEqual([
       'freepik-api-platform',
       'ai-service-integration',
@@ -345,6 +345,7 @@ describe('datos reales', () => {
       'candidate-viewer',
       'the-crane-club',
       'develop-intelligence',
+      'manos-activas',
       'his-municipal',
       'fares-taie-salud',
       'elisa-processor',
