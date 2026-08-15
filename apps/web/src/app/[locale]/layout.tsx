@@ -6,6 +6,7 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import { Source_Serif_4 } from 'next/font/google';
+import Script from 'next/script';
 import { routing } from '@/i18n/routing';
 import { SITE_URL } from '@/lib/seo';
 import { AppearanceInit } from '@/components/layout/appearance-init';
@@ -69,7 +70,9 @@ export default async function LocaleLayout({ children, params }: Props) {
       suppressHydrationWarning
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <Script id="theme-init" strategy="beforeInteractive">
+          {themeInitScript}
+        </Script>
       </head>
       <body className="flex min-h-dvh flex-col">
         <NextIntlClientProvider messages={messages}>
