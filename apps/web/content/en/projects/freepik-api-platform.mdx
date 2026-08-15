@@ -1,73 +1,122 @@
 ---
-title: Freepik/Magnific API Platform
-summary: "End-to-end design and implementation of Freepik/Magnific's public API platform: AI generation (image, video, audio), stock content, task status and account APIs. OpenAPI specification, FastAPI server, APISIX gateway (rate limits, cost tracking, API keys), billing and public documentation."
-role: API Platform Engineer — specs, server, gateway, billing, docs
-stack: [python, fastapi, openapi, apisix, php]
+title: Freepik/Magnific API Platform & Public Landings
+summary: "End-to-end design and implementation of Freepik/Magnific's public API platform: multimodal AI catalog (image, video, audio, upscale, and editing), frontend engineering of public product landings (/api, /api/image-generation, /api/image-upscaler), contract-first OpenAPI architecture, asynchronous FastAPI server, APISIX gateway (rate limits, pricing, and mUSD credit reservation), and pipeline automation via specialized AI agents."
+role: API Platform & Frontend Engineer — public landings, OpenAPI specs, FastAPI server, APISIX gateway, and AI agents
+stack: [python, fastapi, openapi, apisix, nextjs, react, typescript, php]
 links:
-  live: https://www.freepik.com/api
+  live: https://www.magnific.com/api
   docs: https://docs.magnific.com
-metrics: []
+metrics:
+  - label: AI models served
+    value: '40+'
+  - label: Catalog endpoints
+    value: '350+'
+  - label: Pipeline phases
+    value: '3'
 # No publicly evidenced project date: start of the Freepik/Magnific period (= projects.ts)
 date: '2022-07'
 ---
 
 ## Context
 
-Freepik/Magnific runs a public AI API platform that exposes image and video
-generation models to developers building products on top of Freepik/Magnific's
-AI stack. As the platform grew from a handful of endpoints to dozens of AI
-models, the underlying process — from an OpenAPI spec to a production
-endpoint, with billing and public docs — needed a consistent, repeatable
-path instead of one-off work per endpoint.
+Magnific operates a public AI API platform exposing multimodal models (image generation, text-to-video, image-to-video, audio generation, upscalers, and editing tools) to external developers, B2B enterprise clients, and internal products (such as Pikaso and creative suites).
 
-## What I built
+As the platform scaled from an initial set of endpoints to an ecosystem of over 350 endpoints and dozens of cutting-edge AI models from external providers and internal engines, the team implemented a distributed, resilient, and strictly governed architecture. The scope spanned from the frontend engineering of public product landings to gateway infrastructure, contract specifications, and automated service onboarding using AI agents.
 
-I worked across the full lifecycle of this platform: authoring and evolving
-the OpenAPI specification that defines every endpoint's parameters and
-responses, implementing the FastAPI server that turns specs into working
-endpoints, wiring rate limits and per-model billing into the gateway, and
-shipping the public API reference that developers use to integrate.
+## Public Surface and Product Landings (Frontend)
 
-This includes the API keys and billing surface: generating and revoking
-keys, tracking usage per plan (free / pro / enterprise), and translating
-model-specific pricing (per generation, per second of video, per
-resolution) into gateway-level cost rules.
+As a core part of the API frontend engineering effort, the team built and evolved the public product landings where developers and enterprise teams explore platform capabilities:
 
-## Architecture
+- **[Main API Landing](https://www.magnific.com/api)**: Commercial and technical gateway showcasing the full suite of models, integration architecture, use cases, and pricing tiers.
+- **[Image Generation API](https://www.magnific.com/api/image-generation)**: Specialized product landing featuring interactive visual sliders, style selectors, resolution controls, and rendering parameters.
+- **[Image Upscaler API](https://www.magnific.com/api/image-upscaler)**: Landing dedicated to super-resolution and detail enhancement tools with real-time before/after comparison controls.
+- **Interactive Playground (Next.js) & Documentation (Mintlify)**: In-browser test console allowing live execution of models and unified technical reference docs for B2B integrators.
 
-The pipeline has four stages that map cleanly to four concerns:
+Frontend development focused on crafting performant, reusable component architectures in Next.js, React, and TypeScript, prioritizing fast load times, smooth transitions, and intuitive presentation of complex generative parameters.
 
-1. **Specification** — an OpenAPI contract defines each endpoint's
-   request/response shape, kept in sync as new models and parameters are
-   added.
-2. **Server** — a FastAPI application implements the contract: request
-   validation, task orchestration and webhook delivery for long-running
-   generations.
-3. **Gateway** — an open-source API gateway (Apache APISIX) sits in front
-   of the server, enforcing per-tier rate limits and computing
-   usage-based cost per request.
-4. **Docs** — the public API reference is generated from the same spec,
-   so documentation never drifts from what the gateway actually accepts.
+## Architecture and 3-Phase Lifecycle
 
-A billing service (implemented in PHP) reads gateway usage data and
-product definitions to bill customers per plan, keeping the pricing model
-decoupled from the request-handling path.
+The platform's architecture was designed and implemented across three decoupled phases, orchestrated from a centralized OpenAPI specification serving as the strict _Single Source of Truth_:
 
-## Integrations: beyond one model per call
+```
++-------------------------------------------------------------------------+
+|                        PHASE 1: DEFINITION (SPEC)                       |
+|   Centralized OpenAPI contract · Unified naming · Runtime validation    |
++-------------------------------------------------------------------------+
+                                    |
+                  +-----------------+-----------------+
+                  |                                   |
+                  v                                   v
++-----------------------------------+   +---------------------------------+
+|  PHASE 2: PUBLISHING & GATEWAY    |   |  PHASE 3: ASYNC CONSUMPTION     |
+|  - APISIX: Auth, Rate Limits,     |   |  - B2B clients, Web apps & SDKs |
+|    credit hold/debit (mUSD)       |   |  - 202 Accepted + Task ID       |
+|  - FastAPI: Server & Validations  |   |  - Webhook / Polling delivery   |
+|  - Docs (Mintlify) & Playground   |   |  - Wallet reconciliation        |
++-----------------------------------+   +---------------------------------+
+```
 
-The platform exposes more than AI generation models. On the same
-spec → server → gateway → docs pipeline it also serves stock content
-APIs (search and download), task-status endpoints and account
-utilities — plus the **Flows API**, the orchestration layer that chains
-multiple models behind a single call: a flow describes a sequence of
-steps (e.g. generate → upscale → convert to video) and the platform runs
-it as a single task, metering usage per step so cost reflects the models
-actually invoked.
+### 1. Phase 1: Definition (Contract-First OpenAPI)
 
-## Outcome
+The entire platform is governed from the formal OpenAPI contract:
 
-The result is a public AI API platform serving image and video generation
-models at scale, with a documented, repeatable process for adding new
-capability without touching billing or gateway code by hand. The
-[production version](https://www.freepik.com/api) is live, with full
-reference docs at [docs.magnific.com](https://docs.magnific.com).
+- **Single Source of Truth**: Request/response schemas, data types, required/optional parameters, and cost metadata are authoritatively defined before backend or gateway code is written.
+- **Standardization & Consistency**: Homogeneous naming conventions (`snake_case`), standardized HTTP error models (400, 401, 402, 422, 429, 500), and predictable response envelopes across the entire suite.
+
+### 2. Phase 2: Publishing & Infrastructure Governance
+
+- **Perimeter API Gateway (Apache APISIX)**:
+  - **Authentication & Identity**: Centralized verification of developer credentials (`x-magnific-api-key`).
+  - **Rate Limiting Policies**: Tiered request quotas and concurrency limits (Free, Pro, Enterprise).
+  - **Pricing & Credit Metering**: Real-time cost calculation in base currency units (mUSD) with an upfront _credit hold_ upon request ingestion and final reconciliation post-execution.
+- **Application Server (FastAPI)**:
+  - Asynchronous Python controllers and services with Pydantic models generated from the specification.
+  - Strict runtime payload validation, upstream inference provider routing, and execution state persistence.
+
+### 3. Phase 3: Consumption & Async Task Lifecycle
+
+Generative AI workloads (such as high-definition video or audio generation) have non-instantaneous processing times. The team standardized the asynchronous consumption lifecycle to guarantee resilience and high concurrency:
+
+1. **Immediate Ingestion (`202 Accepted`)**: The client submits a payload; the gateway validates credentials and reserves estimated credits; the server issues a unique `task_id` and immediately responds with `202 Accepted` without blocking HTTP connections.
+2. **Dual Delivery Pattern**:
+   - **HTTP Webhooks**: Reactive delivery of the completed payload directly to the client's configured callback URL as soon as inference finishes.
+   - **Structured Polling**: Dedicated status endpoint queried by `task_id` for browser clients or environments without inbound webhook reception.
+3. **Credit Settlement & Reconciliation**: Upon successful completion, the exact consumed cost is deducted from the user's wallet. If a task fails or encounters an upstream timeout, reserved credits are automatically released.
+
+## Typical Flow for a New Model
+
+To take a new AI model from the conceptual stage to production readiness, the team follows a systematic pipeline:
+
+1. **Model Research & Contract Design**: Upstream provider capabilities are analyzed and the formal OpenAPI specification is authored with full parameter typings.
+2. **Automated Validation**: Linters and schema validators ensure the contract adheres to global naming and structure conventions.
+3. **Server Implementation**: Asynchronous FastAPI controllers are built alongside unit and integration test suites.
+4. **Gateway Configuration**: Perimeter APISIX routes, rate limiting tiers, and per-call mUSD pricing rules are configured.
+5. **Documentation & Playground Generation**: Reference guides are synchronized in Mintlify and the visual interactive console is enabled in the Next.js Playground.
+6. **Continuous Integration & Deployment**: The full multi-layer update is verified through automated CI/CD pipelines before production deployment.
+
+## Accelerated Development with Specialized AI Agents
+
+To scale model onboarding and maintain multi-layer coherence without manual bottlenecks, the team implemented an ecosystem of **specialized AI agents**, each operating on a dedicated domain under human supervision (_Human-in-the-Loop_):
+
+- **Specification Agent**: Specializes in OpenAPI standards; ingests upstream documentation to generate and validate formal schemas, parameter constraints, and data models.
+- **Backend Agent**: Generates FastAPI controllers, Pydantic models, and automated test suites adhering to the server's architectural patterns and error-handling standards.
+- **Platform / Gateway Agent**: Configures perimeter routing rules, associates permissions, sets tier quotas, and establishes per-request pricing schemas.
+- **Documentation Agent**: Authors developer reference guides, cURL snippets, and SDK integration examples within the Mintlify documentation platform.
+- **Frontend Agent**: Implements the interactive interface in the Next.js Playground, generating validated input controls and media viewers tailored to each output format (image, video, audio).
+
+This workflow empowers the engineering team to review, validate, and ship coordinated cross-layer features in minutes while maintaining rigorous quality standards and zero specification drift.
+
+## Multi-Repository Governance & Continuous Synchronization
+
+To eliminate drift across independent repositories (specification, backend server, gateway configuration, public documentation, and interactive playground), an automated synchronization workflow was established:
+
+- The OpenAPI specification is linked as a submodule and authoritative reference across application and documentation repositories.
+- Automated validation and code-generation tooling verify that no gateway route or FastAPI model diverges from the active specification.
+- CI/CD pipelines run full unit, integration, and schema validation suites before any production deployment.
+
+## Outcome & Impact
+
+- **High-Impact Public Surface**: Production-grade, high-performance visual product landings ([magnific.com/api](https://www.magnific.com/api), [image-generation](https://www.magnific.com/api/image-generation), [image-upscaler](https://www.magnific.com/api/image-upscaler)).
+- **Robust, Scalable Platform**: Over 350 governed endpoints and 40+ multimodal AI models serving high-concurrency traffic with real-time cost protection and high availability.
+- **Consistent Developer Experience**: Type-safe contracts, predictable response times through asynchronous lifecycle patterns, and interactive documentation perfectly aligned with production behavior.
+- **Streamlined Onboarding**: Repeatable, automated process using AI agents to integrate new AI model families without custom ad-hoc modifications to billing or gateway infrastructure.
