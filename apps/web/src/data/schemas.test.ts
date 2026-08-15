@@ -37,7 +37,12 @@ describe('profileSchema — guardia de PII', () => {
   const base = {
     name: 'Nico Behm',
     headline: LOC,
-    summary: LOC,
+    summary: {
+      paragraphs: { es: ['Hola'], en: ['Hello'] },
+      coreTechTitle: LOC,
+      coreTechBullets: [{ label: LOC, value: LOC }],
+    },
+
     location: LOC,
     links: { github: 'https://github.com/jnicob', linkedin: 'https://www.linkedin.com/in/x' },
   };

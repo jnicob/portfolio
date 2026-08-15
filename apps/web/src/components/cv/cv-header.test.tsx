@@ -35,9 +35,12 @@ describe('CvHeader', () => {
     // Visible inicialmente
     const toggleButton = screen.getByRole('button', { name: 'Ocultar resumen' });
     expect(toggleButton).toBeInTheDocument();
+    const summarySample = profile.summary.paragraphs.es[0] ?? '';
     expect(
-      screen.getByText((content) => content.includes(profile.summary.es.slice(0, 30))),
+      screen.getByText((content) => content.includes(summarySample.slice(0, 30))),
     ).toBeInTheDocument();
+
+
 
     // Al hacer click, se oculta
     await user.click(toggleButton);

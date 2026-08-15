@@ -209,7 +209,8 @@ export function CvHeader({
         )}
       >
         <div className="overflow-hidden">
-          <ProfileSummary summary={profile.summary[locale]} variant="cv" />
+          <ProfileSummary summary={profile.summary} locale={locale} variant="cv" />
+
         </div>
       </div>
     </header>

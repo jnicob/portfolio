@@ -14,12 +14,34 @@ export type LocalizedString = z.infer<typeof localizedStringSchema>;
 const yearMonth = z.string().regex(/^\d{4}-\d{2}$/, 'formato YYYY-MM');
 const dateish = z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/, 'formato YYYY-MM o YYYY-MM-DD');
 
+export const profileSummaryBulletSchema = z
+  .object({
+    label: localizedStringSchema,
+    value: localizedStringSchema,
+  })
+  .strict();
+export type ProfileSummaryBullet = z.infer<typeof profileSummaryBulletSchema>;
+
+export const profileSummarySchema = z
+  .object({
+    paragraphs: z
+      .object({
+        es: z.array(z.string().min(1)),
+        en: z.array(z.string().min(1)),
+      })
+      .strict(),
+    coreTechTitle: localizedStringSchema,
+    coreTechBullets: z.array(profileSummaryBulletSchema).min(1),
+  })
+  .strict();
+export type ProfileSummary = z.infer<typeof profileSummarySchema>;
+
 /** Contacto público SOLO GitHub/LinkedIn/website — strict() hace imposible añadir email/teléfono. */
 export const profileSchema = z
   .object({
     name: z.string().min(1),
     headline: localizedStringSchema,
-    summary: localizedStringSchema,
+    summary: profileSummarySchema,
     location: localizedStringSchema,
     links: z
       .object({
@@ -30,6 +52,7 @@ export const profileSchema = z
       .strict(),
   })
   .strict();
+
 export type Profile = z.infer<typeof profileSchema>;
 
 export const experienceEntrySchema = z
