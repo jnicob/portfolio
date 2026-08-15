@@ -41,7 +41,12 @@ export function ProfileSummary({
 
       {title && (
         <div className="pt-1">
-          <h3 className={cn('font-semibold text-fg mb-2', isHero ? 'text-base sm:text-lg' : 'text-sm')}>
+          <h3
+            className={cn(
+              'font-semibold text-fg mb-2',
+              isHero ? 'text-base sm:text-lg' : 'text-sm',
+            )}
+          >
             {title}
           </h3>
           {bullets.length > 0 && (
@@ -52,9 +57,9 @@ export function ProfileSummary({
               )}
             >
               {bullets.map((bullet, index) => (
-                <li key={index} className="flex flex-wrap gap-x-1.5 items-baseline">
-                  <span className="shrink-0">•</span>
-                  <span className="font-semibold text-fg">{bullet.label[locale]}:</span>
+                <li key={index}>
+                  <span className="shrink-0 mr-1">•</span>
+                  <span className="font-semibold mr-1 text-fg">{bullet.label[locale]}:</span>
                   <span>{bullet.value[locale]}</span>
                 </li>
               ))}

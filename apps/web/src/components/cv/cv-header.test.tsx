@@ -40,8 +40,6 @@ describe('CvHeader', () => {
       screen.getByText((content) => content.includes(summarySample.slice(0, 30))),
     ).toBeInTheDocument();
 
-
-
     // Al hacer click, se oculta
     await user.click(toggleButton);
 

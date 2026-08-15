@@ -26,6 +26,8 @@ metadata:
   sense in one theme, the token still needs a value in both.
 - Non-color scales (spacing, radius, fonts) also go through tokens when they carry
   design intent (`--radius-card`, `--font-mono`…).
+- Prefer `cn(...)` (`@/lib/cn`) over template literal string interpolation for dynamic or conditional Tailwind class composition.
+
 - media-kit components use their own `--mk-*` public custom properties; map portfolio
   tokens to them at the usage site, never inside the package.
 
