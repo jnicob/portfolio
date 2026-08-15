@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 
+import { ProfileSummary } from './profile-summary';
+
 type HeroProps = {
   locale: Locale;
   cvLabel: string;
@@ -35,9 +37,8 @@ export function Hero({ locale, cvLabel }: HeroProps) {
             {t('availabilityCta')}
           </a>
         </div>
-        <div className="max-w-2xl whitespace-pre-line text-base text-fg-muted leading-relaxed sm:text-lg">
-          {profile.summary[locale]}
-        </div>
+        <ProfileSummary summary={profile.summary[locale]} variant="hero" className="max-w-3xl" />
+
         <Link
           href="/cv"
           className={cn(buttonVariants({ variant: 'primary', size: 'md' }), 'w-fit')}

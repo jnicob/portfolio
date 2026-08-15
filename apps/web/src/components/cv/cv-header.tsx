@@ -1,10 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+
 import { profile } from '@/data/profile';
+
 import type { Locale } from '@/i18n/routing';
+
 import { Button } from '@/components/ui/button';
+
 import { cn } from '@/lib/cn';
+import { ProfileSummary } from '@/components/home/profile-summary';
 
 type CvHeaderProps = {
   locale: Locale;
@@ -204,9 +209,7 @@ export function CvHeader({
         )}
       >
         <div className="overflow-hidden">
-          <div className="whitespace-pre-line text-sm text-fg leading-relaxed print:text-fg print:leading-snug">
-            {profile.summary[locale]}
-          </div>
+          <ProfileSummary summary={profile.summary[locale]} variant="cv" />
         </div>
       </div>
     </header>
