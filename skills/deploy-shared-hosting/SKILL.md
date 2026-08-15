@@ -24,7 +24,8 @@ Guía y estándares de despliegue para el portfolio estático (`output: 'export'
      ```
   4. **Extracción y Limpieza Remota**:
      ```bash
-     ssh montecervino@montecervino.net "cd ~/public_html/jnicob.dev && tar -xzf ~/deploy-portfolio.tar.gz && rm ~/deploy-portfolio.tar.gz"
+     ssh montecervino@montecervino.net "cd ~/public_html/jnicob.dev && find . -maxdepth 1 -name '*.html' -delete && tar -xzf ~/deploy-portfolio.tar.gz && rm ~/deploy-portfolio.tar.gz"
+
      ```
   5. **Limpieza Local**: `Remove-Item deploy.tar.gz`
 

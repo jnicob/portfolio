@@ -49,4 +49,4 @@ jobs:
           ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
 
           scp -i ~/.ssh/id_deploy deploy.tar.gz "$SSH_USER@$SSH_HOST:~/deploy-portfolio.tar.gz"
-          ssh -i ~/.ssh/id_deploy "$SSH_USER@$SSH_HOST" "cd ~/public_html/jnicob.dev && tar -xzf ~/deploy-portfolio.tar.gz && rm ~/deploy-portfolio.tar.gz"
+          ssh -i ~/.ssh/id_deploy "$SSH_USER@$SSH_HOST" "cd ~/public_html/jnicob.dev && find . -maxdepth 1 -name '*.html' -delete && tar -xzf ~/deploy-portfolio.tar.gz && rm ~/deploy-portfolio.tar.gz"
