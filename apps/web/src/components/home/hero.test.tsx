@@ -17,11 +17,7 @@ describe('Hero', () => {
   it('renderiza headline y summary del locale y CTA al CV', () => {
     renderHero();
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(profile.headline.es);
-    expect(
-      screen.getByText(
-        (content) => content.includes('15 años'),
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes('15 años'))).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Ver CV' })).toHaveAttribute('href', '/es/cv');
   });
 

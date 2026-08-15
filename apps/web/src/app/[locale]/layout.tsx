@@ -11,6 +11,7 @@ import { SITE_URL } from '@/lib/seo';
 import { AppearanceInit } from '@/components/layout/appearance-init';
 import { SiteFooter } from '@/components/layout/footer';
 import { SiteHeader } from '@/components/layout/header';
+import { cn } from '@/lib/cn';
 import '../globals.css';
 import '@nicobehm/media-kit/styles.css';
 
@@ -64,7 +65,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html
       lang={locale}
-      className={`${GeistSans.variable} ${GeistMono.variable} ${sourceSerif.variable}`}
+      className={cn(GeistSans.variable, GeistMono.variable, sourceSerif.variable)}
       suppressHydrationWarning
     >
       <head>

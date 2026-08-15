@@ -28,6 +28,7 @@ structure, tests, tooling and this agent config are meant to be audited.
 ## Hard rules
 
 - TypeScript strict; lint, format, typecheck and tests must stay green.
+- Mandatory local verification: execute and pass ALL local checks (`pnpm run typecheck`, `pnpm run lint`, `pnpm run test`, `pnpm run format`) BEFORE committing or pushing to `main`. NEVER push changes to `main` without passing local checks first.
 - Colors ONLY through semantic tokens (CSS vars + `data-theme`). Never hardcode colors.
 - No private/company dependencies. Public OSS or own code only.
 - Static export is the default runtime; never assume a Node server in components.

@@ -55,3 +55,8 @@ Complements `code-principles` (the _why_); this skill is the _how_ — concrete 
   low-level events RTL can't produce (pointer gestures, non-bubbling events).
 - Async UI: `findBy*`/`waitFor`, never arbitrary sleeps. No snapshot tests.
 - Test names state behavior + condition; assert observable behavior, not internals.
+
+## Verification & Pre-commit Protocol
+
+- **Local verification mandatory**: Always run local verification commands (`pnpm run typecheck`, `pnpm run lint`, `pnpm run test`, `pnpm run format`) and ensure 100% green pass BEFORE committing or pushing code to `main`.
+- **Zero unverified pushes**: Never attempt to push to `main` without empirical local verification first.
