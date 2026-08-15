@@ -41,7 +41,12 @@ export function ProfileSummary({
 
       {title && (
         <div className="pt-1">
-          <h3 className={cn('font-semibold text-fg mb-2', isHero ? 'text-base sm:text-lg' : 'text-sm')}>
+          <h3
+            className={cn(
+              'font-semibold text-fg mb-2',
+              isHero ? 'text-base sm:text-lg' : 'text-sm',
+            )}
+          >
             {title}
           </h3>
           {bullets.length > 0 && (

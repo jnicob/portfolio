@@ -37,8 +37,12 @@ export function Hero({ locale, cvLabel }: HeroProps) {
             {t('availabilityCta')}
           </a>
         </div>
-        <ProfileSummary summary={profile.summary} locale={locale} variant="hero" className="max-w-3xl" />
-
+        <ProfileSummary
+          summary={profile.summary}
+          locale={locale}
+          variant="hero"
+          className="max-w-3xl"
+        />
 
         <Link
           href="/cv"
