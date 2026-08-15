@@ -1,8 +1,8 @@
 ---
 title: Plataforma de APIs de Freepik/Magnific y Landings Públicas
-summary: 'Diseño e implementación integral de la plataforma de APIs de Freepik/Magnific: catálogo multimodal de IA (imagen, vídeo, audio, upscale y edición), desarrollo frontend de las landings públicas de producto (/api, /api/image-generation, /api/image-upscaler), arquitectura OpenAPI contract-first, servidor FastAPI asíncrono, gateway APISIX (rate limits, costes y reserva de créditos en mUSD) y automatización del pipeline mediante agentes de IA especializados.'
-role: Ingeniero de plataforma de APIs & Frontend — landings públicas, specs OpenAPI, servidor FastAPI, gateway APISIX y agentes de IA
-stack: [python, fastapi, openapi, apisix, nextjs, react, typescript, php]
+summary: 'Diseño e implementación integral de la plataforma de APIs de Freepik/Magnific: catálogo multimodal de IA (imagen, vídeo, audio, upscale y edición), desarrollo frontend de las landings públicas de producto (/api, /api/image-generation, /api/image-upscaler), tableros de gestión de API keys y analíticas (Next.js y PHP con DDD), arquitectura OpenAPI contract-first, servidor FastAPI asíncrono, gateway APISIX (rate limits, costes y reserva de créditos en mUSD) y automatización con agentes de IA.'
+role: Ingeniero de plataforma de APIs & Frontend — landings públicas, tableros de gestión, specs OpenAPI, microservicios backend (PHP DDD / FastAPI), gateway APISIX y agentes de IA
+stack: [nextjs, react, typescript, php, python, openapi, apisix, mysql, gcp, redis]
 links:
   live: https://www.magnific.com/api
   docs: https://docs.magnific.com
@@ -21,7 +21,7 @@ date: '2022-07'
 
 Magnific opera una plataforma pública de APIs de inteligencia artificial que expone modelos multimodales (generación de imagen, text-to-video, image-to-video, generación de audio, upscalers y herramientas de edición) tanto a desarrolladores externos y clientes B2B como a productos internos (como Pikaso y suites creativas).
 
-Al escalar de un conjunto inicial de endpoints a un ecosistema con más de 350 endpoints y decenas de modelos de IA de proveedores punteros e internos, el equipo implementó una arquitectura distribuida, resiliente y fuertemente gobernada. El proyecto abarcó desde el desarrollo del frontend de las landings públicas de producto hasta la infraestructura de gateway, la especificación de contratos y la automatización del alta de servicios con agentes de IA.
+Al escalar de un conjunto inicial de endpoints a un ecosistema con más de 350 endpoints y decenas de modelos de IA de proveedores punteros e internos, el equipo implementó una arquitectura distribuida, resiliente y fuertemente gobernada. El proyecto abarcó desde el desarrollo del frontend de las landings públicas de producto y tableros de control hasta la infraestructura de gateway, microservicios de gestión en backend con DDD, la especificación de contratos y la automatización del alta de servicios con agentes de IA.
 
 ## Superficie pública y landings de producto (Frontend)
 
@@ -33,6 +33,13 @@ Como parte central del trabajo de frontend de la API, se desarrollaron y evoluci
 - **Playground Interactivo (Next.js) y Documentación (Mintlify)**: Consola interactiva para probar modelos directamente desde el navegador y referencia técnica unificada para clientes B2B.
 
 El desarrollo frontend se centró en construir componentes reutilizables y de alto rendimiento en Next.js, React y TypeScript, priorizando tiempos de carga mínimos, animaciones fluidas y una presentación clara de parámetros técnicos complejos.
+
+## Tableros de gestión de API keys y estadísticas (Full-Stack)
+
+Para que desarrolladores y clientes corporativos pudieran gobernar su integración y supervisar el consumo en tiempo real, se diseñó e implementó la suite de tableros de gestión:
+
+- **Frontend (Next.js / React)**: Panel de control intuitivo y seguro para la generación, rotación y revocación de API keys, visualización de métricas de consumo en tiempo real, desglose analítico de uso por modelo y resolución, y monitorización de cuotas y saldos de facturación.
+- **Backend (PHP / Domain-Driven Design)**: Microservicios desacoplados construidos bajo arquitectura hexagonal y patrones de _Domain-Driven Design_ (DDD), encargados de la gobernanza de identidades, auditoría de eventos de consumo, persistencia en MySQL y capas de cache y rate limiting distribuido con Redis sobre infraestructura en Google Cloud Platform (GCP).
 
 ## Arquitectura y ciclo de vida en 3 fases
 
@@ -72,6 +79,9 @@ Toda la plataforma se gobierna a partir del contrato formal de OpenAPI:
 - **Servidor de Aplicación (FastAPI)**:
   - Controladores y servicios asíncronos en Python con modelos Pydantic derivados de la especificación.
   - Validación estricta de parámetros en tiempo de ejecución, enrutamiento a proveedores de inferencia y persistencia de estados de ejecución.
+- **Documentación (Mintlify) y Playground (Next.js)**:
+  - Generación automatizada de la documentación de referencia pública y B2B a partir de la especificación.
+  - Integración con el Playground interactivo web, asegurando que los formularios y esquemas de prueba coincidan exactamente con las capacidades en producción.
 
 ### 3. Fase 3: Consumo y Ciclo de Vida Asíncrono de Tareas
 
@@ -117,6 +127,7 @@ Para eliminar la deriva (_drift_) entre la especificación, el servidor backend,
 ## Resultado e Impacto
 
 - **Superficie pública de alto impacto**: Landings de producto de alto rendimiento visual en producción ([magnific.com/api](https://www.magnific.com/api), [image-generation](https://www.magnific.com/api/image-generation), [image-upscaler](https://www.magnific.com/api/image-upscaler)).
+- **Tableros de analítica y gestión**: Interfaces reactivas y servicios backend DDD de alta disponibilidad para la administración segura de credenciales y estadísticas de consumo.
 - **Plataforma robusta y escalable**: Más de 350 endpoints gobernados y más de 40 modelos multimodales integrados con control de costes en tiempo real y alta disponibilidad.
 - **Experiencia de desarrollador consistente**: Contratos tipados, tiempos de respuesta predecibles mediante patrón asíncrono y documentación pública interactiva que refleja con total fidelidad el estado de producción.
 - **Onboarding ágil**: Proceso repetible y automatizado mediante agentes de IA para incorporar nuevas familias de modelos sin requerir desarrollos manuales ad-hoc en los sistemas de facturación y gateway.
