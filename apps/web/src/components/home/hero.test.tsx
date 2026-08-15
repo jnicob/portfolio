@@ -19,7 +19,7 @@ describe('Hero', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(profile.headline.es);
     expect(
       screen.getByText(
-        (content, element) => element?.tagName.toLowerCase() === 'p' && content.includes('15 años'),
+        (content) => content.includes('15 años'),
       ),
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Ver CV' })).toHaveAttribute('href', '/es/cv');

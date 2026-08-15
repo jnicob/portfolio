@@ -35,7 +35,9 @@ export function Hero({ locale, cvLabel }: HeroProps) {
             {t('availabilityCta')}
           </a>
         </div>
-        <p className="max-w-2xl text-lg text-fg-muted">{profile.summary[locale]}</p>
+        <div className="max-w-2xl whitespace-pre-line text-base text-fg-muted leading-relaxed sm:text-lg">
+          {profile.summary[locale]}
+        </div>
         <Link
           href="/cv"
           className={cn(buttonVariants({ variant: 'primary', size: 'md' }), 'w-fit')}
