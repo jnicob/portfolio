@@ -4,7 +4,7 @@ summary: "End-to-end design and implementation of Freepik/Magnific's public API 
 role: API Platform Engineer — OpenAPI specs, FastAPI server, APISIX gateway, async lifecycle, and docs
 stack: [python, fastapi, openapi, apisix, php, typescript]
 links:
-  live: https://www.freepik.com/api
+  live: https://www.magnific.com/api
   docs: https://docs.magnific.com
 metrics:
   - label: AI models served
@@ -19,13 +19,13 @@ date: '2022-07'
 
 ## Context
 
-Freepik/Magnific operates a public AI API platform exposing multimodal models (image generation, text-to-video, image-to-video, audio generation, upscalers, and editing tools) to external developers, B2B enterprise clients, and internal Freepik ecosystem products (such as Pikaso and creative suites).
+Magnific operates a public AI API platform exposing multimodal models (image generation, text-to-video, image-to-video, audio generation, upscalers, and editing tools) to external developers, B2B enterprise clients, and internal products (such as Pikaso and creative suites).
 
-As the platform scaled from an initial set of endpoints to an ecosystem of over 350 endpoints and dozens of cutting-edge AI models from both external providers and internal engines, the system required a distributed, resilient, and strictly governed architecture to ensure every new model moved smoothly from contract definition to production with accurate metering, low-latency edge routing, and consistent interactive public documentation.
+As the platform scaled from an initial set of endpoints to an ecosystem of over 350 endpoints and dozens of cutting-edge AI models from external providers and internal engines, the team implemented a distributed, resilient, and strictly governed architecture to ensure every new model moves smoothly from contract definition to production with accurate metering, low-latency edge routing, and consistent interactive public documentation.
 
 ## Architecture and 3-Phase Lifecycle
 
-I designed and implemented the platform's architecture structured into three decoupled phases, orchestrated from a centralized OpenAPI specification serving as the strict _Single Source of Truth_:
+The platform's architecture was designed and implemented across three decoupled phases, orchestrated from a centralized OpenAPI specification serving as the strict _Single Source of Truth_:
 
 ```
 +-------------------------------------------------------------------------+
@@ -41,7 +41,7 @@ I designed and implemented the platform's architecture structured into three dec
 |  - APISIX: Auth, Rate Limits,     |   |  - B2B clients, Web apps & SDKs |
 |    credit hold/debit (mUSD)       |   |  - 202 Accepted + Task ID       |
 |  - FastAPI: Server & Validations  |   |  - Webhook / Polling delivery   |
-|  - Public docs & Playground       |   |  - Wallet reconciliation        |
+|  - Docs (Mintlify) & Playground   |   |  - Wallet reconciliation        |
 +-----------------------------------+   +---------------------------------+
 ```
 
@@ -55,19 +55,19 @@ The entire platform is governed from the formal OpenAPI contract:
 ### 2. Phase 2: Publishing & Infrastructure Governance
 
 - **Perimeter API Gateway (Apache APISIX)**:
-  - **Authentication & Identity**: Centralized verification of developer credentials (`X-Freepik-Api-Key`).
+  - **Authentication & Identity**: Centralized verification of developer credentials (`x-magnific-api-key`).
   - **Rate Limiting Policies**: Tiered request quotas and concurrency limits (Free, Pro, Enterprise).
   - **Pricing & Credit Metering**: Real-time cost calculation in base currency units (mUSD) with an upfront _credit hold_ upon request ingestion and final reconciliation post-execution.
 - **Application Server (FastAPI)**:
   - Asynchronous Python controllers and services with Pydantic models generated from the specification.
   - Strict runtime payload validation, upstream inference provider routing, and execution state persistence.
-- **Live Documentation & Playground**:
+- **Documentation (Mintlify) & Playground (Next.js)**:
   - Automated generation of public and B2B API reference documentation from the spec.
   - Seamless integration with the web-based interactive Playground, ensuring trial consoles and schemas match production behavior exactly.
 
 ### 3. Phase 3: Consumption & Async Task Lifecycle
 
-Generative AI workloads (such as high-definition video or audio generation) have non-instantaneous processing times. I standardized the asynchronous consumption lifecycle to guarantee resilience and high concurrency:
+Generative AI workloads (such as high-definition video or audio generation) have non-instantaneous processing times. The team standardized the asynchronous consumption lifecycle to guarantee resilience and high concurrency:
 
 1. **Immediate Ingestion (`202 Accepted`)**: The client submits a payload; the gateway validates credentials and reserves estimated credits; the server issues a unique `task_id` and immediately responds with `202 Accepted` without blocking HTTP connections.
 2. **Dual Delivery Pattern**:
@@ -75,9 +75,32 @@ Generative AI workloads (such as high-definition video or audio generation) have
    - **Structured Polling**: Dedicated status endpoint queried by `task_id` for browser clients or environments without inbound webhook reception.
 3. **Credit Settlement & Reconciliation**: Upon successful completion, the exact consumed cost is deducted from the user's wallet. If a task fails or encounters an upstream timeout, reserved credits are automatically released.
 
+## Typical Flow for a New Model
+
+To take a new AI model from the conceptual stage to production readiness, the team follows a systematic pipeline:
+
+1. **Model Research & Contract Design**: Upstream provider capabilities are analyzed and the formal OpenAPI specification is authored with full parameter typings.
+2. **Automated Validation**: Linters and schema validators ensure the contract adheres to global naming and structure conventions.
+3. **Server Implementation**: Asynchronous FastAPI controllers are built alongside unit and integration test suites.
+4. **Gateway Configuration**: Perimeter APISIX routes, rate limiting tiers, and per-call mUSD pricing rules are configured.
+5. **Documentation & Playground Generation**: Reference guides are synchronized in Mintlify and the visual interactive console is enabled in the Next.js Playground.
+6. **Continuous Integration & Deployment**: The full multi-layer update is verified through automated CI/CD pipelines before production deployment.
+
+## Accelerated Development with Specialized AI Agents
+
+To scale model onboarding and maintain multi-layer coherence without manual bottlenecks, the team implemented an ecosystem of **specialized AI agents**, each operating on a dedicated domain under human supervision (_Human-in-the-Loop_):
+
+- **Specification Agent**: Specializes in OpenAPI standards; ingests upstream documentation to generate and validate formal schemas, parameter constraints, and data models.
+- **Backend Agent**: Generates FastAPI controllers, Pydantic models, and automated test suites adhering to the server's architectural patterns and error-handling standards.
+- **Platform / Gateway Agent**: Configures perimeter routing rules, associates permissions, sets tier quotas, and establishes per-request pricing schemas.
+- **Documentation Agent**: Authors developer reference guides, cURL snippets, and SDK integration examples within the Mintlify documentation platform.
+- **Frontend Agent**: Implements the interactive interface in the Next.js Playground, generating validated input controls and media viewers tailored to each output format (image, video, audio).
+
+This workflow empowers the engineering team to review, validate, and ship coordinated cross-layer features in minutes while maintaining rigorous quality standards and zero specification drift.
+
 ## Multi-Repository Governance & Continuous Synchronization
 
-To eliminate drift across independent repositories (specification, backend server, gateway configuration, public documentation, and interactive playground), I established an automated synchronization workflow:
+To eliminate drift across independent repositories (specification, backend server, gateway configuration, public documentation, and interactive playground), an automated synchronization workflow was established:
 
 - The OpenAPI specification is linked as a submodule and authoritative reference across application and documentation repositories.
 - Automated validation and code-generation tooling verify that no gateway route or FastAPI model diverges from the active specification.

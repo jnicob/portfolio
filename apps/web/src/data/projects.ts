@@ -18,7 +18,7 @@ const entries = [
     },
     stack: ['openapi', 'fastapi', 'python', 'apisix', 'nextjs', 'react', 'rest-api'],
     links: {
-      live: 'https://www.freepik.com/api',
+      live: 'https://www.magnific.com/api',
       docs: 'https://docs.magnific.com',
     },
     metrics: [

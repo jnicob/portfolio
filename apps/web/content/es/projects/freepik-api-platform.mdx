@@ -4,7 +4,7 @@ summary: 'Diseño e implementación end-to-end de la plataforma pública de APIs
 role: Ingeniero de plataforma de APIs — specs OpenAPI, servidor FastAPI, gateway APISIX, ciclo asíncrono y docs
 stack: [python, fastapi, openapi, apisix, php, typescript]
 links:
-  live: https://www.freepik.com/api
+  live: https://www.magnific.com/api
   docs: https://docs.magnific.com
 metrics:
   - label: Modelos de IA servidos
@@ -19,13 +19,13 @@ date: '2022-07'
 
 ## Contexto
 
-Freepik/Magnific opera una plataforma pública de APIs de inteligencia artificial que expone modelos multimodales (generación de imagen, text-to-video, image-to-video, generación de audio, upscalers y herramientas de edición) tanto a desarrolladores externos y clientes B2B como a productos internos del ecosistema Freepik (como Pikaso y suites creativas).
+Magnific opera una plataforma pública de APIs de inteligencia artificial que expone modelos multimodales (generación de imagen, text-to-video, image-to-video, generación de audio, upscalers y herramientas de edición) tanto a desarrolladores externos y clientes B2B como a productos internos (como Pikaso y suites creativas).
 
-Al escalar de un conjunto inicial de endpoints a un ecosistema con más de 350 endpoints y decenas de modelos de IA de proveedores punteros e internos, el proceso requería una arquitectura distribuida, resiliente y fuertemente gobernada para asegurar que cada nuevo modelo pasara de la definición a producción con facturación precisa, baja latencia perimetral y documentación pública interactiva sin inconsistencias.
+Al escalar de un conjunto inicial de endpoints a un ecosistema con más de 350 endpoints y decenas de modelos de IA de proveedores punteros e internos, el equipo implementó una arquitectura distribuida, resiliente y fuertemente gobernada para asegurar que cada nuevo modelo pase de la definición a producción con facturación precisa, baja latencia perimetral y documentación pública interactiva sin inconsistencias.
 
 ## Arquitectura y ciclo de vida en 3 fases
 
-Diseñé e implementé la arquitectura de la plataforma estructurada en tres fases desacopladas, orquestadas a partir de una especificación central como contrato estricto (_Single Source of Truth_):
+La arquitectura de la plataforma se diseñó e implementó estructurada en tres fases desacopladas, orquestadas a partir de una especificación central como contrato estricto (_Single Source of Truth_):
 
 ```
 +-------------------------------------------------------------------------+
@@ -41,7 +41,7 @@ Diseñé e implementé la arquitectura de la plataforma estructurada en tres fas
 |  - APISIX: Auth, Rate Limits,     |   |  - Clientes B2B, Web & SDKs     |
 |    reserva/débito créditos (mUSD) |   |  - Patrón 202 Accepted + Task ID|
 |  - FastAPI: Server & Validaciones |   |  - Retorno vía Webhook / Polling|
-|  - Docs públicas & Playground     |   |  - Conciliación de wallet       |
+|  - Docs (Mintlify) & Playground   |   |  - Conciliación de wallet       |
 +-----------------------------------+   +---------------------------------+
 ```
 
@@ -55,19 +55,19 @@ Toda la plataforma se gobierna a partir del contrato formal de OpenAPI:
 ### 2. Fase 2: Publicación y Gobierno de Infraestructura
 
 - **API Gateway perimetral (Apache APISIX)**:
-  - **Autenticación e Identidad**: Validación centralizada de credenciales (`X-Freepik-Api-Key`).
+  - **Autenticación e Identidad**: Validación centralizada de credenciales (`x-magnific-api-key`).
   - **Políticas de Rate Limiting**: Cuotas de consumo y límites de peticiones concurrentes/diarias diferenciados por nivel de suscripción (Free, Pro, Enterprise).
   - **Tarificación y Control de Créditos**: Cálculo de costes en unidades base de moneda (mUSD) con reserva preventiva (_hold_) de créditos al recibir la solicitud y conciliación final post-ejecución.
 - **Servidor de Aplicación (FastAPI)**:
   - Controladores y servicios asíncronos en Python con modelos Pydantic derivados de la especificación.
   - Validación estricta de parámetros en tiempo de ejecución, enrutamiento a proveedores de inferencia y persistencia de estados de ejecución.
-- **Documentación Viva y Playground**:
+- **Documentación (Mintlify) y Playground (Next.js)**:
   - Generación automatizada de la documentación de referencia pública y B2B a partir de la especificación.
   - Integración con el Playground interactivo web, asegurando que los formularios y esquemas de prueba coincidan exactamente con las capacidades en producción.
 
 ### 3. Fase 3: Consumo y Ciclo de Vida Asíncrono de Tareas
 
-Las operaciones de IA generativa (como generación de vídeo de alta definición o audio) requieren tiempos de procesamiento no instantáneos. Estandaricé el patrón de consumo asíncrono para garantizar resiliencia y alta concurrencia:
+Las operaciones de IA generativa (como generación de vídeo de alta definición o audio) requieren tiempos de procesamiento no instantáneos. Se estandarizó el patrón de consumo asíncrono para garantizar resiliencia y alta concurrencia:
 
 1. **Admisión Inmediata (`202 Accepted`)**: El cliente envía la solicitud, el gateway valida la clave y reserva los créditos estimados, y el servidor genera un `task_id` único devolviendo respuesta inmediata sin bloquear conexiones.
 2. **Procesamiento y Notificación Dual**:
@@ -75,9 +75,32 @@ Las operaciones de IA generativa (como generación de vídeo de alta definición
    - **Polling Estructurado**: Endpoint específico de consulta por `task_id` para clientes en navegadores o entornos sin soporte de endpoints públicos entrantes.
 3. **Liquidación y Conciliación de Créditos**: Al completarse la tarea, el sistema liquida con exactitud el coste consumido en la billetera de créditos del usuario; si la tarea falla o expira por timeout del proveedor, los créditos reservados se liberan automáticamente.
 
+## Flujo típico para un nuevo modelo
+
+Para llevar un nuevo modelo de IA desde la fase conceptual hasta su disponibilidad pública, el equipo sigue un pipeline sistemático:
+
+1. **Investigación del modelo y diseño del contrato**: Se analizan las capacidades del proveedor y se redacta la especificación OpenAPI con sus parámetros y tipados.
+2. **Validación automática**: Se ejecutan linters y validadores de esquemas para garantizar que el contrato respeta las directrices globales.
+3. **Implementación en el servidor**: Se desarrollan los controladores asíncronos en FastAPI y se ejecutan las suites de tests unitarios y de integración.
+4. **Configuración en el Gateway**: Se establecen las rutas en APISIX, las políticas de rate limiting y la tarificación en mUSD para el modelo.
+5. **Generación de Documentación y Playground**: Se sincronizan las páginas de referencia en Mintlify y se habilita la interfaz visual en el Playground de Next.js.
+6. **Integración Continua y Despliegue**: Se valida el conjunto completo en el pipeline de CI/CD antes del despliegue a producción.
+
+## Desarrollo acelerado mediante agentes de IA especializados
+
+Para escalar la incorporación de modelos y mantener la coherencia en múltiples capas sin fricción manual, el equipo implementó un ecosistema de **agentes de IA especializados**, donde cada agente opera sobre un dominio específico con supervisión humana (_Human-in-the-Loop_):
+
+- **Agente de Especificaciones**: Especializado en el estándar OpenAPI; a partir de la documentación y capacidades del nuevo modelo, redacta y valida la definición formal de esquemas, parámetros y tipos de datos.
+- **Agente de Backend**: Genera los controladores en FastAPI, modelos Pydantic y tests unitarios siguiendo los patrones de diseño y manejo de errores del servidor.
+- **Agente de Plataforma / Gateway**: Configura las reglas de enrutamiento en el gateway, define los permisos asociados, las políticas de cuota y el esquema de tarificación por llamada.
+- **Agente de Documentación**: Genera la documentación técnica de referencia para desarrolladores y clientes B2B, incluyendo descripciones y ejemplos de llamada cURL y SDKs.
+- **Agente de Frontend**: Implementa la interfaz correspondiente en el Playground interactivo, generando los formularios de control validados y los visores multimedia según el tipo de salida (imagen, vídeo, audio).
+
+Este enfoque permite que el equipo valide y apruebe cambios completos y coordinados en minutos, manteniendo estándares rigurosos de calidad y evitando cualquier inconsistencia entre la especificación y el runtime.
+
 ## Gobernanza multi-repositorio y sincronización continua
 
-Para eliminar la deriva (_drift_) entre la especificación, el servidor backend, el gateway perimetral, la documentación pública y el frontend de pruebas, establecí un flujo de propagación automatizado:
+Para eliminar la deriva (_drift_) entre la especificación, el servidor backend, el gateway perimetral, la documentación pública y el frontend de pruebas, se estableció un flujo de propagación automatizado:
 
 - La especificación OpenAPI se integra como submódulo y referencia única en los repositorios de aplicación y documentación.
 - Tooling automatizado de validación y generación de tipos que comprueba que ninguna ruta del gateway ni modelo de FastAPI quede desalineado con respecto a la especificación activa.
