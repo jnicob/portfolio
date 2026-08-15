@@ -1,0 +1,15 @@
+DirectoryIndex index.html index.php
+
+RewriteEngine On
+
+# Forzar HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Redirección de URLs sin slash final para carpetas estáticas
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.*[^/])$ https://%{HTTP_HOST}/$1/ [L,R=301]
+
+# Endpoint PHP
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule \.php$ - [L]
