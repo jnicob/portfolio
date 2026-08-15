@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { profile } from '@/data/profile';
 import type { Locale } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/cn';
 
 type CvHeaderProps = {
   locale: Locale;
@@ -28,7 +29,10 @@ export function CvHeader({
   return (
     <header className="flex flex-col gap-2 border-b border-border pb-2.5 print:gap-1.5">
       <div
-        className={`flex flex-col pb-2.5 gap-4 sm:flex-row sm:items-start sm:justify-between ${showBrief ? 'border-b border-border' : ''}`}
+        className={cn(
+          'flex flex-col pb-2.5 gap-4 sm:flex-row sm:items-start sm:justify-between',
+          showBrief && 'border-b border-border',
+        )}
       >
         <div>
           <h1 className="text-5xl font-bold tracking-tight text-fg print:text-4xl">
@@ -192,11 +196,12 @@ export function CvHeader({
 
       {/* Contenedor animado suavemente para el resumen profesional */}
       <div
-        className={`grid transition-all duration-300 ease-in-out ${
+        className={cn(
+          'grid transition-all duration-300 ease-in-out',
           showBrief
-            ? 'grid-rows-[1fr] opacity-100 mt-1 mb-2 print:my-1'
-            : 'grid-rows-[0fr] opacity-0 mt-0 mb-0 print:hidden'
-        }`}
+            ? 'mt-1 mb-2 grid-rows-[1fr] opacity-100 print:my-1'
+            : 'my-0 grid-rows-[0fr] opacity-0 print:hidden',
+        )}
       >
         <div className="overflow-hidden">
           <div className="whitespace-pre-line text-sm text-fg leading-relaxed print:text-fg print:leading-snug">
