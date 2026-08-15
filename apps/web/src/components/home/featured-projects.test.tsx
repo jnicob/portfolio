@@ -58,8 +58,8 @@ describe('FeaturedProjects', () => {
     }
   });
 
-  it('hay 14 proyectos en total', () => {
-    expect(projects).toHaveLength(14);
+  it('hay 15 proyectos en total', () => {
+    expect(projects).toHaveLength(15);
   });
 
   it('envuelve cada celda del grid (proyectos destacados + MoreProjectsCard) con TiltCard', () => {
