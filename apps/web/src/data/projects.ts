@@ -249,7 +249,7 @@ const entries = [
     metrics: [{ label: { es: 'Recursos clínicos', en: 'Clinical resources' }, value: '190+' }],
     featured: false,
     caseStudy: false,
-    date: '2024-01',
+    date: '2026-01',
   },
   // ——— Etapa salud / Argentina ———
   {
