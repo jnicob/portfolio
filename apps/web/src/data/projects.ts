@@ -221,14 +221,39 @@ const entries = [
   },
   // ——— Proyectos independientes / Freelance ———
   {
+    slug: 'hotel-monte-cervino',
+    title: {
+      es: 'Hotel Monte Cervino — web institucional y reservas',
+      en: 'Hotel Monte Cervino — hospitality website & booking',
+    },
+    summary: {
+      es: 'Sitio web institucional trilingüe (ES, EN, PT) para el Hotel Monte Cervino (Bariloche, Argentina; montecervino.net), diseñado para máxima velocidad y SEO local. Arquitectura estática con Next.js (App Router / SSG), TypeScript, Tailwind CSS y MDX. Incluye pipeline automatizado de procesamiento y optimización de imágenes (Sharp), integración con motor de reservas online (Cloudbeds) y pipeline CI/CD con GitHub Actions para despliegue automatizado sobre hosting compartido (SSH/FTPS).',
+      en: 'Trilingual institutional website (ES, EN, PT) for Hotel Monte Cervino (Bariloche, Argentina; montecervino.net), optimized for high performance and local SEO. Static architecture built with Next.js (App Router / SSG), TypeScript, Tailwind CSS, and MDX. Features automated image processing/optimization pipeline (Sharp), online booking engine integration (Cloudbeds), and automated CI/CD deployment to shared hosting via GitHub Actions (SSH/FTPS).',
+    },
+    role: {
+      es: 'Desarrollador full-stack & arquitecto web',
+      en: 'Full-stack developer & web architect',
+    },
+    stack: ['nextjs', 'react', 'typescript', 'tailwind', 'mdx', 'i18n', 'github-actions', 'sharp'],
+    links: { live: 'https://www.montecervino.net' },
+    metrics: [
+      { label: { es: 'Idiomas soportados', en: 'Supported locales' }, value: '3' },
+      { label: { es: 'Páginas estáticas', en: 'Prerendered pages' }, value: '35+' },
+      { label: { es: 'Imágenes optimizadas', en: 'Optimized assets' }, value: '80+' },
+    ],
+    featured: false,
+    caseStudy: false,
+    date: '2026-08',
+  },
+  {
     slug: 'manos-activas',
     title: {
       es: 'Manos Activas — plataforma web de terapia ocupacional',
       en: 'Manos Activas — occupational therapy web platform',
     },
     summary: {
-      es: 'Plataforma web clínica y divulgativa de terapia ocupacional (manosactivas.es) desarrollada con metodología guiada por IA (specs y skills para agentes). Integra un backend WordPress a medida (PHP/MySQL) acoplado a componentes React, TypeScript y TailwindCSS. Incluye pasarela de pago Stripe API (con entrega tokenizada de PDFs de pago), módulo de reservas clínicas con Cal.com, sistema de modo oscuro/claro con variables CSS semánticas y entorno Dockerizado.',
-      en: 'Occupational therapy web platform (manosactivas.es) built with AI spec-driven architecture and custom agent skills. Integrates a custom WordPress backend (PHP/MySQL) bridged with React, TypeScript, and TailwindCSS components. Features Stripe API integration (tokenized paid PDF downloads), Cal.com clinical booking module, semantic dark/light mode, and Docker containerization.',
+      es: 'Plataforma web clínica y divulgativa de terapia ocupacional (manosactivas.es) desarrollada con metodología guiada por IA (specs y skills para agentes). Integra un backend WordPress a medida (PHP/MariaDB) acoplado a componentes React, TypeScript y TailwindCSS. Incluye pasarela de pago Stripe API (con entrega tokenizada de PDFs de pago), módulo de reservas clínicas con Cal.com, sistema de modo oscuro/claro con variables CSS semánticas y entorno Dockerizado.',
+      en: 'Occupational therapy web platform (manosactivas.es) built with AI spec-driven architecture and custom agent skills. Integrates a custom WordPress backend (PHP/MariaDB) bridged with React, TypeScript, and TailwindCSS components. Features Stripe API integration (tokenized paid PDF downloads), Cal.com clinical booking module, semantic dark/light mode, and Docker containerization.',
     },
     role: {
       es: 'Desarrollador full-stack & arquitecto de la solución',
@@ -239,7 +264,7 @@ const entries = [
       'react',
       'typescript',
       'php',
-      'mysql',
+      'mariadb',
       'stripe',
       'docker',
       'tailwind',
