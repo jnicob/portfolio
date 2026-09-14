@@ -39,9 +39,9 @@
     "technologiesLabel": "Tecnologías clave",
     "stats": {
       "exp": "Años de experiencia",
-      "requests": "Requests diarios en API",
-      "uptime": "Uptime y resiliencia",
-      "cleanCode": "TDD y Clean Code"
+      "architecture": "Arquitectura de APIs y Plataforma",
+      "cleanCode": "TDD, SOLID y Clean Code",
+      "ai": "Agentes de IA y Automatización"
     },
     "cvCta": "Ver CV",
     "availability": "Disponible para nuevas oportunidades",

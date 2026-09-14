@@ -39,9 +39,9 @@
     "technologiesLabel": "Technologies I work with",
     "stats": {
       "exp": "Years Experience",
-      "requests": "Daily API Requests",
-      "uptime": "Uptime & Resilience",
-      "cleanCode": "TDD & Clean Code"
+      "architecture": "High-Scale API & Platform",
+      "cleanCode": "TDD, SOLID & Clean Code",
+      "ai": "AI Agents & Automation"
     },
     "cvCta": "View CV",
     "availability": "Open to new opportunities",
