@@ -1,21 +1,28 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-08-03 · Formulario de contacto, fix de enrutado i18n, parpadeo de tema y skill de deploy integrados en main (`e75bae1`)
+> Actualizado: 2026-09-15 · Foto del CV en espejo, más espacio en experiencia compacta, encuadre de Nico a la derecha en Home, UX mobile de Hero tipo CV, sección Idiomas y calibración de impresión (1 y 2 páginas) con tests PDF
 
 ## Ahora
 
-**Plan de Mejora para Showcase en Móviles (Próxima Sesión)**
+**Auditoría y Validación Visual**
 
-- Optimización UX móvil para `/showcase` y `@nicobehm/media-kit`.
+- Validar en navegador y móvil las nuevas vistas: Hero con avatar integrado en mobile, sección Idiomas en las 3 vistas del CV e impresión en PDF (1 página compacto, 2 páginas estándar y timeline).
 
 ## Hecho
 
-- ✅ Fases 0–3.9 implementadas (ver roadmap) · media-kit 0.7.0 integrada en main.
-- ✅ Formulario de contacto y backend PHP en producción (`https://jnicob.dev/api/contact.php`).
-- ✅ Enlaces i18n corregidos en pantalla de éxito (`/es/cv/`, `/es/projects/`, `/en/cv/`, `/en/projects/`).
-- ✅ Eliminación de código muerto (Web3Forms retirado de `route.ts`).
-- ✅ Prevención de parpadeo de tema en modo light al cambiar idioma y estado `disabled`/pending durante la transición.
-- ✅ Despliegue estático automatizado sobre GoDaddy cPanel con la nueva skill `deploy-shared-hosting`.
+- ✅ **Foto del CV en espejo**: Invertida horizontalmente (`sharp.flop()`) en `avatar-cv.jpg` y `avatar-cv.webp` para que el torso y mirada se orienten hacia el interior del documento (hacia el nombre y contenido).
+- ✅ **Espaciado en CV compacto**: Incrementada la separación entre las tarjetas de experiencia laboral (`gap-4`) para una lectura más desahogada.
+- ✅ **Encuadre de Nico en el Home**: Re-extracción de `hero-portrait.webp` (`left: 760`) para posicionar a Nico apenas más a la derecha, logrando un encuadre circular perfectamente centrado y equilibrado.
+- ✅ **UX & diseño Mobile en el Hero**: En pantallas móviles (`< lg`), el avatar se muestra integrado junto al nombre y titular (`flex items-center gap-4 sm:gap-6`) con el mismo patrón visual del encabezado del CV, ocultando la columna derecha grande descolgada al final.
+- ✅ **Sección de Idiomas en CV**: Incorporación de `languages.ts` y `languageEntrySchema` (Español nativo + Inglés B2 Upper Intermediate) con tipografía semántica y componente `LanguageList` en las 3 vistas (Compacta, Estándar y Cronológica).
+- ✅ **Calibración de impresión A4 garantizada**:
+  - Compacto: Formación e Idiomas en dos columnas (`print:grid-cols-2`), asegurando estrictamente **1 página A4**.
+  - Estándar: Exactamente **2 páginas A4**.
+  - Cronológico (Timeline): Cards compactadas en impresión (`print:p-2.5 print:gap-1.5`), resolviendo el salto de 1 línea y asegurando exactamente **2 páginas A4**.
+- ✅ **Tests automatizados**:
+  - `cv-print-pages.test.ts`: Validación automatizada con Google Chrome headless y `pdfinfo` comprobando que las 3 vistas generan exactamente 1, 2 y 2 páginas.
+  - `language-list.test.tsx` y tests en `schemas.test.ts` y `cv-views.test.tsx`.
+- ✅ **100% verde en local**: 75 suites de test (484 tests pasados), TypeScript estricto, ESLint 0 warnings, Prettier y build estático (28/28 páginas en 15.9s).
 
 ## Pendientes del usuario (no bloqueantes)
 

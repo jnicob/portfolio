@@ -17,21 +17,21 @@ type CvContentProps = {
   locale: Locale;
   strings: CvStrings;
   switcherLabels: CvViewSwitcherLabels;
-  /** Etiqueta para el botón de imprimir en el CV */
+  /** Print button label in CV */
   printLabel?: string;
   /**
-   * Labels del botón "Compartir esta vista" (T25). Si se pasa, `CvContent` renderiza
-   * `ShareViewButton` con la vista activa (vive en este estado, no en el caller).
+   * Labels for the "Share this view" button (T25). If provided, `CvContent` renders
+   * `ShareViewButton` with the active view (state owned here, not in caller).
    */
   shareLabels?: ShareViewButtonLabels;
-  /** Slot genérico para contenido adicional tras el switcher (uso fuera del CV). */
+  /** Generic slot for additional content after switcher (usage outside CV). */
   shareSlot?: ReactNode;
 };
 
 /**
- * Isla client que posee la vista activa del CV: la inicializa desde `AppearanceInit`
- * (URL > storage > default, T20) y la actualiza al elegir en el switcher, persistiendo
- * la elección. Las 3 vistas (T24) son presentacionales y reciben los mismos datos.
+ * Client island that owns the active CV view: initializes from `AppearanceInit`
+ * (URL > storage > default, T20) and updates when selected in switcher, persisting
+ * the choice. The 3 views (T24) are presentational and receive the same data.
  */
 export function CvContent({
   locale,
@@ -63,6 +63,8 @@ export function CvContent({
         locale={locale}
         showBriefLabel={strings.showBrief}
         hideBriefLabel={strings.hideBrief}
+        showPhotoLabel={strings.showPhoto}
+        hidePhotoLabel={strings.hidePhoto}
       />
       {view === 'standard' && <CvStandard locale={locale} strings={strings} />}
       {view === 'compact' && <CvCompact locale={locale} strings={strings} />}

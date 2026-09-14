@@ -8,16 +8,16 @@ const { persistCvView } = vi.hoisted(() => ({ persistCvView: vi.fn() }));
 
 vi.mock('@/lib/appearance', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/lib/appearance')>();
-  // Spy write-through: registra llamadas Y escribe a storage, porque AppearanceInit
-  // resuelve la vista leyendo storage fresco en cada montaje.
+  // Write-through spy: records calls AND writes to storage, because AppearanceInit
+  // resolves the view by reading fresh storage on each mount.
   persistCvView.mockImplementation(actual.persistCvView);
   return { ...actual, persistCvView };
 });
 
 /**
- * AppearanceInit cachea la resolución a nivel de módulo (one-shot compartido por el
- * doble montaje layout+página), así que cada test necesita módulos frescos:
- * `vi.resetModules()` en beforeEach + import dinámico por test.
+ * AppearanceInit caches resolution at module level (one-shot shared across
+ * layout+page double mount), so each test requires fresh modules:
+ * `vi.resetModules()` in beforeEach + dynamic import per test.
  */
 async function importFreshComponents() {
   const [{ CvContent }, { AppearanceInit }] = await Promise.all([
@@ -30,6 +30,7 @@ async function importFreshComponents() {
 const STRINGS: CvStrings = {
   experienceTitle: 'Experience',
   educationTitle: 'Education',
+  languagesTitle: 'Languages',
   skillsTitle: 'Skills',
   present: 'Present',
   contactTitle: 'Contact',
@@ -84,7 +85,7 @@ afterEach(() => {
 
 const SHARE_LABELS = { share: 'Share this view', copied: 'Link copied', error: 'Could not copy' };
 
-/** Ver share-view-button.test.tsx: userEvent.setup() pisa su propio stub de clipboard. */
+/** See share-view-button.test.tsx: userEvent.setup() overwrites its own clipboard stub. */
 function stubClipboardAfterSetup(writeText: ReturnType<typeof vi.fn>) {
   Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
 }
@@ -94,7 +95,7 @@ describe('CvContent', () => {
     window.history.pushState(null, '', '/en/cv?view=timeline');
     const { CvContent, AppearanceInit } = await importFreshComponents();
 
-    // Forma real del árbol: el layout monta su AppearanceInit SIN onView antes que la página.
+    // Real tree shape: layout mounts its AppearanceInit WITHOUT onView before the page.
     render(
       <>
         <AppearanceInit />
@@ -105,7 +106,7 @@ describe('CvContent', () => {
     expect(screen.getByRole('radio', { name: 'Timeline' })).toBeChecked();
     const lists = screen.getAllByRole('list');
     expect(lists.some((list) => list.tagName === 'OL')).toBe(true);
-    // La primera instancia limpió la URL; la vista llegó desde la caché, no desde location.
+    // The first instance cleaned up the URL; the view arrived from cache, not location.
     expect(window.location.search).toBe('');
   });
 
@@ -114,7 +115,7 @@ describe('CvContent', () => {
     const user = userEvent.setup();
     const { CvContent, AppearanceInit } = await importFreshComponents();
 
-    // Primera carga: deep link gana.
+    // First load: deep link wins.
     const first = render(
       <>
         <AppearanceInit />
@@ -123,11 +124,11 @@ describe('CvContent', () => {
     );
     expect(screen.getAllByRole('radio', { name: 'Timeline' })[0]).toBeChecked();
 
-    // El usuario cambia a Compact (persistida) y navega fuera (unmount de la página).
+    // User switches to Compact (persisted) and navigates away (unmounts page).
     await user.click(screen.getAllByRole('radio', { name: 'Compact' })[0]!);
     first.unmount();
 
-    // Vuelve a /cv por navegación client: MISMO módulo (sin resetModules), CvContent remonta.
+    // Navigates back to /cv via client navigation: SAME module (no resetModules), CvContent remounts.
     render(<CvContent locale="en" strings={STRINGS} switcherLabels={SWITCHER_LABELS} />);
 
     expect(screen.getAllByRole('radio', { name: 'Compact' })[0]!).toBeChecked();

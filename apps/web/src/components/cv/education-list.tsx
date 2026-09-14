@@ -7,8 +7,8 @@ type EducationListProps = {
 };
 
 /**
- * Lista de formación académica: grado, institución y rango de años. Presentacional puro,
- * RSC-compatible. Reutilizado por las 3 vistas del CV (T9/T24).
+ * Academic education list: degree, institution, and year range.
+ * Pure presentational, RSC-compatible. Reused across the 3 CV views (T9/T24).
  */
 export function EducationList({ education, locale }: EducationListProps) {
   return (
