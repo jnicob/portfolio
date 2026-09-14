@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { CV_VIEWS, SKILL_CATEGORIES, SKINS, THEMES } from './constants';
 
-// Compat de tipos para consumidores existentes (los VALORES se importan de
-// './constants' — importarlos desde aquí metería zod en el bundle cliente).
+// Type compatibility for existing consumers (VALUES are imported from
+// './constants' — importing them from here would pull zod into the client bundle).
 export type { CvView, Skin, SkillCategory, Theme } from './constants';
 
-/** Un dato, dos idiomas: imposible desincronizar es/en. */
+/** One datum, two languages: impossible to desynchronize es/en. */
 export const localizedStringSchema = z
   .object({ es: z.string().min(1), en: z.string().min(1) })
   .strict();
@@ -36,7 +36,7 @@ export const profileSummarySchema = z
   .strict();
 export type ProfileSummary = z.infer<typeof profileSummarySchema>;
 
-/** Contacto público SOLO GitHub/LinkedIn/website — strict() hace imposible añadir email/teléfono. */
+/** Public contact ONLY GitHub/LinkedIn/website — strict() prevents adding email/phone. */
 export const profileSchema = z
   .object({
     name: z.string().min(1),
@@ -82,6 +82,14 @@ export const educationEntrySchema = z
   })
   .strict();
 export type EducationEntry = z.infer<typeof educationEntrySchema>;
+export const languageEntrySchema = z
+  .object({
+    id: z.string().min(1),
+    language: localizedStringSchema,
+    level: localizedStringSchema,
+  })
+  .strict();
+export type LanguageEntry = z.infer<typeof languageEntrySchema>;
 
 export const skillSchema = z
   .object({
@@ -117,7 +125,7 @@ export const projectSchema = z
   .strict();
 export type Project = z.infer<typeof projectSchema>;
 
-/** Frontmatter MDX: plano (cada fichero ya ES un locale). */
+/** MDX Frontmatter: flat structure (each file IS a locale). */
 export const projectFrontmatterSchema = z
   .object({
     title: z.string().min(1),
@@ -131,12 +139,12 @@ export const projectFrontmatterSchema = z
   .strict();
 export type ProjectFrontmatter = z.infer<typeof projectFrontmatterSchema>;
 
-/** Enums de apariencia (spec §5): validación server-side; el cliente usa './constants'. */
+/** Appearance enums (spec §5): server-side validation; client uses './constants'. */
 export const themeSchema = z.enum(THEMES);
 export const skinSchema = z.enum(SKINS);
 export const cvViewSchema = z.enum(CV_VIEWS);
 
-/** Campos comunes a los 3 tipos de ítem de la galería IA (spec §7). */
+/** Common fields across the 3 AI gallery item types (spec §7). */
 const galleryItemBase = {
   id: z.string().min(1),
   model: z.string().min(1),
@@ -174,7 +182,7 @@ export const galleryItemSchema = z.discriminatedUnion('type', [
 ]);
 export type GalleryItem = z.infer<typeof galleryItemSchema>;
 
-/** Esquema del Formulario de Contacto (nico-zod): Asunto y Email obligatorios, Teléfono opcional, Mensaje obligatorio, Honeypot trampas. */
+/** Contact Form Schema (nico-zod): Required subject and email, optional phone, required message, honeypot trap. */
 export const contactSchema = z
   .object({
     subject: z
@@ -210,3 +218,40 @@ export const contactSchema = z
   .strict();
 
 export type ContactInput = z.infer<typeof contactSchema>;
+
+/** Schema for the personal "Beyond Code" section. */
+export const beyondCodeSchema = z
+  .object({
+    title: localizedStringSchema,
+    subtitle: localizedStringSchema,
+    location: localizedStringSchema,
+    origin: localizedStringSchema,
+    interestsTitle: localizedStringSchema,
+    interests: z.array(localizedStringSchema).min(1),
+    makerTitle: localizedStringSchema,
+    makerDescription: localizedStringSchema,
+    philosophyTitle: localizedStringSchema,
+    philosophyDescription: localizedStringSchema,
+    images: z
+      .array(
+        z
+          .object({
+            src: z.string().min(1),
+            alt: localizedStringSchema,
+            caption: localizedStringSchema.optional(),
+          })
+          .strict(),
+      )
+      .min(1),
+    image: z
+      .object({
+        src: z.string().min(1),
+        alt: localizedStringSchema,
+        caption: localizedStringSchema.optional(),
+      })
+      .strict()
+      .optional(),
+  })
+  .strict();
+
+export type BeyondCode = z.infer<typeof beyondCodeSchema>;

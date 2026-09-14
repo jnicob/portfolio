@@ -48,7 +48,7 @@ Decisiones nuevas a partir de la revisión del sitio publicado por F3. Se implem
 
 **Skills**
 
-- Ampliar `skills.ts` con el CV de LinkedIn y la exploración de repos (curado, no exhaustivo). Confirmadas por LinkedIn: **HL7 (V2 Messaging, Infobuttons) / interoperabilidad sanitaria**, SNOMED CT / LOINC / CIE-10, Mirth Connect, CodeIgniter, MySQL / SQL Server, WordPress / Moodle / Joomla, Salesforce Lightning/Aura, Material UI, SCRUM/gestión de proyectos. Confirmadas por la exploración de repos (2026-07-16): **Vue 2/3 + TypeScript** (tasks_web, tax_center, flaticon_manager, admin_web, freepik-manager), Laravel Nova, Slim 4 + DDD/hexagonal, Radix UI / vanilla-extract / cva, React Query, Zod, Docker + Kubernetes (Helm/Skaffold), extensiones Chrome MV3, MongoDB, BigQuery.
+- Ampliar `skills.ts` con el CV de LinkedIn y la exploración de repos (curado, no exhaustivo). Confirmadas por LinkedIn: **HL7 (V2 Messaging, Infobuttons) / interoperabilidad sanitaria**, SNOMED CT / LOINC / CIE-10, Mirth Connect, CodeIgniter, MySQL / SQL Server, WordPress / Moodle / Joomla, Salesforce Lightning, Material UI, SCRUM/gestión de proyectos. Confirmadas por la exploración de repos (2026-07-16): **Vue 2/3 + TypeScript** (tasks_web, tax_center, flaticon_manager, admin_web, freepik-manager), Laravel Nova, Slim 4 + DDD/hexagonal, Radix UI / vanilla-extract / cva, React Query, Zod, Docker + Kubernetes (Helm/Skaffold), extensiones Chrome MV3, MongoDB, BigQuery.
 - Quitar cualquier skill/mención "Playground de IA" como skill.
 
 **Proyectos (`/projects` + `projects.ts`)**

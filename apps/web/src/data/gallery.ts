@@ -1,7 +1,7 @@
 import { galleryItemSchema, type GalleryItem } from './schemas';
 
 const entries = [
-  // ——— Imágenes (Google NBP, Seedream 5 Pro) ———
+  // ——— Images (Google NBP, Seedream 5 Pro) ———
   {
     type: 'image' as const,
     id: 'nbp-retrato-neon',
@@ -82,7 +82,7 @@ const entries = [
     width: 1200,
     height: 1600,
   },
-  // ——— Vídeos (Google Veo, Kling V3) ———
+  // ——— Videos (Google Veo, Kling V3) ———
   {
     type: 'video' as const,
     id: 'veo-costa-atardecer',
@@ -133,7 +133,7 @@ const entries = [
     width: 1200,
     height: 1200,
   },
-  // ——— Audios (Google Lyria) ———
+  // ——— Audio (Google Lyria) ———
   {
     type: 'audio' as const,
     id: 'audio-lofi',

@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { getTranslations } from 'next-intl/server';
@@ -10,6 +11,14 @@ import { FeaturedProjects } from '@/components/home/featured-projects';
 import { SkillsSummary } from '@/components/home/skills-summary';
 import { JsonLd } from '@/components/seo/json-ld';
 import { localizedPageMetadata, personJsonLd } from '@/lib/seo';
+
+/** Deferred lazy load for the below-the-fold Beyond Code section (optimizing initial First Load JS & LCP). */
+const BeyondCodeSection = dynamic(
+  () => import('@/components/home/beyond-code').then((m) => m.BeyondCodeSection),
+  {
+    loading: () => <div className="min-h-96" aria-hidden="true" />,
+  },
+);
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -47,6 +56,7 @@ export default async function HomePage({ params }: Props) {
         moreTitle={t('featuredMoreTitle')}
         moreCountTemplate={t.raw('featuredMoreCount')}
       />
+      <BeyondCodeSection locale={locale} />
       <Link
         href="/showcase"
         className="text-accent underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"

@@ -35,6 +35,14 @@
       "description": "Full-stack engineer with 12+ years across healthcare, international product and large-scale AI API platforms."
     },
     "showcaseCta": "View component showcase →",
+    "projectsCta": "View Projects",
+    "technologiesLabel": "Technologies I work with",
+    "stats": {
+      "exp": "Years Experience",
+      "requests": "Daily API Requests",
+      "uptime": "Uptime & Resilience",
+      "cleanCode": "TDD & Clean Code"
+    },
     "cvCta": "View CV",
     "availability": "Open to new opportunities",
     "availabilityCta": "Get in touch",
@@ -65,6 +73,7 @@
     "title": "CV",
     "experienceTitle": "Experience",
     "educationTitle": "Education",
+    "languagesTitle": "Languages",
     "skillsTitle": "Skills",
     "present": "Present",
     "contactTitle": "Contact",
@@ -80,6 +89,8 @@
     "briefTitle": "Professional Summary",
     "showBrief": "Show summary",
     "hideBrief": "Hide summary",
+    "showPhoto": "Include photo",
+    "hidePhoto": "Remove photo",
     "views": {
       "standard": "Standard",
       "compact": "Compact",
@@ -152,6 +163,7 @@
       },
       "mediaKit": {
         "title": "@nicobehm/media-kit",
+        "engineeringBadge": "Proprietary NPM package • Zero dependencies • Accessible (WCAG)",
         "description": "Media components from the own package: CompareSlider (drag/hover, color/B&W) and MediaLightbox with zoom.",
         "beforeAfterAlt": "Desaturated version of the photo",
         "dragCompareLabel": "Compare before and after (drag)",
@@ -192,6 +204,7 @@
       },
       "gallery": {
         "title": "AI-generated example gallery",
+        "engineeringBadge": "Dynamic layouts (Grid, Masonry, Justified) • FLIP animations",
         "description": "Images (Google NBP, Seedream 5 Pro), video (Google Veo, Kling V3) and music generated with AI. Filter by type, search by model or title, and open any example in fullscreen HD.",
         "filterLabel": "Filter examples",
         "allLabel": "All",
@@ -211,6 +224,7 @@
       },
       "apiPlayer": {
         "title": "API player",
+        "engineeringBadge": "API Platform architecture simulator (FastAPI + OpenAPI) • Streaming",
         "description": "A simulated real call: hit Run to watch the request travel through pending → streaming → done, with image, video, audio and error examples.",
         "endpointLabel": "Endpoint",
         "exampleImageLabel": "Image — text-to-image",

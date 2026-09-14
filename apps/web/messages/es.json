@@ -35,6 +35,14 @@
       "description": "Ingeniero full-stack con más de 12 años entre salud, producto internacional y plataformas de APIs de IA a gran escala."
     },
     "showcaseCta": "Ver showcase de componentes →",
+    "projectsCta": "Ver Proyectos",
+    "technologiesLabel": "Tecnologías clave",
+    "stats": {
+      "exp": "Años de experiencia",
+      "requests": "Requests diarios en API",
+      "uptime": "Uptime y resiliencia",
+      "cleanCode": "TDD y Clean Code"
+    },
     "cvCta": "Ver CV",
     "availability": "Disponible para nuevas oportunidades",
     "availabilityCta": "Contactar",
@@ -65,6 +73,7 @@
     "title": "CV",
     "experienceTitle": "Experiencia",
     "educationTitle": "Formación",
+    "languagesTitle": "Idiomas",
     "skillsTitle": "Skills",
     "present": "Actualidad",
     "contactTitle": "Contacto",
@@ -80,6 +89,8 @@
     "briefTitle": "Resumen Profesional",
     "showBrief": "Mostrar resumen",
     "hideBrief": "Ocultar resumen",
+    "showPhoto": "Incluir foto",
+    "hidePhoto": "Quitar foto",
     "views": {
       "standard": "Estándar",
       "compact": "Compacto",
@@ -152,6 +163,7 @@
       },
       "mediaKit": {
         "title": "@nicobehm/media-kit",
+        "engineeringBadge": "Paquete NPM propio • Cero dependencias • Accesible (WCAG)",
         "description": "Componentes media del paquete propio: CompareSlider (drag/hover, color/B-N) y MediaLightbox con zoom.",
         "beforeAfterAlt": "Versión desaturada de la foto",
         "dragCompareLabel": "Comparar antes y después (drag)",
@@ -192,6 +204,7 @@
       },
       "gallery": {
         "title": "Galería de ejemplos generados con IA",
+        "engineeringBadge": "Layouts dinámicos (Grid, Masonry, Justified) • Animaciones FLIP",
         "description": "Imágenes (Google NBP, Seedream 5 Pro), vídeo (Google Veo, Kling V3) y música generados con IA. Filtra por tipo, busca por modelo o título y abre cualquier ejemplo a pantalla completa en calidad HD.",
         "filterLabel": "Filtrar ejemplos",
         "allLabel": "Todos",
@@ -211,6 +224,7 @@
       },
       "apiPlayer": {
         "title": "API player",
+        "engineeringBadge": "Simulador de arquitectura API Platform (FastAPI + OpenAPI) • Streaming",
         "description": "Simulación de una llamada real: pulsa Run para ver la petición viajar por pending → streaming → done, con ejemplos de imagen, vídeo, audio y error.",
         "endpointLabel": "Endpoint",
         "exampleImageLabel": "Imagen — text-to-image",
