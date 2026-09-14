@@ -2,9 +2,9 @@
 @import './skins/editorial.css';
 
 /*
- * Tokens semánticos (skill: tailwind-tokens).
- * Los componentes usan SOLO las utilities derivadas (bg-bg, text-fg, bg-accent…).
- * Valores por tema abajo; @theme inline los expone a Tailwind v4.
+ * Semantic tokens (skill: tailwind-tokens).
+ * Components ONLY use derived utilities (bg-bg, text-fg, bg-accent…).
+ * Per-theme values below; @theme inline exposes them to Tailwind v4.
  */
 @theme inline {
   --color-bg: var(--bg);
@@ -26,7 +26,7 @@
   --radius-badge: var(--radius-badge-value);
 }
 
-/* Base: indirección de radios/fuentes que los skins (T21+) pueden redefinir. */
+/* Base: radius/font indirection that skins (T21+) can override. */
 :root {
   --radius-card-value: 0.75rem;
   --radius-control-value: 0.5rem;
@@ -35,7 +35,7 @@
   --font-body: var(--font-geist-sans);
 }
 
-/* Tema oscuro (por defecto) — acento violeta eléctrico */
+/* Dark theme (default) — electric violet accent */
 :root[data-theme='dark'] {
   color-scheme: dark;
   --bg: #0a0a0f;
@@ -173,7 +173,7 @@
   --radius-control-value: 0.75rem;
 }
 
-/* Swatches para el skin-switcher (T23): único lugar permitido, es definición de tokens. */
+/* Swatches for skin-switcher (T23): only allowed place, it's token definition. */
 .skin-swatch[data-skin='dev-tool'] {
   background: #8b7cf7;
 }
@@ -187,8 +187,8 @@
   background: #ff5da2;
 }
 
-/* Impresión (T24): oculta chrome interactivo (header/footer/switcher/share, `.no-print`)
- * y fuerza estética impecable de tema light en papel sin importar el modo dark activo. */
+/* Print (T24): hides interactive chrome (header/footer/switcher/share, `.no-print`)
+ * and applies crisp typography with professional blue accent and portrait A4 format. */
 @media print {
   :root,
   :root[data-theme='dark'],
@@ -196,16 +196,17 @@
     color-scheme: light !important;
     --bg: #ffffff !important;
     --surface: #ffffff !important;
-    --fg: #17171c !important;
-    --fg-muted: #5c5c6b !important;
-    --border: #e4e4ea !important;
-    --ring: #5b4bd6 !important;
-    --accent: #17171c !important;
-    --accent-hover: #17171c !important;
+    --fg: #111827 !important;
+    --fg-muted: #4b5563 !important;
+    --border: #e5e7eb !important;
+    --ring: #1e40af !important;
+    --accent: #1e40af !important;
+    --accent-hover: #1e3a8a !important;
     --accent-fg: #ffffff !important;
   }
   @page {
-    margin: 0.8cm 1.2cm;
+    size: A4 portrait;
+    margin: 1.4cm 1.8cm;
     background: #ffffff;
   }
   *,
@@ -213,6 +214,8 @@
   *::after {
     box-shadow: none !important;
     text-shadow: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
   .no-print {
     display: none !important;
@@ -221,58 +224,51 @@
   body {
     background-color: #ffffff !important;
     background: #ffffff !important;
-    color: #17171c !important;
-    font-size: 11.5px !important;
+    color: #111827 !important;
+    font-size: 11px !important;
     line-height: 1.35 !important;
     margin: 0 !important;
     padding: 0 !important;
   }
   h1 {
-    font-size: 24px !important;
-    color: #17171c !important;
+    font-size: 26px !important;
+    line-height: 1.15 !important;
+    color: #111827 !important;
   }
   h2 {
-    font-size: 14px !important;
-    color: #17171c !important;
-    margin-top: 0.4rem !important;
-    margin-bottom: 0.2rem !important;
+    font-size: 12px !important;
+    color: #ffffff !important;
+    background-color: #1e40af !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    padding: 2px 7px !important;
+    border-radius: 3px !important;
+    margin-top: 0.3rem !important;
+    margin-bottom: 0.15rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em !important;
     break-after: avoid !important;
     page-break-after: avoid !important;
   }
   h3 {
-    font-size: 12px !important;
-    color: #17171c !important;
+    font-size: 11px !important;
+    color: #111827 !important;
     break-after: avoid !important;
     page-break-after: avoid !important;
   }
-  div,
-  p,
-  span,
-  li,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  article,
-  section,
-  header {
-    color: #17171c;
-  }
   p,
   li {
-    color: #333338 !important;
+    color: #1f2937 !important;
   }
   a {
     text-decoration: none;
-    color: #17171c !important;
+    color: #1e40af !important;
   }
   main {
     max-width: none !important;
     padding: 0 !important;
   }
-  /* Evitar que bloques de experiencia/cards queden cortados entre páginas */
+  /* Prevent experience blocks and cards from breaking across pages */
   article,
   .rounded-card,
   [data-testid='timeline-date'] {
@@ -283,6 +279,32 @@
   header {
     break-inside: auto !important;
     page-break-inside: auto !important;
+  }
+
+  /* Specific calibration ensuring compact CV fits on a single A4 page */
+  .cv-compact {
+    gap: 0.45rem !important;
+  }
+  .cv-compact section {
+    gap: 0.2rem !important;
+  }
+  .cv-compact section > div {
+    gap: 0.15rem !important;
+  }
+  .cv-compact article {
+    gap: 0.05rem !important;
+  }
+  .cv-compact article h3 {
+    font-size: 10.5px !important;
+    line-height: 1.2 !important;
+  }
+  .cv-compact article p {
+    font-size: 9.5px !important;
+    line-height: 1.25 !important;
+  }
+  .cv-compact ul {
+    gap: 0.1rem !important;
+    font-size: 9.5px !important;
   }
 }
 
@@ -301,9 +323,9 @@ h6 {
   font-family: var(--font-heading);
 }
 
-/* Mapeo de design tokens del portfolio a la API pública de @nicobehm/media-kit */
-/* --mk-handle-color deliberadamente NO se mapea: debe contrastar con el medio
- * (foto/vídeo) mostrado, no con la superficie de la página, en cualquier tema. */
+/* Mapping of portfolio design tokens to @nicobehm/media-kit public API */
+/* --mk-handle-color is deliberately NOT mapped: must contrast with the media
+ * (photo/video) shown, not with the page surface, in any theme. */
 :root[data-theme='dark'],
 :root[data-theme='light'] {
   --mk-focus-ring: var(--ring);
@@ -320,7 +342,7 @@ h6 {
   --mk-filter-active-color: var(--accent-fg);
 }
 
-/* Tipografía mínima para el cuerpo MDX de los case studies (sin plugin typography). */
+/* Minimal typography for MDX case studies body (without typography plugin). */
 .prose-portfolio h2 {
   margin-top: 2.5rem;
   margin-bottom: 1rem;

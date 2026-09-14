@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 import { profile } from '@/data/profile';
 
@@ -15,21 +16,29 @@ type CvHeaderProps = {
   locale: Locale;
   showBriefLabel?: string;
   hideBriefLabel?: string;
+  showPhotoLabel?: string;
+  hidePhotoLabel?: string;
+  photoSrc?: string;
 };
 
 /**
- * Cabecera principal del CV (pantalla e impresión):
- * - Muestra el nombre grande ("Nico Behm") y el titular profesional.
- * - Muestra los links de contacto públicos (GitHub, LinkedIn) y el acceso al formulario de contacto.
- * - Toggle interactivo con animación suave para ver/ocultar el resumen/brief profesional.
- * - Respeta estrictamente el estado del toggle en impresión (si está oculto, NO se imprime).
+ * Main CV Header (Screen and Print):
+ * - Displays prominent name ("Nico Behm") and professional headline.
+ * - Supports an optional profile photo (interactive toggle, off by default for ATS).
+ * - Displays public contact links (GitHub, LinkedIn, Website, Contact form).
+ * - Provides interactive toggles for brief and photo customization.
+ * - Strictly preserves toggle state in @media print.
  */
 export function CvHeader({
   locale,
   showBriefLabel = 'Mostrar resumen',
   hideBriefLabel = 'Ocultar resumen',
+  showPhotoLabel = 'Incluir foto',
+  hidePhotoLabel = 'Quitar foto',
+  photoSrc = '/profile/avatar-cv.jpg',
 }: CvHeaderProps) {
   const [showBrief, setShowBrief] = useState(true);
+  const [showPhoto, setShowPhoto] = useState(false);
 
   return (
     <header className="flex flex-col gap-2 border-b border-border pb-2.5 print:gap-1.5">
@@ -39,13 +48,30 @@ export function CvHeader({
           showBrief && 'border-b border-border',
         )}
       >
-        <div>
-          <h1 className="text-5xl font-bold tracking-tight text-fg print:text-4xl">
-            {profile.name}
-          </h1>
-          <p className="text-xl text-fg-muted print:text-base font-medium">
-            {profile.headline[locale]}
-          </p>
+        <div className="flex items-center gap-4 sm:gap-6">
+          {showPhoto && (
+            <div
+              data-testid="cv-photo"
+              className="shrink-0 overflow-hidden rounded-full border-2 border-border/80 shadow-md ring-4 ring-accent/10 print:ring-0 print:border-border print:h-24 print:w-24 print:shadow-none"
+            >
+              <Image
+                src={photoSrc}
+                alt={profile.name}
+                width={144}
+                height={144}
+                unoptimized
+                className="h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36 object-cover print:h-24 print:w-24 print:scale-120 print:origin-top"
+              />
+            </div>
+          )}
+          <div>
+            <h1 className="text-5xl font-bold tracking-tight text-fg print:text-4xl">
+              {profile.name}
+            </h1>
+            <p className="text-xl text-fg-muted print:text-lg print:font-semibold print:text-fg font-medium">
+              {profile.headline[locale]}
+            </p>
+          </div>
         </div>
         <div className="flex flex-col gap-1.5 text-sm text-fg-muted items-start">
           {profile.links.website && (
@@ -150,7 +176,7 @@ export function CvHeader({
         </div>
       </div>
 
-      <div className="flex items-center justify-between no-print mt-1">
+      <div className="flex items-center gap-2 no-print mt-1">
         <Button
           variant="ghost"
           size="sm"
@@ -191,15 +217,62 @@ export function CvHeader({
                 className="shrink-0"
               >
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="12" r="3" />
+                <circle cx="12" cy="13" r="3" />
               </svg>
               <span>{showBriefLabel}</span>
             </>
           )}
         </Button>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowPhoto((prev) => !prev)}
+          className="text-xs text-fg-muted hover:text-fg flex items-center gap-1.5 px-2 h-7"
+        >
+          {showPhoto ? (
+            <>
+              <svg
+                viewBox="0 0 24 24"
+                width={14}
+                height={14}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+                className="shrink-0"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+              <span>{hidePhotoLabel}</span>
+            </>
+          ) : (
+            <>
+              <svg
+                viewBox="0 0 24 24"
+                width={14}
+                height={14}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+                className="shrink-0"
+              >
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+              <span>{showPhotoLabel}</span>
+            </>
+          )}
+        </Button>
       </div>
 
-      {/* Contenedor animado suavemente para el resumen profesional */}
+      {/* Smooth animated accordion container for the professional brief */}
       <div
         className={cn(
           'grid transition-all duration-300 ease-in-out',

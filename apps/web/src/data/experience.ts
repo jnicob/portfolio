@@ -65,8 +65,8 @@ const entries = [
         en: 'Candidate Viewer: job-candidate management platform. React / Material UI with Node.js / Express / MySQL / Sequelize.',
       },
       {
-        es: 'DevelopIntelligence: app para que instructores gestionen cursos y disponibilidad, con Lightning Component y Aura de Salesforce.',
-        en: 'DevelopIntelligence: app for instructors to manage courses and availability, built with Salesforce Lightning Component and Aura.',
+        es: 'DevelopIntelligence: app para que instructores gestionen cursos y disponibilidad, con Lightning Components de Salesforce.',
+        en: 'DevelopIntelligence: app for instructors to manage courses and availability, built with Salesforce Lightning Components.',
       },
     ],
     tags: ['react', 'nextjs', 'nodejs', 'express', 'postgresql'],

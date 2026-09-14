@@ -9,6 +9,7 @@ import { CvTimeline } from './cv-timeline';
 const STRINGS: CvStrings = {
   experienceTitle: 'Experience',
   educationTitle: 'Education',
+  languagesTitle: 'Languages',
   skillsTitle: 'Skills',
   present: 'Present',
   contactTitle: 'Contact',
@@ -34,8 +35,8 @@ describe('las 3 vistas del CV', () => {
     '$name renderiza exactamente una entrada de experiencia por dato en su sección',
     ({ Component }) => {
       render(<Component locale="en" strings={STRINGS} />);
-      // Acotado a la sección de experiencia: los h3 de skills/education no pueden
-      // enmascarar una entrada de experiencia ausente.
+      // Scoped to experience section: skills/education h3s cannot
+      // mask a missing experience entry.
       const section = screen
         .getByRole('heading', { level: 2, name: STRINGS.experienceTitle })
         .closest('section');
@@ -44,6 +45,13 @@ describe('las 3 vistas del CV', () => {
       expect(headings).toHaveLength(experience.length);
     },
   );
+
+  it.each(VIEWS)('$name renderiza la sección de idiomas', ({ Component }) => {
+    render(<Component locale="en" strings={STRINGS} />);
+    expect(screen.getByRole('heading', { name: STRINGS.languagesTitle })).toBeInTheDocument();
+    expect(screen.getByText('Spanish:')).toBeInTheDocument();
+    expect(screen.getByText('English:')).toBeInTheDocument();
+  });
 
   it('CvCompact no renderiza controles interactivos (print-safe)', () => {
     render(<CvCompact locale="en" strings={STRINGS} />);
@@ -69,9 +77,9 @@ describe('CvTimeline — fecha en badge', () => {
   it('muestra la fecha en badge dentro de la card y no duplicada', () => {
     render(<CvTimeline locale="es" strings={STRINGS} />);
     const freepikCard = screen.getByText('Freepik/Magnific').closest('li')!;
-    // El Badge de rango lleva data-testid="timeline-date" (lo añade esta task)
+    // The range Badge has data-testid="timeline-date"
     expect(within(freepikCard).getByTestId('timeline-date')).toHaveTextContent(/2022/);
-    // ExperienceEntryBlock no vuelve a pintar el rango (hideDates)
+    // ExperienceEntryBlock does not repaint the range (hideDates)
     expect(within(freepikCard).getAllByText(/2022/)).toHaveLength(1);
   });
 });

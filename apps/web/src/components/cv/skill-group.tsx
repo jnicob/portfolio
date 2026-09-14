@@ -4,21 +4,20 @@ import { SkillLevel } from './skill-level';
 
 type SkillGroupProps = {
   category: Skill['category'];
-  /** Etiqueta localizada de la categoría (namespace `cv.categories`) — nunca el slug crudo. */
+  /** Localized category label (namespace `cv.categories`) — never raw slug. */
   categoryLabel: string;
   skills: Skill[];
   locale: Locale;
-  /** Oculta los puntos de nivel — usado por las vistas compact/timeline (T24). */
+  /** Hides level dots — used by compact/timeline views (T24). */
   showLevel?: boolean;
 };
 
 /**
- * Grupo de skills de una categoría con indicador de nivel opcional. Presentacional puro,
- * RSC-compatible. Reutilizado por las 3 vistas del CV (T9/T24).
+ * Group of skills for a category with optional level indicator.
+ * Pure presentational, RSC-compatible. Reused across the 3 CV views (T9/T24).
  *
- * El aria-label de nivel usa el formato numérico "nombre: nivel/5": la relación N/5 se
- * entiende igual en ambos locales, así que no requiere una plantilla traducida adicional
- * (la interfaz de este componente no acepta `levelTemplate`).
+ * Level aria-label uses the numeric format "name: level/5": the N/5 ratio
+ * is understood equally in both locales without requiring an extra translated template.
  */
 export function SkillGroup({ categoryLabel, skills, showLevel = true }: SkillGroupProps) {
   return (

@@ -2,20 +2,23 @@ import type { Skill } from '@/data/schemas';
 import type { Locale } from '@/i18n/routing';
 import { experience } from '@/data/experience';
 import { education } from '@/data/education';
+import { languages } from '@/data/languages';
 import { skills } from '@/data/skills';
 import { SKILL_CATEGORIES } from '@/data/constants';
 import { ExperienceEntryBlock } from './experience-entry';
 import { SkillGroup } from './skill-group';
 import { EducationList } from './education-list';
+import { LanguageList } from './language-list';
 
 /**
- * Strings localizados que la página CV (RSC) resuelve vía `getTranslations` y pasa a
- * las 3 vistas (T24) — evita que cada vista dependa de next-intl directamente, ya que
- * CvContent las monta desde un client boundary.
+ * Localized strings resolved by the CV page (RSC) via `getTranslations` and passed to
+ * the 3 views (T24) — avoids direct next-intl dependency in each view since
+ * CvContent mounts them from a client boundary.
  */
 export type CvStrings = {
   experienceTitle: string;
   educationTitle: string;
+  languagesTitle: string;
   skillsTitle: string;
   present: string;
   contactTitle: string;
@@ -24,15 +27,17 @@ export type CvStrings = {
   briefTitle?: string;
   showBrief?: string;
   hideBrief?: string;
+  showPhoto?: string;
+  hidePhoto?: string;
   categories: Record<Skill['category'], string>;
 };
 
 export type CvViewProps = { locale: Locale; strings: CvStrings };
 
 /**
- * Vista estándar del CV: secciones completas (experiencia con highlights, skills con
- * nivel, formación, contacto). Es el layout original de T9, extraído a componente para
- * que CvContent (T24) pueda alternar entre las 3 vistas sobre los mismos datos.
+ * Standard CV view: full sections (experience with highlights, skills with
+ * level, education, languages, contact). Original T9 layout extracted into a component
+ * so CvContent (T24) can switch between the 3 views over the same data.
  */
 export function CvStandard({ locale, strings }: CvViewProps) {
   return (
@@ -74,6 +79,11 @@ export function CvStandard({ locale, strings }: CvViewProps) {
       <section className="flex flex-col gap-6">
         <h2 className="text-2xl font-semibold text-fg">{strings.educationTitle}</h2>
         <EducationList education={education} locale={locale} />
+      </section>
+
+      <section className="flex flex-col gap-6">
+        <h2 className="text-2xl font-semibold text-fg">{strings.languagesTitle}</h2>
+        <LanguageList languages={languages} locale={locale} />
       </section>
     </div>
   );

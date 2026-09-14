@@ -5,27 +5,27 @@ import { cn } from '@/lib/cn';
 type ExperienceEntryBlockProps = {
   entry: ExperienceEntry;
   locale: Locale;
-  /** Texto localizado para `end === null` (puesto actual), ej. "Present"/"Actualidad". */
+  /** Localized text for `end === null` (current position), e.g. "Present"/"Actualidad". */
   presentLabel: string;
-  /** Compacta márgenes y oculta los highlights — usado por las vistas compact/timeline (T24). */
+  /** Compresses margins and hides highlights — used by compact/timeline views (T24). */
   dense?: boolean;
-  /** Omite el rango de fechas — el contenedor lo pinta aparte (Badge del rail, T19). */
+  /** Omits date range — container renders it separately (rail Badge, T19). */
   hideDates?: boolean;
 };
 
 /**
- * Formatea el rango de fechas de una experiencia: `start — end`, o `start — presentLabel`
- * si `end` es `null` (puesto actual). Única fuente de este formateo — usado tanto por el
- * rango inline de `ExperienceEntryBlock` como por el Badge del rail en `CvTimeline` (T19).
+ * Formats date range for an experience: `start — end`, or `start — presentLabel`
+ * if `end` is `null` (current position). Single source of truth for this format — used by both
+ * inline range in `ExperienceEntryBlock` and rail Badge in `CvTimeline` (T19).
  */
 export function formatExperienceRange(entry: ExperienceEntry, presentLabel: string): string {
   return `${entry.start} — ${entry.end ?? presentLabel}`;
 }
 
 /**
- * Bloque de una experiencia laboral: rol + empresa, rango de fechas, resumen, highlights
- * y tags. Presentacional puro, RSC-compatible. Reutilizado por las 3 vistas del CV (T9/T24)
- * — sin asunciones de layout del contenedor.
+ * Work experience block: role + company, date range, summary, highlights,
+ * and tags. Pure presentational, RSC-compatible. Reused across the 3 CV views (T9/T24)
+ * — without container layout assumptions.
  */
 export function ExperienceEntryBlock({
   entry,

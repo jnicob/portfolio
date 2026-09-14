@@ -5,7 +5,7 @@ import { profile } from '@/data/profile';
 import { CvHeader } from './cv-header';
 
 describe('CvHeader', () => {
-  it('renderiza el nombre, headline y enlaces de contacto', () => {
+  it('renders name, headline, and public contact links', () => {
     render(<CvHeader locale="es" />);
 
     expect(screen.getByRole('heading', { level: 1, name: profile.name })).toBeInTheDocument();
@@ -26,13 +26,13 @@ describe('CvHeader', () => {
     );
   });
 
-  it('muestra el resumen profesional por defecto y permite alternar su visibilidad', async () => {
+  it('displays professional brief by default and toggles visibility on click', async () => {
     const user = userEvent.setup();
     render(
       <CvHeader locale="es" showBriefLabel="Mostrar resumen" hideBriefLabel="Ocultar resumen" />,
     );
 
-    // Visible inicialmente
+    // Visible initially
     const toggleButton = screen.getByRole('button', { name: 'Ocultar resumen' });
     expect(toggleButton).toBeInTheDocument();
     const summarySample = profile.summary.paragraphs.es[0] ?? '';
@@ -40,9 +40,36 @@ describe('CvHeader', () => {
       screen.getByText((content) => content.includes(summarySample.slice(0, 30))),
     ).toBeInTheDocument();
 
-    // Al hacer click, se oculta
+    // Toggle off
     await user.click(toggleButton);
 
     expect(screen.getByRole('button', { name: 'Mostrar resumen' })).toBeInTheDocument();
+  });
+
+  it('hides profile photo by default and toggles on/off when clicked', async () => {
+    const user = userEvent.setup();
+    render(
+      <CvHeader
+        locale="es"
+        showPhotoLabel="Incluir foto"
+        hidePhotoLabel="Quitar foto"
+        photoSrc="/profile/avatar-cv.jpg"
+      />,
+    );
+
+    // Off by default
+    expect(screen.queryByTestId('cv-photo')).not.toBeInTheDocument();
+    const photoToggle = screen.getByRole('button', { name: 'Incluir foto' });
+    expect(photoToggle).toBeInTheDocument();
+
+    // Toggle on
+    await user.click(photoToggle);
+    expect(screen.getByTestId('cv-photo')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Quitar foto' })).toBeInTheDocument();
+
+    // Toggle off again
+    await user.click(screen.getByRole('button', { name: 'Quitar foto' }));
+    expect(screen.queryByTestId('cv-photo')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Incluir foto' })).toBeInTheDocument();
   });
 });

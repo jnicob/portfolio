@@ -8,12 +8,10 @@ type SkillLevelProps = {
 };
 
 /**
- * Indicador visual de nivel de skill (5 puntos, bg-accent/bg-border) con aria-label
- * accesible. `role="img"` es necesario: un `<span aria-label>` sin rol implícito no
- * tiene semántica ARIA propia, así que `aria-label` queda "prohibido" ahí (axe:
- * `aria-prohibited-attr`) — el rol explícito lo habilita. Extraído de T7
- * (`SkillsSummary`) para compartirlo con `SkillGroup` (T9/T24). Presentacional puro,
- * RSC-compatible.
+ * Visual indicator of skill level (5 dots, bg-accent/bg-border) with accessible aria-label.
+ * `role="img"` is required: a `<span aria-label>` without an implicit role has no semantic ARIA role,
+ * making `aria-label` prohibited (axe: `aria-prohibited-attr`) — explicit role enables it.
+ * Pure presentational, RSC-compatible.
  */
 export function SkillLevel({ level, label }: SkillLevelProps) {
   return (

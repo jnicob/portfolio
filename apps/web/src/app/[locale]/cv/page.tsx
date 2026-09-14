@@ -32,6 +32,7 @@ export default async function CvPage({ params }: Props) {
   const strings: CvStrings = {
     experienceTitle: t('experienceTitle'),
     educationTitle: t('educationTitle'),
+    languagesTitle: t('languagesTitle'),
     skillsTitle: t('skillsTitle'),
     present: t('present'),
     contactTitle: t('contactTitle'),
@@ -40,6 +41,8 @@ export default async function CvPage({ params }: Props) {
     briefTitle: t('briefTitle'),
     showBrief: t('showBrief'),
     hideBrief: t('hideBrief'),
+    showPhoto: t('showPhoto'),
+    hidePhoto: t('hidePhoto'),
     categories: categoryLabels,
   };
 
