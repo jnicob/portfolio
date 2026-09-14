@@ -19,15 +19,15 @@ import { ShareViewButton } from '@/components/layout/share-view-button';
 import { ShowcaseView } from '@/components/showcase/showcase-view';
 import { buildShowcaseViewLabels } from '@/components/showcase/showcase-view-labels';
 
-// Perf (T31): estas 6 demos son las más pesadas del showcase (hidratación de
-// CompareSlider/FilterGallery/SpotlightReveal/ApiRequestPlayer con sus estados,
-// timers y listeners). `next/dynamic` con `ssr: true` (default) separa su chunk
-// del grafo inicial SIN perder el HTML prerenderizado (el export estático sigue
-// generándolas por completo en build) — solo difiere cuándo el navegador
-// parsea/ejecuta/hidrata ese JS, liberando el main thread antes para el LCP del
-// header. Distinto del bytes-on-the-wire descartado en T27 (allí el chunk de
-// media-kit ya era pequeño y se cargaba en paralelo; aquí el objetivo es
-// hidratación diferida, no menos bytes). Exports nombrados ⇒ patrón `.then(m => m.X)`.
+// Perf (T31): these 6 demos are the heaviest in the showcase (hydration of
+// CompareSlider/FilterGallery/SpotlightReveal/ApiRequestPlayer with their states,
+// timers and listeners). `next/dynamic` with `ssr: true` (default) splits their chunk
+// from the initial graph WITHOUT losing prerendered HTML (static export still
+// generates them completely at build time) — only differing in when the browser
+// parses/executes/hydrates that JS, freeing the main thread earlier for header LCP.
+// Distinct from bytes-on-the-wire discarded in T27 (there the media-kit chunk
+// was already small and loaded in parallel; here the goal is deferred hydration,
+// not fewer bytes). Named exports => pattern `.then(m => m.X)`.
 const ApiRequestPlayer = dynamic(() =>
   import('@/components/showcase/api-request-player').then((m) => m.ApiRequestPlayer),
 );
@@ -64,19 +64,28 @@ function Section({
   id,
   title,
   description,
+  badge,
   children,
 }: {
   id: string;
   title: string;
   description: string;
+  badge?: string;
   children: ReactNode;
 }) {
   return (
     <section id={id} aria-labelledby={`${id}-title`} className="flex scroll-mt-24 flex-col gap-4">
       <div className="flex flex-col gap-1 border-b border-border pb-3">
-        <h2 id={`${id}-title`} className="text-xl font-semibold">
-          {title}
-        </h2>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <h2 id={`${id}-title`} className="text-xl font-semibold">
+            {title}
+          </h2>
+          {badge && (
+            <Badge variant="accent" className="font-mono text-[11px] font-normal tracking-tight">
+              {badge}
+            </Badge>
+          )}
+        </div>
         <p className="text-sm text-fg-muted">{description}</p>
       </div>
       {children}
@@ -103,10 +112,10 @@ export default async function ShowcasePage({ params }: Props) {
 
   const labels = buildShowcaseViewLabels(t);
 
-  // GalleryDemoLabels no viene tal cual de un único bloque de mensajes:
-  // `fullscreen`/`audio.play`/`audio.pause` son plantillas con `{title}` que
-  // interpola el propio componente por ítem (`t.raw`, sin pasar por el
-  // formateo ICU de `t()`, que exigiría un valor para `{title}` en build time).
+  // GalleryDemoLabels does not come as-is from a single message block:
+  // `fullscreen`/`audio.play`/`audio.pause` are templates with `{title}` that
+  // the component itself interpolates per item (`t.raw`, bypassing `t()`'s ICU
+  // formatting, which would require a value for `{title}` at build time).
   const galleryLabels: GalleryDemoLabels = {
     filterLabel: t('sections.gallery.filterLabel'),
     allLabel: t('sections.gallery.allLabel'),
@@ -324,6 +333,7 @@ export default async function ShowcasePage({ params }: Props) {
         <Section
           id="media-kit"
           title={t('sections.mediaKit.title')}
+          badge={t('sections.mediaKit.engineeringBadge')}
           description={t('sections.mediaKit.description')}
         >
           <MediaKitDemo
@@ -402,6 +412,7 @@ export default async function ShowcasePage({ params }: Props) {
         <Section
           id="gallery"
           title={t('sections.gallery.title')}
+          badge={t('sections.gallery.engineeringBadge')}
           description={t('sections.gallery.description')}
         >
           <GalleryDemo locale={locale} labels={galleryLabels} />
@@ -414,6 +425,7 @@ export default async function ShowcasePage({ params }: Props) {
         <Section
           id="api-player"
           title={t('sections.apiPlayer.title')}
+          badge={t('sections.apiPlayer.engineeringBadge')}
           description={t('sections.apiPlayer.description')}
         >
           <ApiRequestPlayer

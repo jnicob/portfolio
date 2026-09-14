@@ -86,7 +86,7 @@ const entries = [
     metrics: [],
     featured: true,
     caseStudy: false,
-    // Sin fecha pública evidenciada: inicio etapa Freepik/Magnific.
+    // No public date evidenced: beginning of Freepik/Magnific tenure.
     date: '2022-07',
   },
   {
@@ -125,7 +125,7 @@ const entries = [
     caseStudy: true,
     date: '2022-07',
   },
-  // ——— AccelOne (2020-09 → 2022-10; fecha = inicio de etapa, sin evidencia por proyecto) ———
+  // ——— AccelOne (2020-09 → 2022-10; date = tenure start, no per-project public evidence) ———
   {
     slug: 'cadi',
     title: { es: 'Cadi — e-commerce de golf', en: 'Cadi — golf e-commerce' },
@@ -208,8 +208,8 @@ const entries = [
       en: 'DevelopIntelligence — course management',
     },
     summary: {
-      es: 'Aplicación web responsive para que instructores gestionen cursos, disponibilidad y perfiles, construida con Lightning Component y Aura de Salesforce.',
-      en: 'Responsive web app for instructors to manage courses, availability and profiles, built with Salesforce Lightning Component and Aura.',
+      es: 'Aplicación web responsive para que instructores gestionen cursos, disponibilidad y perfiles, construida con Lightning Components de Salesforce.',
+      en: 'Responsive web app for instructors to manage courses, availability and profiles, built with Salesforce Lightning Components.',
     },
     role: { es: 'Frontend developer', en: 'Frontend developer' },
     stack: ['salesforce', 'javascript'],
@@ -219,7 +219,7 @@ const entries = [
     caseStudy: false,
     date: '2020-09',
   },
-  // ——— Proyectos independientes / Freelance ———
+  // ——— Independent / Freelance Projects ———
   {
     slug: 'hotel-monte-cervino',
     title: {
@@ -276,7 +276,7 @@ const entries = [
     caseStudy: false,
     date: '2026-01',
   },
-  // ——— Etapa salud / Argentina ———
+  // ——— Healthcare stage / Argentina ———
   {
     slug: 'his-municipal',
     title: {

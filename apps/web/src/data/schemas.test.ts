@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
+  beyondCodeSchema,
   contactSchema,
   cvViewSchema,
   educationEntrySchema,
   experienceEntrySchema,
   galleryItemSchema,
+  languageEntrySchema,
   localizedStringSchema,
   profileSchema,
   projectFrontmatterSchema,
@@ -151,6 +153,32 @@ describe('educationEntrySchema', () => {
 
   it('rechaza claves extra', () => {
     expect(educationEntrySchema.safeParse({ ...entry, verified: true }).success).toBe(false);
+  });
+});
+
+describe('languageEntrySchema', () => {
+  const entry = {
+    id: 'es',
+    language: LOC,
+    level: LOC,
+  };
+
+  it('valida entrada de idioma válida', () => {
+    expect(languageEntrySchema.safeParse(entry).success).toBe(true);
+  });
+
+  it('rechaza id vacío', () => {
+    expect(languageEntrySchema.safeParse({ ...entry, id: '' }).success).toBe(false);
+  });
+
+  it('rechaza language sin localización', () => {
+    expect(languageEntrySchema.safeParse({ ...entry, language: { es: 'Español' } }).success).toBe(
+      false,
+    );
+  });
+
+  it('rechaza claves extra', () => {
+    expect(languageEntrySchema.safeParse({ ...entry, certified: true }).success).toBe(false);
   });
 });
 
@@ -328,7 +356,9 @@ describe('datos reales', () => {
     const { education } = await import('./education');
     const { skills } = await import('./skills');
     const { projects } = await import('./projects');
+    const { beyondCode } = await import('./beyond-code');
     expect(profile.name).toBe('Nico Behm');
+    expect(beyondCode.title.es).toBe('Más allá del código');
     expect(experience.length).toBeGreaterThanOrEqual(2);
     expect(education.length).toBeGreaterThanOrEqual(1);
     expect(skills.length).toBeGreaterThanOrEqual(8);
@@ -493,5 +523,48 @@ describe('contactSchema (nico-zod)', () => {
 
   it('rechaza campos desconocidos extra (strict)', () => {
     expect(contactSchema.safeParse({ ...validContact, unknownField: 123 }).success).toBe(false);
+  });
+});
+
+describe('beyondCodeSchema', () => {
+  const validBeyondCode = {
+    title: { es: 'Más allá del código', en: 'Beyond Code' },
+    subtitle: { es: 'Vida personal y aficiones', en: 'Personal life and hobbies' },
+    location: { es: 'Aguadulce, Almería', en: 'Aguadulce, Almería' },
+    origin: {
+      es: 'Nacido en Argentina, nacionalidad española',
+      en: 'Born in Argentina, Spanish nationality',
+    },
+    interestsTitle: { es: 'Deportes', en: 'Sports' },
+    interests: [{ es: 'Fútbol', en: 'Football' }],
+    makerTitle: { es: 'Maker', en: 'Maker' },
+    makerDescription: { es: 'Prototipado con Raspberry Pi', en: 'Prototyping with Raspberry Pi' },
+    philosophyTitle: { es: 'Filosofía', en: 'Philosophy' },
+    philosophyDescription: { es: 'Trabajo asíncrono', en: 'Async work' },
+    images: [
+      {
+        src: '/profile/gallery/ski.webp',
+        alt: { es: 'Foto esquiando', en: 'Ski photo' },
+        caption: { es: 'Sierra Nevada', en: 'Sierra Nevada' },
+      },
+    ],
+  };
+
+  it('validates complete and well-formed data', () => {
+    expect(beyondCodeSchema.safeParse(validBeyondCode).success).toBe(true);
+  });
+
+  it('rejects if a required field is missing or empty', () => {
+    expect(beyondCodeSchema.safeParse({ ...validBeyondCode, title: undefined }).success).toBe(
+      false,
+    );
+    expect(beyondCodeSchema.safeParse({ ...validBeyondCode, interests: [] }).success).toBe(false);
+    expect(beyondCodeSchema.safeParse({ ...validBeyondCode, images: [] }).success).toBe(false);
+  });
+
+  it('rejects extra unrecognized fields (strict)', () => {
+    expect(beyondCodeSchema.safeParse({ ...validBeyondCode, extra: 'forbidden' }).success).toBe(
+      false,
+    );
   });
 });

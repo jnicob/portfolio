@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import type { ProfileSummary as ProfileSummaryData } from '@/data/schemas';
-import { ProfileSummary } from './profile-summary';
+import { ProfileSummary, CoreTechGrid } from './profile-summary';
 
 const sampleSummary: ProfileSummaryData = {
   paragraphs: {
@@ -54,12 +54,25 @@ describe('ProfileSummary', () => {
     expect(bulletList).toHaveClass('text-sm');
   });
 
-  it('aplica clases específicas de variante cv', () => {
-    const { container } = render(
-      <ProfileSummary summary={sampleSummary} locale="es" variant="cv" />,
-    );
+  it('omits core tech bullets when showCoreTech is false', () => {
+    render(<ProfileSummary summary={sampleSummary} locale="es" showCoreTech={false} />);
 
-    const bulletList = container.querySelector('ul');
-    expect(bulletList).toHaveClass('text-xs');
+    expect(screen.getByText(/Ingeniero en Informática/)).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 3 })).not.toBeInTheDocument();
+    expect(screen.queryByText('Lenguajes & Frameworks:')).not.toBeInTheDocument();
+  });
+});
+
+describe('CoreTechGrid', () => {
+  it('renders section title and tech cards with categories and badges', () => {
+    render(<CoreTechGrid summary={sampleSummary} locale="es" />);
+
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Core Tech & Dominio');
+    expect(screen.getByText('Lenguajes & Frameworks')).toBeInTheDocument();
+    expect(screen.getByText('01')).toBeInTheDocument();
+    expect(screen.getByText(/TypeScript, JavaScript, Node.js/)).toBeInTheDocument();
+
+    expect(screen.getByText('AI & API Platform')).toBeInTheDocument();
+    expect(screen.getByText('02')).toBeInTheDocument();
   });
 });
