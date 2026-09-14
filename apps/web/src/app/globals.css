@@ -308,6 +308,30 @@
   }
 }
 
+/* Smooth 1.4-second hero portrait fade-in and subtle scale-up animation */
+@keyframes heroFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-hero-fade-in {
+  animation: heroFadeIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 body {
   background-color: var(--bg);
   color: var(--fg);

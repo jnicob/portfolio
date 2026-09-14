@@ -35,9 +35,27 @@ describe('seo', () => {
     ]);
   });
 
-  it('JSON-LD Person con SOLO enlaces públicos', () => {
+  it('JSON-LD Person con SOLO enlaces públicos y datos geográficos enriquecidos', () => {
     const ld = personJsonLd('en');
     expect(ld['@type']).toBe('Person');
+    expect(ld.homeLocation.name).toContain('Aguadulce');
+    expect(ld.homeLocation.geo.latitude).toBe(36.8167);
+    expect(ld.address.addressRegion).toBe('Almería');
+    expect(ld.nationality.name).toBe('Argentina');
+    expect(ld.knowsAbout.length).toBeGreaterThan(10);
     expect(JSON.stringify(ld)).not.toMatch(/@[\w-]+\.[a-z]{2,}/i);
+  });
+
+  it('declara metadatos GEO para indexación geográfica precisa', () => {
+    const meta = localizedPageMetadata({
+      locale: 'es',
+      path: '',
+      title: 'T',
+      description: 'D',
+    });
+    expect(meta.other?.['geo.region']).toBe('ES-AL');
+    expect(meta.other?.['geo.placename']).toBe('Aguadulce, Almería');
+    expect(meta.other?.['geo.position']).toBe('36.8167;-2.5667');
+    expect(meta.other?.['ICBM']).toBe('36.8167, -2.5667');
   });
 });

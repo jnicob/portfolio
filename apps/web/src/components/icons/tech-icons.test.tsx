@@ -18,10 +18,15 @@ describe('TechIcon', () => {
     expect(screen.getByText('FastAPI')).toBeInTheDocument();
     expect(screen.getByText('Laravel')).toBeInTheDocument();
     expect(screen.getByText('PostgreSQL')).toBeInTheDocument();
+    expect(screen.getByText('MySQL')).toBeInTheDocument();
+    expect(screen.getByText('MongoDB')).toBeInTheDocument();
+    expect(screen.getByText('GraphQL')).toBeInTheDocument();
     expect(screen.getByText('Docker')).toBeInTheDocument();
+    expect(screen.getByText('Kubernetes')).toBeInTheDocument();
+    expect(screen.getByText('Linux')).toBeInTheDocument();
   });
 
   it('contains expected number of tech keys', () => {
-    expect(TECH_KEYS.length).toBeGreaterThanOrEqual(16);
+    expect(TECH_KEYS.length).toBe(20);
   });
 });
