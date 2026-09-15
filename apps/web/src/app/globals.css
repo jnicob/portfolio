@@ -302,6 +302,9 @@ html {
   .cv-compact section > div {
     gap: 0.15rem !important;
   }
+  .cv-compact .cv-compact-experience {
+    gap: 0.5rem !important;
+  }
   .cv-compact article {
     gap: 0.05rem !important;
   }

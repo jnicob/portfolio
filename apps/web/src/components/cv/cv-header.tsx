@@ -50,23 +50,36 @@ export function CvHeader({
           showBrief && 'border-b border-border',
         )}
       >
-        <div className="flex items-center gap-4 sm:gap-6">
-          {showPhoto && (
-            <div
-              data-testid="cv-photo"
-              className="shrink-0 overflow-hidden rounded-full border-2 border-border/80 shadow-md ring-4 ring-accent/10 print:ring-0 print:border-border print:h-24 print:w-24 print:shadow-none"
-            >
-              <Image
-                src={photoSrc}
-                alt={displayName}
-                width={144}
-                height={144}
-                unoptimized
-                className="h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36 object-cover print:h-24 print:w-24 print:scale-120 print:origin-top"
-              />
+        <div className="flex items-center">
+          <div
+            aria-hidden={!showPhoto}
+            className={cn(
+              'grid transition-[grid-template-columns,margin,opacity] duration-300 ease-out',
+              showPhoto
+                ? 'grid-cols-[1fr] opacity-100 mr-4 sm:mr-6 print:mr-4'
+                : 'grid-cols-[0fr] opacity-0 mr-0 pointer-events-none print:hidden',
+            )}
+          >
+            <div className="overflow-hidden">
+              <div
+                data-testid={showPhoto ? 'cv-photo' : undefined}
+                className={cn(
+                  'shrink-0 overflow-hidden rounded-full border-2 border-border/80 shadow-md ring-4 ring-accent/10 transition-transform duration-300 ease-out print:ring-0 print:border-border print:h-24 print:w-24 print:shadow-none',
+                  showPhoto ? 'scale-100' : 'scale-90',
+                )}
+              >
+                <Image
+                  src={photoSrc}
+                  alt={displayName}
+                  width={144}
+                  height={144}
+                  unoptimized
+                  className="h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36 object-cover print:h-24 print:w-24 print:scale-120 print:origin-top"
+                />
+              </div>
             </div>
-          )}
-          <div>
+          </div>
+          <div className="min-w-0">
             <h1 className="text-5xl font-bold tracking-tight text-fg print:text-4xl">
               {displayName}
             </h1>
