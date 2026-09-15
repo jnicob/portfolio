@@ -41,7 +41,10 @@ describe('seo', () => {
     expect(ld.homeLocation.name).toContain('Aguadulce');
     expect(ld.homeLocation.geo.latitude).toBe(36.8167);
     expect(ld.address.addressRegion).toBe('Almería');
-    expect(ld.nationality.name).toBe('Argentina');
+    expect(ld.name).toBe('Juan Nicolas Behm');
+    expect(ld.alternateName).toBe('Nico Behm');
+    expect(ld.nationality[0]?.name).toBe('Spain');
+    expect(ld.nationality[1]?.name).toBe('Argentina');
     expect(ld.knowsAbout.length).toBeGreaterThan(10);
     expect(JSON.stringify(ld)).not.toMatch(/@[\w-]+\.[a-z]{2,}/i);
   });

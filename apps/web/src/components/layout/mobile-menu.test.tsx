@@ -38,7 +38,7 @@ describe('MobileMenu', () => {
     localStorage.clear();
   });
 
-  it('abre y cierra con aria-expanded correcto', () => {
+  it('opens and closes with correct aria-expanded', () => {
     renderMenu();
     const button = screen.getByRole('button', { name: 'Abrir menú' });
     expect(button).toHaveAttribute('aria-expanded', 'false');
@@ -59,7 +59,7 @@ describe('MobileMenu', () => {
     expect(screen.getByRole('button', { name: 'Abrir menú' })).toHaveFocus();
   });
 
-  it('clicar un enlace cierra el panel', () => {
+  it('clicking a link closes the panel', () => {
     renderMenu();
     fireEvent.click(screen.getByRole('button', { name: 'Abrir menú' }));
 

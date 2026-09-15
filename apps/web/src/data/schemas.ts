@@ -40,6 +40,7 @@ export type ProfileSummary = z.infer<typeof profileSummarySchema>;
 export const profileSchema = z
   .object({
     name: z.string().min(1),
+    fullName: localizedStringSchema.optional(),
     headline: localizedStringSchema,
     summary: profileSummarySchema,
     location: localizedStringSchema,
