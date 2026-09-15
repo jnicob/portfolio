@@ -3,11 +3,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HoverVideo } from './hover-video';
 
 /**
- * Mismo patrón que `stubReducedMotion` en filter-gallery/compare-slider: stubea
- * `matchMedia` globalmente devolviendo un `matches` fijo para cualquier query. En
- * los tests que no lo llaman, `window.matchMedia` queda `undefined` (jsdom no lo
- * implementa) — HoverVideo debe tratar esa ausencia como "puntero fino" (progresa
- * a la mejora, no la bloquea) y como "sin preferencia de reduced-motion".
+ * Same pattern as `stubReducedMotion` in filter-gallery/compare-slider: stubs
+ * `matchMedia` globally returning a fixed `matches` for any query. In
+ * tests that do not call it, `window.matchMedia` remains `undefined` (jsdom does not
+ * implement it) — HoverVideo must treat that absence as "fine pointer" (progresses
+ * to enhancement, does not block it) and as "no preference for reduced-motion".
  */
 function mockReducedMotion(matches: boolean) {
   vi.stubGlobal('matchMedia', (query: string) => ({
@@ -47,7 +47,7 @@ describe('HoverVideo', () => {
     expect(document.querySelector('video')).toBeInTheDocument();
   });
 
-  it('salir antes del delay cancela la activación', () => {
+  it('leaving before delay cancels activation', () => {
     render(<HoverVideo src="/v.mp4" poster="/p.webp" label="Demo" width={640} height={360} />);
     const root = screen.getByRole('button', { name: 'Demo' });
     fireEvent.pointerEnter(root);
@@ -57,7 +57,7 @@ describe('HoverVideo', () => {
     expect(document.querySelector('video')).not.toBeInTheDocument();
   });
 
-  it('con reduced-motion el hover no activa pero Enter sí (toggle)', () => {
+  it('with reduced-motion hover does not activate but Enter does (toggle)', () => {
     mockReducedMotion(true);
     render(<HoverVideo src="/v.mp4" poster="/p.webp" label="Demo" width={640} height={360} />);
     const root = screen.getByRole('button', { name: 'Demo' });
@@ -80,7 +80,7 @@ describe('HoverVideo', () => {
     expect(document.querySelector('video')).toBeInTheDocument();
   });
 
-  it('con pointer coarse el hover no activa (solo toggle explícito)', () => {
+  it('with pointer coarse hover does not activate (explicit toggle only)', () => {
     vi.stubGlobal('matchMedia', (query: string) => ({
       matches: query.includes('coarse'),
       media: query,
@@ -100,7 +100,7 @@ describe('HoverVideo', () => {
     expect(document.querySelector('video')).toBeInTheDocument();
   });
 
-  it('toggle por click alterna reproducción', () => {
+  it('toggle on click toggles playback', () => {
     render(<HoverVideo src="/v.mp4" poster="/p.webp" label="Demo" width={640} height={360} />);
     const root = screen.getByRole('button', { name: 'Demo' });
     fireEvent.click(root);

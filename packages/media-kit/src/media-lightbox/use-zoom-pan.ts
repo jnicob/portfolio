@@ -26,13 +26,13 @@ export type UseZoomPanResult = {
   zoomTo: (scale: number, anchor?: { x: number; y: number }) => void;
   reset: () => void;
   panBy: (dx: number, dy: number) => void;
-  /** Lee y limpia el flag "el último gesto fue un drag" (evita cerrar en overlay). */
+  /** Reads and clears the "last gesture was a drag" flag (prevents closing on overlay). */
   consumeDrag: () => boolean;
   /**
-   * Lee y limpia el flag "el último pointerdown nació en un control interactivo"
-   * (T25 QA fix). Defensa en profundidad para `onOverlayClick`: aunque el pointerup/
-   * click subsiguiente llegara retargeteado al viewport por alguna vía no cubierta
-   * aquí, este flag —capturado ANTES de cualquier posible retargeteo— evita cerrar.
+   * Reads and clears the "last pointerdown originated in an interactive control" flag
+   * (T25 QA fix). Defense in depth for `onOverlayClick`: even if the subsequent pointerup/
+   * click arrived retargeted to the viewport via some path not covered
+   * here, this flag —captured BEFORE any possible retargeting— prevents closing.
    */
   consumeInteractiveDown: () => boolean;
 };
@@ -266,7 +266,7 @@ export function useZoomPan(
   const canPan = maxTx > 0 || maxTy > 0;
 
   // Affordance del cursor grab/grabbing (CSS) y ancla para T13: solo cuando hay
-  // desborde real. Se limpia al desmontar para no dejar el atributo huérfano.
+  // actual overflow. Cleaned up on unmount to avoid leaving an orphaned attribute.
   useEffect(() => {
     const vp = viewportRef.current;
     if (!vp) return;

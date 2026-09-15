@@ -3,7 +3,7 @@ import { routing } from '@/i18n/routing';
 import { getProjectSlugs } from '@/lib/content';
 import { SITE_URL } from '@/lib/seo';
 
-// Requerido por `output: 'export'`: esta ruta no admite datos dinámicos por request.
+// Required by `output: 'export'`: this route does not support dynamic request data.
 export const dynamic = 'force-static';
 
 const STATIC_PATHS = ['', '/cv', '/projects', '/showcase'];

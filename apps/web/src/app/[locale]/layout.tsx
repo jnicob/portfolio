@@ -7,7 +7,7 @@ import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import { Source_Serif_4 } from 'next/font/google';
 import { routing } from '@/i18n/routing';
-import { SITE_URL } from '@/lib/seo';
+import { SITE_URL, GEO_METADATA } from '@/lib/seo';
 import { AppearanceInit } from '@/components/layout/appearance-init';
 import { SiteFooter } from '@/components/layout/footer';
 import { SiteHeader } from '@/components/layout/header';
@@ -19,7 +19,7 @@ const sourceSerif = Source_Serif_4({
   subsets: ['latin'],
   variable: '--font-source-serif',
   display: 'swap',
-  // Solo la usa el skin 'editorial' (--font-heading); no precargar para el resto.
+  // Only used by 'editorial' skin (--font-heading); do not preload for others.
   preload: false,
 });
 
@@ -27,13 +27,18 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-// Solo metadataBase: título/descripción por página vía generateMetadata (T11).
-export const metadata: Metadata = { metadataBase: new URL(SITE_URL) };
+// metadataBase + geo tags: per-page title/description via generateMetadata (T11).
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  other: {
+    ...GEO_METADATA,
+  },
+};
 
 /*
- * Se ejecuta antes de la hidratación para evitar flash de tema Y skin:
- * URL > stored > preferencia del sistema > default ('dark'/'dev-tool').
- * Mantener en sincronía con lib/appearance.ts (resolveAppearance/DEFAULT_APPEARANCE).
+ * Runs before hydration to prevent theme AND skin flash:
+ * URL > stored > system preference > default ('dark'/'dev-tool').
+ * Keep in sync with lib/appearance.ts (resolveAppearance/DEFAULT_APPEARANCE).
  */
 const themeInitScript = `(function () {
   try {

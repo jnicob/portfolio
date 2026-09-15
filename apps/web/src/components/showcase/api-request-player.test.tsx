@@ -76,9 +76,9 @@ function renderPlayer() {
 }
 
 /**
- * Stub determinista de rAF (mismo patrón que tilt-card/animated-metric): jsdom
- * no trae un scheduler síncrono, así que sin esto el streaming del player nunca
- * avanza en tests. Local a cada test vía `vi.stubGlobal` + `afterEach(vi.unstubAllGlobals)`.
+ * Deterministic rAF stub (same pattern as tilt-card/animated-metric): jsdom
+ * does not include a synchronous scheduler, so without this, player streaming never
+ * advances in tests. Local to each test via `vi.stubGlobal` + `afterEach(vi.unstubAllGlobals)`.
  */
 function stubAnimationFrame() {
   let nextId = 0;
@@ -100,7 +100,7 @@ function stubAnimationFrame() {
         for (const cb of pending) cb(0);
       });
     },
-    /** Ejecuta rondas hasta que no quede ningún frame agendado (streaming completo). */
+    /** Runs rounds until no scheduled frames remain (streaming complete). */
     flushAll: () => {
       let guard = 0;
       while (frames.size > 0 && guard < 1000) {
@@ -122,18 +122,18 @@ describe('ApiRequestPlayer', () => {
     vi.useRealTimers();
   });
 
-  it('idle muestra la request y el botón run', () => {
+  it('idle shows the request and the run button', () => {
     renderPlayer();
     expect(screen.getByText(/text-to-image/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: labels.run })).toBeInTheDocument();
   });
 
-  it('idle muestra un placeholder en la respuesta en vez de un <pre> vacío', () => {
+  it('idle shows a placeholder in the response instead of an empty <pre>', () => {
     renderPlayer();
     expect(screen.getByText(labels.responsePlaceholder)).toBeInTheDocument();
   });
 
-  it('durante pending, una etiqueta de estado en font-mono acompaña al spinner', () => {
+  it('during pending, a status label in font-mono accompanies the spinner', () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     stubReducedMotion(true);
     renderPlayer();
@@ -141,7 +141,7 @@ describe('ApiRequestPlayer', () => {
     expect(screen.getByText(labels.pending)).toBeInTheDocument();
   });
 
-  it('durante streaming, una etiqueta de estado en font-mono acompaña al caret', () => {
+  it('during streaming, a status label in font-mono accompanies the caret', () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     const frame = stubAnimationFrame();
     stubReducedMotion(false);
@@ -165,7 +165,7 @@ describe('ApiRequestPlayer', () => {
     expect(screen.getByText('200 OK')).toBeInTheDocument();
   });
 
-  it('el botón copy copia la respuesta', async () => {
+  it('the copy button copies the response', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } });
     stubReducedMotion(true);
@@ -176,7 +176,7 @@ describe('ApiRequestPlayer', () => {
     expect(writeText).toHaveBeenCalled();
   });
 
-  it('durante pending, el botón run se deshabilita y muestra el label "running"', () => {
+  it('during pending, the run button is disabled and shows the "running" label', () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     stubReducedMotion(true);
     renderPlayer();
@@ -228,10 +228,10 @@ describe('ApiRequestPlayer', () => {
 
   it('desmontar durante pending cancela el timeout pendiente (mecanismo, no solo ausencia de crash)', () => {
     // React 19 vuelve un no-op silencioso el setState post-unmount (ya no hay warning
-    // "state update on an unmounted component"), así que "no lanza / no hace
+    // "state update on an unmounted component"), so "does not throw / does not do
     // console.error" NO discrimina si el cleanup deja de llamar clearTimeout. La
-    // aserción real es sobre el motor de fake timers: `getTimerCount()` cuenta los
-    // timers (`setTimeout`) todavía pendientes — debe pasar de 1 a 0 al desmontar.
+    // actual assertion is on the fake timers engine: `getTimerCount()` counts
+    // timers (`setTimeout`) still pending — must go from 1 to 0 on unmount.
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     stubReducedMotion(true);
     const { unmount } = renderPlayer();
@@ -269,7 +269,7 @@ describe('ApiRequestPlayer', () => {
     consoleError.mockRestore();
   });
 
-  it('desmontar durante streaming limpia timeout y rAF sin dejar un setState huérfano', () => {
+  it('unmounting during streaming cleans up timeout and rAF without leaving an orphaned setState', () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     const frame = stubAnimationFrame();
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -298,7 +298,7 @@ describe('ApiRequestPlayer', () => {
     expect(screen.getByRole('status')).toHaveTextContent(labels.done);
   });
 
-  it('la fila de estado está reservada también en idle (cero shift)', () => {
+  it('the status row is also reserved in idle (zero shift)', () => {
     renderPlayer();
     expect(screen.getByTestId('player-status-row')).toHaveClass('min-h-8');
   });
@@ -309,7 +309,7 @@ describe('ApiRequestPlayer', () => {
     expect(pane).toHaveClass('h-64');
     fireEvent.click(screen.getByRole('button', { name: labels.run }));
     await screen.findByText(labels.done, {}, { timeout: 3000 });
-    expect(pane).toHaveClass('h-64'); // sin cambio de clase/tamaño reservado
+    expect(pane).toHaveClass('h-64'); // no class change/reserved size
   });
 
   it('done muestra la preview con fullscreen', async () => {
@@ -322,7 +322,7 @@ describe('ApiRequestPlayer', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
-  it('el selector cambia método/path/body y resetea el player a idle', async () => {
+  it('the selector changes method/path/body and resets the player to idle', async () => {
     stubReducedMotion(true);
     renderPlayer();
     fireEvent.click(screen.getByRole('button', { name: labels.run }));
@@ -354,7 +354,7 @@ describe('ApiRequestPlayer', () => {
     expect(screen.getByTestId('player-response-pane').textContent).toContain('validation_error');
   });
 
-  it('un status 5xx también pinta el badge danger (no solo 4xx)', async () => {
+  it('a 5xx status also renders the danger badge (not only 4xx)', async () => {
     stubReducedMotion(true);
     const withServerError = apiDemoExamples.map((entry) =>
       entry.id === 'error' ? { ...entry, status: '500 Internal Server Error' } : entry,
@@ -384,7 +384,7 @@ describe('ApiRequestPlayer', () => {
     expect(screen.getByTestId('player-status-row')).toBeInTheDocument();
   });
 
-  it('la preview de vídeo monta video con poster y controles solo tras done', async () => {
+  it('the video preview mounts video with poster and controls only after done', async () => {
     stubReducedMotion(true);
     renderPlayer();
     fireEvent.change(screen.getByRole('combobox', { name: labels.endpoint }), {
@@ -401,7 +401,7 @@ describe('ApiRequestPlayer', () => {
     expect(video).toHaveAttribute('controls');
   });
 
-  it('la preview de audio muestra carátula y controles compactos', async () => {
+  it('the audio preview shows cover and compact controls', async () => {
     stubReducedMotion(true);
     renderPlayer();
     fireEvent.change(screen.getByRole('combobox', { name: labels.endpoint }), {
@@ -415,7 +415,7 @@ describe('ApiRequestPlayer', () => {
     expect(screen.getByRole('button', { name: labels.audio.play })).toBeInTheDocument();
   });
 
-  it('la preview de error muestra el estado diseñado sin fullscreen', async () => {
+  it('the error preview shows the designed state without fullscreen', async () => {
     stubReducedMotion(true);
     renderPlayer();
     fireEvent.change(screen.getByRole('combobox', { name: labels.endpoint }), {
@@ -429,7 +429,7 @@ describe('ApiRequestPlayer', () => {
     expect(screen.queryByRole('button', { name: labels.fullscreen })).not.toBeInTheDocument();
   });
 
-  it('la preview de imagen usa width y height explícitos', async () => {
+  it('the image preview uses explicit width and height', async () => {
     stubReducedMotion(true);
     renderPlayer();
     fireEvent.click(screen.getByRole('button', { name: labels.run }));

@@ -22,7 +22,7 @@ function renderNavLink(href: string, label: string, pathname: string) {
 }
 
 describe('NavLink', () => {
-  it('marca el enlace de la página actual', () => {
+  it('marks current page link', () => {
     renderNavLink('/cv', 'CV', '/cv');
     expect(screen.getByRole('link', { name: 'CV' })).toHaveAttribute('aria-current', 'page');
   });
@@ -41,7 +41,7 @@ describe('NavLink', () => {
     expect(link).not.toHaveAttribute('aria-current');
   });
 
-  it('clicar el enlace de sección desde una sub-ruta sí navega', () => {
+  it('clicking section link from a sub-route navigates', () => {
     renderNavLink('/projects', 'Proyectos', '/projects/un-slug');
     const link = screen.getByRole('link', { name: 'Proyectos' });
     expect(link).toHaveAttribute('aria-current', 'page');

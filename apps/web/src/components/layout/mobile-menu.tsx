@@ -5,9 +5,9 @@ import { useEffect, useId, useRef, useState, type MouseEvent, type ReactNode } f
 export type MobileMenuLabels = { open: string; close: string };
 
 /**
- * Botón hamburguesa + panel disclosure (WAI-ARIA APG): sin focus trap, el foco
- * fluye libremente. Escape cierra y devuelve el foco al botón; clicar un
- * enlace del panel también cierra.
+ * Hamburger button + disclosure panel (WAI-ARIA APG): without focus trap, focus
+ * flows freely. Escape closes and returns focus to button; clicking a
+ * panel link also closes it.
  */
 export function MobileMenu({
   labels,

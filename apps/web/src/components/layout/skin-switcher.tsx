@@ -8,7 +8,7 @@ import type { Skin } from '@/data/constants';
 
 type SkinItem = FilterableItem & { id: Skin };
 
-/** Keywords de filtro por skin — no traducibles (identifican el "look", no el nombre). */
+/** Skin filter keywords — non-translatable (identifies look, not name). */
 const SKIN_KEYWORDS: Record<Skin, readonly string[]> = {
   'dev-tool': ['default', 'code'],
   editorial: ['serif', 'cv', 'reading'],
@@ -28,7 +28,7 @@ function findComboboxInput(container: HTMLElement | null): HTMLInputElement | nu
   return container?.querySelector<HTMLInputElement>('[role="combobox"]') ?? null;
 }
 
-/** Disclosure en el header: aplica un skin (T20) eligiéndolo de una FilterableList (T22). */
+/** Disclosure in the header: applies a skin (T20) selecting it from a FilterableList (T22). */
 export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
   const panelId = useId();
   const [open, setOpen] = useState(false);
@@ -43,13 +43,13 @@ export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
     keywords: SKIN_KEYWORDS[skin],
   }));
 
-  // Foco al abrir: FilterableList no expone ref, así que se busca el combobox montado.
+  // Focus on open: FilterableList does not expose a ref, so the mounted combobox is searched for.
   useEffect(() => {
     if (!open) return;
     findComboboxInput(panelRef.current)?.focus();
   }, [open]);
 
-  // Click fuera del wrapper (botón + panel) cierra el disclosure.
+  // Click outside wrapper (button + panel) closes disclosure.
   useEffect(() => {
     if (!open) return;
     function handlePointerDown(event: MouseEvent) {
@@ -72,9 +72,9 @@ export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
   }
 
   // Cierre por capas, de adentro hacia afuera (misma tecla, tres pasos): Escape
-  // con texto → el combobox limpia el filtro (T22); con el filtro ya vacío →
-  // se cierra este panel. En AMBOS casos el keydown se consume aquí con
-  // stopPropagation: si siguiera subiendo, cerraría también un disclosure
+  // with text → the combobox clears the filter (T22); with the filter already empty →
+  // this panel is closed. In BOTH cases the keydown is consumed here with
+  // stopPropagation: if it continued bubbling up, it would also close a disclosure
   // ancestro (p.ej. el MobileMenu, cuando este switcher vive dentro de su
   // panel) en el mismo golpe de tecla.
   function handlePanelKeyDown(event: KeyboardEvent<HTMLDivElement>) {
@@ -94,7 +94,7 @@ export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
         aria-controls={panelId}
         className="inline-flex h-9 cursor-pointer items-center justify-center rounded-control border border-border px-3 text-sm text-fg transition-colors hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         onClick={() => {
-          // Se lee la skin aplicada de forma síncrona, en el mismo batch que
+          // The applied skin is read synchronously, in the same batch as
           // setOpen: FilterableList monta con el selectedId correcto desde su
           // primer render (su activeIndex inicial es un useState perezoso que
           // solo se calcula una vez, al montar).

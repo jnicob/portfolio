@@ -13,16 +13,16 @@ type ShareState = 'idle' | 'copied' | 'error';
 export type ShareViewButtonLabels = { share: string; copied: string; error: string };
 
 type ShareViewButtonProps = {
-  /** Vista activa del CV a incluir en la URL; se omite en páginas sin vistas (showcase). */
+  /** Active CV view to include in URL; omitted on viewless pages (showcase). */
   view?: CvView;
   labels: ShareViewButtonLabels;
 };
 
 /**
- * Botón "Compartir esta vista" (T25): construye una URL con `origin`/`pathname` actuales +
- * apariencia leída del DOM (`data-theme`/`data-skin`) + `view` si se pasa, y la copia al
- * portapapeles. Feedback explícito en `aria-live="polite"` (nunca solo color); vuelve a
- * `idle` a los 2s. `no-print`: solo tiene sentido en pantalla.
+ * "Share this view" button (T25): builds a URL with current `origin`/`pathname` +
+ * appearance read from the DOM (`data-theme`/`data-skin`) + `view` if passed, and copies it to
+ * clipboard. Explicit feedback in `aria-live="polite"` (never color alone); reverts to
+ * `idle` after 2s. `no-print`: only makes sense on screen.
  */
 export function ShareViewButton({ view, labels }: ShareViewButtonProps) {
   const [state, setState] = useState<ShareState>('idle');

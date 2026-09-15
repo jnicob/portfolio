@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { skills } from './skills';
 
 describe('skills data', () => {
-  it('refleja la revisión de niveles del feedback C2', () => {
+  it('reflects the level review from C2 feedback', () => {
     const byName = Object.fromEntries(skills.map((s) => [s.name, s.level]));
     expect(byName['JavaScript']).toBe(5);
     expect(byName['React / Next.js']).toBe(4);

@@ -69,7 +69,7 @@ describe('CompareSlider', () => {
     expect(handle).toHaveAttribute('aria-valuenow', '100');
   });
 
-  it('soporta orientación vertical (flechas Up/Down)', async () => {
+  it('supports vertical orientation (Up/Down arrows)', async () => {
     renderSlider({ orientation: 'vertical' });
     const handle = screen.getByRole('slider');
     expect(handle).toHaveAttribute('aria-orientation', 'vertical');
@@ -96,7 +96,7 @@ function mockRect(element: HTMLElement) {
 }
 
 describe('CompareSlider v2', () => {
-  it('mode="hover": el divisor sigue al ratón sin click', () => {
+  it('mode="hover": the divider follows the mouse without click', () => {
     render(
       <CompareSlider
         mode="hover"
@@ -111,7 +111,7 @@ describe('CompareSlider v2', () => {
     expect(slider).toHaveAttribute('aria-valuenow', '75');
   });
 
-  it('mode="hover": un puntero táctil NO mueve el divisor solo con move (cae a drag)', () => {
+  it('mode="hover": a touch pointer does NOT move the divider on move alone (falls back to drag)', () => {
     render(
       <CompareSlider
         mode="hover"
@@ -217,7 +217,7 @@ describe('CompareSlider v2.2 — dragTarget handle (C2)', () => {
     expect(slider).toHaveAttribute('aria-valuenow', '50');
   });
 
-  it("con dragTarget='handle' arrastrar el handle SÍ mueve el divisor", () => {
+  it("with dragTarget='handle' dragging the handle DOES move the divider", () => {
     render(
       <CompareSlider
         dragTarget="handle"
@@ -318,7 +318,7 @@ describe('CompareSlider v2.2 — MediaSource (C3)', () => {
     expect(after).toHaveAttribute('draggable', 'false');
   });
 
-  it('con ReactNode sigue funcionando igual que antes (regresión)', () => {
+  it('with ReactNode continues working as before (regression)', () => {
     renderSlider();
     expect(screen.getByAltText('Antes')).toBeInTheDocument();
     expect(screen.getByAltText('Después')).toBeInTheDocument();
@@ -331,12 +331,12 @@ function stubScreen(width: number, devicePixelRatio: number) {
 }
 
 describe('CompareSlider v2.2 — expand (C1)', () => {
-  it('sin expand no hay botón (regresión)', () => {
+  it('without expand there is no button (regression)', () => {
     renderSlider();
     expect(screen.queryByRole('button', { name: 'Full Screen' })).not.toBeInTheDocument();
   });
 
-  it('con expand renderiza el botón con icono y label, y abre el compare-lightbox', async () => {
+  it('with expand renders the button with icon and label, and opens the compare-lightbox', async () => {
     render(
       <CompareSlider
         before={{ src: '/a.png', alt: 'Antes' }}
@@ -351,7 +351,7 @@ describe('CompareSlider v2.2 — expand (C1)', () => {
     expect(within(dialog).getByRole('slider')).toBeInTheDocument();
   });
 
-  it('el hover/focus del botón dispara el preload de los fullSrc', () => {
+  it('button hover/focus triggers preload of fullSrc', () => {
     stubScreen(2560, 1);
     const calls: string[] = [];
     class FakeImage {
@@ -373,7 +373,7 @@ describe('CompareSlider v2.2 — expand (C1)', () => {
     expect(calls).toEqual(['/a-full-expand.png', '/b-full-expand.png']);
   });
 
-  it('el click del botón NO mueve el divisor', async () => {
+  it('button click does NOT move the divider', async () => {
     render(
       <CompareSlider
         before={<img src="/a.png" alt="Antes" />}
@@ -390,12 +390,12 @@ describe('CompareSlider v2.2 — expand (C1)', () => {
   });
 
   it('un pointerdown dentro del lightbox interno (portal) no captura el puntero de la superficie de fondo', async () => {
-    // Regresión (T26 finding 2): el lightbox de `expand` es hijo de React de este
-    // componente pero monta vía createPortal en document.body. React burbujea sus
-    // eventos de puntero según el árbol de React, no el DOM real: sin guard, un
+    // Regression (T26 finding 2): the `expand` lightbox is a React child of this
+    // component but mounts via createPortal in document.body. React bubbles its
+    // pointer events according to the React tree, not the real DOM: without a guard, a
     // pointerdown sobre CUALQUIER control del lightbox (p.ej. el toggle de ayuda)
     // llegaba al onPointerDown de ESTA superficie de fondo y capturaba el puntero
-    // aquí, robando el pointerup/click real de su destino en el navegador.
+    // here, stealing the real pointerup/click from its destination in the browser.
     render(
       <CompareSlider
         before={<img src="/a.png" alt="Antes" />}
@@ -582,7 +582,7 @@ describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
     expect(onPositionChange).toHaveBeenCalledWith(35);
   });
 
-  it('un click en el botón expand no pausa el hover (su pointerdown detiene la propagación)', async () => {
+  it('a click on the expand button does not pause hover (its pointerdown stops propagation)', async () => {
     render(
       <CompareSlider
         mode="hover"
@@ -620,7 +620,7 @@ describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
     click(container, { clientX: 160, clientY: 50 });
     expect(container).toHaveAttribute('data-paused');
 
-    // Click de reanudar en OTRA posición: el divisor no debe saltar al 20 en el down…
+    // Resume click at ANOTHER position: the divider must not jump to 20 on down…
     fireEvent.pointerDown(container, {
       clientX: 40,
       clientY: 50,
@@ -688,7 +688,7 @@ describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
     expect(container).not.toHaveAttribute('data-paused');
   });
 
-  it('un drag táctil (≥4px) en modo hover no alterna la pausa', () => {
+  it('a touch drag (≥4px) in hover mode does not toggle pause', () => {
     render(
       <CompareSlider
         mode="hover"
@@ -740,7 +740,7 @@ describe('CompareSlider v2.2 — paridad C5', () => {
     expect(badges[1]).toHaveTextContent('Después');
   });
 
-  it('sin overlayLabels no hay badges (regresión)', () => {
+  it('without overlayLabels there are no badges (regression)', () => {
     renderSlider();
     expect(document.querySelectorAll('.mk-compare__overlay-label')).toHaveLength(0);
   });
@@ -785,7 +785,7 @@ describe('CompareSlider v2.2 — paridad C5', () => {
     expect(container).not.toHaveAttribute('data-loading');
   });
 
-  it('un load duplicado en el mismo img NO descuenta de más (idempotente por lado)', () => {
+  it('a duplicate load on the same img does NOT over-decrement (idempotent per side)', () => {
     render(
       <CompareSlider
         before={{ src: '/a.png', alt: 'Antes' }}
@@ -796,7 +796,7 @@ describe('CompareSlider v2.2 — paridad C5', () => {
     expect(container).toHaveAttribute('data-loading');
 
     // Doble disparo en el MISMO lado (complete + onLoad pueden solaparse tras
-    // hidratación): el otro lado sigue pendiente → data-loading debe persistir.
+    // hydration): the other side remains pending → data-loading must persist.
     fireEvent.load(screen.getByAltText('Antes'));
     fireEvent.load(screen.getByAltText('Antes'));
     expect(container).toHaveAttribute('data-loading');
@@ -805,7 +805,7 @@ describe('CompareSlider v2.2 — paridad C5', () => {
     expect(container).not.toHaveAttribute('data-loading');
   });
 
-  it('un img ya completo al adjuntar el ref se marca cargado (hidratación: load previo a onLoad)', () => {
+  it('an img already complete when attaching ref is marked loaded (hydration: load prior to onLoad)', () => {
     const { rerender } = render(
       <CompareSlider
         before={{ src: '/a.png', alt: 'Antes' }}
@@ -816,7 +816,7 @@ describe('CompareSlider v2.2 — paridad C5', () => {
     expect(container).toHaveAttribute('data-loading');
 
     // Simula imgs que ya dispararon su `load` nativo antes de que React adjuntara
-    // handlers (static export + hidratación): complete=true y naturalWidth>0.
+    // handlers (static export + hydration): complete=true and naturalWidth>0.
     for (const alt of ['Antes', 'Después']) {
       const img = screen.getByAltText(alt);
       Object.defineProperty(img, 'complete', { value: true, configurable: true });
@@ -833,7 +833,7 @@ describe('CompareSlider v2.2 — paridad C5', () => {
     expect(container).not.toHaveAttribute('data-loading');
   });
 
-  it('con un solo lado MediaSource, data-loading se limpia al cargar ese único img (mezcla)', () => {
+  it('with only one MediaSource side, data-loading is cleared upon loading that single img (mixed)', () => {
     render(
       <CompareSlider
         before={<img src="/a.png" alt="Antes" />}
@@ -847,22 +847,22 @@ describe('CompareSlider v2.2 — paridad C5', () => {
     expect(container).not.toHaveAttribute('data-loading');
   });
 
-  it('sin ningún lado MediaSource nunca hay data-loading (ReactNode no se puede rastrear)', () => {
+  it('without any MediaSource side there is never data-loading (ReactNode cannot be tracked)', () => {
     renderSlider();
     const slider = screen.getByRole('slider');
     const container = slider.closest('.mk-compare') as HTMLElement;
     expect(container).not.toHaveAttribute('data-loading');
   });
 
-  it('touch: pointerdown+move con pointerType touch mueve el divisor (paridad, sin regresión)', () => {
+  it('touch: pointerdown+move with pointerType touch moves the divider (parity, no regression)', () => {
     render(
       <CompareSlider before={<img src="/b.png" alt="b" />} after={<img src="/a.png" alt="" />} />,
     );
     const slider = screen.getByRole('slider');
     const container = slider.closest('.mk-compare') as HTMLElement;
     mockRect(container);
-    // jsdom no rastrea pointer capture real (ver vitest.setup.ts); se simula aquí
-    // para poder ejercitar el camino de pointermove con capture también en touch.
+    // jsdom does not track real pointer capture (see vitest.setup.ts); it is simulated here
+    // to be able to exercise the pointermove path with capture on touch as well.
     vi.spyOn(container, 'hasPointerCapture').mockReturnValue(true);
 
     fireEvent.pointerDown(container, {
@@ -886,7 +886,7 @@ describe('CompareSlider v2.2 — paridad C5', () => {
 });
 
 describe('compareMode (v0.5)', () => {
-  it('onion: sin divisor, la posición gobierna la opacidad y el handle anuncia aria-valuetext', () => {
+  it('onion: without divider, position governs opacity and handle announces aria-valuetext', () => {
     render(
       <CompareSlider
         before={<img alt="" src="/a.png" />}
@@ -968,7 +968,7 @@ describe('CompareSlider — compareMode blink (T5)', () => {
     expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'false');
   });
 
-  it('sin blink no hay switch (regresión)', () => {
+  it('without blink there is no switch (regression)', () => {
     render(
       <CompareSlider
         before={<img alt="" src="/a.png" />}
@@ -992,7 +992,7 @@ describe('CompareSlider — compareMode blink (T5)', () => {
     expect(document.querySelector('.mk-compare__divider')).toBeNull();
   });
 
-  it('el switch usa blinkPauseLabel/blinkResumeLabel como texto según el estado (clave propia, no reutiliza pauseLabel/resumeLabel del hover-pause)', () => {
+  it('the switch uses blinkPauseLabel/blinkResumeLabel as text based on state (own key, does not reuse pauseLabel/resumeLabel from hover-pause)', () => {
     render(
       <CompareSlider
         before={<img alt="" src="/a.png" />}
@@ -1038,7 +1038,7 @@ describe('CompareSlider — compareMode blink (T5)', () => {
     );
     const toggle = screen.getByRole('switch');
     // Arranca corriendo (sin prefers-reduced-motion): el switch debe anunciar la
-    // acción disponible ("Pause blinking"), no describir el estado al revés.
+    // available action ("Pause blinking"), not describe the state backwards.
     expect(toggle).toHaveAttribute('aria-checked', 'true');
     expect(toggle).toHaveAccessibleName('Pause blinking');
     fireEvent.click(toggle);

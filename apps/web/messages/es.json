@@ -32,16 +32,16 @@
   "home": {
     "meta": {
       "title": "Nico Behm — Ingeniero full-stack",
-      "description": "Ingeniero full-stack con más de 12 años entre salud, producto internacional y plataformas de APIs de IA a gran escala."
+      "description": "Ingeniero full-stack con más de 15 años entre salud, producto internacional y plataformas de APIs de IA a gran escala."
     },
     "showcaseCta": "Ver showcase de componentes →",
     "projectsCta": "Ver Proyectos",
     "technologiesLabel": "Tecnologías clave",
     "stats": {
       "exp": "Años de experiencia",
-      "requests": "Requests diarios en API",
-      "uptime": "Uptime y resiliencia",
-      "cleanCode": "TDD y Clean Code"
+      "architecture": "Arquitectura de APIs y Plataforma",
+      "cleanCode": "TDD, SOLID y Clean Code",
+      "ai": "Agentes de IA y Automatización"
     },
     "cvCta": "Ver CV",
     "availability": "Disponible para nuevas oportunidades",

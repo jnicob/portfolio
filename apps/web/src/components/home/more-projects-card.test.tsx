@@ -10,7 +10,7 @@ const notFeatured = projects.filter((p) => !p.featured);
 const remaining = notFeatured.length - 3;
 
 describe('MoreProjectsCard', () => {
-  it('es una única card-enlace a /projects (localizado), sin enlaces anidados', () => {
+  it('is a single link-card to /projects (localized), without nested links', () => {
     render(
       <NextIntlClientProvider locale="es" messages={es}>
         <MoreProjectsCard
@@ -25,11 +25,11 @@ describe('MoreProjectsCard', () => {
     // localePrefix: 'always' (i18n/routing.ts) antepone el locale a cualquier href de <Link>.
     expect(links[0]).toHaveAttribute('href', '/es/projects');
     // WCAG 2.5.3 (Label in Name): el nombre accesible debe CONTENER el texto visible.
-    // Antes, un aria-label="Todos los proyectos" recortaba el nombre a solo el título,
+    // Previously, an aria-label="Todos los proyectos" truncated the name to just the title,
     // ignorando el resto del contenido visible del link (preview de proyectos + contador)
     // — axe (label-content-name-mismatch) lo marca como mismatch porque el nombre no
     // contiene TODO el texto visible anidado. Sin aria-label, el nombre se computa del
-    // propio contenido: por construcción contiene (empieza por) el título visible.
+    // own content: by construction it contains (starts with) the visible title.
     expect(links[0]).not.toHaveAttribute('aria-label');
     expect(links[0]).toHaveAccessibleName(/^Todos los proyectos/);
     expect(screen.getByText(/Backoffice de contenido Freepik\/Flaticon/)).toBeInTheDocument();
@@ -50,7 +50,7 @@ describe('MoreProjectsCard', () => {
     expect(link.className).toContain('lg:col-span-3');
   });
 
-  it('adelanta como máximo 3 títulos no destacados y muestra el contador de los restantes', () => {
+  it('previews at most 3 non-featured titles and shows the counter for the remaining ones', () => {
     render(
       <NextIntlClientProvider locale="en" messages={en}>
         <MoreProjectsCard
@@ -71,7 +71,7 @@ describe('MoreProjectsCard', () => {
     expect(screen.getByText(`and ${remaining} more projects`)).toBeInTheDocument();
   });
 
-  it('el contador "y N más" baja de peso frente a los títulos (design review F3.6 T21, jerarquía)', () => {
+  it('the "y N más" counter has lower weight compared to the titles (design review F3.6 T21, hierarchy)', () => {
     render(
       <NextIntlClientProvider locale="es" messages={es}>
         <MoreProjectsCard
@@ -84,7 +84,7 @@ describe('MoreProjectsCard', () => {
     const countText = screen.getByText(`y ${remaining} proyectos más`);
     expect(countText.className).toContain('text-sm');
     expect(countText.className).toContain('text-fg-muted');
-    // El nombre accesible del link sigue intacto (T30): sigue empezando por el título visible.
+    // Link accessible name remains intact (T30): starts with visible title.
     expect(screen.getByRole('link')).toHaveAccessibleName(/^Todos los proyectos/);
   });
 });

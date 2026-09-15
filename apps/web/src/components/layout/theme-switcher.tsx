@@ -9,11 +9,11 @@ function readTheme(): Theme {
 }
 
 /**
- * Botón de cambio de tema. El estado inicial se lee del DOM (fijado por
- * themeInitScript) y se mantiene sincronizado vía `MutationObserver` sobre
- * `data-theme` en `<html>`: puede haber más de una instancia montada a la vez
- * (fila desktop + panel del MobileMenu), y un cambio disparado desde
- * cualquiera de ellas debe reflejarse en todas, no solo en la que lo originó.
+ * Theme toggle button. Initial state is read from the DOM (set by
+ * themeInitScript) and kept in sync via `MutationObserver` on
+ * `data-theme` on `<html>`: there can be more than one instance mounted at once
+ * (desktop row + MobileMenu panel), and a change triggered from
+ * any of them must be reflected in all, not just the one that originated it.
  */
 export function ThemeSwitcher() {
   const [theme, setTheme] = useState<Theme | null>(null);
@@ -30,7 +30,7 @@ export function ThemeSwitcher() {
   }, []);
 
   if (theme === null) {
-    // Aún sin hidratar: reservar espacio para evitar layout shift.
+    // Not yet hydrated: reserve space to prevent layout shift.
     return <span aria-hidden className="inline-block size-9" />;
   }
 

@@ -7,7 +7,7 @@ export const DEFAULT_APPEARANCE: Appearance = { theme: 'dark', skin: 'dev-tool' 
 
 export const STORAGE_KEYS = { theme: 'theme', skin: 'skin', cvView: 'cv-view' } as const;
 
-/** Valor validado contra una const-union, sin zod (este módulo va al bundle cliente). */
+/** Validated value against a const-union, without zod (this module enters client bundle). */
 export function parseValid<T extends string>(
   options: readonly T[],
   value: string | null,
@@ -15,7 +15,7 @@ export function parseValid<T extends string>(
   return options.find((option) => option === value);
 }
 
-/** Precedencia URL > localStorage > default; inválidos caen en cascada al siguiente nivel. */
+/** URL > localStorage > default precedence; invalid values cascade down to the next level. */
 export function resolveAppearance(input: {
   params: URLSearchParams;
   stored: { theme: string | null; skin: string | null; view: string | null };
@@ -54,7 +54,7 @@ export function applyAppearance(appearance: Appearance): void {
     localStorage.setItem(STORAGE_KEYS.theme, appearance.theme);
     localStorage.setItem(STORAGE_KEYS.skin, appearance.skin);
   } catch {
-    /* almacenamiento no disponible (p.ej. modo privado): aplica solo a la sesión */
+    /* Storage not available (e.g. private browsing mode): applies only to session */
   }
 }
 
@@ -72,7 +72,7 @@ export function currentTheme(): Theme {
   );
 }
 
-/** Compat con ThemeSwitcher: cambia solo el tema conservando el skin aplicado. */
+/** Compatibility with ThemeSwitcher: changes only theme while preserving active skin. */
 export function applyTheme(theme: Theme): void {
   applyAppearance({ theme, skin: currentSkin() });
 }
@@ -82,8 +82,8 @@ export function applySkin(skin: Skin): void {
 }
 
 /**
- * Re-aplica la apariencia tras un remount del root layout: storage contiene la
- * elección más reciente del usuario y el fallback conserva la resolución inicial.
+ * Re-applies appearance after root layout remount: storage contains user's
+ * latest choice and fallback preserves initial resolution.
  */
 export function reapplyStoredAppearance(fallback: Appearance): void {
   let storedTheme: string | null = null;
@@ -104,11 +104,11 @@ export function persistCvView(view: CvView): void {
   try {
     localStorage.setItem(STORAGE_KEYS.cvView, view);
   } catch {
-    /* almacenamiento no disponible (p.ej. modo privado): la vista aplica solo a la sesión */
+    /* Storage not available (e.g. private browsing mode): view applies only to session */
   }
 }
 
-/** URL compartible con el estado actual; view solo si se pasa (páginas ≠ /cv no lo pasan). */
+/** Shareable URL with current state; view included only when provided (pages ≠ /cv omit it). */
 export function buildShareUrl(input: {
   origin: string;
   pathname: string;

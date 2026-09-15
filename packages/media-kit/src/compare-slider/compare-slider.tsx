@@ -20,13 +20,13 @@ const STACK_BREAKPOINT = 480;
 export type CompareSliderExpand = {
   /** aria-label del dialog del compare-lightbox. */
   lightboxLabel: string;
-  /** Texto del botón overlay. Default 'Full Screen'. */
+  /** Overlay button text. Default 'Full Screen'. */
   buttonLabel?: string;
   /** Labels del MediaLightbox interno (i18n). */
   lightboxLabels?: Partial<MediaLightboxLabels>;
 };
 
-// Icono expand (trazo currentColor, patrón F2.6): sin dependencias.
+// Expand icon (currentColor stroke, F2.6 pattern): no dependencies.
 const EXPAND_ICON = (
   <svg
     viewBox="0 0 24 24"
@@ -47,9 +47,9 @@ const EXPAND_ICON = (
 );
 
 /**
- * Eje de comparación (spec A3, F3.6). Default `'wipe'` = comportamiento actual
- * (clip-path + divisor), cero cambios. `'blink'` alterna before/after con un
- * timer (sin slider); ver `data-blink-side` y el switch de pausa en el componente.
+ * Comparison axis (spec A3, F3.6). Default `'wipe'` = current behavior
+ * (clip-path + divider), zero changes. `'blink'` alternates before/after with a
+ * timer (no slider); see `data-blink-side` and the pause switch in the component.
  */
 export type CompareSliderMode = 'wipe' | 'onion' | 'blink' | 'side-by-side';
 
@@ -62,47 +62,47 @@ export type CompareSliderOverlayLabels = {
 
 export type CompareSliderProps = {
   /**
-   * Medio original (típicamente <img>). Se muestra a la izquierda / arriba.
-   * Acepta un `MediaSource`: el slider renderiza internamente su `<img src alt draggable={false}>`.
+   * Original media (typically <img>). Displayed on the left / top.
+   * Accepts a `MediaSource`: the slider internally renders its `<img src alt draggable={false}>`.
    */
   before: ReactNode | MediaSource;
   /** Medio procesado. Se revela a la derecha / abajo del divisor. Mismas reglas que `before`. */
   after: ReactNode | MediaSource;
   /** Nombre accesible del divisor. */
   label?: string;
-  /** Posición inicial del divisor, 0-100. */
+  /** Initial divider position, 0-100. */
   initialPosition?: number;
   orientation?: 'horizontal' | 'vertical';
   /**
-   * 'drag' (default): arrastrar para mover, como v1.
-   * 'hover': con ratón el divisor sigue al puntero sin click (al salir se queda
-   * donde estaba); touch/pen usan el camino drag. Teclado idéntico en ambos.
+   * 'drag' (default): drag to move, like v1.
+   * 'hover': with mouse, the divider follows the pointer without clicking (on leave it stays
+   * where it was); touch/pen use the drag path. Keyboard identical in both.
    */
   mode?: 'drag' | 'hover';
   /**
-   * 'surface' (default): arrastrar en cualquier punto de la superficie mueve el
-   * divisor (comportamiento v1/v2, cero regresión).
-   * 'handle': el divisor SOLO se mueve arrastrando el handle (o con flechas cuando
-   * el handle tiene el foco); el resto de la superficie ignora el pointerdown. Pensado
-   * para cuando el compare vive dentro de un visor con su propio pan (T13/MediaLightbox):
-   * el gesto de pan del visor y el drag del divisor no deben pelear por el mismo puntero.
-   * Con dragTarget='handle', mode='hover' se ignora: el divisor solo se mueve desde el
-   * handle (puntero o teclado).
+   * 'surface' (default): dragging anywhere on the surface moves the
+   * divider (v1/v2 behavior, zero regression).
+   * 'handle': the divider ONLY moves by dragging the handle (or with arrow keys when
+   * the handle has focus); the rest of the surface ignores pointerdown. Intended
+   * for when compare lives inside a viewer with its own pan (T13/MediaLightbox):
+   * the viewer's pan gesture and the divider's drag must not fight for the same pointer.
+   * With dragTarget='handle', mode='hover' is ignored: the divider only moves from the
+   * handle (pointer or keyboard).
    */
   dragTarget?: 'surface' | 'handle';
   className?: string;
   onPositionChange?: (position: number) => void;
   /**
-   * CTA fullscreen por ejemplo (spec C1): con `expand`, el slider renderiza un
-   * botón overlay que abre un `MediaLightbox` interno con este mismo compare.
+   * Fullscreen CTA for example (spec C1): with `expand`, the slider renders an
+   * overlay button that opens an internal `MediaLightbox` with this same compare.
    */
   expand?: CompareSliderExpand;
   /**
-   * Solo aplica con `mode="hover"` (spec C6): un click (down+up sin arrastre) alterna
-   * pausar el seguimiento del ratón, para poder soltar el puntero sin perder la
-   * posición comparada. Mientras está en pausa, NINGÚN gesto de puntero sobre la
-   * superficie reposiciona el divisor (el click que reanuda tampoco: el divisor se
-   * queda donde estaba congelado); el teclado sobre el handle sigue funcionando.
+   * Only applies with `mode="hover"` (spec C6): a click (down+up without drag) toggles
+   * pausing mouse tracking, to be able to release the pointer without losing the
+   * compared position. While paused, NO pointer gesture on the
+   * surface repositions the divider (neither does the click that resumes: the divider
+   * stays frozen where it was); keyboard on the handle continues to work.
    * Default `true`.
    */
   pauseOnClick?: boolean;
@@ -114,17 +114,17 @@ export type CompareSliderProps = {
    */
   resumeLabel?: string;
   /**
-   * Texto del switch de `compareMode="blink"` mientras el blink está corriendo — la
-   * acción disponible es pausarlo (convención acción-botón, no estado: el texto describe
-   * lo que el click hace a continuación, no lo que ya pasó). Design review F3.6 T21,
-   * Minor del code review: el switch de blink reutilizaba `pauseLabel`, un nombre
-   * accesible pensado para el hover-pause de C6 — "Comparison paused" no describe lo que
-   * hace este switch. Default `'Pause blinking'`.
+   * Text of the switch for `compareMode="blink"` while blink is running — the
+   * available action is to pause it (button-action convention, not state: the text describes
+   * what the click does next, not what already happened). Design review F3.6 T21,
+   * Code review minor: the blink switch reused `pauseLabel`, an accessible
+   * name designed for the C6 hover-pause — "Comparison paused" does not describe what
+   * this switch does. Default `'Pause blinking'`.
    */
   blinkPauseLabel?: string;
   /**
-   * Texto del switch de `compareMode="blink"` mientras está pausado — la acción
-   * disponible es reanudarlo (misma convención acción-botón que `blinkPauseLabel`).
+   * Text of the switch for `compareMode="blink"` while paused — the available
+   * action is to resume it (same button-action convention as `blinkPauseLabel`).
    * Default `'Resume blinking'`.
    */
   blinkResumeLabel?: string;
@@ -141,16 +141,16 @@ export type CompareSliderProps = {
    */
   objectFit?: 'cover' | 'contain';
   /**
-   * Eje de comparación (spec A3, F3.6). Default `'wipe'` (comportamiento actual).
-   * `'onion'` conserva el mismo handle/teclado pero gobierna opacidad en vez de
-   * posición del divisor. `'side-by-side'` no tiene slider ni handle: ambos lados
-   * se muestran completos (grid). `'blink'` tampoco tiene slider: alterna
-   * before/after cada 800ms con un switch de pausa propio (`blinkPauseLabel`/`blinkResumeLabel`).
+   * Comparison axis (spec A3, F3.6). Default `'wipe'` (current behavior).
+   * `'onion'` keeps the same handle/keyboard but controls opacity instead of
+   * divider position. `'side-by-side'` has neither slider nor handle: both sides
+   * are shown in full (grid). `'blink'` has no slider either: alternates
+   * before/after every 800ms with its own pause switch (`blinkPauseLabel`/`blinkResumeLabel`).
    */
   compareMode?: CompareSliderMode;
 };
 
-/** Umbral de movimiento (px) para distinguir click de drag (convención de use-zoom-pan). */
+/** Movement threshold (px) to distinguish click from drag (use-zoom-pan convention). */
 const CLICK_MOVE_THRESHOLD = 4;
 
 function clamp(value: number): number {
@@ -169,11 +169,11 @@ function renderSide(
   if (!isMediaSource(side)) return side;
   return (
     <img
-      // Hidratación (static export): el `load` nativo puede dispararse ANTES de que
-      // React adjunte onLoad; sin este check el lado quedaría pendiente para siempre
+      // Hydration (static export): native `load` may fire BEFORE
+      // React attaches onLoad; without this check the side would remain pending forever
       // (data-loading permanente, opacidad 0). Un nodo ya completo al adjuntar el ref
       // se marca cargado directamente. naturalWidth>0 distingue carga OK de error
-      // (un img roto también reporta complete=true, pero con naturalWidth 0).
+      // (a broken img also reports complete=true, but with naturalWidth 0).
       ref={(node) => {
         if (node?.complete && node.naturalWidth > 0) onSideLoaded(sideKey);
       }}
@@ -214,8 +214,8 @@ export function CompareSlider({
   const [paused, setPaused] = useState(false);
   const [announcement, setAnnouncement] = useState('');
   // C5: carga por lado, idempotente (ref de nodo ya completo + onLoad pueden
-  // solaparse tras la hidratación: dos señales, un solo "cargado" por lado).
-  // Limitación documentada: si el src de un lado cambia tras el montaje, su flag
+  // overlap after hydration: two signals, a single "loaded" per side).
+  // Documented limitation: if a side's src changes after mounting, its flag
   // NO se resetea (data-loading no reaparece para la nueva fuente).
   const [loadedSides, setLoadedSides] = useState({ before: false, after: false });
   // Blink (spec A3): lado mostrado por el timer y si sigue corriendo. Arranca
@@ -228,14 +228,14 @@ export function CompareSlider({
   const [stacked, setStacked] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
-  // Posición del pointerdown y si hubo arrastre desde entonces (umbral 4px, misma
-  // convención que draggedRef en use-zoom-pan) para distinguir click de drag.
+  // pointerdown position and whether dragging occurred since then (4px threshold, same
+  // convention as draggedRef in use-zoom-pan) to distinguish click from drag.
   const downPosRef = useRef<{ x: number; y: number } | null>(null);
   const draggedSinceDownRef = useRef(false);
   const horizontal = orientation === 'horizontal';
   // Derivado en render: solo los lados MediaSource son rastreables; sin ninguno,
   // `data-loading` nunca se activa (ReactNode es opaco, su carga no se puede
-  // observar desde aquí — documentado en el JSDoc de objectFit/overlayLabels).
+  // observe from here — documented in the JSDoc of objectFit/overlayLabels).
   const loading =
     (isMediaSource(before) && !loadedSides.before) || (isMediaSource(after) && !loadedSides.after);
   // `side-by-side` y `blink` no tienen divisor ni handle: el gesto de
@@ -243,7 +243,7 @@ export function CompareSlider({
   const hasSlider = compareMode === 'wipe' || compareMode === 'onion';
 
   // Timer de blink: solo corre en compareMode="blink" y con blinkRunning=true;
-  // el switch de pausa (más abajo) alterna blinkRunning y este effect limpia el
+  // the pause switch (below) toggles blinkRunning and this effect cleans up the
   // interval anterior antes de crear uno nuevo (o al desmontar).
   useEffect(() => {
     if (compareMode !== 'blink' || !blinkRunning) return;
@@ -292,7 +292,7 @@ export function CompareSlider({
     if (event.key === 'Home') {
       event.preventDefault();
       // El keydown del lightbox es un handler de React en el root del dialog (no un
-      // listener nativo), así que stopPropagation sí lo frena: con foco en el handle,
+      // native listener), so stopPropagation does stop it: with focus on the handle,
       // Home/End/flechas mueven el divisor y NO llegan al pan/zoom por teclado del visor.
       event.stopPropagation();
       update(0);
@@ -330,23 +330,23 @@ export function CompareSlider({
   }
 
   function toggleBlinkRunning() {
-    // blinkPauseLabel/blinkResumeLabel son acción-botón (describen lo que el switch
-    // hace a continuación, no el estado ya alcanzado): running=true -> el switch
+    // blinkPauseLabel/blinkResumeLabel are button-actions (they describe what the switch
+    // does next, not the state already reached): running=true -> the switch
     // ofrece "pausar" (blinkPauseLabel), running=false -> ofrece "reanudar"
-    // (blinkResumeLabel). El aria-live anuncia esa MISMA acción disponible tras el
-    // toggle, con la misma condición que el render de más abajo (`blinkRunning ?
-    // blinkPauseLabel : blinkResumeLabel`), así el anuncio nunca puede desincronizarse
+    // (blinkResumeLabel). The aria-live announces that SAME action available after the
+    // toggle, with the same condition as the render below (`blinkRunning ?
+    // blinkPauseLabel : blinkResumeLabel`), so the announcement can never become out of sync
     // del texto visible del switch (design review F3.6 T21 + F3.7 T24).
     const next = !blinkRunning;
     setAnnouncement(next ? blinkPauseLabel : blinkResumeLabel);
     setBlinkRunning(next);
   }
 
-  // El lightbox de `expand` (C1) monta vía createPortal en document.body pero sigue
+  // The `expand` (C1) lightbox mounts via createPortal in document.body but continues
   // siendo hijo de React de ESTE componente: sus eventos de puntero burbujean hasta
-  // aquí según el árbol de React, no el DOM real. `currentTarget.contains(target)` usa
-  // el DOM real, así que descarta correctamente los eventos que se originan dentro del
-  // lightbox (ayuda, controles, cerrar…) aunque su nodo no esté bajo containerRef.
+  // here according to the React tree, not the real DOM. `currentTarget.contains(target)` uses
+  // the real DOM, so it correctly discards events originating inside the
+  // lightbox (help, controls, close…) even if its node is not under containerRef.
   function originatesOnSurface(event: PointerEvent<HTMLDivElement>): boolean {
     return event.target instanceof Node && event.currentTarget.contains(event.target);
   }
@@ -354,8 +354,8 @@ export function CompareSlider({
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
     if (!hasSlider) return;
     if (!originatesOnSurface(event)) return;
-    // Se resetea en cada down (incluido el que se descarta más abajo) para que un
-    // pointerup posterior nunca reutilice la posición de un down anterior.
+    // It is reset on every down (including the one discarded below) so that a
+    // subsequent pointerup never reuses the position of a previous down.
     downPosRef.current = null;
     draggedSinceDownRef.current = false;
     if (!event.isPrimary || event.button !== 0) return;
@@ -367,11 +367,11 @@ export function CompareSlider({
     }
     handleRef.current?.focus({ preventScroll: true });
     downPosRef.current = { x: event.clientX, y: event.clientY };
-    // Con hover activo el ratón ya sigue al puntero; el down solo aplica a touch/pen.
+    // With hover active the mouse already follows the pointer; the down only applies to touch/pen.
     if (followsHover(event)) return;
-    // En pausa (C6), la superficie no reposiciona el divisor con ningún puntero: el
+    // When paused (C6), the surface does not reposition the divider with any pointer: the
     // down queda registrado SOLO para clasificar en pointerup el click que reanuda
-    // (sin capture ni update, el divisor no salta a la posición del click).
+    // (without capture or update, the divider does not jump to the click position).
     if (mode === 'hover' && paused) return;
     event.currentTarget.setPointerCapture(event.pointerId);
     update(positionFromPointer(event));
@@ -402,7 +402,7 @@ export function CompareSlider({
     draggedSinceDownRef.current = false;
     // Click = down+up sin arrastre; solo pausa/reanuda en mode="hover" con pauseOnClick
     // y dragTarget='surface' (con dragTarget='handle' no hay hover-follow que pausar).
-    // wasDown descarta clicks cuyo down fue absorbido por otro elemento (p.ej. el botón
+    // wasDown discards clicks whose down was absorbed by another element (e.g. the button
     // expand, que hace stopPropagation en su propio pointerdown).
     if (!wasDown || dragged || mode !== 'hover' || !pauseOnClick || dragTarget !== 'surface') {
       return;
@@ -415,7 +415,7 @@ export function CompareSlider({
   }
 
   // C5: marca un lado como cargado. Idempotente: si ya estaba, devuelve el MISMO
-  // objeto de estado (sin re-render), así el doble disparo complete+onLoad es inocuo.
+  // state object (without re-render), so the complete+onLoad double fire is harmless.
   function markSideLoaded(side: CompareSide) {
     setLoadedSides((prev) => (prev[side] ? prev : { ...prev, [side]: true }));
   }
@@ -473,7 +473,7 @@ export function CompareSlider({
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={Math.round(position)}
-          // onion gobierna opacidad, no la posición del divisor: el valuetext
+          // onion governs opacity, not the divider position: the valuetext
           // anuncia lo que realmente cambia con el handle en ese modo.
           aria-valuetext={compareMode === 'onion' ? `${Math.round(position)}% after` : undefined}
           aria-orientation={orientation}
@@ -519,8 +519,8 @@ export function CompareSlider({
           onClose={() => setExpanded(false)}
           label={expand.lightboxLabel}
           labels={expand.lightboxLabels}
-          // Fix T4→T5: sin compareMode aquí, el lightbox interno abriría siempre
-          // en 'wipe' aunque el slider de fondo esté en onion/side-by-side/blink.
+          // Fix T4→T5: without compareMode here, the internal lightbox would always open
+          // in 'wipe' even if the background slider is in onion/side-by-side/blink.
           compare={{ before, after, label: expand.lightboxLabel, compareMode }}
         />
       ) : null}

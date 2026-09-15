@@ -31,7 +31,7 @@ const sampleSummary: ProfileSummaryData = {
 };
 
 describe('ProfileSummary', () => {
-  it('renderiza párrafos narrativos, título de sección en negrita y viñetas estructuradas', () => {
+  it('renders narrative paragraphs, bold section title, and structured bullet points', () => {
     render(<ProfileSummary summary={sampleSummary} locale="es" variant="hero" />);
 
     expect(screen.getByText(/Ingeniero en Informática/)).toBeInTheDocument();
@@ -45,7 +45,7 @@ describe('ProfileSummary', () => {
     expect(screen.getByText(/TypeScript, JavaScript, Node.js/)).toBeInTheDocument();
   });
 
-  it('aplica clases específicas de variante hero (más compacto en viñetas)', () => {
+  it('applies hero variant-specific classes (more compact in bullet points)', () => {
     const { container } = render(
       <ProfileSummary summary={sampleSummary} locale="es" variant="hero" />,
     );

@@ -3,28 +3,28 @@
 import { SpotlightReveal } from '@nicobehm/media-kit';
 
 /**
- * Design review F3.6 T21 ("assets demos"): las 4 demos de arriba (drag, hover, modos
- * de comparación) ya usaban la misma foto de paisaje entre sí — el spotlight repetía
- * esa foto una 5ª vez. Usa en su lugar un asset de la galería de ejemplos IA (T8):
- * el retrato neón (`apps/web/src/data/gallery.ts`, id `nbp-retrato-neon`, 1200×1608 —
- * dimensiones reales del asset, sin recorte/CLS). Igual que las demos de arriba, el
- * spotlight deriva su lado "antes" (B/N) con `filter: grayscale(1)` sobre este mismo
- * bitmap — cero peso extra, mismo patrón.
+ * Design review F3.6 T21 ("assets demos"): the 4 demos above (drag, hover, comparison
+ * modes) already shared the same landscape photo — the spotlight was repeating
+ * that photo a 5th time. Use instead an asset from the AI examples gallery (T8):
+ * the neon portrait (`apps/web/src/data/gallery.ts`, id `nbp-retrato-neon`, 1200×1608 —
+ * actual asset dimensions, no cropping/CLS). Just like the demos above, the
+ * spotlight derives its "before" side (B&W) with `filter: grayscale(1)` over this same
+ * bitmap — zero extra weight, same pattern.
  */
 const PORTRAIT_SRC = '/demo/gallery/nbp-retrato-neon.webp';
-/** Variante HD (T14) de la galería: sirve pantallas grandes/retina vía srcSet. */
+/** HD variant (T14) from the gallery: serves large/retina screens via srcSet. */
 const PORTRAIT_SRC_SET = `${PORTRAIT_SRC} 1200w, /demo/gallery/nbp-retrato-neon-hd.webp 2560w`;
 /**
- * Fix design review T25 (I2): a ancho completo del contenido, el retrato 3:4
- * renderizaba a 896×1201px — ≈2.4× más alto que las demos vecinas (scrub
- * 896×504, comparaciones ≈500px) y rompía el ritmo vertical de la sección.
- * El contenedor ahora acota a `max-w-md` (≈448px de ancho → ≈600px de alto en
- * 3:4), así que `sizes` refleja ese tope en vez de ancho completo.
+ * Fix design review T25 (I2): at full content width, the 3:4 portrait
+ * rendered at 896×1201px — ≈2.4× taller than neighboring demos (scrub
+ * 896×504, comparisons ≈500px) and broke the vertical rhythm of the section.
+ * The container now restricts to `max-w-md` (≈448px wide → ≈600px high in
+ * 3:4), so `sizes` reflects that cap instead of full width.
  */
 const PORTRAIT_SIZES = '(min-width: 28rem) 28rem, calc(100vw - 3rem)';
 
 export type SpotlightDemoStrings = {
-  /** Nombre accesible del área interactiva del spotlight. */
+  /** Accessible name of the spotlight interactive area. */
   label: string;
   /** Alt del lado "base" (ReactNode con `filter: grayscale(1)`). */
   baseAlt: string;
@@ -39,10 +39,10 @@ export type SpotlightDemoStrings = {
 type Props = { strings: SpotlightDemoStrings };
 
 /**
- * Lupa que revela color bajo el puntero (spec B4, F3.6): un único bitmap (el retrato
- * neón de la galería T8, no la foto de paisaje que ya repiten las demos de arriba) —
- * el lado "base" (B/N) deriva del mismo bitmap con `filter: grayscale(1)`, cero
- * assets extra (mismo patrón que la colorización de las demos de arriba, T11).
+ * Magnifier revealing color under the pointer (spec B4, F3.6): a single bitmap (the neon
+ * portrait from gallery T8, not the landscape photo that the demos above already repeat) —
+ * the "base" side (B&W) derives from the same bitmap with `filter: grayscale(1)`, zero
+ * extra assets (same pattern as the colorization in the demos above, T11).
  */
 export function SpotlightDemo({ strings }: Props) {
   return (

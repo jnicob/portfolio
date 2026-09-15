@@ -30,7 +30,7 @@ describe('FeaturedProjects', () => {
   it('renderiza un heading y un link por proyecto destacado, interno si tiene case study y externo si no', () => {
     renderFeaturedProjects();
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Featured projects');
-    // +1 por el link de la MoreProjectsCard ("All projects" → /projects).
+    // +1 for MoreProjectsCard link ("All projects" → /projects).
     expect(screen.getAllByRole('link')).toHaveLength(featured.length + 1);
     for (const project of featured) {
       const expectedHref = project.caseStudy
@@ -43,7 +43,7 @@ describe('FeaturedProjects', () => {
     }
   });
 
-  it('renderiza la MoreProjectsCard como última celda del grid, enlazando a /projects', () => {
+  it('renders MoreProjectsCard as the last grid cell, linking to /projects', () => {
     renderFeaturedProjects();
     // localePrefix: 'always' (i18n/routing.ts) antepone el locale a cualquier href de <Link>.
     expect(screen.getByRole('link', { name: /all projects/i })).toHaveAttribute(
@@ -52,7 +52,7 @@ describe('FeaturedProjects', () => {
     );
   });
 
-  it('ningún proyecto tiene una métrica con label "Pull requests"', () => {
+  it('no project has a metric with label "Pull requests"', () => {
     for (const project of projects) {
       expect(project.metrics.some((m) => m.label.en === 'Pull requests')).toBe(false);
     }
@@ -78,9 +78,9 @@ describe('FeaturedProjects', () => {
     }
   });
 
-  it('con un nº impar de destacados (768px, sm:grid-cols-2), la última card destacada no queda huérfana: spanea 2 columnas en sm y vuelve a 1 en lg (design review F3.6 T21, "card huérfana 768")', () => {
+  it('with an odd number of featured items (768px, sm:grid-cols-2), the last featured card is not orphaned: spans 2 columns on sm and reverts to 1 on lg (design review F3.6 T21, "card huérfana 768")', () => {
     // 3 destacados en un grid sm:grid-cols-2 lg:grid-cols-3: en el rango sm (640-1024,
-    // incluye 768) la 3ª card quedaba sola en su fila con un hueco vacío al lado.
+    // includes 768) the 3rd card was left alone in its row with an empty gap next to it.
     expect(featured.length % 2).toBe(1);
     renderFeaturedProjects();
     const lastFeatured = featured[featured.length - 1]!;
@@ -88,7 +88,7 @@ describe('FeaturedProjects', () => {
     const tiltWrapper = lastLink.closest('[data-tilt]') as HTMLElement;
     expect(tiltWrapper.className).toContain('sm:col-span-2');
     expect(tiltWrapper.className).toContain('lg:col-span-1');
-    // El resto de destacadas NO llevan este span extra.
+    // Other featured cards DO NOT carry this extra span.
     const otherFeatured = featured.slice(0, -1);
     for (const project of otherFeatured) {
       const link = screen.getByRole('link', { name: project.title.en });

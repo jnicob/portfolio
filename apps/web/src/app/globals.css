@@ -66,7 +66,7 @@
   --danger-fg: #ffffff;
 }
 
-/* ── Skin: editorial — periódico tipo NYT: B/N + azul, serif, radios mínimos ── */
+/* ── Skin: editorial — NYT-style newspaper: B/W + blue, serif, minimal radii ── */
 :root[data-skin='editorial'][data-theme='dark'] {
   --bg: #121212;
   --surface: #1a1a1a;
@@ -305,6 +305,30 @@
   .cv-compact ul {
     gap: 0.1rem !important;
     font-size: 9.5px !important;
+  }
+}
+
+/* Smooth 1.4-second hero portrait fade-in and subtle scale-up animation */
+@keyframes heroFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-hero-fade-in {
+  animation: heroFadeIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 

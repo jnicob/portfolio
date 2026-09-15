@@ -46,7 +46,7 @@ describe('ShowcaseView', () => {
     expect(screen.getByRole('status')).toHaveTextContent(LABELS.showingAll);
   });
 
-  it('seleccionar una sección en el índice muestra solo esa y lo anuncia', () => {
+  it('selecting a section in the index shows only that section and announces it', () => {
     renderView();
     const listbox = screen.getByRole('listbox');
     fireEvent.click(within(listbox).getByRole('option', { name: /card/i }));
@@ -55,7 +55,7 @@ describe('ShowcaseView', () => {
     expect(screen.getByRole('status')).toHaveTextContent(/card/i);
   });
 
-  it('la opción "Todas" restaura todo', () => {
+  it('the "Todas" option restores everything', () => {
     renderView();
     const listbox = screen.getByRole('listbox');
     fireEvent.click(within(listbox).getByRole('option', { name: /card/i }));
@@ -75,7 +75,7 @@ describe('ShowcaseView', () => {
     expect(window.location.hash).toBe('');
   });
 
-  // Regresión (code review F3.6/replaceState): limpiar el filtro llamaba
+  // Regression (code review F3.6/replaceState): clearing the filter called
   // `replaceState(null, '', window.location.pathname)`, perdiendo cualquier query
   // string existente (p.ej. `?utm_source=...`) al volver a "Todas".
   it('al restaurar "Todas", conserva el query string de la URL (no solo el pathname)', () => {
@@ -92,20 +92,20 @@ describe('ShowcaseView', () => {
     expect(window.location.pathname).toBe('/es/showcase');
   });
 
-  it('al montar con un hash existente, filtra por esa sección (deep-link)', () => {
+  it('filters by that section when mounting with an existing hash (deep-link)', () => {
     window.location.hash = '#card';
     renderView();
     expect(screen.queryByLabelText('Button')).toBeNull();
     expect(screen.getByLabelText('Card')).toBeInTheDocument();
   });
 
-  // Regresión (design review F3.6/I2): el <nav> del índice llevaba `hidden lg:block`,
-  // así que en <lg (móvil/tablet) no había forma de filtrar ni de llegar a los
+  // Regression (design review F3.6/I2): the index <nav> had `hidden lg:block`,
+  // so on <lg (mobile/tablet) there was no way to filter or reach the
   // deep-links por hash — la feature estrella de la fase. jsdom no aplica Tailwind
-  // (no hay CSS real), así que el test ancla el contrato en las clases del propio
+  // (there is no real CSS), so the test anchors the contract to the classes of the
   // elemento: nunca debe llevar `hidden` (visible en todo breakpoint); `lg:` es lo
-  // único que cambia de disposición (sticky/columna) por encima de ese breakpoint.
-  it('el índice/filtro nunca lleva la clase "hidden": es visible en todo breakpoint', () => {
+  // only one that changes layout (sticky/column) above that breakpoint.
+  it('the index/filter never has the "hidden" class: it is visible at all breakpoints', () => {
     const { container } = render(
       <NextIntlClientProvider locale="es" messages={{}}>
         <ShowcaseView toc={TOC} labels={LABELS} sections={SECTIONS} />
@@ -118,7 +118,7 @@ describe('ShowcaseView', () => {
 
   it('el filtro sigue siendo operable en el DOM aunque el layout de <lg lo coloque encima del contenido', () => {
     renderView();
-    // Sin ninguna clase "hidden" bloqueándolo, el listbox del índice es alcanzable
+    // Without any "hidden" class blocking it, the index listbox is reachable
     // y operable independientemente del breakpoint (jsdom no mide layout real).
     const listbox = screen.getByRole('listbox');
     expect(listbox).toBeInTheDocument();
@@ -128,13 +128,13 @@ describe('ShowcaseView', () => {
   });
 });
 
-// Regresión: FORMATTING_ERROR en consola + texto de estado mostrando la key cruda
+// Regression: FORMATTING_ERROR in console + status text showing the raw key
 // ("showcase.index.showing") en vez de "Mostrando: {section}" — visto en /es/showcase
-// (carga normal y deep-link por hash) durante F3.6. Causa raíz: `buildShowcaseViewLabels`
-// (usada por `page.tsx`) leía `index.showing` con `t()` en vez de `t.raw()`; ese mensaje
-// trae el placeholder literal `{section}` que `ShowcaseView` interpola a mano más tarde
-// (ver arriba), y next-intl exige el argumento en cuanto se llama `t()` — que aquí no
-// existe todavía. Se prueba contra los mensajes reales (es/en) para pinnear el contrato.
+// (normal load and hash deep-link) during F3.6. Root cause: `buildShowcaseViewLabels`
+// (used by `page.tsx`) read `index.showing` with `t()` instead of `t.raw()`; that message
+// has the literal `{section}` placeholder that `ShowcaseView` interpolates manually later
+// (see above), and next-intl requires the argument as soon as `t()` is called — which here does not
+// exist yet. It is tested against the real messages (es/en) to pin the contract.
 describe('buildShowcaseViewLabels — contrato de index.showing', () => {
   function LabelsProbe() {
     const t = useTranslations('showcase');

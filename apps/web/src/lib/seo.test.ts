@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { localizedPageMetadata, personJsonLd, SITE_URL } from './seo';
 
 describe('seo', () => {
-  it('genera canonical y hreflang por locale', () => {
+  it('generates canonical and hreflang per locale', () => {
     const meta = localizedPageMetadata({
       locale: 'es',
       path: '/cv',
@@ -17,7 +17,7 @@ describe('seo', () => {
     expect(meta.openGraph?.locale).toBe('es');
   });
 
-  it('declara la imagen OG y la twitter card por locale', () => {
+  it('declares OG image and twitter card per locale', () => {
     const meta = localizedPageMetadata({
       locale: 'en',
       path: '/projects',
@@ -35,9 +35,27 @@ describe('seo', () => {
     ]);
   });
 
-  it('JSON-LD Person con SOLO enlaces públicos', () => {
+  it('JSON-LD Person with ONLY public links and enriched geo data', () => {
     const ld = personJsonLd('en');
     expect(ld['@type']).toBe('Person');
+    expect(ld.homeLocation.name).toContain('Aguadulce');
+    expect(ld.homeLocation.geo.latitude).toBe(36.8167);
+    expect(ld.address.addressRegion).toBe('Almería');
+    expect(ld.nationality.name).toBe('Argentina');
+    expect(ld.knowsAbout.length).toBeGreaterThan(10);
     expect(JSON.stringify(ld)).not.toMatch(/@[\w-]+\.[a-z]{2,}/i);
+  });
+
+  it('declares GEO metadata for accurate geographic indexing', () => {
+    const meta = localizedPageMetadata({
+      locale: 'es',
+      path: '',
+      title: 'T',
+      description: 'D',
+    });
+    expect(meta.other?.['geo.region']).toBe('ES-AL');
+    expect(meta.other?.['geo.placename']).toBe('Aguadulce, Almería');
+    expect(meta.other?.['geo.position']).toBe('36.8167;-2.5667');
+    expect(meta.other?.['ICBM']).toBe('36.8167, -2.5667');
   });
 });

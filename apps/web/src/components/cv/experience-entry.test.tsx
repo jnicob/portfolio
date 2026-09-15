@@ -17,8 +17,8 @@ describe('ExperienceEntryBlock', () => {
   });
 
   it('muestra el rango de fechas con presentLabel cuando end es null', () => {
-    // Ninguna entrada real tiene end === null (todas las etapas están cerradas);
-    // se construye una entrada sintética para probar el contrato del componente.
+    // No real entry has end === null (all stages are closed);
+    // builds synthetic entry to test component contract.
     const entry = { ...experience[0]!, end: null };
     render(<ExperienceEntryBlock entry={entry} locale="es" presentLabel={PRESENT_LABEL} />);
 

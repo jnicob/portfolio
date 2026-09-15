@@ -18,7 +18,7 @@ import {
 const LOC = { es: 'Hola', en: 'Hello' };
 
 describe('localizedStringSchema', () => {
-  it('exige ambos idiomas no vacíos', () => {
+  it('requires both languages to be non-empty', () => {
     expect(localizedStringSchema.safeParse(LOC).success).toBe(true);
     expect(localizedStringSchema.safeParse({ es: 'Hola' }).success).toBe(false);
     expect(localizedStringSchema.safeParse({ es: '', en: 'Hello' }).success).toBe(false);
@@ -30,7 +30,7 @@ describe('localizedStringSchema', () => {
     ).toBe(false);
   });
 
-  it('rechaza ambos idiomas vacíos', () => {
+  it('rejects both languages being empty', () => {
     expect(localizedStringSchema.safeParse({ es: '', en: '' }).success).toBe(false);
   });
 });
@@ -49,7 +49,7 @@ describe('profileSchema — guardia de PII', () => {
     links: { github: 'https://github.com/jnicob', linkedin: 'https://www.linkedin.com/in/x' },
   };
 
-  it('acepta el perfil público con o sin website', () => {
+  it('accepts public profile with or without website', () => {
     expect(profileSchema.safeParse(base).success).toBe(true);
     expect(
       profileSchema.safeParse({
@@ -59,7 +59,7 @@ describe('profileSchema — guardia de PII', () => {
     ).toBe(true);
   });
 
-  it('RECHAZA claves extra (email/teléfono imposibles por construcción)', () => {
+  it('REJECTS extra keys (email/phone impossible by construction)', () => {
     expect(profileSchema.safeParse({ ...base, email: 'a@b.com' }).success).toBe(false);
     expect(
       profileSchema.safeParse({ ...base, links: { ...base.links, email: 'mailto:a@b.com' } })
@@ -67,7 +67,7 @@ describe('profileSchema — guardia de PII', () => {
     ).toBe(false);
   });
 
-  it('rechaza links inválidos', () => {
+  it('rejects invalid links', () => {
     expect(
       profileSchema.safeParse({
         ...base,
@@ -76,7 +76,7 @@ describe('profileSchema — guardia de PII', () => {
     ).toBe(false);
   });
 
-  it('rechaza nombre vacío', () => {
+  it('rejects empty name', () => {
     expect(profileSchema.safeParse({ ...base, name: '' }).success).toBe(false);
   });
 });
@@ -97,7 +97,7 @@ describe('experienceEntrySchema', () => {
     expect(experienceEntrySchema.safeParse(entry).success).toBe(true);
   });
 
-  it('rechaza fecha inválida en start', () => {
+  it('rejects invalid date in start', () => {
     expect(experienceEntrySchema.safeParse({ ...entry, start: 'enero 2024' }).success).toBe(false);
   });
 
@@ -110,7 +110,7 @@ describe('experienceEntrySchema', () => {
     expect(experienceEntrySchema.safeParse({ ...entry, end: null }).success).toBe(true);
   });
 
-  it('rechaza highlights vacío', () => {
+  it('rejects empty highlights', () => {
     expect(experienceEntrySchema.safeParse({ ...entry, highlights: [] }).success).toBe(false);
   });
 
@@ -128,26 +128,26 @@ describe('educationEntrySchema', () => {
     end: '2024',
   };
 
-  it('valida entrada de educación válida', () => {
+  it('validates valid education entry', () => {
     expect(educationEntrySchema.safeParse(entry).success).toBe(true);
   });
 
-  it('valida end como null (educación en curso)', () => {
+  it('validates end as null (ongoing education)', () => {
     expect(educationEntrySchema.safeParse({ ...entry, end: null }).success).toBe(true);
   });
 
-  it('rechaza año inválido en start', () => {
+  it('rejects invalid year in start', () => {
     expect(educationEntrySchema.safeParse({ ...entry, start: '2020-01' }).success).toBe(false);
     expect(educationEntrySchema.safeParse({ ...entry, start: 'twenty-twenty' }).success).toBe(
       false,
     );
   });
 
-  it('rechaza año inválido en end', () => {
+  it('rejects invalid year in end', () => {
     expect(educationEntrySchema.safeParse({ ...entry, end: '2024-06' }).success).toBe(false);
   });
 
-  it('rechaza institution vacía', () => {
+  it('rejects empty institution', () => {
     expect(educationEntrySchema.safeParse({ ...entry, institution: '' }).success).toBe(false);
   });
 
@@ -163,15 +163,15 @@ describe('languageEntrySchema', () => {
     level: LOC,
   };
 
-  it('valida entrada de idioma válida', () => {
+  it('validates valid language entry', () => {
     expect(languageEntrySchema.safeParse(entry).success).toBe(true);
   });
 
-  it('rechaza id vacío', () => {
+  it('rejects empty id', () => {
     expect(languageEntrySchema.safeParse({ ...entry, id: '' }).success).toBe(false);
   });
 
-  it('rechaza language sin localización', () => {
+  it('rejects language without localization', () => {
     expect(languageEntrySchema.safeParse({ ...entry, language: { es: 'Español' } }).success).toBe(
       false,
     );
@@ -190,7 +190,7 @@ describe('skillSchema', () => {
     tags: ['language'],
   };
 
-  it('valida skill válido', () => {
+  it('validates valid skill', () => {
     expect(skillSchema.safeParse(skill).success).toBe(true);
   });
 
@@ -203,18 +203,18 @@ describe('skillSchema', () => {
     expect(skillSchema.safeParse({ ...skill, level: 3.5 }).success).toBe(false);
   });
 
-  it('rechaza categoría fuera del enum', () => {
+  it('rejects category outside enum', () => {
     expect(skillSchema.safeParse({ ...skill, category: 'design' }).success).toBe(false);
   });
 
-  it('acepta todas las categorías válidas', () => {
+  it('accepts all valid categories', () => {
     const categories = ['backend', 'frontend', 'ai', 'platform', 'tooling'];
     for (const category of categories) {
       expect(skillSchema.safeParse({ ...skill, category }).success).toBe(true);
     }
   });
 
-  it('rechaza name vacío', () => {
+  it('rejects empty name', () => {
     expect(skillSchema.safeParse({ ...skill, name: '' }).success).toBe(false);
   });
 
@@ -224,7 +224,7 @@ describe('skillSchema', () => {
 });
 
 describe('projectSchema y frontmatter', () => {
-  it('proyecto localizado con métricas y frontmatter plano por locale', () => {
+  it('localized project with metrics and flat frontmatter per locale', () => {
     expect(
       projectSchema.safeParse({
         slug: 'freepik-api-platform',
@@ -252,7 +252,7 @@ describe('projectSchema y frontmatter', () => {
     ).toBe(true);
   });
 
-  it('rechaza slug inválido (no kebab-case)', () => {
+  it('rejects invalid slug (not kebab-case)', () => {
     expect(
       projectSchema.safeParse({
         slug: 'FreepikAPIplatform',
@@ -284,7 +284,7 @@ describe('projectSchema y frontmatter', () => {
     expect(projectSchema.safeParse({ ...base, date: 'July 2026' }).success).toBe(false);
   });
 
-  it('rechaza stack vacío', () => {
+  it('rejects empty stack', () => {
     expect(
       projectSchema.safeParse({
         slug: 'test',
@@ -300,7 +300,7 @@ describe('projectSchema y frontmatter', () => {
     ).toBe(false);
   });
 
-  it('rechaza links inválidos', () => {
+  it('rejects invalid links', () => {
     expect(
       projectSchema.safeParse({
         slug: 'test',
@@ -350,7 +350,7 @@ describe('projectSchema y frontmatter', () => {
 });
 
 describe('datos reales', () => {
-  it('los módulos de datos parsean contra sus schemas', async () => {
+  it('data modules parse against their schemas', async () => {
     const { profile } = await import('./profile');
     const { experience } = await import('./experience');
     const { education } = await import('./education');
@@ -417,7 +417,7 @@ describe('galleryItemSchema', () => {
     height: 1200,
   };
 
-  it('acepta un ítem image/video/audio válido', () => {
+  it('accepts a valid image/video/audio item', () => {
     expect(galleryItemSchema.safeParse(image).success).toBe(true);
     expect(galleryItemSchema.safeParse(video).success).toBe(true);
     expect(galleryItemSchema.safeParse(audio).success).toBe(true);
@@ -464,7 +464,7 @@ describe('galleryItemSchema', () => {
 });
 
 describe('enums de apariencia', () => {
-  it('skin válido e inválido', () => {
+  it('valid and invalid skin', () => {
     expect(skinSchema.safeParse('editorial').success).toBe(true);
     expect(skinSchema.safeParse('dev-tool').success).toBe(true);
     expect(skinSchema.safeParse('terminal').success).toBe(true);
@@ -472,7 +472,7 @@ describe('enums de apariencia', () => {
     expect(skinSchema.safeParse('neon').success).toBe(false);
   });
 
-  it('view válido e inválido', () => {
+  it('valid and invalid view', () => {
     expect(cvViewSchema.safeParse('timeline').success).toBe(true);
     expect(cvViewSchema.safeParse('standard').success).toBe(true);
     expect(cvViewSchema.safeParse('compact').success).toBe(true);
@@ -489,7 +489,7 @@ describe('contactSchema (nico-zod)', () => {
     honeypot: '',
   };
 
-  it('acepta datos válidos con o sin teléfono', () => {
+  it('accepts valid data with or without phone', () => {
     expect(contactSchema.safeParse(validContact).success).toBe(true);
     expect(contactSchema.safeParse({ ...validContact, phone: '' }).success).toBe(true);
     expect(contactSchema.safeParse({ ...validContact, phone: undefined }).success).toBe(true);
@@ -499,7 +499,7 @@ describe('contactSchema (nico-zod)', () => {
     );
   });
 
-  it('rechaza teléfonos con letras, pocos dígitos o formato inválido', () => {
+  it('rejects phones with letters, few digits, or invalid format', () => {
     expect(contactSchema.safeParse({ ...validContact, phone: '12345' }).success).toBe(false);
     expect(contactSchema.safeParse({ ...validContact, phone: 'telefono123456' }).success).toBe(
       false,
@@ -507,7 +507,7 @@ describe('contactSchema (nico-zod)', () => {
     expect(contactSchema.safeParse({ ...validContact, phone: '++34--999' }).success).toBe(false);
   });
 
-  it('rechaza email inválido o ausente', () => {
+  it('rejects invalid or missing email', () => {
     expect(contactSchema.safeParse({ ...validContact, email: 'invalido' }).success).toBe(false);
     expect(contactSchema.safeParse({ ...validContact, email: '' }).success).toBe(false);
   });
@@ -517,7 +517,7 @@ describe('contactSchema (nico-zod)', () => {
     expect(contactSchema.safeParse({ ...validContact, message: 'Hola' }).success).toBe(false);
   });
 
-  it('detecta bot si honeypot no está vacío', () => {
+  it('detects bot if honeypot is not empty', () => {
     expect(contactSchema.safeParse({ ...validContact, honeypot: 'spam bot' }).success).toBe(false);
   });
 

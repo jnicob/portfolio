@@ -1,13 +1,13 @@
 /**
- * Funciones puras de layout: derivan posiciones de aspect ratios conocidos sin
- * medir el DOM. El consumidor conserva el orden DOM y aplica estas cajas solo
- * como posición visual.
+ * Pure layout functions: derive positions from known aspect ratios without
+ * measuring the DOM. The consumer preserves DOM order and applies these boxes only
+ * as visual positioning.
  */
 
 export type LayoutBox = { x: number; y: number; width: number; height: number };
 export type ComputedLayout = { boxes: readonly LayoutBox[]; totalHeight: number };
 
-/** Ratio inválido (≤0, NaN o Infinity) → 1 (cuadrado). */
+/** Invalid ratio (≤0, NaN, or Infinity) → 1 (square). */
 function normalizeRatio(ratio: number): number {
   return Number.isFinite(ratio) && ratio > 0 ? ratio : 1;
 }
@@ -38,8 +38,8 @@ export function computeMasonryLayout(input: {
 }
 
 /**
- * Agrupa de forma greedy a alto objetivo; las filas completas llenan el ancho
- * exacto y la última fila incompleta conserva el alto objetivo.
+ * Greedily groups to target height; full rows fill the exact
+ * width and the last incomplete row preserves the target height.
  */
 export function computeJustifiedLayout(input: {
   aspectRatios: readonly number[];
@@ -103,7 +103,7 @@ export function columnCountForWidth(containerWidth: number): number {
   return 2;
 }
 
-/** Ancho común de tile para el breakpoint activo, descontando los gaps. */
+/** Common tile width for the active breakpoint, excluding gaps. */
 export function columnWidthForWidth(containerWidth: number, gap: number): number {
   const columns = columnCountForWidth(containerWidth);
   return (containerWidth - gap * (columns - 1)) / columns;

@@ -22,7 +22,7 @@ function renderAt(locale: 'es' | 'en') {
 }
 
 describe('SiteHeader', () => {
-  it('renderiza la navegación con nombre accesible y enlaces en español', () => {
+  it('renders navigation with accessible name and Spanish links', () => {
     renderAt('es');
     const nav = screen.getByRole('navigation', { name: 'Navegación principal' });
     expect(nav).toBeInTheDocument();
@@ -33,7 +33,7 @@ describe('SiteHeader', () => {
     expect(screen.getByRole('link', { name: 'Contacto' })).toHaveAttribute('href', '/contact');
   });
 
-  it('renderiza la navegación con nombre accesible y enlaces en inglés, junto al ThemeSwitcher', () => {
+  it('renders navigation with accessible name and English links, alongside ThemeSwitcher', () => {
     renderAt('en');
     const nav = screen.getByRole('navigation', { name: 'Main navigation' });
     expect(nav).toBeInTheDocument();

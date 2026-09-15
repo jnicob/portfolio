@@ -2,11 +2,11 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { SkillLevel } from './skill-level';
 
-// Regresión (qa-a11y-perf B2): axe reportaba `aria-prohibited-attr` (serious, 16 nodos en
-// /es/ y /es/cv/) — un `<span aria-label>` sin rol no implícito no tiene semántica ARIA
-// propia, así que `aria-label` queda prohibido en ese elemento. `role="img"` le da un rol
-// explícito (tratando los puntos como una imagen/indicador compuesto), habilitando
-// legítimamente el `aria-label` existente.
+// Regression (qa-a11y-perf B2): axe reported `aria-prohibited-attr` (serious, 16 nodes in
+// /es/ and /es/cv/) — a `<span aria-label>` without a non-implicit role has no ARIA semantics
+// of its own, so `aria-label` is prohibited on that element. `role="img"` gives it an explicit
+// role (treating the dots as a composite image/indicator), legitimately
+// enabling the existing `aria-label`.
 describe('SkillLevel', () => {
   it('el span con aria-label lleva role="img" (aria-label deja de estar prohibido)', () => {
     render(<SkillLevel level={3} label="Python: 3/5" />);

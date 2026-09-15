@@ -5,12 +5,12 @@ import { AnimatedMetric, formatLike } from './animated-metric';
 type IntersectionCallback = (entries: Array<{ isIntersecting: boolean }>) => void;
 
 /**
- * jsdom no implementa IntersectionObserver ni un scheduler real de
- * requestAnimationFrame, así que sin este stub el bucle de conteo de
- * AnimatedMetric (IO → rAF → easing → formatLike en cada tick → disconnect)
- * nunca se ejecuta en tests: siempre cae en la rama fallback "sin IO". Este
- * helper stubea las tres piezas con un reloj manual para poder disparar la
- * intersección y avanzar frame a frame de forma determinista.
+ * jsdom does not implement IntersectionObserver or a real scheduler for
+ * requestAnimationFrame, so without this stub the AnimatedMetric counting loop
+ * (IO → rAF → easing → formatLike on each tick → disconnect)
+ * never runs in tests: it always falls into the "no IO" fallback branch. This
+ * helper stubs the three pieces with a manual clock to trigger the
+ * intersection and advance frame by frame deterministically.
  */
 function stubAnimationEnvironment() {
   let clock = 0;
@@ -64,15 +64,15 @@ describe('formatLike', () => {
     expect(formatLike('40+', 12)).toBe('12+');
   });
 
-  it('devuelve el literal sin cambios cuando no contiene dígitos', () => {
+  it('returns the literal unchanged when it contains no digits', () => {
     expect(formatLike('N/A', 5)).toBe('N/A');
   });
 
-  it('no corrompe una lista de texto sin dígitos (", " no es un separador de miles)', () => {
+  it('does not corrupt a text list without digits (", " is not a thousands separator)', () => {
     expect(formatLike('Kling, WAN', 0)).toBe('Kling, WAN');
   });
 
-  it('preserva el espacio entre el número y el resto del literal', () => {
+  it('preserves the space between the number and the rest of the literal', () => {
     expect(formatLike('3 (create, list, get-by-id)', 3)).toBe('3 (create, list, get-by-id)');
   });
 });
@@ -101,9 +101,9 @@ describe('AnimatedMetric — camino animado (IntersectionObserver + rAF disponib
   });
 
   it('antes de intersectar (primer render) muestra el valor final, igual que el SSR', () => {
-    // Contrato de hidratación: el servidor (sin IntersectionObserver) renderiza
+    // Hydration contract: server renders target value to avoid mismatch.
     // el valor final directo. El cliente debe pintar exactamente lo mismo en su
-    // primer render -aunque IO esté disponible- para no producir un mismatch de
+    // first render -even if IO is available- so as not to produce a mismatch of
     // texto (React #418). El conteo 0→N solo arranca cuando el IO intersecta.
     stubAnimationEnvironment();
     render(<AnimatedMetric value="1.000+" durationMs={1000} />);
@@ -122,11 +122,11 @@ describe('AnimatedMetric — camino animado (IntersectionObserver + rAF disponib
     // t = 1 → eased = 1 → 1000, reformateado con el separador de miles original.
     env.flush(1000);
     expect(screen.getByText('1.000+', { selector: '[aria-hidden]' })).toBeInTheDocument();
-    // en t=1 el tick no reprograma más frames: la animación termina.
+    // At t=1 tick schedules no more frames: animation completes.
     expect(env.pendingFrameCount()).toBe(0);
   });
 
-  it('respeta un durationMs personalizado (misma fracción t, distinta escala de tiempo)', () => {
+  it('respects a custom durationMs (same fraction t, different time scale)', () => {
     const env = stubAnimationEnvironment();
     render(<AnimatedMetric value="40+" durationMs={2000} />);
 
@@ -150,7 +150,7 @@ describe('AnimatedMetric — camino animado (IntersectionObserver + rAF disponib
     expect(env.disconnect).toHaveBeenCalledTimes(1);
   });
 
-  it('no anima métricas sin dígitos: no observa el elemento y muestra el literal directo', () => {
+  it('does not animate metrics without digits: does not observe the element and displays the literal directly', () => {
     const env = stubAnimationEnvironment();
     render(<AnimatedMetric value="Kling, WAN" durationMs={1000} />);
 
@@ -158,7 +158,7 @@ describe('AnimatedMetric — camino animado (IntersectionObserver + rAF disponib
     expect(screen.getByText('Kling, WAN', { selector: '[aria-hidden]' })).toBeInTheDocument();
   });
 
-  it('anima solo el número de un literal "N (resto)" preservando el resto byte-exacto', () => {
+  it('animates only the number of an "N (resto)" literal, preserving the rest byte-exact', () => {
     const env = stubAnimationEnvironment();
     render(<AnimatedMetric value="3 (create, list, get-by-id)" durationMs={1000} />);
 
@@ -169,7 +169,7 @@ describe('AnimatedMetric — camino animado (IntersectionObserver + rAF disponib
     ).toBeInTheDocument();
   });
 
-  it('al desmontar durante la animación, cancela el frame en vuelo sin dejar un setState huérfano', () => {
+  it('when unmounting during animation, cancels the in-flight frame without leaving an orphaned setState', () => {
     const env = stubAnimationEnvironment();
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const { unmount } = render(<AnimatedMetric value="1.000+" durationMs={1000} />);
@@ -179,7 +179,7 @@ describe('AnimatedMetric — camino animado (IntersectionObserver + rAF disponib
     expect(env.pendingFrameCount()).toBe(1);
 
     unmount();
-    expect(env.pendingFrameCount()).toBe(0); // el cleanup del effect canceló el frame pendiente.
+    expect(env.pendingFrameCount()).toBe(0); // Effect cleanup cancelled pending frame.
     expect(consoleError).not.toHaveBeenCalled();
   });
 });

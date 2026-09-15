@@ -49,7 +49,7 @@ export type ContactFormLabels = {
 
 export type ContactFormProps = {
   labels: ContactFormLabels;
-  /** Permite inyectar handler personalizado de envío para tests o integraciones */
+  /** Allows injecting custom submit handler for tests or integrations */
   onSubmitHandler?: (data: ContactInput) => Promise<{ success: boolean; error?: string }>;
 };
 
@@ -66,13 +66,13 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
   const [errors, setErrors] = useState<Partial<Record<keyof ContactInput, string>>>({});
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [serverError, setServerError] = useState<string | null>(null);
-  // Timestamp anti-bot: registra cuándo se cargó el formulario
-  const [formStartTs] = useState(() => Date.now());
+  // Anti-bot timestamp: records when form was loaded
+  const [formStartTs] = useState<number>(() => Date.now());
 
   const handleFieldChange = (field: keyof ContactInput, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
-    // Limpia el error del campo al editar
+    // Clear field error on edit
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
@@ -92,14 +92,14 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
     e.preventDefault();
     setServerError(null);
 
-    // 1. Verificación Honeypot anti-spam
+    // 1. Anti-spam Honeypot verification
     if (formData.honeypot && formData.honeypot.trim().length > 0) {
-      // Simula éxito para spambots sin realizar petición real
+      // Simulates success for spambots without making real request
       setStatus('success');
       return;
     }
 
-    // 2. Validación frontend con Zod (nico-zod)
+    // 2. Frontend validation with Zod
     const parseResult = contactSchema.safeParse(formData);
     if (!parseResult.success) {
       const fieldErrors: Partial<Record<keyof ContactInput, string>> = {};
@@ -129,7 +129,7 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
         return;
       }
 
-      // Endpoint configurable: PHP en producción, Route Handler Node en dev local
+      // Configurable endpoint: PHP in production, Node Route Handler in local dev
       const endpoint = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT || '/api/contact.php';
 
       const response = await fetch(endpoint, {
@@ -264,7 +264,7 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Campo Asunto */}
+            {/* Subject Field */}
             <Field
               label={labels.form.subjectLabel}
               htmlFor="contact-subject"
@@ -287,7 +287,7 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
               />
             </Field>
 
-            {/* Campo Email */}
+            {/* Email Field */}
             <Field label={labels.form.emailLabel} htmlFor="contact-email" error={errors.email}>
               <Input
                 id="contact-email"
@@ -307,7 +307,7 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
             </Field>
           </div>
 
-          {/* Campo Teléfono (Opcional) */}
+          {/* Phone Field (Optional) */}
           <Field
             label={labels.form.phoneLabel}
             htmlFor="contact-phone"
@@ -330,7 +330,7 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
             />
           </Field>
 
-          {/* Campo Mensaje */}
+          {/* Message Field */}
           <Field label={labels.form.messageLabel} htmlFor="contact-message" error={errors.message}>
             <div className="flex flex-col gap-1">
               <Textarea

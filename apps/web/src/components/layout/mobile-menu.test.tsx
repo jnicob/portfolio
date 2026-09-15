@@ -51,7 +51,7 @@ describe('MobileMenu', () => {
     expect(screen.getByRole('link', { name: 'CV' })).toBeVisible();
   });
 
-  it('Escape cierra y devuelve el foco al botón', () => {
+  it('Escape closes and returns focus to the button', () => {
     renderMenu();
     fireEvent.click(screen.getByRole('button', { name: 'Abrir menú' }));
 
@@ -70,7 +70,7 @@ describe('MobileMenu', () => {
     );
   });
 
-  it('Escape con el dropdown de un switcher anidado abierto solo cierra ese dropdown, no el menú', () => {
+  it('Escape with nested switcher dropdown open only closes that dropdown, not the menu', () => {
     render(
       <MobileMenu labels={labels}>
         <SkinSwitcher labels={SKIN_LABELS} />
@@ -92,7 +92,7 @@ describe('MobileMenu', () => {
     );
   });
 
-  it('Escape con texto en el filtro del skin solo limpia el filtro: ni el dropdown ni el menú se cierran', () => {
+  it('Escape with text in skin filter only clears the filter: neither the dropdown nor the menu closes', () => {
     render(
       <MobileMenu labels={labels}>
         <SkinSwitcher labels={SKIN_LABELS} />

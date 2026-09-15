@@ -35,7 +35,7 @@ export type GalleryDemoLabels = {
   searchLabel: string;
   searchPlaceholder: string;
   emptyState: string;
-  /** aria-label del botón ⛶; plantilla con `{title}` (helper local `fill`). */
+  /** aria-label for button ⛶; template with `{title}` (local helper `fill`). */
   fullscreen: string;
   audio: GalleryAudioTileLabels;
   lightbox: MediaLightboxLabels;
@@ -46,7 +46,7 @@ type Props = { locale: 'es' | 'en'; labels: GalleryDemoLabels };
 const TILE_EXTRA_HEIGHT = 28;
 const LAYOUTS = ['grid', 'masonry', 'justified'] as const satisfies readonly FilterGalleryLayout[];
 
-/** Interpola `{title}` en una plantilla i18n. La interpolación es por ítem: no puede hacerla `t()` en la page. */
+/** Interpolates `{title}` into an i18n template. Interpolation is per item: `t()` cannot do it in the page. */
 function fill(template: string, title: string): string {
   return template.replace('{title}', title);
 }
@@ -59,12 +59,12 @@ function normalize(value: string): string {
     .toLowerCase();
 }
 
-/** Título visible + buscable: modelo primero para que la búsqueda encuentre por modelo. */
+/** Visible + searchable title: model first so search finds by model. */
 function itemTitle(item: GalleryItem, locale: 'es' | 'en'): string {
   return `${item.model} — ${item.title[locale]}`;
 }
 
-/** Medio a precargar/mostrar en el lightbox por tipo. Vídeo no tiene variante HD propia (usa `<video>` nativo). */
+/** Media to preload/show in the lightbox by type. Video has no dedicated HD variant (uses native `<video>`). */
 function toMediaSource(item: GalleryItem, title: string): MediaSource {
   if (item.type === 'image') return { src: item.src, fullSrc: item.hdSrc, alt: title };
   if (item.type === 'audio') return { src: item.cover, fullSrc: item.coverHd, alt: title };
@@ -80,10 +80,10 @@ function toFullscreenImageSource(
 }
 
 /**
- * Réplica manual de `pickFullscreenSrc` (no exportada por el paquete) para el
- * caso audio: el lightbox usa `children` en vez de `media` (ver comentario en
- * `GalleryDemo`), así que la elección base/HD de la carátula grande la hace
- * este componente con la misma regla (`shouldUseFullSrc`, sí exportada).
+ * Manual replica of `pickFullscreenSrc` (not exported by the package) for the
+ * audio case: the lightbox uses `children` instead of `media` (see comment in
+ * `GalleryDemo`), so the base/HD choice for the large cover is made by
+ * this component using the same rule (`shouldUseFullSrc`, which is exported).
  */
 function pickCoverSrc(item: AudioGalleryItem): string {
   if (typeof window === 'undefined') return item.cover;
@@ -99,9 +99,9 @@ type TileProps = {
 };
 
 /**
- * Tile por tipo + botón ⛶ solo-icono. La `<img>`/carátula de fondo es decorativa
- * (`alt=""`): el título visible vive en el `<figcaption>`, no duplicado para
- * lectores de pantalla (review T10).
+ * Tile by type + icon-only ⛶ button. The background `<img>`/cover is decorative
+ * (`alt=""`): the visible title lives in the `<figcaption>`, not duplicated for
+ * screen readers (T10 review).
  */
 function GalleryTile({ item, title, labels, layout, onOpen }: TileProps) {
   const gridMediaClass = layout === 'grid' ? 'aspect-square h-full w-full object-cover' : undefined;
@@ -169,25 +169,25 @@ function GalleryTile({ item, title, labels, layout, onOpen }: TileProps) {
 }
 
 /**
- * Contenido del lightbox: image usa `media` (el paquete resuelve fullSrc/base
- * según pantalla vía `pickFullscreenSrc`); vídeo y audio usan `children`, porque
- * `MediaLightbox` prioriza `media` > `children` (son excluyentes) y ambos
- * necesitan un elemento interactivo debajo del medio (el `<video controls>`
- * nativo, o la carátula + `GalleryAudioTile` para seguir controlando el play).
+ * Lightbox content: image uses `media` (the package resolves fullSrc/base
+ * depending on screen via `pickFullscreenSrc`); video and audio use `children`, because
+ * `MediaLightbox` prioritizes `media` > `children` (they are mutually exclusive) and both
+ * need an interactive element below the media (native `<video controls>`, or
+ * the cover + `GalleryAudioTile` to continue controlling playback).
  *
- * El audio NO puede confiar en el `data-fit` del lightbox (fix review T11): esas
- * reglas de sizing solo alcanzan a un `<img>`/`<video>` HIJO DIRECTO de
- * `.mk-lightbox__media` (ver comentario de `MediaLightboxProps.children` en el
- * paquete), que además es flex ROW por defecto — un `<>...</>` con la carátula y
- * el player quedaría lado a lado y sin tamaño. Por eso el audio se envuelve en su
- * propio contenedor en columna con layout autogestionado (carátula acotada por
- * alto + player de ancho acotado debajo).
+ * Audio CANNOT rely on the lightbox's `data-fit` (T11 review fix): those
+ * sizing rules only apply to an `<img>`/`<video>` DIRECT CHILD of
+ * `.mk-lightbox__media` (see `MediaLightboxProps.children` comment in the
+ * package), which is also flex ROW by default — a `<>...</>` with the cover and
+ * the player would end up side-by-side with no size. That's why audio is wrapped in its
+ * own column container with self-managed layout (height-constrained cover +
+ * width-constrained player below).
  *
- * Fix design review T25 (I1): la carátula grande de aquí + la carátula propia de
- * `GalleryAudioTile` duplicaban la misma imagen y la columna (≈1030px) desbordaba
- * un viewport de 900px de alto. `GalleryAudioTile` recibe `hideCover` para pintar
- * solo controles compactos (botón + barra), y la carátula grande baja a
- * `max-h-[60dvh]` (antes 70dvh) para dejarle sitio.
+ * Design review fix T25 (I1): the large cover here + `GalleryAudioTile`'s own cover
+ * duplicated the same image and the column (≈1030px) overflowed
+ * a 900px high viewport. `GalleryAudioTile` receives `hideCover` to render
+ * only compact controls (button + bar), and the large cover is reduced to
+ * `max-h-[60dvh]` (previously 70dvh) to make room for it.
  */
 function renderLightboxChildren(item: GalleryItem, title: string, labels: GalleryDemoLabels) {
   if (item.type === 'video') {
@@ -220,15 +220,15 @@ function renderLightboxChildren(item: GalleryItem, title: string, labels: Galler
 }
 
 /**
- * Galería de ejemplos IA completa (F3.7 T11): búsqueda + filtro por categoría
- * (combinados vía `visibleIds`, T3) + tile por tipo + lightbox HD por ítem.
+ * Complete AI example gallery (F3.7 T11): search + category filter
+ * (combined via `visibleIds`, T3) + tile by type + HD lightbox per item.
  */
 export function GalleryDemo({ locale, labels }: Props) {
   const [query, setQuery] = useState('');
-  // Filtro de categoría controlado (en vez de dejarlo interno a FilterGallery, fix
-  // review T11): `hasResults` necesita conocer la categoría activa para computar la
-  // intersección REAL categoría AND búsqueda — con el filtro sin controlar, FilterGallery
-  // podía terminar mostrando 0 tiles (categoría + búsqueda sin coincidencias) sin que
+  // Controlled category filter (instead of leaving it internal to FilterGallery, fix
+  // T11 review): `hasResults` needs to know the active category to compute the
+  // REAL category AND search intersection — with an uncontrolled filter, FilterGallery
+  // could end up showing 0 tiles (category + search with no matches) without
   // este componente se enterara para mostrar el empty state.
   const [category, setCategory] = useState<string | null>(null);
   const [layout, setLayout] = useState<FilterGalleryLayout>('masonry');

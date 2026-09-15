@@ -8,9 +8,9 @@ type PrintButtonProps = {
 };
 
 /**
- * Botón "Imprimir CV" / "Guardar PDF": ejecuta `window.print()` al pulsar.
- * En pantallas pequeñas (mobile) muestra solo el icono con la etiqueta accesible para lectores de pantalla.
- * `no-print`: Oculto al imprimir.
+ * "Print CV" / "Save PDF" button: executes `window.print()` when clicked.
+ * On small screens (mobile) it shows only the icon with the accessible label for screen readers.
+ * `no-print`: Hidden when printing.
  */
 export function PrintButton({ label }: PrintButtonProps) {
   return (

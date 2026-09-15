@@ -16,10 +16,10 @@ export type UseAutoHideResult = {
 };
 
 /**
- * Dos estados ocultos distintos:
- * - idle-hidden: por inactividad; poke() (mover el ratón) lo revierte.
- * - user-hidden: toggle explícito; SOLO toggle() lo revierte.
- * pin(true) (foco dentro de la toolbar) bloquea el ocultado por inactividad.
+ * Two distinct hidden states:
+ * - idle-hidden: due to inactivity; poke() (moving the mouse) reverts it.
+ * - user-hidden: explicit toggle; ONLY toggle() reverts it.
+ * pin(true) (focus inside the toolbar) blocks hiding due to inactivity.
  */
 export function useAutoHide({
   delay,
@@ -45,7 +45,7 @@ export function useAutoHide({
     }, delay);
   }, [clear, delay]);
 
-  // Al (des)ocultar explícitamente: rearmar o parar el timer.
+  // When explicitly (un)hiding: rearm or stop the timer.
   useEffect(() => {
     if (userHidden) {
       clear();

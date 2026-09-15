@@ -28,7 +28,7 @@ describe('GalleryAudioTile', () => {
     expect(pauseSpy).toHaveBeenCalled();
   });
 
-  it('renderiza la carátula como <img loading="lazy"> con las dimensiones dadas', () => {
+  it('renders the cover as <img loading="lazy"> with the given dimensions', () => {
     const { container } = render(<GalleryAudioTile {...baseProps} />);
     const img = container.querySelector('img');
     expect(img).toHaveAttribute('src', '/c.webp');
@@ -85,7 +85,7 @@ describe('GalleryAudioTile', () => {
   });
 
   describe('hideCover (fix design review T25 I1: lightbox de audio desbordaba el viewport)', () => {
-    it('no renderiza la <img> de carátula', () => {
+    it('does not render the cover <img>', () => {
       const { container } = render(<GalleryAudioTile {...baseProps} hideCover />);
       expect(container.querySelector('img')).not.toBeInTheDocument();
     });
@@ -100,7 +100,7 @@ describe('GalleryAudioTile', () => {
       expect(pauseSpy).toHaveBeenCalled();
     });
 
-    it('la barra de progreso sigue actualizándose con timeupdate', () => {
+    it('the progress bar keeps updating with timeupdate', () => {
       vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue();
       const { container } = render(<GalleryAudioTile {...baseProps} hideCover />);
       fireEvent.click(screen.getByRole('button', { name: 'Reproducir Lo-fi' }));

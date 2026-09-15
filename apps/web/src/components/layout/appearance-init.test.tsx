@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { STORAGE_KEYS } from '@/lib/appearance';
 
 /**
- * AppearanceInit cachea la resolución a nivel de módulo (one-shot): cada test necesita
- * un módulo fresco — `vi.resetModules()` en beforeEach + import dinámico por test.
+ * AppearanceInit caches the resolution at the module level (one-shot): each test needs
+ * a fresh module — `vi.resetModules()` in beforeEach + dynamic import per test.
  */
 async function importFreshAppearanceInit() {
   const { AppearanceInit } = await import('./appearance-init');
@@ -55,7 +55,7 @@ describe('AppearanceInit', () => {
     expect(window.location.pathname + window.location.search).toBe('/es/cv?utm=x');
   });
 
-  it('no reescribe la URL si no había params de apariencia', async () => {
+  it('does not rewrite the URL if there were no appearance params', async () => {
     window.history.pushState(null, '', '/es/cv?utm=x');
     const replaceSpy = vi.spyOn(window.history, 'replaceState');
     const AppearanceInit = await importFreshAppearanceInit();
@@ -66,7 +66,7 @@ describe('AppearanceInit', () => {
     expect(window.location.pathname + window.location.search).toBe('/es/cv?utm=x');
   });
 
-  it('una segunda instancia recibe la vista del deep link aunque la primera ya limpió la URL', async () => {
+  it('a second instance receives the deep link view even if the first already cleared the URL', async () => {
     window.history.pushState(null, '', '/es/cv?view=timeline');
     const AppearanceInit = await importFreshAppearanceInit();
 
@@ -85,14 +85,14 @@ describe('AppearanceInit', () => {
     const AppearanceInit = await importFreshAppearanceInit();
 
     const first = render(<AppearanceInit onView={vi.fn()} />);
-    // La view del deep link quedó persistida como parte del one-shot.
+    // Deep link view was persisted as part of one-shot.
     expect(localStorage.getItem(STORAGE_KEYS.cvView)).toBe('timeline');
 
-    // El usuario cambia de vista (CvContent persiste) y navega fuera.
+    // User changes view (CvContent persists) and navigates away.
     localStorage.setItem(STORAGE_KEYS.cvView, 'compact');
     first.unmount();
 
-    // Remount con el MISMO módulo (sin resetModules): storage fresco debe ganar.
+    // Remount with SAME module (without resetModules): fresh storage must win.
     const onView = vi.fn();
     render(<AppearanceInit onView={onView} />);
 

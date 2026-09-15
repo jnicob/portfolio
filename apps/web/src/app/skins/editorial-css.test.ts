@@ -3,10 +3,10 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 /*
- * Invariantes del parcial de disposición del skin editorial (spec F3.9 §2):
- * - todo selector escopado a [data-skin='editorial'] (no puede filtrar a otros skins);
- * - cero colores hex (hard rule: colores solo vía tokens);
- * - todo hook data-* que use existe en el código (sin selectores muertos).
+ * Invariants of the editorial skin layout partial (spec F3.9 §2):
+ * - every selector scoped to [data-skin='editorial'] (cannot leak to other skins);
+ * - zero hex colors (hard rule: colors only via tokens);
+ * - every data-* hook it uses exists in the code (no dead selectors).
  */
 
 const CSS_PATH = path.resolve(__dirname, 'editorial.css');
@@ -32,7 +32,7 @@ function sourceFiles(dir: string): string[] {
 }
 
 describe('editorial.css (disposición del skin editorial)', () => {
-  it('todo selector está escopado a [data-skin=editorial]', () => {
+  it('every selector is scoped to [data-skin=editorial]', () => {
     const selectors = ruleSelectors(css);
     expect(selectors.length).toBeGreaterThan(0);
     for (const selector of selectors) {
@@ -49,12 +49,12 @@ describe('editorial.css (disposición del skin editorial)', () => {
   });
 
   it('no contiene named colors sueltos (black/white/red/blue/gray/grey) (solo tokens)', () => {
-    // Límites que excluyen guiones para no disparar con identificadores CSS
+    // Boundaries excluding hyphens so as not to trigger on CSS identifiers
     // como `white-space` o `off-white` (no son el color named "white").
     expect(css).not.toMatch(/(?<![\w-])(black|white|red|blue|gray|grey)(?![\w-])/i);
   });
 
-  it('el ritmo vertical del CV tiene dueño único: editorial anula el gap del layout y declara el total', () => {
+  it('CV vertical rhythm has a single owner: editorial overrides layout gap and declares the total', () => {
     // Higiene adjudicada en el design review de F3.9: los 4.5rem entre secciones
     // (2.5rem sobre la hairline + 2rem bajo ella) viven ENTEROS en este parcial,
     // no repartidos entre el gap-10 del layout base y este padding.
@@ -70,7 +70,7 @@ describe('editorial.css (disposición del skin editorial)', () => {
     expect(sections?.[1]).toMatch(/padding-top:\s*2rem/);
   });
 
-  it('cada hook data-* que usa existe en el código de la app', () => {
+  it('every data-* hook it uses exists in the app code', () => {
     const hooks = [...new Set(css.match(/data-(?!skin|theme)[\w-]+/g) ?? [])];
     expect(hooks.length).toBeGreaterThan(0);
     const appSource = sourceFiles(path.resolve(__dirname, '..', '..'))

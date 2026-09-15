@@ -1,6 +1,6 @@
 /**
- * Ejemplos del `ApiRequestPlayer`: requests/responses inventados y genéricos.
- * Los previews reutilizan assets de la galería, sin añadir bytes de media.
+ * `ApiRequestPlayer` examples: fictional and generic requests/responses.
+ * Previews reuse gallery assets without adding media bytes.
  */
 import { galleryItems } from './gallery';
 import type { GalleryItem } from './schemas';

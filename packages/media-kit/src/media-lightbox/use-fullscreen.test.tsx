@@ -87,7 +87,7 @@ describe('useFullscreen', () => {
     expect(webkitRequest).toHaveBeenCalledOnce();
   });
 
-  it('toggle() llama a webkitExitFullscreen cuando webkitFullscreenElement está seteado', () => {
+  it('toggle() calls webkitExitFullscreen when webkitFullscreenElement is set', () => {
     const el = document.createElement('div');
     const webkitExit = vi.fn(() => Promise.resolve());
     defineDoc({

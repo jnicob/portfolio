@@ -2,8 +2,8 @@ import type { ComponentProps } from 'react';
 import { cn } from '@/lib/cn';
 
 /**
- * Primitiva de entrada de texto multilínea (textarea) consistente con el design system.
- * Respeta tokens de tema (`bg-surface`, `border-border`, `focus-visible:outline-ring`, `aria-invalid:border-danger`).
+ * Multiline text input primitive (textarea) consistent with the design system.
+ * Respects theme tokens (`bg-surface`, `border-border`, `focus-visible:outline-ring`, `aria-invalid:border-danger`).
  */
 export function Textarea({ className, ...props }: ComponentProps<'textarea'>) {
   return (

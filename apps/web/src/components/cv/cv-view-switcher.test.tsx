@@ -24,7 +24,7 @@ describe('CvViewSwitcher', () => {
     expect(screen.getByRole('radio', { name: 'Timeline' })).not.toBeChecked();
   });
 
-  it('click en una opción llama a onChange con la vista elegida', async () => {
+  it('clicking an option calls onChange with the chosen view', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(<CvViewSwitcher view="standard" onChange={onChange} labels={LABELS} />);
@@ -34,7 +34,7 @@ describe('CvViewSwitcher', () => {
     expect(onChange).toHaveBeenCalledWith('compact');
   });
 
-  it('flecha derecha desde la opción activa mueve el foco y llama a onChange (semántica nativa de radios)', async () => {
+  it('right arrow from the active option moves focus and calls onChange (native radio semantics)', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(<CvViewSwitcher view="standard" onChange={onChange} labels={LABELS} />);

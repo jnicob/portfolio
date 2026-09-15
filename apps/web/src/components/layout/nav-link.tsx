@@ -6,13 +6,13 @@ import { Link, usePathname } from '@/i18n/navigation';
 export function NavLink(props: { href: string; children: ReactNode }) {
   const pathname = usePathname();
 
-  // Determinamos si el link está activo
+  // Determine whether the link is active
   const isActive =
     pathname === props.href || (props.href !== '/' && pathname.startsWith(`${props.href}/`));
 
-  // Solo prevenimos la navegación cuando el click es a la MISMA página (match
+  // Only prevent navigation when click targets the SAME page (match
   // exacto): desde una sub-ruta (p. ej. /projects/foo), clicar el link de
-  // sección (/projects) debe navegar a la lista, aunque quede marcado activo.
+  // section (/projects) must navigate to the list, even if marked active.
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     if (pathname === props.href) {
       e.preventDefault();

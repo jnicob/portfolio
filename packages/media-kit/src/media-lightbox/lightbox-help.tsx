@@ -19,8 +19,8 @@ type ShortcutLabelKey =
 
 type HelpRow = { keys: string[]; label: ShortcutLabelKey };
 
-// Teclas/gestos literales (no traducibles, por diseño); las descripciones salen de labels.
-// La fila de fit muestra el glifo del botón de la toolbar: el ciclo de ajuste no tiene tecla.
+// Literal keys/gestures (not translatable, by design); descriptions come from labels.
+// The fit row shows the toolbar button glyph: the fit cycle has no key.
 const ROWS: HelpRow[] = [
   { keys: ['+', '−', 'wheel', 'double-click'], label: 'shortcutZoom' },
   { keys: ['0'], label: 'shortcutReset' },

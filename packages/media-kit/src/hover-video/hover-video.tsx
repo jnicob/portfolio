@@ -4,28 +4,28 @@ import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { prefersReducedMotion } from '../internal/prefers-reduced-motion';
 
 export type HoverVideoProps = {
-  /** URL del MP4; solo se descarga tras activación (facade — 0 bytes en reposo). */
+  /** MP4 URL; only downloaded after activation (facade — 0 bytes at rest). */
   src: string;
   /** Imagen visible en reposo. */
   poster: string;
-  /** Nombre accesible del área interactiva. */
+  /** Accessible name of the interactive area. */
   label: string;
-  /** ms de hover sostenido antes de activar el vídeo. Default `300`. */
+  /** ms of sustained hover before activating the video. Default `300`. */
   delay?: number;
-  /** Dimensiones intrínsecas del poster (cero CLS). */
+  /** Intrinsic dimensions of the poster (zero CLS). */
   width: number;
   height: number;
   className?: string;
-  /** Clases del poster y del vídeo montado; permite definir el fit desde el consumidor. */
+  /** Classes for the poster and mounted video; allows defining fit from the consumer. */
   mediaClassName?: string;
 };
 
 const DEFAULT_DELAY = 300;
 
 /**
- * `matchMedia` es opcional (SSR/entorno de test sin polyfill): en su ausencia se
- * asume puntero fino, tratando la mejora de hover como progresiva en vez de
- * bloquearla — el toggle explícito (click/Enter/Espacio) siempre funciona igual.
+ * `matchMedia` is optional (SSR/test environment without polyfill): in its absence,
+ * fine pointer is assumed, treating hover enhancement as progressive rather than
+ * blocking it — explicit toggle (click/Enter/Space) always works the same.
  */
 function hasFinePointer(): boolean {
   return (
@@ -36,11 +36,11 @@ function hasFinePointer(): boolean {
 }
 
 /**
- * Facade de vídeo: en reposo solo existe el `<img poster>` (cero bytes de vídeo
- * descargados). Un hover sostenido de `delay` ms monta el `<video>` en autoplay;
- * salir del área antes de que venza el delay lo cancela. El toggle por teclado
- * (Enter/Espacio) o click siempre funciona, incluso con `prefers-reduced-motion`
- * o puntero coarse (donde el hover por sí solo no activa nada).
+ * Video facade: at rest only the `<img poster>` exists (zero video bytes
+ * downloaded). Sustained hover of `delay` ms mounts the `<video>` with autoplay;
+ * leaving the area before the delay expires cancels it. Keyboard toggle
+ * (Enter/Space) or click always works, even with `prefers-reduced-motion`
+ * or coarse pointer (where hover alone activates nothing).
  */
 export function HoverVideo({
   src,

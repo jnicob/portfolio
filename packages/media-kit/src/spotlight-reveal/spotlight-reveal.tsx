@@ -15,11 +15,11 @@ export type SpotlightRevealProps = {
   base: ReactNode | MediaSource;
   /** Capa revelada bajo la lente (recortada con `clip-path`). */
   reveal: ReactNode | MediaSource;
-  /** Nombre accesible del área interactiva. */
+  /** Accessible name of the interactive area. */
   label: string;
   /** Radio de la lente en px. Default 110. */
   radius?: number;
-  /** Posición inicial de la lente, % 0-100. Default `{ x: 50, y: 50 }`. */
+  /** Initial position of the lens, % 0-100. Default `{ x: 50, y: 50 }`. */
   defaultPosition?: { x: number; y: number };
   /** Badges superpuestos (`aria-hidden`), esquina superior izquierda/derecha. */
   overlayLabels?: { base?: string; reveal?: string };
@@ -42,11 +42,11 @@ function renderSide(side: ReactNode | MediaSource): ReactNode {
 }
 
 /**
- * Lupa/linterna que revela `reveal` sobre `base` bajo el puntero (spec A4, F3.6).
- * Puntero: la lente sigue `pointermove` (coordenadas relativas al contenedor) y se
- * oculta al salir del área. Teclado: contenedor `tabIndex={0}` con flechas que mueven
- * la lente en pasos de 5% (Shift = 1%), `Home` centra, `Escape` oculta la lente sin
- * perder el foco. Con foco, la lente queda siempre visible en su última posición.
+ * Magnifier/flashlight revealing `reveal` over `base` under the pointer (spec A4, F3.6).
+ * Pointer: the lens follows `pointermove` (coordinates relative to container) and hides
+ * upon leaving the area. Keyboard: `tabIndex={0}` container with arrow keys that move
+ * the lens in 5% steps (Shift = 1%), `Home` centers, `Escape` hides the lens without
+ * losing focus. With focus, the lens remains always visible in its last position.
  */
 export function SpotlightReveal({
   base,
@@ -100,8 +100,8 @@ export function SpotlightReveal({
     '--mk-spot-x': `${position.x}%`,
     '--mk-spot-y': `${position.y}%`,
     '--mk-spot-radius': `${radius}px`,
-    // Radio "efectivo" del recorte: 0 cuando está inactivo, el radio configurado
-    // cuando está activo. Solo ESTA variable transiciona (ver styles.css) — x/y e
+    // "Effective" radius of the clip: 0 when inactive, the configured radius
+    // when active. Only THIS variable transitions (see styles.css) — x/y and
     // incluso --mk-spot-radius (usado por el anillo) se aplican siempre al instante.
     '--mk-spot-active-radius': active ? `${radius}px` : '0px',
   } as CSSProperties;

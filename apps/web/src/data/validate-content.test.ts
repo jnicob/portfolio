@@ -9,11 +9,11 @@ import { projects } from './projects';
 import { skills } from './skills';
 
 const EMAIL = /[\w.+-]+@[\w-]+\.[a-z]{2,}/i;
-// 9+ dígitos con separadores = teléfono; fechas (8) y métricas cortas no disparan.
+// 9+ digits with separators = phone; dates (8) and short metrics do not trigger.
 const PHONE = /\+?(?:\d[\s().-]?){9,}/;
 
 describe('validate-content', () => {
-  it('slugs de case studies y MDX coinciden en ambos locales (solo los proyectos con caseStudy tienen página propia)', async () => {
+  it('case study slugs and MDX match across both locales (only projects with caseStudy have their own page)', async () => {
     const caseStudySlugs = projects
       .filter((p) => p.caseStudy)
       .map((p) => p.slug)
@@ -32,13 +32,13 @@ describe('validate-content', () => {
     }
   });
 
-  it('GUARDIA PII: ni email ni teléfono en ningún dato serializado', () => {
+  it('PII GUARD: neither email nor phone in any serialized data', () => {
     const all = JSON.stringify({ profile, experience, education, skills, projects, galleryItems });
     expect(all).not.toMatch(EMAIL);
     expect(all).not.toMatch(PHONE);
   });
 
-  it('la guardia de teléfono no dispara con fechas ni métricas', () => {
+  it('phone guard does not trigger on dates or metrics', () => {
     expect(JSON.stringify({ d: '2026-07-10', m: '251,122' })).not.toMatch(PHONE);
   });
 });

@@ -10,18 +10,18 @@ import {
 } from 'react';
 
 export type VideoScrubPreviewProps = {
-  /** URL del vídeo (mismo origen o CORS habilitado). */
+  /** Video URL (same origin or CORS enabled). */
   src: string;
-  /** Imagen mostrada antes de la interacción / mientras carga metadata. */
+  /** Image displayed before interaction / while metadata is loading. */
   poster?: string;
-  /** Nombre accesible del área interactiva. */
+  /** Accessible name of the interactive area. */
   label: string;
   /** Habilita el scrub por teclado (flechas ±5%, Home/End). Default `true`. */
   scrubOnFocus?: boolean;
   className?: string;
 };
 
-/** Paso de las flechas de teclado, como fracción 0-1 (5%). */
+/** Keyboard arrow step, as a fraction 0-1 (5%). */
 const KEY_STEP = 0.05;
 
 /** Formatea segundos como `m:ss` (p.ej. 90 → "1:30"). */
@@ -32,7 +32,7 @@ function formatTime(seconds: number): string {
   return `${minutes}:${String(secs).padStart(2, '0')}`;
 }
 
-/** Vídeo que se recorre al mover el puntero (estilo miniaturas de YouTube, spec A6). */
+/** Video that scrubs when moving the pointer (YouTube thumbnail style, spec A6). */
 export function VideoScrubPreview({
   src,
   poster,
@@ -88,7 +88,7 @@ export function VideoScrubPreview({
   }
 
   function onPointerLeave(event: PointerEvent<HTMLDivElement>) {
-    // Si el elemento mantiene captura de puntero (gesto táctil activo), no reiniciamos el vídeo.
+    // If the element retains pointer capture (active touch gesture), we do not reset the video.
     if (event.currentTarget.hasPointerCapture?.(event.pointerId)) return;
     if (frameRef.current != null) cancelAnimationFrame(frameRef.current);
     frameRef.current = null;

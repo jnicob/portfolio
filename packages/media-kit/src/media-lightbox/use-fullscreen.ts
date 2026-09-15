@@ -11,7 +11,7 @@ type FullscreenDocument = Document & {
 };
 
 export type UseFullscreenResult = {
-  /** Fullscreen API disponible; si es false el botón no debe renderizarse. */
+  /** Fullscreen API available; if false the button should not render. */
   supported: boolean;
   active: boolean;
   toggle: () => void;

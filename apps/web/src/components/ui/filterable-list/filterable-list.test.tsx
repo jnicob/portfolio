@@ -75,7 +75,7 @@ describe('FilterableList', () => {
     expect(screen.getByRole('option', { name: 'Tabs' })).toBeInTheDocument();
   });
 
-  it('sin resultados muestra el estado vacío con role status', async () => {
+  it('shows the empty state with role status when there are no results', async () => {
     const user = userEvent.setup();
     render(
       <FilterableList
@@ -112,7 +112,7 @@ describe('FilterableList', () => {
     expect(screen.getByRole('option', { name: 'Button' }).id).toBe(option.id);
   });
 
-  it('marca el item selectedId con aria-current y ✓, y arranca como opción activa', () => {
+  it('marks the selectedId item with aria-current and ✓, and starts as the active option', () => {
     render(
       <FilterableList
         items={ITEMS}
@@ -128,7 +128,7 @@ describe('FilterableList', () => {
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-activedescendant', option.id);
   });
 
-  it('mover el ratón sobre una opción la convierte en la activa', () => {
+  it('moving the mouse over an option makes it the active one', () => {
     render(
       <FilterableList items={ITEMS} inputLabel="Filtrar" emptyMessage="Nada" onSelect={noop} />,
     );

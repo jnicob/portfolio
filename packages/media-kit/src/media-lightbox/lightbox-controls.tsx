@@ -2,7 +2,7 @@
 
 import type { MediaLightboxFit, MediaLightboxLabels } from './media-lightbox';
 
-// Re-export: lightbox-controls.test.tsx importa los tipos desde este módulo.
+// Re-export: lightbox-controls.test.tsx imports the types from this module.
 export type { MediaLightboxFit, MediaLightboxLabels };
 
 export type LightboxControlsProps = {
@@ -22,8 +22,8 @@ export type LightboxControlsProps = {
 };
 
 /**
- * Sustituye {clave} por values[clave]. Exportado para que media-lightbox reutilice la
- * misma plantilla en el aria-live del zoom (que vive fuera de esta región inertizable).
+ * Substitutes {key} with values[key]. Exported so media-lightbox can reuse the
+ * same template in the zoom's aria-live (which lives outside this inert-able region).
  */
 export function template(text: string, values: Record<string, string | number>): string {
   return text.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? ''));
@@ -85,9 +85,9 @@ export function LightboxControls({
         data-mk-tooltip-pos="above"
         onClick={onCycleFit}
       >
-        {/* Glifo de ancho fijo: el significado (fit actual → siguiente) vive en el
-            aria-label. Evita meter la palabra del enum en la UI (i18n) y que la píldora
-            desborde a 375px al cambiar entre "contain"/"actual". */}
+        {/* Fixed-width glyph: the meaning (current fit → next) lives in the
+            aria-label. Avoids putting the enum word in the UI (i18n) and prevents the pill
+            from overflowing at 375px when switching between "contain"/"actual". */}
         ▣
       </button>
       {fullscreenSupported ? (

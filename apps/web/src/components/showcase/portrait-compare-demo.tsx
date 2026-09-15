@@ -14,15 +14,15 @@ type Props = {
   compareLabel: string;
   /** Texto del figcaption, traducido. */
   caption: string;
-  /** CTA de expand del slider (botón overlay + compare-lightbox interno). */
+  /** Slider expand CTA (overlay button + internal compare-lightbox). */
   expand: CompareSliderExpand;
 };
 
 /**
- * Demo color/B-N: un único bitmap; el lado "antes" deriva el blanco y negro con
- * `filter: grayscale(1)` (ReactNode, cero peso extra). El lado "después" es un
- * `MediaSource` con `fullSrc` HD (T14): el compare-lightbox interno (`expand`,
- * T15) sirve el asset de alta resolución cuando la pantalla lo justifica.
+ * Color/B&W demo: a single bitmap; the "before" side derives black and white with
+ * `filter: grayscale(1)` (ReactNode, zero extra overhead). The "after" side is a
+ * `MediaSource` with HD `fullSrc` (T14): the internal compare-lightbox (`expand`,
+ * T15) serves the high-resolution asset when the screen justifies it.
  */
 export function PortraitCompareDemo({ beforeAlt, compareLabel, caption, expand }: Props) {
   return (

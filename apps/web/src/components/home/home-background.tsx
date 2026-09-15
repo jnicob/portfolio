@@ -4,10 +4,10 @@ import { HeroCanvas } from './hero-canvas';
 type HomeBackgroundProps = { children: ReactNode };
 
 /**
- * Superficie completa del inicio en dos capas: el `main` es full-bleed y el
- * canvas mide y escucha el puntero sobre todo el ancho del viewport; el
- * contenido queda en una capa interior constreñida a `max-w-5xl` para
- * conservar la maqueta y sus interacciones (las cards añaden su propio glow).
+ * Full home surface in two layers: `main` is full-bleed and the
+ * canvas measures and listens for pointer events across the entire viewport width; the
+ * content remains in an inner layer constrained to `max-w-5xl` to
+ * preserve the layout and its interactions (cards add their own glow).
  */
 export function HomeBackground({ children }: HomeBackgroundProps) {
   return (

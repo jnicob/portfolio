@@ -49,12 +49,12 @@ describe('Hero', () => {
     // Stats bar cards
     expect(screen.getByText('+15')).toBeInTheDocument();
     expect(screen.getByText(es.home.stats.exp)).toBeInTheDocument();
-    expect(screen.getByText('150M+')).toBeInTheDocument();
-    expect(screen.getByText(es.home.stats.requests)).toBeInTheDocument();
-    expect(screen.getByText('99.9%')).toBeInTheDocument();
-    expect(screen.getByText(es.home.stats.uptime)).toBeInTheDocument();
-    expect(screen.getByText('100%')).toBeInTheDocument();
+    expect(screen.getByText('High-Scale')).toBeInTheDocument();
+    expect(screen.getByText(es.home.stats.architecture)).toBeInTheDocument();
+    expect(screen.getByText('TDD & SOLID')).toBeInTheDocument();
     expect(screen.getByText(es.home.stats.cleanCode)).toBeInTheDocument();
+    expect(screen.getByText('AI-Driven')).toBeInTheDocument();
+    expect(screen.getByText(es.home.stats.ai)).toBeInTheDocument();
   });
 
   it('renders the prominent portrait with accessible image element', () => {

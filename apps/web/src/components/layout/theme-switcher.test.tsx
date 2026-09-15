@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ThemeSwitcher } from './theme-switcher';
 
 vi.mock('@/lib/appearance', () => ({
-  // La mock-implementation replica la mutación real de applyTheme sobre el
+  // The mock-implementation replicates the actual mutation of applyTheme on the
   // DOM (dataset.theme), que es lo que el MutationObserver observa.
   applyTheme: vi.fn((theme: string) => {
     document.documentElement.dataset.theme = theme;
@@ -16,7 +16,7 @@ describe('ThemeSwitcher', () => {
     localStorage.clear();
   });
 
-  it('muestra cursor pointer en el botón disparador', () => {
+  it('shows pointer cursor on trigger button', () => {
     document.documentElement.dataset.theme = 'dark';
     render(<ThemeSwitcher />);
     expect(screen.getByRole('button')).toHaveClass('cursor-pointer');

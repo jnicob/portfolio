@@ -25,13 +25,13 @@ export async function compileProject(
   try {
     source = await readFile(path.join(root, locale, 'projects', `${slug}.mdx`), 'utf8');
   } catch {
-    return null; // slug inexistente → la página decide (notFound)
+    return null; // Non-existent slug → let page decide (notFound)
   }
   const { content, frontmatter } = await compileMDX({
     source,
     options: { parseFrontmatter: true },
     components: mdxComponents,
   });
-  // Frontmatter inválido lanza: datos rotos = build rojo, jamás página vacía.
+  // Invalid frontmatter throws: broken data = red build, never empty page.
   return { frontmatter: projectFrontmatterSchema.parse(frontmatter), content };
 }

@@ -11,7 +11,7 @@ describe('siteUrl', () => {
     expect(siteUrl()).toBe('https://jnicob.dev');
   });
 
-  it('devuelve NEXT_PUBLIC_SITE_URL cuando está definida', () => {
+  it('returns NEXT_PUBLIC_SITE_URL when defined', () => {
     vi.stubEnv('NEXT_PUBLIC_SITE_URL', 'https://nicobehm.dev');
     expect(siteUrl()).toBe('https://nicobehm.dev');
   });
