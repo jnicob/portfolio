@@ -59,15 +59,22 @@ export function personJsonLd(locale: Locale) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: profile.name,
+    name: profile.fullName ? profile.fullName[locale] : profile.name,
+    alternateName: profile.name,
     jobTitle: profile.headline[locale],
     description: profile.summary.paragraphs[locale][0],
     url: SITE_URL,
     image: `${SITE_URL}/profile/hero-portrait.webp`,
-    nationality: {
-      '@type': 'Country',
-      name: 'Argentina',
-    },
+    nationality: [
+      {
+        '@type': 'Country',
+        name: 'Spain',
+      },
+      {
+        '@type': 'Country',
+        name: 'Argentina',
+      },
+    ],
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Aguadulce, Roquetas de Mar',

@@ -8,7 +8,8 @@ describe('CvHeader', () => {
   it('renders name, headline, and public contact links', () => {
     render(<CvHeader locale="es" />);
 
-    expect(screen.getByRole('heading', { level: 1, name: profile.name })).toBeInTheDocument();
+    const expectedName = profile.fullName ? profile.fullName.es : profile.name;
+    expect(screen.getByRole('heading', { level: 1, name: expectedName })).toBeInTheDocument();
     expect(screen.getByText(profile.headline.es)).toBeInTheDocument();
     if (profile.links.website) {
       expect(screen.getByRole('link', { name: profile.links.website })).toHaveAttribute(

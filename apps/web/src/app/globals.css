@@ -35,6 +35,17 @@
   --font-body: var(--font-geist-sans);
 }
 
+/* Prevent layout shift between short pages (/contact) and scrollable pages */
+html {
+  scrollbar-gutter: stable;
+}
+
+@supports not (scrollbar-gutter: stable) {
+  html {
+    overflow-y: scroll;
+  }
+}
+
 /* Dark theme (default) — electric violet accent */
 :root[data-theme='dark'] {
   color-scheme: dark;

@@ -40,6 +40,8 @@ export function CvHeader({
   const [showBrief, setShowBrief] = useState(true);
   const [showPhoto, setShowPhoto] = useState(false);
 
+  const displayName = profile.fullName ? profile.fullName[locale] : profile.name;
+
   return (
     <header className="flex flex-col gap-2 border-b border-border pb-2.5 print:gap-1.5">
       <div
@@ -56,7 +58,7 @@ export function CvHeader({
             >
               <Image
                 src={photoSrc}
-                alt={profile.name}
+                alt={displayName}
                 width={144}
                 height={144}
                 unoptimized
@@ -66,7 +68,7 @@ export function CvHeader({
           )}
           <div>
             <h1 className="text-5xl font-bold tracking-tight text-fg print:text-4xl">
-              {profile.name}
+              {displayName}
             </h1>
             <p className="text-xl text-fg-muted print:text-lg print:font-semibold print:text-fg font-medium">
               {profile.headline[locale]}

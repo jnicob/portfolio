@@ -27,7 +27,7 @@ describe('NavLink', () => {
     expect(screen.getByRole('link', { name: 'CV' })).toHaveAttribute('aria-current', 'page');
   });
 
-  it('clicar el enlace activo no navega', () => {
+  it('clicking active link does not navigate', () => {
     renderNavLink('/cv', 'CV', '/cv');
     const link = screen.getByRole('link', { name: 'CV' });
     const event = createEvent.click(link);
@@ -35,7 +35,7 @@ describe('NavLink', () => {
     expect(event.defaultPrevented).toBe(true);
   });
 
-  it('el enlace inactivo no lleva aria-current y no previene', () => {
+  it('inactive link does not have aria-current and does not prevent navigation', () => {
     renderNavLink('/cv', 'CV', '/projects');
     const link = screen.getByRole('link', { name: 'CV' });
     expect(link).not.toHaveAttribute('aria-current');

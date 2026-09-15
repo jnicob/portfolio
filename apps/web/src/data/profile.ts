@@ -2,6 +2,10 @@ import { profileSchema } from './schemas';
 
 export const profile = profileSchema.parse({
   name: 'Nico Behm',
+  fullName: {
+    es: 'Juan Nicolás Behm',
+    en: 'Juan Nicolas Behm',
+  },
   headline: {
     es: 'Ingeniero en Informática - desarrollador web full-stack',
     en: 'Computer Engineer - full-stack web developer',

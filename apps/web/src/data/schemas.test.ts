@@ -358,6 +358,8 @@ describe('datos reales', () => {
     const { projects } = await import('./projects');
     const { beyondCode } = await import('./beyond-code');
     expect(profile.name).toBe('Nico Behm');
+    expect(profile.fullName?.es).toBe('Juan Nicolás Behm');
+    expect(profile.fullName?.en).toBe('Juan Nicolas Behm');
     expect(beyondCode.title.es).toBe('Más allá del código');
     expect(experience.length).toBeGreaterThanOrEqual(2);
     expect(education.length).toBeGreaterThanOrEqual(1);

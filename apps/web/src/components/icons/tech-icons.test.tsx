@@ -4,8 +4,18 @@ import { TechIcon, TechIconStrip, TECH_KEYS } from './tech-icons';
 
 describe('TechIcon', () => {
   it('renders individual icons with accessible names', () => {
-    render(<TechIcon name="typescript" />);
+    render(
+      <>
+        <TechIcon name="typescript" />
+        <TechIcon name="sqlserver" />
+        <TechIcon name="redis" />
+        <TechIcon name="mongodb" />
+      </>,
+    );
     expect(screen.getByTitle('TypeScript')).toBeInTheDocument();
+    expect(screen.getByTitle('SQL Server')).toBeInTheDocument();
+    expect(screen.getByTitle('Redis')).toBeInTheDocument();
+    expect(screen.getByTitle('MongoDB')).toBeInTheDocument();
   });
 
   it('renders TechIconStrip with all core technologies', () => {
