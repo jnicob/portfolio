@@ -19,7 +19,7 @@ export function CvCompact({ locale, strings }: CvViewProps) {
     <div className="cv-compact flex flex-col gap-6 print:gap-2">
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-fg">{strings.experienceTitle}</h2>
-        <div className="flex flex-col gap-4">
+        <div className="cv-compact-experience flex flex-col gap-4">
           {experience.map((entry) => (
             <ExperienceEntryBlock
               key={entry.id}
