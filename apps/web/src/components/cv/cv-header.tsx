@@ -50,11 +50,11 @@ export function CvHeader({
           showBrief && 'border-b border-border',
         )}
       >
-        <div className="flex items-center">
+        <div className="flex items-center min-w-0">
           <div
             aria-hidden={!showPhoto}
             className={cn(
-              'grid transition-[grid-template-columns,margin,opacity] duration-300 ease-out',
+              'shrink-0 grid transition-[grid-template-columns,margin,opacity] duration-300 ease-out',
               showPhoto
                 ? 'grid-cols-[1fr] opacity-100 mr-4 sm:mr-6 print:mr-4'
                 : 'grid-cols-[0fr] opacity-0 mr-0 pointer-events-none print:hidden',
@@ -64,7 +64,7 @@ export function CvHeader({
               <div
                 data-testid={showPhoto ? 'cv-photo' : undefined}
                 className={cn(
-                  'shrink-0 overflow-hidden rounded-full border-2 border-border/80 shadow-md ring-4 ring-accent/10 transition-transform duration-300 ease-out print:ring-0 print:border-border print:h-24 print:w-24 print:shadow-none',
+                  'shrink-0 aspect-square w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 overflow-hidden rounded-full border-2 border-border/80 shadow-md ring-4 ring-accent/10 transition-transform duration-300 ease-out print:ring-0 print:border-border print:w-24 print:h-24 print:shadow-none',
                   showPhoto ? 'scale-100' : 'scale-90',
                 )}
               >
@@ -74,7 +74,7 @@ export function CvHeader({
                   width={144}
                   height={144}
                   unoptimized
-                  className="h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36 object-cover print:h-24 print:w-24 print:scale-120 print:origin-top"
+                  className="h-full w-full object-cover rounded-full select-none print:scale-120 print:origin-top"
                 />
               </div>
             </div>
