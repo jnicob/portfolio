@@ -23,7 +23,7 @@ describe('useAutoHide', () => {
     expect(result.current.visible).toBe(false);
   });
 
-  it('toggle() oculta explícitamente y poke() NO lo trae de vuelta', () => {
+  it('toggle() explicitly hides and poke() does NOT bring it back', () => {
     const { result } = renderHook(() => useAutoHide({ delay: 3000 }));
     act(() => result.current.toggle());
     expect(result.current.visible).toBe(false);

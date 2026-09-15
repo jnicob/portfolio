@@ -2,21 +2,21 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-// Regresión (bug reportado en review manual de showcase, F3.6/A4): compareMode="onion"
-// no mezclaba nada visible al mover el slider. Causa raíz: --mk-compare-pos se fija
+// Regression (bug reported in showcase manual review, F3.6/A4): compareMode="onion"
+// was not blending anything visible when moving the slider. Root cause: --mk-compare-pos is set
 // inline como un valor <percentage> (p.ej. '50%', ver CompareSlider en
 // compare-slider.tsx). `calc(var(--mk-compare-pos) / 100)` divide ese porcentaje entre
-// un NÚMERO sin unidad: en aritmética CSS el resultado conserva el tipo porcentaje
-// (50% / 100 = 0.5%), así que la opacidad real terminaba en ~0.005 en vez de 0.5 — el
+// to a unitless NUMBER: in CSS arithmetic the result retains the percentage type
+// (50% / 100 = 0.5%), so the actual opacity ended up at ~0.005 instead of 0.5 —
 // layer `.mk-compare__after` quedaba casi invisible en todo el rango del slider
 // (confirmado en navegador real: computedOpacity 0.005 con --mk-compare-pos: 50%).
-// jsdom no resuelve calc() con custom properties vía getComputedStyle (no ejercita
-// esta regla), así que el test ancla la fórmula en el texto fuente de la regla:
-// dividir entre '100%' (porcentaje ÷ porcentaje = número sin unidad) es lo correcto.
+// jsdom does not resolve calc() with custom properties via getComputedStyle (does not exercise
+// this rule), so the test anchors the formula to the rule's source text:
+// dividing by '100%' (percentage ÷ percentage = unitless number) is correct.
 const stylesPath = join(dirname(__filename), 'styles.css');
 
 describe('onion opacity calc (CSS, no ejercitable por jsdom)', () => {
-  it('divide la posición (porcentaje) entre un porcentaje, no entre un número sin unidad', () => {
+  it('divides position (percentage) by a percentage, not by a unitless number', () => {
     const css = readFileSync(stylesPath, 'utf-8');
     const match = css.match(
       /\.mk-compare\[data-compare-mode='onion'\] \.mk-compare__after \{[^}]*opacity:\s*calc\(var\(--mk-compare-pos\)\s*\/\s*([^)]+)\)/,
@@ -27,18 +27,18 @@ describe('onion opacity calc (CSS, no ejercitable por jsdom)', () => {
   });
 });
 
-// Regresión (bug reportado por Nico, F3.6 bloque D): SpotlightReveal "iba muy
-// lento" al seguir el puntero. Causa raíz confirmada en navegador real: la
-// transición de 160ms vivía en `clip-path`, propiedad que empaqueta posición
-// (x/y) Y radio en un único valor — así que cada `pointermove` (solo cambia x/y)
-// también quedaba atrapado en la transición, y como pointermove dispara mucho
-// más rápido que 160ms, el círculo quedaba persiguiendo al cursor en vez de
+// Regression (bug reported by Nico, F3.6 block D): SpotlightReveal "was very
+// slow" when following the pointer. Confirmed root cause in a real browser: the
+// 160ms transition lived on `clip-path`, a property that bundles position
+// (x/y) AND radius into a single value — so each `pointermove` (only changes x/y)
+// was also caught in the transition, and since pointermove fires much
+// faster than 160ms, the circle ended up chasing the cursor instead of
 // seguirlo 1:1. jsdom no resuelve `@property`/transiciones de custom properties
-// vía getComputedStyle (no ejercita esto en tiempo real), así que el test ancla
-// el mecanismo en el texto fuente: la transición vive en una custom property
-// REGISTRADA (`--mk-spot-active-radius`, animable vía `@property`) declarada en
-// `.mk-spotlight` — NUNCA en `clip-path` — para que la posición se aplique
-// siempre al instante y solo el radio (aparición/desaparición) anime.
+// via getComputedStyle (does not exercise this in real time), so the test anchors
+// the mechanism in the source text: the transition lives on a custom property
+// REGISTERED (`--mk-spot-active-radius`, animatable via `@property`) declared on
+// `.mk-spotlight` — NEVER on `clip-path` — so that the position is applied
+// always instantly and only the radius (appearance/disappearance) animates.
 describe('SpotlightReveal: la transición vive en el radio, nunca en clip-path (CSS, no ejercitable por jsdom)', () => {
   const css = readFileSync(stylesPath, 'utf-8');
 
@@ -67,18 +67,18 @@ describe('SpotlightReveal: la transición vive en el radio, nunca en clip-path (
     );
   });
 
-  it('ya no existe el selector [data-active] que sobreescribía clip-path (el radio efectivo ahora lo fija JS)', () => {
+  it('[data-active] selector that overrode clip-path no longer exists (effective radius is now set by JS)', () => {
     expect(css).not.toMatch(/\[data-active\]\s*\.mk-spotlight__reveal/);
   });
 });
 
-// Regresión (design review F3.6/B2+M1): los chips de FilterGallery viven sobre el fondo
-// de la página del consumidor, no sobre un medio — a diferencia de la toolbar de
-// MediaLightbox o el botón `expand` de CompareSlider, que sí flotan sobre una foto/vídeo.
+// Regression (design review F3.6/B2+M1): FilterGallery chips live on the background
+// of the consumer page, not over media — unlike the MediaLightbox toolbar
+// or the CompareSlider `expand` button, which do float over a photo/video.
 // Reutilizar --mk-control-bg/--mk-control-color (un overlay oscuro fijo pensado para esos
 // controles-sobre-medio) y --mk-handle-color/--mk-handle-icon-color (pensados para
-// contrastar con el medio, nunca con la página) rompía el chip activo en tema light: bg
-// blanco (--mk-handle-color) sobre página blanca, sin ningún borde que lo separe. Se
+// contrast with the media, never with the page) broke the active chip in light theme: bg
+// white (--mk-handle-color) on a white page, with no border separating it. It
 // introducen custom properties dedicadas para que el consumidor pueda mapearlas a sus
 // propios tokens de tema (ver README) sin heredar el contrato "sobre medio" de los otros
 // controles. Cambio aditivo: los defaults reproducen el comportamiento visual anterior.
@@ -132,28 +132,28 @@ describe('FilterGallery: chips usan custom properties propias, no las de "contro
   });
 });
 
-// Regresión (BUG F1, F3.7, feedback de Nico): el ejemplo de retrato (color/B-N) del
-// showcase se veía desfasado al abrirlo en fullscreen. Confirmado en navegador real
+// Regression (BUG F1, F3.7, Nico's feedback): the portrait example (color/B-W) of the
+// showcase looked misaligned when opened in fullscreen. Confirmed in a real browser
 // (Playwright, viewport 2200×1200, screen.width×dpr ≥ 2000 para forzar fullSrc):
-// antes de este fix, `.mk-compare__before img` medía 1000×562.5px (rect) mientras
-// `.mk-compare__after img` medía 2076.4375×1168px — mismo x/y de origen pero cajas
-// de tamaño totalmente distinto (el compare quedaba "partido" a la mitad visualmente).
-// Causa raíz: `.mk-lightbox[data-fit='contain'] .mk-lightbox__media :is(img, video)`
-// (specificity 0,3,1) usaba un combinador DESCENDIENTE que alcanzaba las imágenes del
-// compare dos niveles más abajo (`.mk-compare > .mk-compare__before|__after > img`),
-// ganándole a la regla propia del compare `.mk-compare__before img, .mk-compare__after
+// before this fix, `.mk-compare__before img` measured 1000×562.5px (rect) while
+// `.mk-compare__after img` measured 2076.4375×1168px — same origin x/y but boxes
+// of completely different sizes (the compare ended up visually "split" in half).
+// Root cause: `.mk-lightbox[data-fit='contain'] .mk-lightbox__media :is(img, video)`
+// (specificity 0,3,1) used a DESCENDANT combinator that reached the images of the
+// compare two levels down (`.mk-compare > .mk-compare__before|__after > img`),
+// overriding the compare's own rule `.mk-compare__before img, .mk-compare__after
 // img { width:100%; height:auto }` (specificity 0,1,1). Cada lado del compare quedaba
-// entonces dimensionado de forma INDEPENDIENTE según su propio algoritmo de tamaño por
+// then sized INDEPENDENTLY according to its own sizing algorithm by
 // defecto: el lado `before` (un <img> de consumidor con `srcSet`/`sizes="1000px"`
 // pensado para el layout embebido) usaba ese `sizes` como ancho especificado, mientras
-// el lado `after` (un <img> plano que MediaLightbox arma vía `pickFullscreenSrc`, sin
-// `sizes`) usaba su tamaño intrínseco (3200×1800) recortado por max-width/max-height —
+// the `after` side (a plain <img> that MediaLightbox builds via `pickFullscreenSrc`, without
+// `sizes`) used its intrinsic size (3200×1800) clipped by max-width/max-height —
 // dos cajas distintas aunque el aspect ratio de ambos assets (portrait.webp/portrait-hd.webp)
-// sea idéntico (16:9). jsdom no resuelve cascada real de `:is()`/combinadores contra
-// hojas de estilo reales ni layout (%, vw, dvh), así que el test ancla el mecanismo en
+// is identical (16:9). jsdom does not resolve real cascade of `:is()`/combinators against
+// real stylesheets or layout (%, vw, dvh), so the test anchors the mechanism in
 // el texto fuente: el combinador debe ser HIJO DIRECTO (`>`), no descendiente, para que
 // esta regla solo alcance el <img>/<video> suelto de los casos `media`/`children` (donde
-// SÍ es hijo directo de `.mk-lightbox__media`) y nunca las imágenes anidadas de `compare`.
+// IS a direct child of `.mk-lightbox__media`) and never the nested images of `compare`.
 describe('MediaLightbox data-fit: no dimensiona las imágenes del compare por separado (CSS, no ejercitable por jsdom)', () => {
   const css = readFileSync(stylesPath, 'utf-8');
 

@@ -9,14 +9,14 @@ const options = [
 ];
 
 describe('Select', () => {
-  it('selecciona una opción con teclado', async () => {
+  it('selects an option with keyboard', async () => {
     render(<Select aria-label="Aspect ratio" options={options} defaultValue="1_1" />);
     const select = screen.getByRole('combobox', { name: 'Aspect ratio' });
     await userEvent.selectOptions(select, '16_9');
     expect(select).toHaveValue('16_9');
   });
 
-  it('tiene transición de color y hover coherente con Button', () => {
+  it('has color transition and hover consistent with Button', () => {
     render(<Select aria-label="Aspect ratio" options={options} />);
     expect(screen.getByRole('combobox', { name: 'Aspect ratio' })).toHaveClass(
       'transition-colors',

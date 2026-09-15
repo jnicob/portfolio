@@ -39,7 +39,7 @@ describe('useZoomPan núcleo', () => {
     expect(result.current.scale).toBe(8);
   });
 
-  it('zoomOut en el mínimo se queda en minZoom', () => {
+  it('zoomOut at minimum stays at minZoom', () => {
     const { result } = setup();
     act(() => result.current.zoomOut());
     expect(result.current.scale).toBe(1);
@@ -52,7 +52,7 @@ describe('useZoomPan núcleo', () => {
     expect(result.current.style.transform).toBe('translate(-200px, 0px) scale(2)');
   });
 
-  it('panBy se clampa a los límites del contenido', () => {
+  it('panBy clamps to content bounds', () => {
     const { result } = setup();
     act(() => result.current.zoomTo(2));
     act(() => result.current.panBy(10000, -10000));
@@ -130,7 +130,7 @@ describe('useZoomPan gestos', () => {
     fireEvent.wheel(viewport, { deltaY: -100, clientX: 600, clientY: 300 });
     expect(latest().scale).toBeCloseTo(1.1);
     // ancla x = 600 − 400 = 200 → tx = 200 − 200·1.1 = −20 (con tolerancia de fp: 200*1.1 no
-    // es exacto en IEEE-754, la fórmula de zoomTo del núcleo de Task 4 arrastra ese residuo).
+    // is exact in IEEE-754, the zoomTo formula from Task 4 core carries that residue).
     const match = (latest().style.transform ?? '').match(
       /^translate\(([-\d.]+)px, ([-\d.]+)px\) scale\(1\.1\)$/,
     );
@@ -149,7 +149,7 @@ describe('useZoomPan gestos', () => {
 
   it('drag de un puntero panea (con zoom) y marca consumeDrag', () => {
     const { viewport, latest } = setupProbe();
-    fireEvent.wheel(viewport, { deltaY: -800, clientX: 400, clientY: 300 }); // zoom céntrico
+    fireEvent.wheel(viewport, { deltaY: -800, clientX: 400, clientY: 300 }); // centric zoom
     const scale = latest().scale;
     expect(scale).toBeGreaterThan(1.5);
     fireEvent.pointerDown(viewport, {
@@ -180,7 +180,7 @@ describe('useZoomPan gestos', () => {
     expect(latest().consumeDrag()).toBe(false);
   });
 
-  it('pinch con dos punteros escala según la distancia', () => {
+  it('pinch with two pointers scales based on distance', () => {
     const { viewport, latest } = setupProbe();
     fireEvent.pointerDown(viewport, {
       pointerId: 1,
@@ -221,7 +221,7 @@ describe('useZoomPan v2.2 — auditoría pan con ratón (C4)', () => {
     expect(event.defaultPrevented).toBe(true);
   });
 
-  it('con zoom > 1 el arrastre de ratón panea y clampa en los límites', () => {
+  it('with zoom > 1 mouse dragging pans and clamps to bounds', () => {
     const { viewport, latest } = setupProbe();
     act(() => latest().zoomTo(2));
     expect(latest().scale).toBe(2);
@@ -234,7 +234,7 @@ describe('useZoomPan v2.2 — auditoría pan con ratón (C4)', () => {
     });
     fireEvent.pointerMove(viewport, { pointerId: 1, clientX: 300, clientY: 300 });
     expect(latest().style.transform).toContain('translate(-100px, 0px)');
-    // sigue moviendo más allá del límite: maxTx = (800·2−800)/2 = 400 → clampa ahí.
+    // keeps moving beyond the limit: maxTx = (800·2−800)/2 = 400 → clamps there.
     fireEvent.pointerMove(viewport, { pointerId: 1, clientX: -5000, clientY: 300 });
     expect(latest().style.transform).toContain('translate(-400px, 0px)');
   });
@@ -257,7 +257,7 @@ describe('useZoomPan — re-clamp del pan al cambiar el viewport', () => {
     const { result, viewport } = setup(400, 300, 800, 600);
     act(() => {
       result.current.zoomTo(2);
-      result.current.panBy(10_000, 10_000); // clampa al máximo actual
+      result.current.panBy(10_000, 10_000); // clamps to current maximum
     });
     expect(result.current.style.transform).toBe('translate(600px, 450px) scale(2)');
 
@@ -290,9 +290,9 @@ describe('useZoomPan — re-clamp del pan al cambiar el viewport', () => {
 });
 
 describe('useZoomPan — no capturar el puntero de controles interactivos (T25 QA fix)', () => {
-  // Causa raíz (t25-qa-a11y.md): onPointerDown capturaba el puntero de CUALQUIER
+  // Root cause (t25-qa-a11y.md): onPointerDown was capturing the pointer for ANY
   // target dentro del viewport salvo [data-mk-drag-exempt], lo que retargeteaba el
-  // click subsiguiente (p.ej. de un botón play/pause) al div del viewport.
+  // subsequent click (e.g. from a play/pause button) to the viewport div.
   function setupProbe() {
     let latest: UseZoomPanResult | undefined;
     const utils = render(<GestureProbe onRender={(r) => (latest = r)} />);
@@ -333,7 +333,7 @@ describe('useZoomPan — no capturar el puntero de controles interactivos (T25 Q
     expect(latest().consumeInteractiveDown()).toBe(false);
   });
 
-  it('regresión: pointerdown sobre el contenido no interactivo SÍ captura el puntero (pan intacto)', () => {
+  it('regression: pointerdown on non-interactive content DOES capture the pointer (pan intact)', () => {
     const { content, latest } = setupProbe();
     fireEvent.pointerDown(content, {
       pointerId: 1,

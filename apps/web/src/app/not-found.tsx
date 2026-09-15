@@ -1,12 +1,12 @@
 import './globals.css';
 
 // Init de tema minimalista: el root layout no renderiza <html>/<body> (los pone
-// [locale]/layout.tsx) así que aquí no hay data-theme por defecto. document.documentElement
-// SIEMPRE es el <html> real que el navegador construye, aunque ningún JSX de este árbol
-// lo declare explícitamente — fijarlo aquí basta para que las utilities de tokens
-// (bg-bg/text-fg/text-accent, importadas de globals.css) resuelvan sus variables.
+// [locale]/layout.tsx), so there is no default data-theme here. document.documentElement
+// is ALWAYS the real <html> constructed by the browser, even if no JSX in this tree
+// explicitly declares it — setting it here is enough for token utilities
+// (bg-bg/text-fg/text-accent, imported from globals.css) to resolve their variables.
 // Mismo criterio que themeInitScript en [locale]/layout.tsx (URL > stored > sistema),
-// simplificado: esta página no lee `?theme=` porque no es un destino navegable normal.
+// Simplified: this page does not read `?theme=` because it is not a normal navigation destination.
 const THEME_INIT_SCRIPT = `(function () {
   try {
     var stored = localStorage.getItem('theme');
@@ -23,10 +23,10 @@ const THEME_INIT_SCRIPT = `(function () {
 })();`;
 
 /**
- * 404 raíz (T26 finding 3): captura cualquier ruta que no matchee ningún locale
- * conocido (p.ej. `/nonexistent-page`, sin prefijo `/en` o `/es`) — el `not-found.tsx`
- * de `[locale]` solo cubre misses DENTRO de un locale ya resuelto. Bilingüe y estático
- * (sin next-intl: este segmento no tiene locale que leer).
+ * Root 404 (T26 finding 3): captures any route not matching any known locale
+ * (e.g. `/nonexistent-page`, without `/en` or `/es` prefix) — `[locale]/not-found.tsx`
+ * only covers misses WITHIN an already resolved locale. Bilingual and static
+ * (without next-intl: this segment has no locale to read).
  */
 export default function NotFound() {
   return (

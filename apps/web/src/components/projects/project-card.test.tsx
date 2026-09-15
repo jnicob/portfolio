@@ -18,7 +18,7 @@ function renderProjectCard(props: ComponentProps<typeof ProjectCard>) {
 }
 
 describe('ProjectCard', () => {
-  it('renderiza título ES enlazado externamente (sin case study), summary ES y un badge por item de stack', () => {
+  it('renders externally linked ES title (without case study), ES summary and one badge per stack item', () => {
     renderProjectCard({ project: withoutCaseStudy, locale: 'es' });
 
     const link = screen.getByRole('link', { name: withoutCaseStudy.title.es });
@@ -53,7 +53,7 @@ describe('ProjectCard', () => {
     );
   });
 
-  it('sin case study ni enlaces, el título no es un enlace', () => {
+  it('without case study or links, title is not a link', () => {
     renderProjectCard({
       project: { ...withoutCaseStudy, caseStudy: false, links: {} },
       locale: 'es',
@@ -62,7 +62,7 @@ describe('ProjectCard', () => {
     expect(screen.queryByRole('link', { name: withoutCaseStudy.title.es })).toBeNull();
   });
 
-  it('renderiza las métricas como dl con label localizado y su valor', () => {
+  it('renders metrics as dl with localized label and its value', () => {
     const { container } = renderProjectCard({ project: withMetrics, locale: 'es' });
 
     expect(container.querySelector('dl')).toBeInTheDocument();
@@ -72,7 +72,7 @@ describe('ProjectCard', () => {
     }
   });
 
-  it('no renderiza dl cuando el proyecto no tiene métricas', () => {
+  it('does not render dl when project has no metrics', () => {
     const { container } = renderProjectCard({ project: withoutCaseStudy, locale: 'es' });
 
     expect(withoutCaseStudy.metrics).toHaveLength(0);
@@ -91,7 +91,7 @@ describe('ProjectCard', () => {
     ).toBeInTheDocument();
   });
 
-  it('el título con case study termina en → (affordance de enlace interno), sin cambiar el nombre accesible', () => {
+  it('title with case study ends in → (internal link affordance), without changing accessible name', () => {
     renderProjectCard({ project: withMetrics, locale: 'es' });
     expect(withMetrics.caseStudy).toBe(true);
     const heading = screen.getByRole('heading', { name: withMetrics.title.es });
@@ -99,7 +99,7 @@ describe('ProjectCard', () => {
     expect(screen.getByRole('link', { name: withMetrics.title.es })).toBeInTheDocument();
   });
 
-  it('el título con enlace externo (sin case study) termina en ↗', () => {
+  it('title with external link (without case study) ends in ↗', () => {
     renderProjectCard({
       project: { ...withoutCaseStudy, caseStudy: false, links: { live: 'https://example.com' } },
       locale: 'es',
@@ -108,7 +108,7 @@ describe('ProjectCard', () => {
     expect(heading.textContent).toBe(`${withoutCaseStudy.title.es}\u2009↗`);
   });
 
-  it('el título con enlace externo (sin case study) abre en pestaña nueva con rel seguro (E3)', () => {
+  it('title with external link (without case study) opens in new tab with secure rel (E3)', () => {
     renderProjectCard({
       project: { ...withoutCaseStudy, caseStudy: false, links: { live: 'https://example.com' } },
       locale: 'es',
@@ -118,7 +118,7 @@ describe('ProjectCard', () => {
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  it('el título en texto plano (sin case study ni enlaces) no lleva sufijo', () => {
+  it('plain text title (without case study or links) has no suffix', () => {
     renderProjectCard({
       project: { ...withoutCaseStudy, caseStudy: false, links: {} },
       locale: 'es',
@@ -127,18 +127,18 @@ describe('ProjectCard', () => {
     expect(heading.textContent).toBe(withoutCaseStudy.title.es);
   });
 
-  it('con animateMetrics, el valor de cada métrica sigue accesible vía sr-only y visible (aria-hidden)', () => {
+  it('with animateMetrics, each metric value remains accessible via sr-only and visible (aria-hidden)', () => {
     renderProjectCard({ project: withMetrics, locale: 'es', animateMetrics: true });
 
     for (const metric of withMetrics.metrics) {
-      // jsdom no implementa IntersectionObserver: AnimatedMetric cae en el
-      // fallback y muestra el valor final directo también en el nodo visible.
+      // jsdom does not implement IntersectionObserver: AnimatedMetric falls back
+      // and displays the final value directly in the visible node as well.
       expect(screen.getByText(metric.value, { selector: '.sr-only' })).toBeInTheDocument();
       expect(screen.getByText(metric.value, { selector: '[aria-hidden]' })).toBeInTheDocument();
     }
   });
 
-  it('sin animateMetrics (default), el valor de la métrica se renderiza como texto plano', () => {
+  it('without animateMetrics (default), the metric value renders as plain text', () => {
     renderProjectCard({ project: withMetrics, locale: 'es' });
 
     for (const metric of withMetrics.metrics) {

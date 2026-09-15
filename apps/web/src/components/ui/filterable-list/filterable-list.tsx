@@ -48,7 +48,7 @@ export function FilterableList<T extends FilterableItem>({
   const filtered = useMemo(() => items.filter((item) => matchesQuery(item, query)), [items, query]);
 
   // Clamp derivado en render (no efecto): si el filtro reduce la lista, el
-  // índice activo cae dentro de rango sin necesitar sincronizar estado extra.
+  // active index falls within range without extra synchronized state.
   const clampedActiveIndex =
     filtered.length === 0 ? -1 : Math.min(activeIndex, filtered.length - 1);
   const activeItem = clampedActiveIndex >= 0 ? filtered[clampedActiveIndex] : undefined;
@@ -100,9 +100,9 @@ export function FilterableList<T extends FilterableItem>({
               key={item.id}
               id={`${baseId}-option-${item.id}`}
               role="option"
-              // aria-selected = opción activa del combobox (patrón APG, navegación con flechas).
+              // aria-selected = active combobox option (APG pattern, arrow navigation).
               // aria-current = valor actualmente aplicado (selectedId). Ambos pueden diferir:
-              // se puede navegar sobre otras opciones sin cambiar la selección aplicada.
+              // you can navigate over other options without changing the applied selection.
               aria-selected={active}
               aria-current={selected || undefined}
               onClick={() => onSelect(item)}

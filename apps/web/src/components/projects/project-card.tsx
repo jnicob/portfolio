@@ -8,9 +8,9 @@ import { AnimatedMetric } from '@/components/ui/animated-metric';
 type ProjectCardProps = {
   project: Project;
   locale: Locale;
-  /** Nivel del heading del título según el contexto (h2 bajo un h1, h3 bajo un h2). */
+  /** Heading level depending on context (h2 under h1, h3 under h2). */
   headingLevel?: 'h2' | 'h3';
-  /** Opt-in: anima las métricas (count-up al entrar en viewport). Default false. */
+  /** Opt-in: animates metrics (count-up on entering viewport). Default false. */
   animateMetrics?: boolean;
 };
 
@@ -18,8 +18,8 @@ const titleLinkClassName =
   'hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
 
 /**
- * Título de la tarjeta: enlace interno al case study si existe (`caseStudy`),
- * si no al primer enlace externo disponible (live > docs > repo), o texto plano.
+ * Card title: internal link to case study if available (`caseStudy`),
+ * otherwise first available external link (live > docs > repo), or plain text.
  */
 function TitleLink({ project, locale }: { project: Project; locale: Locale }) {
   if (project.caseStudy) {
@@ -42,7 +42,7 @@ function TitleLink({ project, locale }: { project: Project; locale: Locale }) {
   return <span>{project.title[locale]}</span>;
 }
 
-/** Tarjeta de proyecto: patrón "clickable card" accesible — el link vive en el heading. RSC-compatible. */
+/** Project card: accessible "clickable card" pattern — link lives in heading. RSC-compatible. */
 export function ProjectCard({
   project,
   locale,

@@ -6,11 +6,11 @@ import { ShareViewButton } from './share-view-button';
 const LABELS = { share: 'Share this view', copied: 'Link copied', error: 'Could not copy' };
 
 /**
- * `userEvent.setup()` instala su PROPIO stub de `navigator.clipboard` (para soportar
- * user.copy()/paste()), pisando cualquier stub previo. Por eso el mock se define
- * DESPUÉS de `setup()`, con `Object.defineProperty` sobre el `navigator` real — reemplazar
- * el objeto `navigator` entero (`vi.stubGlobal`) rompe la detección interna de userEvent
- * (lee otras props como `userAgent`) y el click deja de despacharse.
+ * `userEvent.setup()` installs its OWN `navigator.clipboard` stub (to support
+ * user.copy()/paste()), overwriting any previous stub. That is why the mock is defined
+ * AFTER `setup()`, using `Object.defineProperty` on the actual `navigator` — replacing
+ * the entire `navigator` object (`vi.stubGlobal`) breaks userEvent's internal detection
+ * (it reads other props like `userAgent`) and clicks stop being dispatched.
  */
 function stubClipboardAfterSetup(writeText: ReturnType<typeof vi.fn>) {
   Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
@@ -71,7 +71,7 @@ describe('ShareViewButton', () => {
     consoleError.mockRestore();
   });
 
-  it('el feedback vuelve a idle 2s después de copiar', async () => {
+  it('feedback returns to idle 2s after copying', async () => {
     const user = userEvent.setup();
     const writeText = vi.fn().mockResolvedValue(undefined);
     stubClipboardAfterSetup(writeText);

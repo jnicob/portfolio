@@ -9,14 +9,14 @@ import {
 import { PortraitCompareDemo } from './portrait-compare-demo';
 
 /**
- * Perf (T30/qa-B1): landscape.webp es 1600×900 (113 KB), muy por encima del ancho real
- * renderizado en mobile — bajo `md` este grid pasa a una sola columna, así que cada
- * `<img>` mide en torno al ancho del contenido (no medio grid). La variante ~840w
- * (46 KB) deja al navegador elegir según el ancho renderizado real, en vez de
- * descargar siempre el asset completo.
+ * Perf (T30/qa-B1): landscape.webp is 1600×900 (113 KB), well above the actual
+ * rendered width on mobile — below `md` this grid becomes a single column, so each
+ * `<img>` measures around the content width (not half a grid). The ~840w variant
+ * (46 KB) lets the browser choose based on the actual rendered width, instead of
+ * always downloading the full asset.
  */
 const LANDSCAPE_SRC_SET = '/demo/landscape-840.webp 840w, /demo/landscape.webp 1600w';
-/** Ancho de imagen según viewport. */
+/** Image width based on viewport. */
 const GRID_SIZES = '(min-width: 768px) calc(100vw - 4rem), calc(100vw - 3rem)';
 
 export type MediaKitDemoStrings = {

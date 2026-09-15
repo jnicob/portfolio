@@ -33,6 +33,7 @@ structure, tests, tooling and this agent config are meant to be audited.
 - Static export is the default runtime; never assume a Node server in components.
 - Never put secrets in the repo or the static bundle.
 - Content lives in typed data/MDX (`apps/web/src/data`, `apps/web/content`), never inline in JSX.
+- Code comments and JSDocs MUST ALWAYS be in English (never Spanish), even though documentation or agent dialogue may be in Spanish.
 
 ## Skills routing (knowledge)
 

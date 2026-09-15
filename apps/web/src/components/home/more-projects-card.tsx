@@ -8,7 +8,7 @@ const PREVIEW_COUNT = 3;
 type MoreProjectsCardProps = {
   locale: Locale;
   title: string;
-  /** Plantilla localizada con placeholder `{count}`, ej. "and {count} more projects". */
+  /** Localized template with `{count}` placeholder, e.g. "and {count} more projects". */
   countTemplate: string;
 };
 
@@ -17,14 +17,14 @@ function countLabel(template: string, count: number): string {
 }
 
 /**
- * Última celda del grid de destacados: toda la card es un único enlace a /projects, con
- * affordance visual de navegación (borde discontinuo). RSC-compatible.
+ * Last cell of the featured grid: the entire card is a single link to /projects, with
+ * visual navigation affordance (dashed border). RSC-compatible.
  *
- * Sin `aria-label`: un `aria-label={title}` recortaba el nombre accesible al solo título,
- * ignorando el resto del contenido visible del link (preview de proyectos + contador) —
- * WCAG 2.5.3 (Label in Name) exige que el nombre CONTENGA el texto visible, y axe
- * (`label-content-name-mismatch`) lo marcaba como mismatch. Sin override, el nombre se
- * computa del propio contenido: empieza por el título visible y lo contiene por construcción.
+ * Without `aria-label`: an `aria-label={title}` truncated the accessible name to just the title,
+ * ignoring the rest of the link's visible content (project preview + counter) —
+ * WCAG 2.5.3 (Label in Name) requires that the name CONTAIN the visible text, and axe
+ * (`label-content-name-mismatch`) flagged it as a mismatch. Without an override, the name is
+ * computed from the content itself: it starts with the visible title and contains it by construction.
  */
 export function MoreProjectsCard({ locale, title, countTemplate }: MoreProjectsCardProps) {
   const notFeatured = projects.filter((p) => !p.featured);
@@ -50,8 +50,8 @@ export function MoreProjectsCard({ locale, title, countTemplate }: MoreProjectsC
             ))}
           </ul>
           {remaining > 0 && (
-            // Design review F3.6 T21 ("jerarquía y 8 más"): a igual tamaño que la lista de
-            // preview, el sufijo de conteo competía visualmente con los títulos de proyecto.
+            // Design review F3.6 T21 ("hierarchy and 8 more"): at the same size as the
+            // preview list, the count suffix competed visually with the project titles.
             // text-sm lo baja de peso sin tocar el orden del contenido (nombre accesible
             // del Link intacto, T30).
             <p className="text-sm text-fg-muted">{countLabel(countTemplate, remaining)}</p>

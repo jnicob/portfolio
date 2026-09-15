@@ -1,11 +1,11 @@
 /**
- * Módulo de seguridad backend/endpoint para el formulario de contacto (nico-security):
- * - Rate limiting (control de frecuencia por IP o token)
- * - Sanitización de entradas (eliminación/escape de HTML/scripts e inyección de cabeceras email)
- * - Verificación Honeypot anti-spam
+ * Backend/endpoint security module for contact form (nico-security):
+ * - Rate limiting (frequency control by IP or token)
+ * - Input sanitization (HTML/script removal/escaping and email header injection defense)
+ * - Anti-spam Honeypot verification
  */
 
-// Almacén en memoria para el rate limiting
+// In-memory store for rate limiting
 const rateLimitMap = new Map<string, { count: number; expiresAt: number }>();
 
 export type RateLimitResult = {
@@ -15,17 +15,17 @@ export type RateLimitResult = {
 };
 
 /**
- * Sanitiza una cadena de texto para evitar XSS, inyecciones de código HTML e inyección de cabeceras de email.
+ * Sanitizes a text string to prevent XSS, HTML code injection, and email header injection.
  */
 export function sanitizeText(input: string): string {
   if (!input) return '';
   return (
     input
       .trim()
-      // Elimina etiquetas <script> e <iframe> con su contenido
+      // Removes <script> and <iframe> tags with their content
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
       .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
-      // Reemplaza caracteres HTML clave por sus entidades seguras
+      // Replaces key HTML characters with safe entities
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
@@ -43,8 +43,8 @@ export function sanitizeHeader(input: string): string {
 }
 
 /**
- * Verifica si el campo de honeypot está vacío.
- * Retorna `true` si es un humano (honeypot limpio), `false` si es un bot (honeypot relleno).
+ * Checks if the honeypot field is empty.
+ * Returns `true` if it's a human (clean honeypot), `false` if it's a bot (filled honeypot).
  */
 export function verifyHoneypot(honeypotValue?: string | null): boolean {
   if (!honeypotValue) return true;
@@ -52,13 +52,13 @@ export function verifyHoneypot(honeypotValue?: string | null): boolean {
 }
 
 /**
- * Rate Limiting basado en ventana deslizante en memoria.
- * Limita a `maxRequests` por cada `windowMs` milisegundos para el identificador dado.
+ * In-memory sliding window rate limiting.
+ * Limits to `maxRequests` per `windowMs` milliseconds for the given identifier.
  */
 export function checkRateLimit(
   identifier: string,
   maxRequests: number = 3,
-  windowMs: number = 10 * 60 * 1000, // 10 minutos por defecto
+  windowMs: number = 10 * 60 * 1000, // 10 minutes by default
 ): RateLimitResult {
   const now = Date.now();
   const record = rateLimitMap.get(identifier);
@@ -86,7 +86,7 @@ export function checkRateLimit(
 }
 
 /**
- * Resetea el almacén de rate limit (útil para testing).
+ * Resets the rate limit store (useful for testing).
  */
 export function clearRateLimitStore(): void {
   rateLimitMap.clear();

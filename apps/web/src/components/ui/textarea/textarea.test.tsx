@@ -3,14 +3,14 @@ import { describe, expect, it } from 'vitest';
 import { Textarea } from './textarea';
 
 describe('Textarea', () => {
-  it('renderiza un textarea con sus props básicas', () => {
+  it('renders a textarea with its basic props', () => {
     render(<Textarea placeholder="Escribe tu mensaje..." defaultValue="Texto de prueba" />);
     const el = screen.getByPlaceholderText('Escribe tu mensaje...') as HTMLTextAreaElement;
     expect(el).toBeInTheDocument();
     expect(el.value).toBe('Texto de prueba');
   });
 
-  it('aplica estado aria-invalid cuando es inválido', () => {
+  it('applies aria-invalid state when invalid', () => {
     render(<Textarea aria-invalid="true" data-testid="test-textarea" />);
     const el = screen.getByTestId('test-textarea');
     expect(el).toHaveAttribute('aria-invalid', 'true');

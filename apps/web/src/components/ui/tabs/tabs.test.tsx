@@ -17,7 +17,7 @@ function renderTabs() {
 }
 
 describe('Tabs', () => {
-  it('marca la pestaña activa y expone solo su panel en el árbol de a11y', () => {
+  it('marks the active tab and exposes only its panel in the a11y tree', () => {
     renderTabs();
     expect(screen.getByRole('tab', { name: 'Preview' })).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByText('panel-preview')).toHaveAttribute('aria-hidden', 'false');
@@ -42,7 +42,7 @@ describe('Tabs', () => {
     expect(screen.getByRole('tab', { name: 'Preview' })).toHaveFocus();
   });
 
-  it('solo la pestaña activa es tabulable', () => {
+  it('only the active tab is tabbable', () => {
     renderTabs();
     expect(screen.getByRole('tab', { name: 'Preview' })).toHaveAttribute('tabindex', '0');
     expect(screen.getByRole('tab', { name: 'API' })).toHaveAttribute('tabindex', '-1');
@@ -52,8 +52,8 @@ describe('Tabs', () => {
 // Contrato actualizado en Fase 3.6 (B2): los paneles pasan de `hidden` (display:none,
 // altura 0) a compartir celda de grid con el inactivo en `invisible` (visibility:hidden,
 // conserva su caja) — esto es lo que elimina el salto de layout al cambiar de tab, algo
-// que el `hidden` de C1/2.6 no garantizaba (alturas distintas → el bloque se encogía).
-// Cambio de contrato documentado, no regresión: ambos paneles siguen montados; el
+// which the `hidden` of C1/2.6 did not guarantee (different heights → the block shrank).
+// Documented contract change, not a regression: both panels remain mounted; the
 // inactivo ya no tiene el atributo `hidden`, en su lugar `aria-hidden="true"` + `invisible`
 // y sin `tabIndex` (no focusable).
 describe('Tabs v3.6 — paneles apilados en grid, sin desplazamiento (B2)', () => {
@@ -80,7 +80,7 @@ describe('Tabs v3.6 — paneles apilados en grid, sin desplazamiento (B2)', () =
     expect(api).not.toHaveAttribute('tabindex');
   });
 
-  it('solo el panel activo se expone por role=tabpanel (aria-hidden lo saca del árbol de a11y)', () => {
+  it('only the active panel is exposed via role=tabpanel (aria-hidden removes it from the a11y tree)', () => {
     renderTabs();
     expect(screen.getAllByRole('tabpanel')).toHaveLength(1);
   });
@@ -104,8 +104,8 @@ describe('Tabs v3.6 — paneles apilados en grid, sin desplazamiento (B2)', () =
 });
 
 // A3 (feedback de Nico): en Tailwind v4 `<button>` ya no trae `cursor: pointer` por
-// defecto (cambio de preflight respecto a v3) — sin clase explícita las Tabs no
-// mostraban puntero ni hover perceptible. Convención de la Fase 3.6 (A2): un control
+// default (preflight change compared to v3) — without an explicit class the Tabs did not
+// show a pointer or noticeable hover. Phase 3.6 (A2) convention: a control
 // muestra `cursor-pointer` si y solo si es interactivo real; el hover reutiliza los
 // mismos tokens que Button (ghost/primary, T14) en vez de inventar un estado nuevo.
 describe('Tabs — cursor y hover (A2/A3)', () => {
@@ -118,8 +118,7 @@ describe('Tabs — cursor y hover (A2/A3)', () => {
   it('el trigger inactivo tiene hover de fondo perceptible sobre el TabList (bg-surface)', () => {
     renderTabs();
     const inactive = screen.getByRole('tab', { name: 'API' });
-    // No `hover:bg-surface` (Button ghost): TabList ya es bg-surface, así que ese hover
-    // quedaría invisible sobre sí mismo. `border` es el siguiente escalón con contraste real.
+    // TabList is already bg-surface; `border` provides clear contrast step.
     expect(inactive).toHaveClass('hover:bg-border');
     expect(inactive).toHaveClass('hover:text-fg');
   });

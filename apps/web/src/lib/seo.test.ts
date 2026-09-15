@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { localizedPageMetadata, personJsonLd, SITE_URL } from './seo';
 
 describe('seo', () => {
-  it('genera canonical y hreflang por locale', () => {
+  it('generates canonical and hreflang per locale', () => {
     const meta = localizedPageMetadata({
       locale: 'es',
       path: '/cv',
@@ -17,7 +17,7 @@ describe('seo', () => {
     expect(meta.openGraph?.locale).toBe('es');
   });
 
-  it('declara la imagen OG y la twitter card por locale', () => {
+  it('declares OG image and twitter card per locale', () => {
     const meta = localizedPageMetadata({
       locale: 'en',
       path: '/projects',
@@ -35,7 +35,7 @@ describe('seo', () => {
     ]);
   });
 
-  it('JSON-LD Person con SOLO enlaces públicos y datos geográficos enriquecidos', () => {
+  it('JSON-LD Person with ONLY public links and enriched geo data', () => {
     const ld = personJsonLd('en');
     expect(ld['@type']).toBe('Person');
     expect(ld.homeLocation.name).toContain('Aguadulce');
@@ -46,7 +46,7 @@ describe('seo', () => {
     expect(JSON.stringify(ld)).not.toMatch(/@[\w-]+\.[a-z]{2,}/i);
   });
 
-  it('declara metadatos GEO para indexación geográfica precisa', () => {
+  it('declares GEO metadata for accurate geographic indexing', () => {
     const meta = localizedPageMetadata({
       locale: 'es',
       path: '',

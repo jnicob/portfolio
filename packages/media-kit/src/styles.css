@@ -1,7 +1,7 @@
 /*
- * @nicobehm/media-kit — estilos base.
- * Personalización vía custom properties públicas (--mk-*): defínelas en el
- * consumidor (p.ej. mapeadas a los design tokens de tu app).
+ * @nicobehm/media-kit — base styles.
+ * Customization via public custom properties (--mk-*): define them in the
+ * consumer (e.g. mapped to your app's design tokens).
  */
 :root {
   --mk-handle-color: #ffffff;
@@ -32,8 +32,8 @@
   position: relative;
   overflow: hidden;
   border-radius: var(--mk-radius);
-  /* Marco sutil: enmarca el medio como figura y evita que un borde oscuro de la
-     imagen se funda con una página oscura. */
+  /* Subtle frame: frames the media as a figure and prevents a dark edge of the
+     image from blending with a dark page. */
   box-shadow: 0 0 0 1px var(--mk-handle-ring);
   touch-action: none;
   user-select: none;
@@ -66,7 +66,7 @@
   clip-path: inset(var(--mk-compare-pos) 0 0 0);
 }
 
-/* Línea divisoria: sigue la posición real 0-100, sin recibir eventos */
+/* Dividing line: tracks the real 0-100 position, without receiving events */
 .mk-compare__divider {
   position: absolute;
   background: var(--mk-handle-color);
@@ -91,8 +91,8 @@
 }
 
 /*
- * Grip circular (role=slider): su posición visual se clampa para que el círculo
- * nunca se recorte en los extremos; el valor ARIA sigue siendo el real 0-100.
+ * Circular grip (role=slider): its visual position is clamped so that the circle
+ * is never clipped at the ends; the ARIA value remains the actual 0-100.
  */
 .mk-compare__handle {
   position: absolute;
@@ -132,8 +132,8 @@
 }
 
 /*
- * C6: cue visual de pausa (hover-follow suspendido). Sutil y no es la única señal:
- * el aria-live del componente es la fuente accesible del cambio de estado.
+ * C6: visual pause cue (hover-follow suspended). Subtle and not the only signal:
+ * the component's aria-live is the accessible source of the state change.
  */
 .mk-compare[data-paused] .mk-compare__divider {
   opacity: 0.85;
@@ -151,7 +151,7 @@
   content: '▴ ▾';
 }
 
-/* Estado hover visible (además del cursor), solo en dispositivos con hover real */
+/* Visible hover state (in addition to the cursor), only on devices with real hover */
 @media (hover: hover) {
   .mk-compare__handle:hover {
     transform: translate(-50%, -50%) scale(1.08);
@@ -197,7 +197,7 @@
   outline-offset: 2px;
 }
 
-/* C5: carga con transición de opacidad (paridad referencia). */
+/* C5: load with opacity transition (reference parity). */
 .mk-compare[data-loading] :is(.mk-compare__before, .mk-compare__after) {
   opacity: 0;
 }
@@ -237,10 +237,10 @@
    completos, respectivamente. */
 .mk-compare[data-compare-mode='onion'] .mk-compare__after {
   clip-path: none;
-  /* --mk-compare-pos es un <percentage> (p.ej. '50%'); dividir entre 100% (no
-     entre 100 sin unidad) cancela el tipo porcentaje y da el número 0-1 que
-     opacity espera. Dividir entre 100 conservaba el tipo porcentaje y colapsaba
-     la opacidad real a ~1/100 de lo esperado (bug: onion invisible). */
+  /* --mk-compare-pos is a <percentage> (e.g. '50%'); dividing by 100% (not
+     by unitless 100) cancels the percentage type and yields the 0-1 number that
+     opacity expects. Dividing by 100 preserved the percentage type and collapsed
+     the actual opacity to ~1/100 of what was expected (bug: invisible onion). */
   opacity: calc(var(--mk-compare-pos) / 100%);
 }
 .mk-compare[data-compare-mode='onion'] .mk-compare__divider {
@@ -339,9 +339,9 @@
 
 .mk-lightbox__media {
   display: flex;
-  /* Desviación consciente del spec ("will-change solo durante el gesto"): el
-     elemento solo existe con el lightbox abierto, así que el hint permanente
-     es equivalente y evita toggles de compositing en pleno gesto. */
+  /* Conscious deviation from the spec ("will-change only during the gesture"): the
+     element only exists while the lightbox is open, so the permanent hint
+     is equivalent and avoids compositing toggles mid-gesture. */
   will-change: transform;
   transition: transform 120ms ease-out;
 }
@@ -354,20 +354,20 @@
   display: block;
 }
 
-/* T13: compare dentro del lightbox — tope de tamaño del contenedor `.mk-compare`
-   respecto a `.mk-lightbox__media` (nunca desborda el visor). Comportamiento REAL
-   post-fix F1 (F3.7, ver comentario en las reglas `data-fit` más abajo): las capas
-   `before`/`after` YA NO las dimensiona `data-fit` (eso solo aplica a un <img>/<video>
-   hijo DIRECTO, caso `media`/`children`) — cada lado del compare se dimensiona
-   exclusivamente por sus propias reglas `.mk-compare__before img, .mk-compare__after
-   img { width:100%; height:auto }`. Este `max-width/max-height:100%` es el único
-   límite que impone el lightbox al compare como un todo. */
+/* T13: compare inside the lightbox — size cap of the `.mk-compare` container
+   relative to `.mk-lightbox__media` (never overflows the viewer). ACTUAL behavior
+   post-fix F1 (F3.7, see comment in the `data-fit` rules below): the `before`/`after`
+   layers ARE NO LONGER sized by `data-fit` (that only applies to a DIRECT child
+   <img>/<video>, `media`/`children` case) — each side of the compare is sized
+   exclusively by its own rules `.mk-compare__before img, .mk-compare__after
+   img { width:100%; height:auto }`. This `max-width/max-height:100%` is the only
+   limit imposed by the lightbox on the compare as a whole. */
 .mk-lightbox__media .mk-compare {
   max-width: 100%;
   max-height: 100%;
 }
 
-/* C4: pan con ratón — el drag nativo de img está prevenido en JS; affordance solo si hay desborde. */
+/* C4: mouse pan — native img drag is prevented in JS; affordance only if there is overflow. */
 .mk-lightbox__viewport[data-can-pan] {
   cursor: grab;
 }
@@ -390,21 +390,21 @@
   cursor: grabbing;
 }
 
-/* El viewport es inset:0 sobre el overlay fixed → 100vw/100dvh equivalen a su tamaño.
-   Combinador de HIJO DIRECTO (>), no descendiente: con `compare` el <img>/<video>
-   real vive dos niveles más abajo (.mk-compare > .mk-compare__before|__after > img),
-   nunca como hijo directo de .mk-lightbox__media (eso solo pasa en los casos
-   `media`/`children`, ver JSX de MediaLightboxContent). Bug F1 (F3.7): con el
-   descendiente `.mk-lightbox__media :is(img, video)` esta regla (specificity 0,3,1)
-   le ganaba a la regla del compare `.mk-compare__after img` (0,1,1) y dimensionaba
-   CADA lado del compare por separado según su propio `sizes`/tamaño intrínseco —
-   el lado `before` (con `sizes` fijado para el layout embebido, ~1000px) terminaba
-   en una caja de tamaño completamente distinto al lado `after` (sin `sizes`, hasta
-   ~2076×1168px medido en navegador real), desalineando el compare en fullscreen.
-   Con `>` esta regla solo alcanza el <img>/<video> suelto de `media`/`children`, y
-   el compare vuelve a gobernarse únicamente por sus propias reglas
-   `.mk-compare__before img, .mk-compare__after img` (ambos lados comparten la MISMA
-   caja: `.mk-compare__after` es absolute+inset:0 sobre `.mk-compare__before`). */
+/* The viewport is inset:0 over the fixed overlay → 100vw/100dvh are equivalent to its size.
+   DIRECT CHILD combinator (>), not descendant: with `compare` the actual <img>/<video>
+   lives two levels down (.mk-compare > .mk-compare__before|__after > img),
+   never as a direct child of .mk-lightbox__media (that only happens in the
+   `media`/`children` cases, see MediaLightboxContent JSX). Bug F1 (F3.7): with the
+   descendant `.mk-lightbox__media :is(img, video)` this rule (specificity 0,3,1)
+   beat the compare rule `.mk-compare__after img` (0,1,1) and sized
+   EACH side of the compare separately according to its own `sizes`/intrinsic size —
+   the `before` side (with `sizes` fixed for the embedded layout, ~1000px) ended up
+   in a box of completely different size than the `after` side (without `sizes`, up
+   to ~2076×1168px measured in a real browser), misaligning the compare in fullscreen.
+   With `>` this rule only matches the standalone <img>/<video> from `media`/`children`, and
+   the compare goes back to being governed solely by its own rules
+   `.mk-compare__before img, .mk-compare__after img` (both sides share the SAME
+   box: `.mk-compare__after` is absolute+inset:0 over `.mk-compare__before`). */
 .mk-lightbox[data-fit='contain'] .mk-lightbox__media > :is(img, video) {
   max-width: calc(100vw - 2rem);
   max-height: calc(100dvh - 2rem);
@@ -436,15 +436,15 @@
   gap: 0.5rem;
 }
 
-/* Familia de controles unificada: cerrar y toggle comparten el mismo tratamiento
-   translúcido oscuro que la píldora de la toolbar. */
+/* Unified controls family: close and toggle share the same dark translucent
+   treatment as the toolbar pill. */
 .mk-lightbox__close,
 .mk-lightbox__controls-toggle,
 .mk-lightbox__help-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2.75rem; /* target táctil 44px */
+  min-width: 2.75rem; /* 44px touch target */
   min-height: 2.75rem;
   padding: 0;
   border: 0;
@@ -473,10 +473,10 @@
   outline-offset: 2px;
 }
 
-/* v0.5: tooltip ligero CSS para todo botón del lightbox (toolbar + esquina).
-   Complementa (nunca sustituye) al aria-label. Delay 600ms al hover; sin delay
-   con foco (teclado). Posición default 'below'; data-mk-tooltip-pos='above'
-   la invierte (toolbar, para no taparse con el propio botón). */
+/* v0.5: lightweight CSS tooltip for every lightbox button (toolbar + corner).
+   Complements (never replaces) aria-label. 600ms delay on hover; no delay
+   on focus (keyboard). Default position 'below'; data-mk-tooltip-pos='above'
+   inverts it (toolbar, so it does not get covered by the button itself). */
 .mk-lightbox [data-mk-tooltip] {
   position: relative;
 }
@@ -503,9 +503,9 @@
   top: auto;
   bottom: calc(100% + 8px);
 }
-/* Los botones de la esquina (close/ayuda/ojo) están pegados a right:1rem: un
-   tooltip centrado se recortaría contra el borde del viewport. Ancla a la
-   derecha como el CSS anterior (v0.3.0), conservando delay y pos 'below'. */
+/* Corner buttons (close/help/eye) are stuck to right:1rem: a
+   centered tooltip would be clipped against the viewport edge. Anchors to the
+   right like the previous CSS (v0.3.0), preserving delay and pos 'below'. */
 .mk-lightbox__corner [data-mk-tooltip]::after {
   left: auto;
   right: 0;
@@ -525,8 +525,8 @@
   }
 }
 
-/* Con el panel de ayuda abierto, su título ya nombra al botón: el tooltip sobraría
-   y se pintaría debajo del panel (mismo z-index, orden DOM). */
+/* With the help panel open, its title already names the button: the tooltip would be redundant
+   and would render beneath the panel (same z-index, DOM order). */
 .mk-lightbox__corner button[aria-expanded='true']::after {
   display: none;
 }
@@ -604,8 +604,8 @@
   visibility: hidden;
 }
 
-/* Reduced-motion: colocado DESPUÉS de las reglas base para que su override gane
-   la cascada (misma especificidad → decide el orden de origen). */
+/* Reduced-motion: placed AFTER the base rules so its override wins
+   the cascade (same specificity → source order decides). */
 @media (prefers-reduced-motion: reduce) {
   .mk-lightbox {
     animation: none;
@@ -635,7 +635,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2.75rem; /* target táctil 44px */
+  min-width: 2.75rem; /* 44px touch target */
   height: 2.75rem;
   padding: 0 0.5rem;
   border: 0;
@@ -680,26 +680,26 @@
 }
 
 /*
- * Bug reportado (feedback de Nico, F3.6 bloque D): el seguimiento del puntero se
- * sentía "lento". Causa raíz confirmada en navegador real: `transition: clip-path`
- * vivía en `.mk-spotlight__reveal` sin condición — `clip-path` empaqueta posición
- * (x/y) Y radio en un solo valor, así que CADA `pointermove` (que solo cambia x/y)
- * también quedaba atrapado en la transición de 160ms, y como pointermove dispara
- * mucho más rápido que eso, el navegador reapunta la interpolación en cada evento:
- * el círculo queda persiguiendo al cursor en vez de seguirlo 1:1 (medido: un salto
- * instantáneo de posición tardaba ~160ms en reflejarse en el clip-path real).
- * Spec (A4) exige lo contrario: "el seguimiento del puntero no es animación (es
- * posición directa)" — solo la aparición/desaparición (radio 0 ↔ full) debe animar.
+ * Reported bug (feedback from Nico, F3.6 block D): pointer tracking
+ * felt "sluggish". Confirmed root cause in a real browser: `transition: clip-path`
+ * lived on `.mk-spotlight__reveal` unconditionally — `clip-path` packs position
+ * (x/y) AND radius into a single value, so EVERY `pointermove` (which only changes x/y)
+ * also got trapped in the 160ms transition, and since pointermove fires
+ * much faster than that, the browser retargets interpolation on each event:
+ * the circle ends up chasing the cursor instead of following it 1:1 (measured: an
+ * instantaneous position jump took ~160ms to reflect in the real clip-path).
+ * Spec (A4) requires the opposite: "pointer tracking is not an animation (it is
+ * direct position)" — only the appearance/disappearance (radius 0 ↔ full) should animate.
  *
- * Fix: `--mk-spot-active-radius` es una custom property REGISTRADA (`@property`,
- * animable) que JS fija a `0px` (inactivo) o al radio configurado (activo). La
- * transición vive en `--mk-spot-active-radius` (declarada en `.mk-spotlight`, el
- * elemento donde JS escribe el valor inline), NO en `clip-path`. `clip-path` deja de
- * ser la propiedad transicionada: su valor se recalcula al instante en cada frame a
- * partir de x/y (siempre directos) + el radio (posiblemente aún interpolando) — así
- * el radio puede crecer/encogerse suave en la entrada/salida sin que la posición
- * arrastre ningún retraso. `--mk-spot-radius` (SIN cambios) sigue siendo el radio
- * fijo configurado, usado tal cual por el anillo (`.mk-spotlight__lens`).
+ * Fix: `--mk-spot-active-radius` is a REGISTERED custom property (`@property`,
+ * animatable) that JS sets to `0px` (inactive) or to the configured radius (active). The
+ * transition lives on `--mk-spot-active-radius` (declared on `.mk-spotlight`, the
+ * element where JS writes the inline value), NOT on `clip-path`. `clip-path` ceases to
+ * be the transitioned property: its value is recalculated instantly on each frame
+ * from x/y (always direct) + the radius (possibly still interpolating) — this way
+ * the radius can smoothly grow/shrink on enter/exit without the position
+ * dragging any delay. `--mk-spot-radius` (UNCHANGED) remains the configured fixed
+ * radius, used as-is by the ring (`.mk-spotlight__lens`).
  */
 @property --mk-spot-active-radius {
   syntax: '<length>';
@@ -794,8 +794,8 @@
 .mk-filter-gallery__filters button[aria-pressed='true'] {
   background: var(--mk-filter-active-bg);
   color: var(--mk-filter-active-color);
-  /* Mismo valor que resolvía el currentColor heredado del chip base, pero declarado:
-     el borde del chip activo sigue al texto activo por decisión, no por accidente. */
+  /* Same value that resolved currentColor inherited from the base chip, but declared:
+     the active chip border follows active text by design, not by accident. */
   border-color: var(--mk-filter-active-color);
 }
 .mk-filter-gallery__filters button:focus-visible {

@@ -22,7 +22,7 @@ describe('content', () => {
     expect(result?.frontmatter.stack.length).toBeGreaterThan(0);
   });
 
-  it('frontmatter inválido LANZA (build rojo, nunca contenido vacío)', async () => {
+  it('invalid frontmatter THROWS (red build, never empty content)', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'content-'));
     try {
       await mkdir(path.join(root, 'en/projects'), { recursive: true });

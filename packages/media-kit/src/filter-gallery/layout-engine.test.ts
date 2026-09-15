@@ -22,7 +22,7 @@ describe('computeMasonryLayout', () => {
     expect(totalHeight).toBe(310);
   });
 
-  it('coloca cada ítem en la columna más corta de forma determinista', () => {
+  it('places each item in the shortest column deterministically', () => {
     const { boxes } = computeMasonryLayout({
       aspectRatios: [0.5, 1, 1],
       containerWidth: 210,
@@ -47,7 +47,7 @@ describe('computeMasonryLayout', () => {
     expect(boxes[0]?.height).toBe(128);
   });
 
-  it('normaliza ratios inválidos al fallback cuadrado', () => {
+  it('normalizes invalid ratios to the square fallback', () => {
     const { boxes } = computeMasonryLayout({
       aspectRatios: [0, Number.NaN, Number.POSITIVE_INFINITY],
       containerWidth: 100,
@@ -58,7 +58,7 @@ describe('computeMasonryLayout', () => {
     for (const box of boxes) expect(box.height).toBe(100);
   });
 
-  it('devuelve un layout vacío para ítems vacíos o ancho no positivo', () => {
+  it('returns an empty layout for empty items or non-positive width', () => {
     expect(
       computeMasonryLayout({ aspectRatios: [], containerWidth: 500, columns: 3, gap: 8 }),
     ).toEqual({ boxes: [], totalHeight: 0 });
@@ -83,7 +83,7 @@ describe('computeJustifiedLayout', () => {
     expect(boxes[0]?.height).toBeCloseTo(boxes[1]?.height ?? 0, 5);
   });
 
-  it('no estira la última fila incompleta', () => {
+  it('does not stretch the last incomplete row', () => {
     const { boxes } = computeJustifiedLayout({
       aspectRatios: [2, 1.2, 1],
       containerWidth: 300,
@@ -109,7 +109,7 @@ describe('computeJustifiedLayout', () => {
     expect(totalHeight).toBeCloseTo(row1Height + 10 + (boxes[2]?.height ?? 0), 5);
   });
 
-  it('devuelve un layout vacío para una entrada vacía', () => {
+  it('returns an empty layout for empty input', () => {
     expect(
       computeJustifiedLayout({
         aspectRatios: [],
@@ -122,7 +122,7 @@ describe('computeJustifiedLayout', () => {
 });
 
 describe('columnCountForWidth', () => {
-  it('escala de 2 a 5 columnas según el ancho del contenedor', () => {
+  it('scales from 2 to 5 columns based on container width', () => {
     expect(columnCountForWidth(320)).toBe(2);
     expect(columnCountForWidth(559)).toBe(2);
     expect(columnCountForWidth(560)).toBe(3);

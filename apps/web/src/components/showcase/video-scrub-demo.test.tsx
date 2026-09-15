@@ -20,7 +20,7 @@ describe('VideoScrubDemo', () => {
     expect(poster).toHaveAttribute('height', '486');
   });
 
-  it('monta VideoScrubPreview con el clip real y el poster tras la primera interacción', () => {
+  it('mounts VideoScrubPreview with the real clip and poster after the first interaction', () => {
     const { container } = render(<VideoScrubDemo strings={strings} />);
     fireEvent.pointerEnter(screen.getByLabelText(strings.label));
     const video = container.querySelector('video');
@@ -43,11 +43,11 @@ describe('VideoScrubDemo', () => {
 });
 
 /**
- * Task 26: el diagnóstico en navegador confirmó que el scrub (puntero y
- * teclado) funciona correctamente — el feedback de usuario era de affordance:
- * nada en el vídeo en reposo indicaba que era interactivo. Este hint es
- * decorativo (`aria-hidden`, el texto real vive en `label`/`figcaption`) y
- * debe desaparecer en la primera interacción, sin volver a aparecer.
+ * Task 26: in-browser diagnostics confirmed that scrubbing (pointer and
+ * keyboard) works correctly — user feedback was about affordance:
+ * nothing in the idle video indicated it was interactive. This hint is
+ * decorative (`aria-hidden`, the actual text lives in `label`/`figcaption`) and
+ * must disappear on first interaction, without reappearing.
  */
 describe('VideoScrubDemo — hint de affordance', () => {
   it('muestra el hint decorativo al montar', () => {
@@ -79,13 +79,13 @@ describe('VideoScrubDemo — hint de affordance', () => {
 });
 
 /**
- * Task 27 (perf, F3.6): el placeholder (poster + botón) se desmonta al
- * activarse el widget real — sin reclamar el foco a mano, un usuario de
- * teclado que llega con Tab perdería el foco (se iría a `<body>`) justo en
- * el momento de activar la demo.
+ * Task 27 (perf, F3.6): the placeholder (poster + button) unmounts when
+ * the actual widget activates — without manually reclaiming focus, a
+ * keyboard user arriving with Tab would lose focus (it would go to `<body>`) right at
+ * the moment of activating the demo.
  */
 describe('VideoScrubDemo — foco tras activación por teclado', () => {
-  it('reenvía el foco al widget real cuando la activación viene de foco (teclado)', () => {
+  it('forwards focus to the real widget when activation comes from focus (keyboard)', () => {
     const { container } = render(<VideoScrubDemo strings={strings} />);
     fireEvent.focus(screen.getByLabelText(strings.label));
     const scrubRoot = container.querySelector('[tabindex]');

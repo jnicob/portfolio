@@ -1,18 +1,18 @@
 /*
- * Skin editorial — disposición «NYT» (spec F3.9 §2). Solo CSS: el DOM no
- * cambia; colores únicamente vía tokens; cada regla escopada a
- * [data-skin='editorial'] (invariantes en editorial-css.test.ts).
+ * Editorial skin — «NYT» layout (spec F3.9 §2). CSS-only: the DOM does
+ * not change; colors strictly via tokens; every rule scoped to
+ * [data-skin='editorial'] (invariants in editorial-css.test.ts).
  *
- * Tradeoff de cascada: este parcial es CSS sin @layer, así que SIEMPRE gana
- * a las utilities de Tailwind de los componentes (viven en @layer utilities,
- * de menor prioridad que las reglas sin capa). Cambiar una utility de estos
- * elementos en el componente (p. ej. la clase del <h1> del hero) no tendrá
- * ningún efecto visible bajo data-skin='editorial'.
+ * Cascade tradeoff: this partial is unlayered CSS, so it ALWAYS beats
+ * the components' Tailwind utilities (they live in @layer utilities,
+ * with lower priority than unlayered rules). Changing a utility on these
+ * elements in the component (e.g. the <h1> class in hero) will have
+ * no visible effect under data-skin='editorial'.
  */
 
 /* ── Home: masthead ─────────────────────────────────────────────────── */
 
-/* Hero centrado tipo cabecera de periódico. */
+/* Centered hero styled like a newspaper masthead. */
 [data-skin='editorial'] [data-home-content] > section:first-of-type > div {
   align-items: center;
   text-align: center;
@@ -27,8 +27,8 @@
   letter-spacing: -0.01em;
 }
 
-/* La entradilla del hero, en serif itálica de periódico (solo el párrafo
- * directo del hero: no hereda un futuro <p> anidado en el bloque). */
+/* The hero lead paragraph, in newspaper italic serif (only the direct
+ * paragraph of the hero: a future <p> nested in the block does not inherit). */
 [data-skin='editorial'] [data-home-content] > section:first-of-type > div > p {
   font-family: var(--font-serif);
   font-style: italic;
@@ -45,7 +45,7 @@
   border-top: 1px solid var(--border);
 }
 
-/* Títulos de sección centrados entre reglas cortas. */
+/* Section titles centered between short rules. */
 [data-skin='editorial'] [data-home-content] > section > h2 {
   display: flex;
   align-items: center;
@@ -65,10 +65,10 @@
 
 /* ── CV: diario ─────────────────────────────────────────────────────── */
 
-/* Secciones del CV separadas por hairline con aire de columna. Dueño único del
- * ritmo vertical (design review F3.9): se anula el gap-10 del layout base y este
- * bloque declara el total — 2.5rem sobre la hairline + 2rem bajo ella = 4.5rem,
- * el aire de diario adjudicado. Mismo cómputo que antes (gap 2.5 + padding 2). */
+/* CV sections separated by a hairline with column spacing. Sole owner of the
+ * vertical rhythm (design review F3.9): base layout gap-10 is nullified and this
+ * block declares the total — 2.5rem above the hairline + 2rem below it = 4.5rem,
+ * the allotted newspaper spacing. Same calculation as before (gap 2.5 + padding 2). */
 [data-skin='editorial'] [data-cv-sections] {
   row-gap: 0;
 }
@@ -95,9 +95,9 @@
   }
 }
 
-/* ── Detalle de proyecto: artículo ──────────────────────────────────── */
+/* ── Project detail: article ──────────────────────────────────── */
 
-/* El back-link hace de kicker: mayúsculas espaciadas sobre el titular. */
+/* The back-link acts as a kicker: spaced uppercase above the headline. */
 [data-skin='editorial'] [data-project-article] > a:first-of-type {
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -111,20 +111,20 @@
   line-height: 1.15;
 }
 
-/* La entradilla (summary) como bajada en serif itálica. */
+/* The lead (summary) as a deck in italic serif. */
 [data-skin='editorial'] [data-project-article] > p {
   font-family: var(--font-serif);
   font-size: 1.125rem;
   font-style: italic;
 }
 
-/* Las métricas como byline entre hairlines. */
+/* Metrics as a byline between hairlines. */
 [data-skin='editorial'] [data-project-article] > dl {
   border-block: 1px solid var(--border);
   padding-block: 0.75rem;
 }
 
-/* Prosa a medida de columna de periódico + drop cap. */
+/* Prose sized to a newspaper column + drop cap. */
 [data-skin='editorial'] [data-project-article] .prose-portfolio {
   max-width: 65ch;
 }

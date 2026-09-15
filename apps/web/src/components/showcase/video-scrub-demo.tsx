@@ -5,12 +5,12 @@ import { VideoScrubPreview } from '@nicobehm/media-kit';
 import { Badge } from '@/components/ui/badge';
 
 export type VideoScrubDemoStrings = {
-  /** Nombre accesible del área interactiva de scrub. */
+  /** Accessible name of the interactive scrub area. */
   label: string;
   /**
-   * Hint visual decorativo (`aria-hidden`) que explica la interacción y
-   * desaparece en la primera interacción real. El nombre accesible del área
-   * ya viene de `label`/`figcaption`, así que el hint no necesita anunciarse.
+   * Decorative visual hint (`aria-hidden`) that explains the interaction and
+   * disappears on the first real interaction. The accessible name of the area
+   * already comes from `label`/`figcaption`, so the hint does not need to be announced.
    */
   hint: string;
   /** Texto del figcaption. */
@@ -20,34 +20,34 @@ export type VideoScrubDemoStrings = {
 type Props = { strings: VideoScrubDemoStrings };
 
 /**
- * Preview de vídeo recorrible con el puntero (o con flechas, en foco), spec B4
- * / F3.6. Clip real de 864×486 (16:9 exacto — Task 10): `aspect-video` reserva
- * el espacio con la proporción correcta sin esperar a que cargue la metadata,
- * evitando layout shift (mismo objetivo que `width`/`height` en `<img>`).
+ * Video preview scrubbable with pointer (or with arrows, when focused), spec B4
+ * / F3.6. Actual 864×486 clip (exact 16:9 — Task 10): `aspect-video` reserves
+ * space with the correct aspect ratio without waiting for metadata to load,
+ * preventing layout shift (same goal as `width`/`height` on `<img>`).
  *
- * Task 26: diagnóstico en navegador confirmó que el scrub (puntero + teclado)
- * funciona correctamente; el feedback de usuario era de affordance, no un bug
- * — nada en el vídeo en reposo comunicaba que era interactivo. El hint
- * (icono + copy corto) desaparece en la primera interacción (`pointerenter` o
- * foco por teclado) y no vuelve a mostrarse.
+ * Task 26: in-browser diagnosis confirmed that scrubbing (pointer + keyboard)
+ * works correctly; user feedback was about affordance, not a bug
+ * — nothing on the idle video communicated that it was interactive. The hint
+ * (icon + short copy) disappears on the first interaction (`pointerenter` or
+ * keyboard focus) and is not shown again.
  *
- * Task 27 (perf, F3.6): medido en el export servido (`out/`, Playwright) que
- * `VideoScrubPreview` (paquete, `preload="metadata"`) descarga igualmente el
- * clip completo (~600 KB) nada más montar — el navegador no siempre corta la
- * conexión tras leer los átomos de metadata, y esta demo no puede tocar el
- * paquete para cambiar ese `preload`. Por eso el `<video>` real no se monta
- * hasta la primera interacción (`pointerenter`, foco o click): antes de eso
- * se muestra solo el poster como `<img loading="lazy">` en un botón — mismo
- * `aria-label`, mismas dimensiones (864×486), cero red de más. El foco se
- * reenvía a mano al widget real cuando la activación viene de teclado (el
- * `<button>` placeholder se desmonta al activarse y el navegador perdería el
- * foco si no se reclama explícitamente).
+ * Task 27 (perf, F3.6): measured in the served export (`out/`, Playwright) that
+ * `VideoScrubPreview` (package, `preload="metadata"`) still downloads the
+ * full clip (~600 KB) as soon as it mounts — the browser does not always close the
+ * connection after reading the metadata atoms, and this demo cannot modify the
+ * package to change that `preload`. That is why the actual `<video>` is not mounted
+ * until the first interaction (`pointerenter`, focus, or click): before that,
+ * only the poster is shown as `<img loading="lazy">` inside a button — same
+ * `aria-label`, same dimensions (864×486), zero extra network requests. Focus is
+ * manually forwarded to the actual widget when activation comes from keyboard (the
+ * placeholder `<button>` unmounts upon activation and the browser would lose
+ * focus if not explicitly reclaimed).
  */
 export function VideoScrubDemo({ strings }: Props) {
   const [hintVisible, setHintVisible] = useState(true);
   const [activated, setActivated] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  /** Solo reclama el foco tras el swap si la activación vino de teclado (no de hover). */
+  /** Only reclaims focus after the swap if activation came from the keyboard (not hover). */
   const refocusAfterSwap = useRef(false);
 
   function activate() {

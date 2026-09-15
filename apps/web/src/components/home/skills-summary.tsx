@@ -7,9 +7,9 @@ import { SkillLevel } from '@/components/cv/skill-level';
 type SkillsSummaryProps = {
   locale: Locale;
   title: string;
-  /** Plantilla localizada con placeholders `{name}`/`{level}`, ej. "{name}: level {level} of 5". */
+  /** Localized template with `{name}`/`{level}` placeholders, e.g. "{name}: level {level} of 5". */
   levelTemplate: string;
-  /** Etiquetas localizadas de categoría (namespace `cv.categories`) — nunca el slug crudo. */
+  /** Localized category labels (`cv.categories` namespace) — never the raw slug. */
   categoryLabels: Record<Skill['category'], string>;
 };
 
@@ -17,7 +17,7 @@ function levelLabel(template: string, name: string, level: number): string {
   return template.replace('{name}', name).replace('{level}', String(level));
 }
 
-/** Resumen de skills agrupadas por categoría, con nivel visual + accesible. RSC-compatible. */
+/** Skills summary grouped by category, with visual + accessible level. RSC-compatible. */
 export function SkillsSummary({ title, levelTemplate, categoryLabels }: SkillsSummaryProps) {
   return (
     <section className="flex flex-col gap-4 py-8">

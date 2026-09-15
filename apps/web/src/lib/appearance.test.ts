@@ -16,7 +16,7 @@ function resolve(search: string, stored: Partial<Record<'theme' | 'skin' | 'view
 }
 
 describe('resolveAppearance — precedencia URL > storage > default', () => {
-  it('URL válida gana a storage', () => {
+  it('valid URL takes precedence over storage', () => {
     const r = resolve('?theme=light&skin=terminal&view=timeline', {
       theme: 'dark',
       skin: 'vibrant',
@@ -28,7 +28,7 @@ describe('resolveAppearance — precedencia URL > storage > default', () => {
       hadUrlParams: true,
     });
   });
-  it('URL inválida cae a storage; storage inválido cae a default', () => {
+  it('invalid URL falls back to storage; invalid storage falls back to default', () => {
     expect(resolve('?skin=neon', { skin: 'editorial' }).skin).toBe('editorial');
     expect(resolve('?skin=neon', { skin: 'wat' }).skin).toBe('dev-tool');
     expect(resolve('', {}).theme).toBe('dark');
@@ -53,7 +53,7 @@ describe('applyAppearance / applyTheme', () => {
     delete document.documentElement.dataset.skin;
     localStorage.clear();
   });
-  it('dev-tool NO pone data-skin; otros sí', () => {
+  it('dev-tool does NOT set data-skin; others do', () => {
     applyAppearance({ theme: 'dark', skin: 'editorial' });
     expect(document.documentElement.dataset.skin).toBe('editorial');
     applyAppearance({ theme: 'dark', skin: 'dev-tool' });
@@ -101,7 +101,7 @@ describe('reapplyStoredAppearance', () => {
     expect(document.documentElement.dataset.skin).toBe('terminal');
   });
 
-  it('cae al fallback cuando storage está vacío o inválido', () => {
+  it('falls back to fallback when storage is empty or invalid', () => {
     localStorage.setItem('theme', 'purple');
     localStorage.removeItem('skin');
     document.documentElement.dataset.theme = 'dark';

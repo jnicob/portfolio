@@ -46,6 +46,7 @@ Complements `code-principles` (the _why_); this skill is the _how_ — concrete 
   `component.tsx` + `component.test.tsx` (+ `index.ts` only as public entry).
 - No barrel files except a package/folder public entry point.
 - Imports ordered: external → internal alias (`@/`) → relative. No unused exports.
+- Code comments, JSDocs, and inline explanations MUST ALWAYS be written in English.
 
 ## Tests
 

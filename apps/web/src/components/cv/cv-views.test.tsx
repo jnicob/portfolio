@@ -58,7 +58,7 @@ describe('las 3 vistas del CV', () => {
     expect(screen.queryAllByRole('button')).toHaveLength(0);
   });
 
-  it('CvTimeline marca la cronología de experiencia como lista ordenada con un item por entrada', () => {
+  it('CvTimeline marks the experience timeline as an ordered list with one item per entry', () => {
     render(<CvTimeline locale="en" strings={STRINGS} />);
     const lists = screen.getAllByRole('list');
     const timelineList = lists.find((list) => list.tagName === 'OL');
@@ -66,7 +66,7 @@ describe('las 3 vistas del CV', () => {
     expect(timelineList!.children).toHaveLength(experience.length);
   });
 
-  it('CvStandard expone los hooks de disposición del skin editorial', () => {
+  it('CvStandard exposes layout hooks for the editorial skin', () => {
     const { container } = render(<CvStandard locale="en" strings={STRINGS} />);
     expect(container.querySelector('[data-cv-sections]')).not.toBeNull();
     expect(container.querySelector('[data-cv-experience]')).not.toBeNull();

@@ -25,7 +25,7 @@ function renderSkillsSummary() {
 }
 
 describe('SkillsSummary', () => {
-  it('renderiza un heading y agrupa las skills por categoría con solo las categorías usadas', () => {
+  it('renders a heading and groups skills by category with only the used categories', () => {
     renderSkillsSummary();
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Skills');
 
@@ -46,7 +46,7 @@ describe('SkillsSummary', () => {
     expect(dots).toHaveLength(5);
   });
 
-  it('agrupa las categorías en un grid multi-columna compacto (no una fila por skill a ancho completo)', () => {
+  it('groups categories into a compact multi-column grid (not one full-width row per skill)', () => {
     const { container } = renderSkillsSummary();
     const heading = screen.getByRole('heading', { level: 2 });
     const grid = heading.nextElementSibling;

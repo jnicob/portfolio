@@ -5,7 +5,7 @@ import { SITE_URL } from '@/lib/seo';
 import sitemap from './sitemap';
 
 describe('sitemap', () => {
-  it('incluye todas las rutas fijas y dinámicas por locale, en absoluto', async () => {
+  it('includes all fixed and dynamic routes per locale, absolute', async () => {
     const entries = await sitemap();
     const urls = entries.map((entry) => entry.url);
 

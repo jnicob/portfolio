@@ -42,9 +42,9 @@ export function localizedPageMetadata({
       locale,
       type: 'website',
       /*
-       * Explícita a propósito: en static export la convención file-based
-       * ([locale]/opengraph-image.tsx) solo inyecta og:image en el segmento
-       * home; las rutas anidadas (cv, projects…) no la heredan.
+       * Purposefully explicit: in static export, the file-based convention
+       * ([locale]/opengraph-image.tsx) only injects og:image into the home
+       * segment; nested routes (cv, projects…) do not inherit it.
        */
       images: [{ url: `${SITE_URL}/${locale}/opengraph-image`, width: 1200, height: 630 }],
     },

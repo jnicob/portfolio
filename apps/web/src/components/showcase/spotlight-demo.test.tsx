@@ -42,9 +42,9 @@ describe('SpotlightDemo', () => {
     expect(screen.getByText(strings.caption)).toBeInTheDocument();
   });
 
-  // Perf (T30/qa-B1): mismo patrón que MediaKitDemo — el asset base (1200w) sirve de
-  // variante ligera; el `-hd` (2560w, T14) sirve pantallas grandes/retina vía srcSet.
-  it('ambas capas ofrecen la variante HD vía srcSet para pantallas grandes/retina', () => {
+  // Perf (T30/qa-B1): same pattern as MediaKitDemo — base asset (1200w) serves as
+  // lightweight variant; `-hd` (2560w, T14) serves large/retina screens via srcSet.
+  it('both layers offer the HD variant via srcSet for large/retina screens', () => {
     const { container } = render(<SpotlightDemo strings={strings} />);
     const portraitImages = Array.from(
       container.querySelectorAll<HTMLImageElement>(

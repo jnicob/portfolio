@@ -25,22 +25,22 @@ function stubMatchMedia(queries: Record<string, boolean>) {
 }
 
 type FrameStub = {
-  /** Ejecuta todos los frames agendados y aún no cancelados (simula el próximo repintado). */
+  /** Executes pending frames (simulates next repaint). */
   flush: () => void;
-  /** Nº de frames agendados y todavía ni ejecutados ni cancelados. */
+  /** Number of pending frames neither executed nor cancelled. */
   pendingCount: () => number;
 };
 
 /**
- * TiltCard agenda los 4 writes de `pointermove` en un único `requestAnimationFrame`
- * (batching) y cancela el frame anterior si llega un move más rápido que el
- * repintado. jsdom no trae un scheduler de rAF sincrónico ni determinista, así que
- * sin este stub no se puede observar el batching/cancelación de forma fiable.
+ * TiltCard schedules the 4 `pointermove` writes in a single `requestAnimationFrame`
+ * (batching) and cancels the previous frame if a move arrives faster than the
+ * repaint. jsdom does not provide a synchronous or deterministic rAF scheduler, so
+ * without this stub batching/cancellation cannot be reliably observed.
  *
- * Local a este describe (vía `vi.stubGlobal` + `afterEach(vi.unstubAllGlobals)`),
- * NO en `vitest.setup.ts`: otros tests del repo que dependan del comportamiento
- * async real de rAF (p.ej. los bucles de `AnimatedMetric`, que usan su propio
- * reloj manual ad-hoc) no deben heredar este stub global.
+ * Local to this describe (via `vi.stubGlobal` + `afterEach(vi.unstubAllGlobals)`),
+ * NOT in `vitest.setup.ts`: other tests in the repo that depend on real async
+ * rAF behavior (e.g. `AnimatedMetric` loops, which use their own
+ * ad-hoc manual clock) must not inherit this global stub.
  */
 function stubAnimationFrame(): FrameStub {
   let nextId = 0;
@@ -88,7 +88,7 @@ describe('TiltCard', () => {
     vi.unstubAllGlobals();
   });
 
-  it('con puntero fino, mover el ratón inclina (ambos ejes) y posiciona el glow', () => {
+  it('with a fine pointer, moving the mouse tilts (both axes) and positions the glow', () => {
     stubMatchMedia({ [FINE_POINTER_QUERY]: true, [REDUCED_MOTION_QUERY]: false });
     render(
       <TiltCard>
@@ -139,7 +139,7 @@ describe('TiltCard', () => {
     expect(root.querySelector('[aria-hidden]')).toHaveClass('opacity-[0.12]');
   });
 
-  it('en touch (sin puntero fino) es un div inerte: sin glow y sin inclinación', () => {
+  it('on touch (without fine pointer) is an inert div: no glow and no tilt', () => {
     stubMatchMedia({ [FINE_POINTER_QUERY]: false, [REDUCED_MOTION_QUERY]: false });
     render(
       <TiltCard>
@@ -154,7 +154,7 @@ describe('TiltCard', () => {
     expect(root.querySelector('[aria-hidden]')).not.toBeInTheDocument();
   });
 
-  it('con rect de ancho/alto 0 (layout aún no medido) no escribe custom properties', () => {
+  it('with rect of width/height 0 (layout not yet measured) does not write custom properties', () => {
     stubMatchMedia({ [FINE_POINTER_QUERY]: true, [REDUCED_MOTION_QUERY]: false });
     render(
       <TiltCard>
@@ -170,7 +170,7 @@ describe('TiltCard', () => {
     expect(frame.pendingCount()).toBe(0);
   });
 
-  it('reenvía className al elemento raíz (para posicionar el glow con `relative`)', () => {
+  it('forwards className to the root element (to position the glow with `relative`)', () => {
     stubMatchMedia({ [FINE_POINTER_QUERY]: true, [REDUCED_MOTION_QUERY]: false });
     render(
       <TiltCard className="relative">
@@ -180,7 +180,7 @@ describe('TiltCard', () => {
     expect(getRoot()).toHaveClass('relative');
   });
 
-  it('maxTilt escala la magnitud de la inclinación', () => {
+  it('maxTilt scales the tilt magnitude', () => {
     stubMatchMedia({ [FINE_POINTER_QUERY]: true, [REDUCED_MOTION_QUERY]: false });
     render(
       <TiltCard maxTilt={8}>
@@ -196,7 +196,7 @@ describe('TiltCard', () => {
   });
 
   describe('batching de rAF', () => {
-    it('agenda los writes en un único rAF y cancela el frame anterior si llega un move más rápido que el repintado', () => {
+    it('schedules writes in a single rAF and cancels the previous frame if a move arrives faster than repaint', () => {
       stubMatchMedia({ [FINE_POINTER_QUERY]: true, [REDUCED_MOTION_QUERY]: false });
       render(
         <TiltCard>
@@ -206,20 +206,20 @@ describe('TiltCard', () => {
       const root = getRoot();
       mockRect(root, { left: 0, top: 0, width: 200, height: 100 });
 
-      // Dos moves antes de que corra ningún frame (el navegador no ha repintado aún).
+      // Two moves before frame runs (browser has not repainted yet).
       fireEvent.pointerMove(root, { clientX: 0, clientY: 0 });
       fireEvent.pointerMove(root, { clientX: 200, clientY: 0 });
 
-      // El primer frame fue cancelado: solo queda uno vivo, y ninguno corrió todavía.
+      // First frame was cancelled: only one alive, none executed yet.
       expect(frame.pendingCount()).toBe(1);
       expect(root.style.getPropertyValue('--tilt-ry')).toBe('');
 
       frame.flush();
-      // Se aplica la posición del ÚLTIMO move (clientX 200 → 4.00deg), no la del primero (0 → -4.00deg).
+      // Applies position of LAST move (clientX 200 → 4.00deg), not first (0 → -4.00deg).
       expect(root.style.getPropertyValue('--tilt-ry')).toBe('4.00deg');
     });
 
-    it('pointerLeave cancela un frame de tilt en vuelo: el reset a 0deg no queda sobreescrito después', () => {
+    it('pointerLeave cancels an in-flight tilt frame: the reset to 0deg is not overwritten afterwards', () => {
       stubMatchMedia({ [FINE_POINTER_QUERY]: true, [REDUCED_MOTION_QUERY]: false });
       render(
         <TiltCard>
@@ -236,7 +236,7 @@ describe('TiltCard', () => {
       expect(frame.pendingCount()).toBe(0);
       expect(root.style.getPropertyValue('--tilt-ry')).toBe('0deg');
 
-      // Si el frame cancelado igual corriera, sobreescribiría el reset con la posición vieja.
+      // If the canceled frame ran anyway, it would overwrite the reset with the old position.
       frame.flush();
       expect(root.style.getPropertyValue('--tilt-ry')).toBe('0deg');
     });
@@ -261,7 +261,7 @@ describe('TiltCard', () => {
   });
 
   describe('will-change', () => {
-    it('no aplica will-change antes de ningún hover (con tilt habilitado)', () => {
+    it('does not apply will-change before any hover (with tilt enabled)', () => {
       stubMatchMedia({ [FINE_POINTER_QUERY]: true, [REDUCED_MOTION_QUERY]: false });
       render(
         <TiltCard>

@@ -16,10 +16,10 @@ function stubReducedMotion(matches: boolean) {
 }
 
 /**
- * jsdom no calcula layout real: `getBoundingClientRect` siempre devuelve un rect en
- * cero, así que el diff FLIP (before.left - after.left) sería siempre 0. Se stubea
- * con un valor que crece en cada llamada para simular un reflow real (mismo patrón
- * que `mockRect` en spotlight-reveal.test.tsx).
+ * jsdom does not compute real layout: `getBoundingClientRect` always returns a rect at
+ * zero, so the FLIP diff (before.left - after.left) would always be 0. It is stubbed
+ * with a value that grows on each call to simulate a real reflow (same pattern
+ * as `mockRect` in spotlight-reveal.test.tsx).
  */
 function stubGrowingRects() {
   let call = 0;
@@ -99,7 +99,7 @@ describe('FilterGallery', () => {
     delete (HTMLElement.prototype as { animate?: unknown }).animate;
   });
 
-  it('sin filtro muestra todo; filtrar por categoría oculta el resto (no controlado)', () => {
+  it('shows everything without filter; filtering by category hides the rest (uncontrolled)', () => {
     render(
       <FilterGallery
         items={ITEMS}
@@ -173,7 +173,7 @@ describe('visibleIds (v0.6)', () => {
     delete (HTMLElement.prototype as { animate?: unknown }).animate;
   });
 
-  it('interseca visibleIds con el filtro de categoría', () => {
+  it('intersects visibleIds with the category filter', () => {
     const items = [
       { id: 'a', categories: ['image'], node: <span>A</span> },
       { id: 'b', categories: ['image'], node: <span>B</span> },
@@ -182,7 +182,7 @@ describe('visibleIds (v0.6)', () => {
     render(<FilterGallery items={items} filter="image" visibleIds={['b', 'c']} label="G" />);
     expect(screen.queryByText('A')).not.toBeInTheDocument();
     expect(screen.getByText('B')).toBeInTheDocument();
-    expect(screen.queryByText('C')).not.toBeInTheDocument(); // categoría lo excluye
+    expect(screen.queryByText('C')).not.toBeInTheDocument(); // category excludes it
   });
 
   it('sin visibleIds mantiene el comportamiento actual', () => {
@@ -233,13 +233,13 @@ describe('exit animation (v0.6)', () => {
     const { handles } = stubAnimateWithHandles();
     const { rerender } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
     rerender(<FilterGallery items={ITEMS} filter="video" label="G" />);
-    expect(screen.getByText('A')).toBeInTheDocument(); // saliendo, aún montado
+    expect(screen.getByText('A')).toBeInTheDocument(); // exiting, still mounted
 
     act(() => handles.forEach((handle) => handle.onfinish?.()));
     expect(screen.queryByText('A')).not.toBeInTheDocument();
   });
 
-  it('el item saliente queda fuera del árbol accesible mientras se desvanece', () => {
+  it('keeps the exiting item out of the accessible tree while fading out', () => {
     stubAnimateWithHandles();
     const { rerender } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
     rerender(<FilterGallery items={ITEMS} filter="video" label="G" />);
@@ -266,7 +266,7 @@ describe('exit animation (v0.6)', () => {
     expect(screen.queryByText('A')).not.toBeInTheDocument();
   });
 
-  it('si el item saliente vuelve a ser visible antes de terminar, cancela la animación y reaparece accesible', () => {
+  it('if the exiting item becomes visible again before finishing, cancels the animation and reappears accessible', () => {
     const { handles, animate } = stubAnimateWithHandles();
     const { rerender } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
     rerender(<FilterGallery items={ITEMS} filter="video" label="G" />);
@@ -280,7 +280,7 @@ describe('exit animation (v0.6)', () => {
 
     // El onfinish del handle cancelado es un "stale callback": no debe reabrir una
     // nueva fase de salida (nada de `data-fg-exiting` de vuelta) ni disparar una
-    // animación extra — sin la guarda de reentrada, dropExiting('a') no rompería
+    // extra animation — without the reentrancy guard, dropExiting('a') wouldn't break
     // nada visualmente (el item sigue en `visible`), pero esto confirma que ni
     // siquiera se re-procesa como si acabara de salir.
     const animateCallsBeforeStaleFinish = animate.mock.calls.length;
@@ -294,10 +294,10 @@ describe('exit animation (v0.6)', () => {
   it('desmonta con una salida en curso: cancela la Animation pendiente (mecanismo, no solo ausencia de crash)', () => {
     // Igual que en api-request-player.test.tsx: React 19 vuelve un no-op silencioso
     // el setState post-unmount (ya no hay warning "state update on an unmounted
-    // component"), así que "no lanza / no hace console.error" NO discrimina por sí
-    // solo si el cleanup deja de cancelar la Animation. La aserción real es que
-    // `cancel()` se invocó en el handle al desmontar; el spy de `console.error` es
-    // una comprobación adicional de que tampoco aparece ningún otro warning.
+    // component"), so "does not throw / does not console.error" does NOT distinguish on its
+    // own whether cleanup stops canceling the Animation. The real assertion is that
+    // `cancel()` was called on the handle on unmount; the `console.error` spy is
+    // an additional check that no other warning appears either.
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const { handles } = stubAnimateWithHandles();
     const { rerender, unmount } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
@@ -307,7 +307,7 @@ describe('exit animation (v0.6)', () => {
     unmount();
     expect(handles[0]?.cancel).toHaveBeenCalled();
 
-    // Un `onfinish` que dispare después de desmontar (algunos entornos lo hacen
+    // An `onfinish` that fires after unmount (some environments do
     // incluso tras `cancel()`) no debe lanzar ni imprimir warnings.
     expect(() => act(() => handles[0]?.onfinish?.())).not.toThrow();
     expect(consoleError).not.toHaveBeenCalled();
@@ -341,7 +341,7 @@ describe('layout masonry/justified', () => {
     expect(grid.style.gridTemplateColumns).toBe('repeat(3, minmax(0, 1fr))');
   });
 
-  it('masonry posiciona los ítems y fija la altura del contenedor', () => {
+  it('masonry positions items and sets container height', () => {
     stubResizeObserver();
     render(<FilterGallery items={RATIO_ITEMS} label="Demo" layout="masonry" />);
 
@@ -356,7 +356,7 @@ describe('layout masonry/justified', () => {
     expect(grid.style.height).not.toBe('');
   });
 
-  it('usa aspectRatio 1 cuando el ítem no lo declara', () => {
+  it('uses aspectRatio 1 when the item does not declare it', () => {
     stubResizeObserver();
     const itemWithoutRatio = { id: 'square', categories: [], node: <span>Square</span> };
     render(<FilterGallery items={[itemWithoutRatio]} label="Demo" layout="masonry" />);
@@ -382,7 +382,7 @@ describe('layout masonry/justified', () => {
     );
   });
 
-  it('cambia layout en caliente sin perder ítems', () => {
+  it('switches layout on the fly without losing items', () => {
     stubResizeObserver();
     stubGrowingRects();
     const animate = vi.fn();
@@ -400,7 +400,7 @@ describe('layout masonry/justified', () => {
     expect(animate).toHaveBeenCalled();
   });
 
-  it('recoloca los supervivientes antes de terminar el fade del ítem saliente', () => {
+  it('repositions surviving items before the exiting item fade finishes', () => {
     stubResizeObserver();
     stubAnimateWithHandles();
     const { rerender } = render(
@@ -415,7 +415,7 @@ describe('layout masonry/justified', () => {
     expect(screen.getByText('C').closest('li')?.style.top).toBe('0px');
   });
 
-  it('grid saca el ítem saliente del flujo en el mismo beat del filtrado', () => {
+  it('grid removes the exiting item from flow on the same filtering beat', () => {
     stubAnimateWithHandles();
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
       this: HTMLElement,

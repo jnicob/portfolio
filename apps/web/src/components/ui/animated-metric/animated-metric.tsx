@@ -6,12 +6,8 @@ import { prefersReducedMotion } from '@/lib/reduced-motion';
 const DEFAULT_DURATION_MS = 900;
 
 /**
- * Reproduce el patrón del literal original (prefijo, separador de miles, sufijo) sobre n.
- * El segmento numérico solo puede empezar y terminar en dígito (nunca en el separador de
- * miles ni en un espacio): así "3 (create, list, get-by-id)" anima solo el "3" y conserva
- * el resto -incluido el espacio antes del paréntesis- byte a byte, y una lista de texto sin
- * dígitos como "Kling, WAN" (donde ", " no es un separador de miles) nunca se confunde con
- * un número.
+ * Formats number `n` matching original template pattern (prefix, thousands separator, suffix).
+ * Numeric segment starts and ends with a digit, preserving surrounding text.
  */
 export function formatLike(original: string, n: number): string {
   if (!/\d/.test(original)) return original;
@@ -25,35 +21,35 @@ export function formatLike(original: string, n: number): string {
 }
 
 type AnimatedMetricProps = {
-  /** Literal de la métrica tal cual se muestra, p.ej. `'25+'` o `'1.000+'`. */
+  /** Metric literal as displayed, e.g. `'25+'` or `'1.000+'`. */
   value: string;
   durationMs?: number;
 };
 
 /**
- * Anima un número 0→N al entrar en viewport (IntersectionObserver, una vez),
- * conservando el formato del literal original. El primer render (SSR y
- * cliente por igual) siempre muestra el valor final, evitando un mismatch
- * de hidratación; el conteo 0→N solo arranca cuando el elemento intersecta.
- * Sin IO (SSR/tests) o con `prefers-reduced-motion`, no hay animación: el
- * valor final se queda tal cual.
- * El nodo animado es decorativo (`aria-hidden`); el valor real vive en `sr-only`
- * para que quede accesible desde el primer render.
+ * Animates a number 0→N upon entering the viewport (IntersectionObserver, once),
+ * preserving the format of the original literal. The first render (SSR and
+ * client alike) always shows the final value, avoiding a hydration
+ * mismatch; the 0→N count only starts when the element intersects.
+ * Without IO (SSR/tests) or with `prefers-reduced-motion`, there is no animation: the
+ * final value remains as-is.
+ * The animated node is decorative (`aria-hidden`); the real value lives in `sr-only`
+ * so that it remains accessible from the first render.
  */
 export function AnimatedMetric({ value, durationMs = DEFAULT_DURATION_MS }: AnimatedMetricProps) {
   const targetRef = useRef<HTMLSpanElement>(null);
   // El estado inicial es siempre el valor final, igual en servidor y cliente:
-  // el servidor (sin IntersectionObserver) no tiene otra opción, así que el
+  // Server (without IntersectionObserver) renders final value to prevent hydration mismatch.
   // cliente debe pintar lo mismo en su primer render para no producir un
-  // mismatch de hidratación. El conteo 0→N arranca solo al intersectar (ver
-  // efecto más abajo), nunca antes del primer paint.
+  // hydration mismatch. The 0→N count starts only upon intersecting (see
+  // effect below), never before the first paint.
   const [display, setDisplay] = useState(value);
   const hasDigits = /\d/.test(value);
   const target = Number((/[\d.,\s]+/.exec(value)?.[0] ?? '0').replace(/[.,\s]/g, ''));
 
   useEffect(() => {
     const node = targetRef.current;
-    // Métricas sin dígitos (p.ej. listas de texto como "Kling, WAN") no tienen nada que
+    // Metrics without digits (e.g. text lists like "Kling, WAN") have nothing to animate.
     // animar: se quedan en el literal directo, sin observar el elemento.
     if (
       !node ||

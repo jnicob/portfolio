@@ -28,7 +28,7 @@ describe('contact-security (nico-security)', () => {
       expect(clean).not.toContain('<iframe');
     });
 
-    it('elimina saltos de línea CRLF en cabeceras de email', () => {
+    it('removes CRLF line breaks in email headers', () => {
       const headerWithInjection = 'Asunto\r\nBcc: victim@example.com';
       const cleanHeader = sanitizeHeader(headerWithInjection);
       expect(cleanHeader).not.toContain('\r');
@@ -38,7 +38,7 @@ describe('contact-security (nico-security)', () => {
   });
 
   describe('verifyHoneypot', () => {
-    it('retorna true para humanos (campo vacío u omiso)', () => {
+    it('returns true for humans (empty or omitted field)', () => {
       expect(verifyHoneypot('')).toBe(true);
       expect(verifyHoneypot(undefined)).toBe(true);
       expect(verifyHoneypot(null)).toBe(true);
@@ -52,7 +52,7 @@ describe('contact-security (nico-security)', () => {
   });
 
   describe('checkRateLimit', () => {
-    it('permite peticiones dentro del límite', () => {
+    it('allows requests within the limit', () => {
       const res1 = checkRateLimit('user-1', 2, 60000);
       expect(res1.allowed).toBe(true);
       expect(res1.remaining).toBe(1);
@@ -62,7 +62,7 @@ describe('contact-security (nico-security)', () => {
       expect(res2.remaining).toBe(0);
     });
 
-    it('bloquea peticiones al exceder el límite', () => {
+    it('blocks requests when exceeding the limit', () => {
       checkRateLimit('user-2', 1, 60000);
       const blocked = checkRateLimit('user-2', 1, 60000);
       expect(blocked.allowed).toBe(false);

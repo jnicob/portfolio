@@ -13,7 +13,7 @@ const ITEMS = [
 ];
 
 describe('ShowcaseIndex', () => {
-  it('renderiza la lista filtrable de escritorio y el select de móvil', () => {
+  it('renders the desktop filterable list and the mobile select', () => {
     render(
       <ShowcaseIndex
         items={ITEMS}
@@ -46,7 +46,7 @@ describe('ShowcaseIndex', () => {
     }
   });
 
-  it('seleccionar una opción en la lista invoca onSelect con su id', async () => {
+  it('selecting an option in the list invokes onSelect with its id', async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
     window.location.hash = '';
@@ -68,7 +68,7 @@ describe('ShowcaseIndex', () => {
     }
   });
 
-  it('seleccionar una opción en el select móvil invoca onSelect con su id', async () => {
+  it('selecting an option in the mobile select invokes onSelect with its id', async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
     render(
@@ -87,7 +87,7 @@ describe('ShowcaseIndex', () => {
     }
   });
 
-  it('marca la opción de selectedId como aplicada en la lista (aria-current)', () => {
+  it('marks the selectedId option as applied in the list (aria-current)', () => {
     render(
       <ShowcaseIndex
         items={ITEMS}

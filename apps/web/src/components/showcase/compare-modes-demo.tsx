@@ -9,7 +9,7 @@ const LANDSCAPE_SRC_SET = '/demo/landscape-840.webp 840w, /demo/landscape.webp 1
 /** Figure a ancho completo del contenido (sin grid), en cualquier breakpoint. */
 const FULL_WIDTH_SIZES = '(min-width: 1024px) 1000px, calc(100vw - 3rem)';
 
-/** Orden de exhibición de los modos en la botonera (spec B4). */
+/** Display order of the modes in the button bar (spec B4). */
 const MODES = [
   'wipe',
   'onion',
@@ -31,13 +31,13 @@ export type CompareModesDemoStrings = {
   /** Anunciado al reanudar el hover-follow del divisor (modos wipe/onion, C6). */
   resumeLabel: string;
   /**
-   * Texto del switch de pausa/reanudación del modo blink, cuando está corriendo (pasa a
-   * "pausado" al pulsar). Clave i18n propia (design review F3.6 T21, Minor del code
-   * review): antes reutilizaba `pauseLabel`/`resumeLabel`, pensados para el hover-follow
-   * de wipe/onion, no para este switch.
+   * Text for the blink mode pause/resume switch when running (switches to
+   * "paused" on press). Dedicated i18n key (design review F3.6 T21, code review
+   * Minor): previously reused `pauseLabel`/`resumeLabel`, intended for wipe/onion
+   * hover-follow, not for this switch.
    */
   blinkPauseLabel: string;
-  /** Texto del switch de blink cuando está pausado (pasa a "corriendo" al pulsar). */
+  /** Text for the blink switch when paused (switches to "running" on press). */
   blinkResumeLabel: string;
   /** Texto del figcaption. */
   caption: string;
@@ -46,15 +46,15 @@ export type CompareModesDemoStrings = {
 type Props = { strings: CompareModesDemoStrings };
 
 /**
- * Botonera + CompareSlider que alterna `compareMode` (spec B4, F3.6): misma
- * foto de paisaje que las demos de arriba (T11), cuatro ejes de comparación.
+ * Button group + CompareSlider that toggles `compareMode` (spec B4, F3.6): same
+ * landscape photo as the demos above (T11), four comparison axes.
  *
- * El slider se remonta en cada cambio de modo (`key={mode}`): `blink`
- * inicializa su estado "running" en el mount (`useState(() => …)` dentro del
- * paquete) y NO se reinicializa si solo cambia la prop `compareMode` en un
- * componente ya montado. Sin este remount, volver a "blink" tras haberlo
- * pausado lo dejaría pausado para siempre (hallazgo de la review de T5 en
- * media-kit 0.5) — el `key` fuerza a React a desmontar/montar de nuevo.
+ * The slider remounts on every mode change (`key={mode}`): `blink`
+ * initializes its "running" state on mount (`useState(() => …)` inside the
+ * package) and is NOT reinitialized if only the `compareMode` prop changes on an
+ * already mounted component. Without this remount, returning to "blink" after having
+ * paused it would leave it paused forever (finding from T5 review in
+ * media-kit 0.5) — the `key` forces React to unmount/mount again.
  */
 export function CompareModesDemo({ strings }: Props) {
   const [mode, setMode] = useState<CompareSliderMode>('wipe');

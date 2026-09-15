@@ -1,7 +1,7 @@
 /**
- * Const-object unions del dominio, SIN dependencias: este módulo entra en el
- * bundle cliente (switchers, appearance), así que no puede importar zod.
- * Los schemas de `schemas.ts` derivan sus enums de estas constantes.
+ * Domain const-object unions, WITHOUT dependencies: this module enters the
+ * client bundle (switchers, appearance), so it cannot import zod.
+ * Schemas in `schemas.ts` derive their enums from these constants.
  */
 
 export const THEMES = ['dark', 'light'] as const;

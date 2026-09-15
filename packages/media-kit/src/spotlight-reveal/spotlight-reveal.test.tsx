@@ -18,7 +18,7 @@ function mockRect(element: HTMLElement, rect: Partial<DOMRect>) {
 }
 
 describe('SpotlightReveal', () => {
-  it('renderiza lados MediaSource como imágenes y expone el aria-label', () => {
+  it('renders MediaSource sides as images and exposes aria-label', () => {
     render(
       <SpotlightReveal
         base={{ src: '/a.png', alt: 'base' }}
@@ -50,7 +50,7 @@ describe('SpotlightReveal', () => {
     expect(root.style.getPropertyValue('--mk-spot-y')).toBe('25%');
   });
 
-  it('el toque/presión táctil en pointerDown activa y posiciona la lente inmediatamente', () => {
+  it('touch/touch pressure on pointerDown activates and positions the lens immediately', () => {
     render(<SpotlightReveal base={<div />} reveal={<div />} label="S" />);
     const root = screen.getByLabelText('S');
     mockRect(root, { left: 0, top: 0, width: 200, height: 100 });
@@ -85,7 +85,7 @@ describe('SpotlightReveal', () => {
     expect(root.style.getPropertyValue('--mk-spot-x')).toBe('51%');
   });
 
-  it('las flechas acotan la posición a 0-100', () => {
+  it('arrows clamp position to 0-100', () => {
     render(
       <SpotlightReveal
         base={<div />}
@@ -129,7 +129,7 @@ describe('SpotlightReveal', () => {
     expect(root.style.getPropertyValue('--mk-spot-radius')).toBe('60px');
   });
 
-  it('la capa reveal está oculta a lectores de pantalla', () => {
+  it('reveal layer is hidden from screen readers', () => {
     render(<SpotlightReveal base={<div />} reveal={<div />} label="S" />);
     const root = screen.getByLabelText('S');
     const reveal = root.querySelector('.mk-spotlight__reveal');
@@ -154,7 +154,7 @@ describe('SpotlightReveal', () => {
     expect(badges[1]).toHaveTextContent('Después');
   });
 
-  it('sin overlayLabels no hay badges (regresión)', () => {
+  it('without overlayLabels there are no badges (regression)', () => {
     render(<SpotlightReveal base={<div />} reveal={<div />} label="S" />);
     expect(document.querySelectorAll('.mk-spotlight__badge')).toHaveLength(0);
   });
@@ -169,18 +169,18 @@ describe('SpotlightReveal', () => {
     );
     expect(screen.getByAltText('Antes')).toBeInTheDocument();
     const root = screen.getByLabelText('S');
-    // El alt de "Después" vive dentro de la capa aria-hidden: sigue en el DOM.
+    // The alt for "After" lives inside the aria-hidden layer: it remains in the DOM.
     expect(root.querySelector('img[alt="Después"]')).toBeInTheDocument();
   });
 
-  // Regresión (bug reportado por Nico, F3.6 bloque D): "SpotlightReveal va muy
-  // lento" al seguir el puntero. Causa raíz confirmada en navegador real: la
-  // transición CSS de 160ms vivía en `clip-path`, que empaqueta posición (x/y) Y
-  // radio en un único valor — cada `pointermove` (solo cambia x/y) quedaba
-  // atrapado en esa transición, y como pointermove dispara mucho más rápido que
-  // 160ms, el círculo quedaba persiguiendo al cursor en vez de seguirlo 1:1
-  // (medido: un salto instantáneo de posición tardaba ~160ms en reflejarse).
-  // Fix: `--mk-spot-active-radius` (0 inactivo / radio activo) es la ÚNICA
+  // Regression (bug reported by Nico, F3.6 block D): "SpotlightReveal is very
+  // sluggish" following the pointer. Confirmed root cause in a real browser: the
+  // 160ms CSS transition lived on `clip-path`, which packs position (x/y) AND
+  // radius into a single value — each `pointermove` (only changes x/y) got
+  // trapped in that transition, and since pointermove fires much faster than
+  // 160ms, the circle ended up chasing the cursor instead of following it 1:1
+  // (measured: an instantaneous position jump took ~160ms to reflect).
+  // Fix: `--mk-spot-active-radius` (0 inactive / active radius) is the ONLY
   // variable que anima (ver styles.css); `--mk-spot-radius` (usado por el
   // anillo) se mantiene fijo siempre, sin depender de `active`.
   describe('--mk-spot-active-radius (mecanismo del fix de lag, F3.6 bloque D)', () => {
@@ -212,7 +212,7 @@ describe('SpotlightReveal', () => {
       expect(root.style.getPropertyValue('--mk-spot-radius')).toBe('110px');
     });
 
-    it('con foco de teclado (sin puntero) también pasa al radio configurado', () => {
+    it('with keyboard focus (without pointer) also switches to configured radius', () => {
       render(<SpotlightReveal base={<div />} reveal={<div />} label="S" />);
       const root = screen.getByLabelText('S');
       expect(root.style.getPropertyValue('--mk-spot-active-radius')).toBe('0px');
@@ -221,7 +221,7 @@ describe('SpotlightReveal', () => {
     });
   });
 
-  it('un MediaSource en reveal respeta su propio alt (no lo fuerza a vacío)', () => {
+  it('a MediaSource in reveal respects its own alt (does not force it to empty)', () => {
     render(
       <SpotlightReveal
         base={{ src: '/a.png', alt: 'base' }}

@@ -134,7 +134,7 @@ describe('CvContent', () => {
     expect(screen.getAllByRole('radio', { name: 'Compact' })[0]!).toBeChecked();
   });
 
-  it('cambiar la vista desde el switcher persiste la elección', async () => {
+  it('changing the view from the switcher persists the choice', async () => {
     const user = userEvent.setup();
     const { CvContent } = await importFreshComponents();
     render(<CvContent locale="en" strings={STRINGS} switcherLabels={SWITCHER_LABELS} />);
@@ -145,7 +145,7 @@ describe('CvContent', () => {
     expect(screen.getByRole('radio', { name: 'Compact' })).toBeChecked();
   });
 
-  it('renderiza el shareSlot recibido después del switcher', async () => {
+  it('renders the received shareSlot after the switcher', async () => {
     const { CvContent } = await importFreshComponents();
     render(
       <CvContent
@@ -159,7 +159,7 @@ describe('CvContent', () => {
     expect(screen.getByRole('button', { name: 'Share' })).toBeInTheDocument();
   });
 
-  it('con shareLabels, el botón de compartir copia una URL con la vista activa', async () => {
+  it('with shareLabels, the share button copies a URL with the active view', async () => {
     const user = userEvent.setup();
     const writeText = vi.fn().mockResolvedValue(undefined);
     stubClipboardAfterSetup(writeText);
@@ -181,7 +181,7 @@ describe('CvContent', () => {
     expect(writeText).toHaveBeenCalledWith(expect.stringContaining('view=compact'));
   });
 
-  it('con printLabel, renderiza el botón de imprimir que llama a window.print()', async () => {
+  it('with printLabel, renders the print button that calls window.print()', async () => {
     const user = userEvent.setup();
     const printSpy = vi.spyOn(window, 'print').mockImplementation(() => {});
     const { CvContent } = await importFreshComponents();

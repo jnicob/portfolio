@@ -2,15 +2,15 @@ import { describe, expect, it } from 'vitest';
 import es from '../../messages/es.json';
 import en from '../../messages/en.json';
 
-/** Valor JSON genérico, sin `any`, suficiente para recorrer el árbol de mensajes. */
+/** Generic JSON value, without `any`, sufficient to traverse the message tree. */
 type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
 /**
- * Recorre recursivamente un objeto de mensajes y devuelve el set de paths
- * (dot-notation) de todas las claves hoja (no-objeto). Los arrays se tratan
- * como hoja (no se indexa dentro de ellos): no hay ninguno en los mensajes
- * actuales y de haberlo, comparar su longitud/contenido excede el propósito
- * de este test de paridad estructural.
+ * Recursively traverses a messages object and returns the set of paths
+ * (dot-notation) of all leaf keys (non-object). Arrays are treated
+ * as leaves (they are not indexed into): there are none in the current
+ * messages and if there were, comparing their length/content exceeds the purpose
+ * of this structural parity test.
  */
 function leafKeyPaths(node: JsonValue, prefix = ''): Set<string> {
   const paths = new Set<string>();

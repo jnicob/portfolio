@@ -9,11 +9,11 @@ type FeaturedProjectsProps = {
   locale: Locale;
   title: string;
   moreTitle: string;
-  /** Plantilla localizada con placeholder `{count}` para la MoreProjectsCard. */
+  /** Localized template with `{count}` placeholder for MoreProjectsCard. */
   moreCountTemplate: string;
 };
 
-/** Grid de proyectos destacados + link-card final a /projects. RSC-compatible: sin hooks. */
+/** Featured projects grid + final link-card to /projects. RSC-compatible: no hooks. */
 export function FeaturedProjects({
   locale,
   title,
@@ -21,11 +21,11 @@ export function FeaturedProjects({
   moreCountTemplate,
 }: FeaturedProjectsProps) {
   const featured = projects.filter((project) => project.featured);
-  // Design review F3.6 T21 ("card huérfana 768"): en el rango sm (640-1024px, incluye
-  // 768) el grid es de 2 columnas (lg:grid-cols-3 no aplica todavía). Con un nº impar
-  // de destacadas, la última queda sola en su fila con un hueco vacío al lado. Se
+  // Design review F3.6 T21 ("orphan card 768"): in the sm range (640-1024px, includes
+  // 768) the grid is 2 columns (lg:grid-cols-3 does not apply yet). With an odd number
+  // of featured items, the last one is left alone in its row with an empty gap beside it. It
   // detecta con el nº real de destacadas (no hardcodeado) para no romper si cambia:
-  // si es impar, esa última card pasa a ocupar las 2 columnas en sm y vuelve a 1 en lg
+  // if it is odd, that last card comes to occupy the 2 columns in sm and goes back to 1 in lg
   // (donde ya encaja justa en la fila de 3).
   const isOrphanedAtSm = featured.length % 2 === 1;
 

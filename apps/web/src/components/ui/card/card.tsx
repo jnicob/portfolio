@@ -15,7 +15,7 @@ export function CardHeader({ className, ...props }: ComponentProps<'div'>) {
 }
 
 type CardTitleProps = ComponentProps<'h3'> & {
-  /** Nivel de heading según el contexto (jerarquía sin saltos); h3 por defecto. */
+  /** Heading level depending on context (hierarchical heading without skips); h3 default. */
   as?: 'h2' | 'h3';
 };
 

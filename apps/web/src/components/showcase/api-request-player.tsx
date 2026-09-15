@@ -36,7 +36,7 @@ export type ApiRequestPlayerLabels = {
   copy: string;
   copied: string;
   done: string;
-  /** Contenido del `<pre>` de respuesta en `state === 'idle'`, antes de la primera ejecución. */
+  /** Response `<pre>` content when `state === 'idle'`, before the first run. */
   responsePlaceholder: string;
   /** Nombre accesible del tab "Preview" (T13, columna visor Preview|Response). */
   previewTab: string;
@@ -46,15 +46,15 @@ export type ApiRequestPlayerLabels = {
   previewIdle: string;
   /** `alt` de la imagen de preview mostrada en `state === 'done'`. */
   previewAlt: string;
-  /** aria-label del botón ⛶ que precarga el HD y abre el lightbox. */
+  /** aria-label for the ⛶ button that preloads HD and opens the lightbox. */
   fullscreen: string;
   previewError: string;
   audio: { play: string; pause: string };
   /**
-   * Chrome del `MediaLightbox` (zoom, fit, cerrar, ayuda…). Reutiliza el mismo
-   * bloque i18n compartido (`lightboxLabels`) que `GalleryDemo`/`MediaKitDemo`:
-   * sin esto el lightbox cae a sus labels por defecto EN INGLÉS incluso en /es/,
-   * un finding seguro de review (regla del proyecto: i18n completo en toda UI visible).
+   * Chrome of `MediaLightbox` (zoom, fit, close, help…). Reuses the same
+   * shared i18n block (`lightboxLabels`) as `GalleryDemo`/`MediaKitDemo`:
+   * without this the lightbox falls back to its default labels IN ENGLISH even on /es/,
+   * a guaranteed review finding (project rule: full i18n on all visible UI).
    */
   lightbox: MediaLightboxLabels;
 };
@@ -158,22 +158,22 @@ function renderDonePreview(
 }
 
 /**
- * Demo interactiva de un endpoint (T19, split v2 en T13): columna request
- * (método+path, `<pre>` de la request, botón Run al pie) + columna visor
- * (fila de estado SIEMPRE reservada `min-h-8` + Tabs Preview|Response). El
- * botón Run simula una llamada real — 600 ms de latencia (`pending`, spinner)
- * y la respuesta escribiéndose en streaming (rAF, ~14 car/frame) con caret,
- * hasta `done` (status badge + botón copy + preview de imagen con fullscreen).
- * Con `prefers-reduced-motion` la respuesta aparece completa, sin typing.
- * Reejecutable desde cualquier estado.
+ * Interactive endpoint demo (T19, split v2 in T13): request column
+ * (method+path, request `<pre>`, Run button at the bottom) + viewer column
+ * (status row ALWAYS reserved `min-h-8` + Tabs Preview|Response). The
+ * Run button simulates a real call — 600 ms latency (`pending`, spinner)
+ * and the response being written via streaming (rAF, ~14 chars/frame) with caret,
+ * until `done` (status badge + copy button + image preview with fullscreen).
+ * With `prefers-reduced-motion` the response appears complete, without typing.
+ * Rerunable from any state.
  *
- * Cero layout shift (T13): todo estado vive dentro de cajas de altura fija
- * (`min-h-8` la fila de estado; `h-64` ambos paneles de Tabs, que además
- * quedan siempre montados — B2 de F3.6 — así que cambiar de tab tampoco
- * desplaza nada). Nada se monta/desmonta fuera de esas cajas.
+ * Zero layout shift (T13): all state lives inside fixed-height boxes
+ * (`min-h-8` for the status row; `h-64` for both Tab panels, which also
+ * remain always mounted — B2 of F3.6 — so switching tabs doesn't
+ * shift anything either). Nothing mounts/unmounts outside of those boxes.
  *
- * Reutilizada en F4 con request/response reales del playground (`examples`/`labels`
- * son props, nada hardcodeado en el componente salvo el propio comportamiento).
+ * Reused in F4 with real playground request/response (`examples`/`labels`
+ * are props, nothing hardcoded in the component except the behavior itself).
  */
 export function ApiRequestPlayer({ examples, labels }: Props) {
   const [exampleId, setExampleId] = useState<ApiDemoExampleId>(examples[0]?.id ?? 'image');
@@ -264,7 +264,7 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
     }
   }
 
-  /** Precarga el HD de la preview en hover/focus del botón ⛶, antes del click real. */
+  /** Preloads the preview HD on hover/focus of the ⛶ button, before the actual click. */
   function preloadPreview() {
     if (previewMedia) preloadFullSources([previewMedia]);
   }
@@ -273,7 +273,7 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      {/* Columna request: método+path + <pre> de la request + Run al pie de la columna. */}
+      {/* Request column: method+path + request <pre> + Run at the bottom of the column. */}
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <label className="flex h-9 items-center gap-2">
@@ -289,7 +289,7 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
                 value: entry.id,
                 label: labels.examples[entry.id],
               }))}
-              // w-auto anula (vía tailwind-merge) el w-full por defecto del Select: aquí
+              // w-auto overrides (via tailwind-merge) the default w-full of Select: here
               // el ancho lo gobierna flex-1 y el w-full quedaba como utility muerta.
               className="h-9 w-auto min-w-0 flex-1 cursor-pointer px-2 font-mono"
             />
@@ -314,8 +314,8 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
 
       {/* Columna visor: fila de estado reservada + Tabs Preview|Response. */}
       <div className="flex flex-col gap-2">
-        {/* SIEMPRE renderizada (incluso en idle, vacía): reserva min-h-8 para que
-            aparecer/desaparecer spinner, label o badge no desplace el layout. */}
+        {/* ALWAYS rendered (even in idle, empty): reserves min-h-8 so that
+            showing/hiding spinner, label, or badge does not shift the layout. */}
         <div data-testid="player-status-row" className="flex min-h-8 items-center gap-2">
           {state === 'pending' && (
             <>
@@ -375,8 +375,8 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
           </TabPanel>
         </Tabs>
 
-        {/* Único aria-live del componente: anuncia la llegada de la respuesta, no el
-            texto que se va escribiendo (evita verbosidad en streaming). */}
+        {/* Component's only aria-live: announces the arrival of the response, not the
+            text being typed (avoids verbosity during streaming). */}
         <div role="status" className="sr-only">
           {state === 'done' ? labels.done : ''}
         </div>

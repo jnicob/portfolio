@@ -4,20 +4,20 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ShowcaseIndex } from '@/components/showcase/showcase-index';
 import type { FilterableItem } from '@/components/ui/filterable-list';
 
-/** Id sintético de la entrada "Todas" del índice: no corresponde a ninguna sección real. */
+/** Synthetic ID for the "Todas" index entry: does not correspond to any real section. */
 const ALL_ID = '__all';
 
 export type ShowcaseSection = { id: string; node: ReactNode };
 
 export type ShowcaseViewLabels = {
-  /** aria-label del `<nav>` que envuelve el índice. */
+  /** aria-label of the `<nav>` that wraps the table of contents. */
   navLabel: string;
   inputLabel: string;
   emptyMessage: string;
   placeholder?: string;
-  /** Etiqueta de la entrada sintética que restaura todas las secciones. */
+  /** Label for the synthetic entry that restores all sections. */
   all: string;
-  /** Contiene el placeholder literal `{section}`, reemplazado por el título de la sección activa. */
+  /** Contains the literal placeholder `{section}`, replaced with the active section's title. */
   showing: string;
   showingAll: string;
 };
@@ -26,15 +26,15 @@ export type ShowcaseViewProps = {
   toc: readonly FilterableItem[];
   labels: ShowcaseViewLabels;
   sections: readonly ShowcaseSection[];
-  /** Cabecera de la página (título, intro, acciones): se renderiza antes de las secciones filtradas. */
+  /** Page header (title, intro, actions): rendered before the filtered sections. */
   children?: ReactNode;
 };
 
 /**
- * Contenedor cliente del showcase (B1): el índice deja de hacer scroll a anclas y en su
- * lugar filtra qué secciones se muestran. El filtro se refleja en `location.hash` para
- * deep-linking, sin depender de scroll — un hash inicial que coincida con una sección
- * arranca ya filtrado.
+ * Client container for the showcase (B1): the table of contents stops scrolling to anchors and instead
+ * filters which sections are shown. The filter is reflected in `location.hash` for
+ * deep-linking, without relying on scroll — an initial hash matching a section
+ * starts already filtered.
  */
 export function ShowcaseView({ toc, labels, sections, children }: ShowcaseViewProps) {
   const [filter, setFilter] = useState<string | null>(null);
@@ -45,13 +45,13 @@ export function ShowcaseView({ toc, labels, sections, children }: ShowcaseViewPr
     if (hash && toc.some((item) => item.id === hash)) {
       setFilter(hash);
     }
-    // Deliberadamente vacío: solo debe correr una vez al montar, no cuando cambie `toc`.
+    // Deliberately empty: should only run once on mount, not when `toc` changes.
   }, []);
 
-  // Salta la primera ejecución: en el montaje, este efecto corre en el mismo commit que
+  // Skips the first execution: on mount, this effect runs in the same commit as
   // el de arriba, ANTES de que su setFilter surta efecto (el filtro inicial sigue siendo
-  // `null` en ese primer paso), así que escribiría la URL sin hash y lo borraría
-  // momentáneamente en un deep-link — para luego "restaurarlo" cuando el filtro se
+  // `null` in that first step), so it would write the URL without a hash and clear it
+  // momentarily on a deep-link — only to then "restore" it when the filter
   // actualice. Sin esta guarda, el hash desaparece y reaparece en cada carga con deep-link.
   const isFirstRun = useRef(true);
   useEffect(() => {
@@ -72,10 +72,10 @@ export function ShowcaseView({ toc, labels, sections, children }: ShowcaseViewPr
 
   return (
     <>
-      {/* Visible en todo breakpoint (T30/I2): en <lg no hay grid (ver `main` en
-          page.tsx), así que el orden del DOM ya lo coloca como bloque normal
-          encima del contenido, sin rediseño. En ≥lg, `main` pasa a grid de dos
-          columnas y aquí solo se activa el sticky de la barra lateral. */}
+      {/* Visible across all breakpoints (T30/I2): in <lg there is no grid (see `main` in
+          page.tsx), so DOM order already places it as a normal block
+          above the content, without redesign. In ≥lg, `main` switches to a two-column
+          grid and here only the sidebar's sticky behavior is activated. */}
       <nav aria-label={labels.navLabel} className="mb-8 lg:sticky lg:top-12 lg:mb-0">
         <ShowcaseIndex
           items={items}

@@ -14,9 +14,9 @@ type CvViewSwitcherProps = {
 };
 
 /**
- * Selector segmentado de vista del CV: radios nativos (teclado de flechas gratis)
- * visualmente ocultos, con labels estilizadas — `:checked` marca la opción activa vía
- * `has-[:checked]`. `no-print`: solo tiene sentido en pantalla (T24).
+ * Segmented CV view selector: native radios (free arrow-key navigation)
+ * visually hidden, with styled labels — `:checked` marks the active option via
+ * `has-[:checked]`. `no-print`: only makes sense on screen (T24).
  */
 export function CvViewSwitcher({ view, onChange, labels }: CvViewSwitcherProps) {
   const name = useId();

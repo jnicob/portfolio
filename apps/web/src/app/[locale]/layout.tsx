@@ -19,7 +19,7 @@ const sourceSerif = Source_Serif_4({
   subsets: ['latin'],
   variable: '--font-source-serif',
   display: 'swap',
-  // Solo la usa el skin 'editorial' (--font-heading); no precargar para el resto.
+  // Only used by 'editorial' skin (--font-heading); do not preload for others.
   preload: false,
 });
 
@@ -27,7 +27,7 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-// metadataBase + geo tags: título/descripción por página vía generateMetadata (T11).
+// metadataBase + geo tags: per-page title/description via generateMetadata (T11).
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   other: {
@@ -36,9 +36,9 @@ export const metadata: Metadata = {
 };
 
 /*
- * Se ejecuta antes de la hidratación para evitar flash de tema Y skin:
- * URL > stored > preferencia del sistema > default ('dark'/'dev-tool').
- * Mantener en sincronía con lib/appearance.ts (resolveAppearance/DEFAULT_APPEARANCE).
+ * Runs before hydration to prevent theme AND skin flash:
+ * URL > stored > system preference > default ('dark'/'dev-tool').
+ * Keep in sync with lib/appearance.ts (resolveAppearance/DEFAULT_APPEARANCE).
  */
 const themeInitScript = `(function () {
   try {

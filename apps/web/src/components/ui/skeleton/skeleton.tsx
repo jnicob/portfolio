@@ -1,7 +1,7 @@
 import type { ComponentProps } from 'react';
 import { cn } from '@/lib/cn';
 
-/** Placeholder de carga con forma del contenido. Dimensionar vía className. */
+/** Loading placeholder shaped after content. Size via className. */
 export function Skeleton({ className, ...props }: ComponentProps<'div'>) {
   return (
     <div

@@ -4,7 +4,7 @@ import { Link } from '@/i18n/navigation';
 /** Externo = absoluto http(s) o protocolo-relativo, que hereda el esquema. */
 const EXTERNAL_HREF = /^(https?:)?\/\//;
 
-/** Enlace `<a>` de contenido MDX: externo abre en pestaña nueva con rel seguro, interno usa Link de i18n. */
+/** MDX content `<a>` link: external opens in new tab with safe rel, internal uses i18n Link. */
 function ExternalAwareLink({
   href = '',
   children,
@@ -19,7 +19,7 @@ function ExternalAwareLink({
     );
   }
 
-  // Normaliza enlaces relativos de MDX (ej: ./freepik-api-platform → /projects/freepik-api-platform)
+  // Normalize relative MDX links (e.g. ./freepik-api-platform → /projects/freepik-api-platform)
   const normalizedHref = href.startsWith('./') ? href.replace(/^\.\//, '/projects/') : href;
 
   return (
@@ -30,10 +30,10 @@ function ExternalAwareLink({
 }
 
 /**
- * Map de componentes MDX para `compileMDX` (T20/E2-E3): hoy solo sobreescribe `a`.
- * Sin anotación de tipo explícita a propósito: `mdx/types` no es dependencia directa
- * de apps/web (solo transitiva vía next-mdx-remote) y no resuelve en su contexto de tipos;
- * TS infiere la forma concreta aquí y la valida por estructura al pasarla a `compileMDX`.
+ * MDX component map for `compileMDX` (T20/E2-E3): currently only overrides `a`.
+ * Intentionally without explicit type annotation: `mdx/types` is not a direct dependency
+ * of apps/web (only transitive via next-mdx-remote) and does not resolve in its type context;
+ * TS infers the concrete shape here and validates it structurally when passing to `compileMDX`.
  */
 export const mdxComponents = {
   a: ExternalAwareLink,

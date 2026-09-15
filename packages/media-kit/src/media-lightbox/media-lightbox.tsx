@@ -27,14 +27,14 @@ export type MediaLightboxLabels = {
   /** Plantilla del anuncio de zoom; {percent} se sustituye. */
   zoomLevel: string;
   reset: string;
-  /** Plantilla del botón de ajuste; {current} y {next} se sustituyen. */
+  /** Fit button template; {current} and {next} are replaced. */
   fit: string;
   fullscreen: string;
   exitFullscreen: string;
   hideControls: string;
   showControls: string;
   close: string;
-  /** aria-label del botón de ayuda. */
+  /** aria-label of the help button. */
   help: string;
   /** Encabezado del panel de ayuda. */
   helpTitle: string;
@@ -59,7 +59,7 @@ export type MediaLightboxProps = {
   closeLabel?: string;
   /** Modo de ajuste base a zoom 1x. Default 'contain'. */
   fit?: MediaLightboxFit;
-  /** Límites del zoom. Default { min: 1, max: 8 }. */
+  /** Zoom limits. Default { min: 1, max: 8 }. */
   zoom?: { min?: number; max?: number };
   /** Renderizar la caja de controles. Default true. */
   controls?: boolean;
@@ -67,43 +67,43 @@ export type MediaLightboxProps = {
   defaultControlsVisible?: boolean;
   /** ms de inactividad antes del auto-hide. null lo desactiva. Default 3000. */
   autoHideDelay?: number | null;
-  /** Textos de los botones (i18n); cada clave tiene default en inglés. */
+  /** Button texts (i18n); each key has an English default. */
   labels?: Partial<MediaLightboxLabels>;
   /**
-   * Contenido a pantalla completa: <img>, <video> o composición. Ignorado si
-   * `compare` o `media` están presentes.
+   * Fullscreen content: <img>, <video>, or composition. Ignored if
+   * `compare` or `media` are present.
    *
-   * Restricción (F1, F3.7): para que `data-fit` dimensione el medio (contain/cover/
-   * actual, ver styles.css), el <img>/<video> debe ser HIJO DIRECTO de este slot —
-   * las reglas `data-fit` usan un combinador de hijo directo a propósito, para no
-   * alcanzar (y romper) las imágenes anidadas de `compare`. Una composición
-   * ENVUELTA (<img>/<video> dentro de un <div> u otro wrapper) no recibe ese sizing:
-   * se muestra a su tamaño natural/el que le dé su propio CSS, silenciosamente (misma
-   * clase de bug que F1 si se asume lo contrario).
+   * Restriction (F1, F3.7): for `data-fit` to size the media (contain/cover/
+   * actual, see styles.css), the <img>/<video> must be a DIRECT CHILD of this slot —
+   * the `data-fit` rules intentionally use a direct child combinator so as not to
+   * reach (and break) nested images in `compare`. A WRAPPED composition
+   * (<img>/<video> inside a <div> or other wrapper) does not receive that sizing:
+   * it is displayed at its natural size/whatever its own CSS gives it, silently (same
+   * class of bug as F1 if assumed otherwise).
    */
   children?: ReactNode;
   /**
-   * Medio único como `MediaSource` (alternativa a `children`): el lightbox
-   * renderiza su propio `<img>` eligiendo `fullSrc` según la pantalla (C3, vía
-   * `pickFullscreenSrc`). Prioridad: `compare` > `media` > `children`.
+   * Single media as `MediaSource` (alternative to `children`): the lightbox
+   * renders its own `<img>` choosing `fullSrc` based on the screen (C3, via
+   * `pickFullscreenSrc`). Priority: `compare` > `media` > `children`.
    */
   media?: MediaSource;
   /**
-   * Compare (before/after) dentro del visor: hereda zoom/pan/toolbar del lightbox
-   * sin duplicar el motor de gestos (spec C2). Si está presente, gana sobre
-   * `media` y `children`. Cada lado acepta `ReactNode` o `MediaSource`; con
-   * `MediaSource` el lado se resuelve con `pickFullscreenSrc` (fullscreen = contexto HD).
-   * Sin ninguno de los tres, el visor no renderiza media.
+   * Compare (before/after) inside the viewer: inherits zoom/pan/toolbar from the lightbox
+   * without duplicating the gesture engine (spec C2). If present, it takes precedence over
+   * `media` and `children`. Each side accepts `ReactNode` or `MediaSource`; with
+   * `MediaSource` the side is resolved with `pickFullscreenSrc` (fullscreen = HD context).
+   * Without any of the three, the viewer does not render media.
    */
   compare?: {
     before: ReactNode | MediaSource;
     after: ReactNode | MediaSource;
     label?: string;
     /**
-     * Passthrough del eje de comparación (spec A3, F3.6). `side-by-side` dentro
-     * del lightbox hereda el zoom/pan del visor gratis: el transform de
-     * `.mk-lightbox__media` envuelve el compare entero, así que ambos lados se
-     * zoomean/panean sincronizados sin lógica extra aquí.
+     * Passthrough of the comparison axis (spec A3, F3.6). `side-by-side` inside
+     * the lightbox inherits the viewer's zoom/pan for free: the transform on
+     * `.mk-lightbox__media` wraps the entire compare, so both sides are
+     * zoomed/panned in sync with no extra logic here.
      */
     compareMode?: CompareSliderMode;
   };
@@ -185,7 +185,7 @@ function nativeFullscreenActive(): boolean {
   return Boolean(document.fullscreenElement ?? doc.webkitFullscreenElement);
 }
 
-// Fullscreen = contexto HD: cualquier MediaSource (media único o cada lado del
+// Fullscreen = HD context: any MediaSource (single media or each side of the
 // compare) se resuelve con pickFullscreenSrc antes de renderizarse.
 function renderFullscreenSide(side: ReactNode | MediaSource): ReactNode {
   return isMediaSource(side) ? (
@@ -199,7 +199,7 @@ export function MediaLightbox(props: MediaLightboxProps) {
   // Guard externo: el contenido monta FRESCO en cada apertura. Esto garantiza
   // estado limpio (zoom/fit/toolbar) sin effects de reset, y que el effect de
   // gestos de useZoomPan se ejecute con los refs ya poblados (sus deps son
-  // refs estables y no se re-dispararía si el dialog apareciera condicionalmente
+  // stable refs and would not re-trigger if the dialog appeared conditionally
   // dentro del mismo componente).
   if (!props.open) return null;
   return <MediaLightboxContent {...props} />;
@@ -226,8 +226,8 @@ function MediaLightboxContent({
   const toggleRef = useRef<HTMLButtonElement>(null);
 
   const [fit, setFit] = useState<MediaLightboxFit>(initialFit);
-  // B1: Espacio mantenido = modo pan (cursor grab + mover panea). El flag vive aquí
-  // (no en useZoomPan) porque es una convención de teclado del dialog, no un gesto.
+  // B1: Space held = pan mode (grab cursor + moving pans). The flag lives here
+  // (not in useZoomPan) because it is a dialog keyboard convention, not a gesture.
   const [spacePan, setSpacePan] = useState(false);
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
   const [helpOpen, setHelpOpen] = useState(false);
@@ -255,8 +255,8 @@ function MediaLightboxContent({
   }, [percent]);
 
   // Al montar (= al abrir): foco previo, scroll lock compensando la barra, foco al Close.
-  // Close vive en la esquina superior derecha (fuera de la región auto-ocultable), así que
-  // este foco de apertura no dispara el onFocus/pin de la región.
+  // Close lives in the top-right corner (outside the auto-hiding region), so
+  // this opening focus does not trigger the region's onFocus/pin.
   useEffect(() => {
     const previouslyFocused = document.activeElement as HTMLElement | null;
     const prevOverflow = document.body.style.overflow;
@@ -274,11 +274,11 @@ function MediaLightboxContent({
     };
   }, []);
 
-  // Toolbar oculta = inert (fuera del trap y del árbol de accesibilidad). Antes de
-  // inertizar, si el foco vive dentro de la región lo reubicamos al toggle (que está
-  // fuera de la región y siempre visible): inert desenfoca a su descendiente activo
-  // hacia document.body, que está fuera del portal, y ahí Escape/Tab dejarían de
-  // llegar al diálogo. El toggle mantiene el foco dentro del diálogo.
+  // Hidden toolbar = inert (outside the trap and the accessibility tree). Before
+  // inerting, if the focus lives inside the region we relocate it to the toggle (which is
+  // outside the region and always visible): inert blurs its active descendant
+  // to document.body, which is outside the portal, and there Escape/Tab would stop
+  // reaching the dialog. The toggle keeps focus inside the dialog.
   useEffect(() => {
     const region = controlsRegionRef.current;
     if (!region) return;
@@ -300,12 +300,12 @@ function MediaLightboxContent({
     return () => window.removeEventListener('blur', release);
   }, [spacePan]);
 
-  // Al abrir la ayuda, el foco entra al panel (closeHelp lo devuelve al botón).
+  // When opening help, focus enters the panel (closeHelp returns it to the button).
   useEffect(() => {
     if (helpOpen) dialogRef.current?.querySelector<HTMLElement>('[data-mk-help]')?.focus();
   }, [helpOpen]);
 
-  // Al alternar fullscreen el foco queda en el botón ⤢, y Espacio sobre un botón
+  // When toggling fullscreen, focus remains on the ⤢ button, and Space on a button
   // no activa el space-pan (:354). Devolver el foco al root restablece el follow.
   const fullscreenWasActive = useRef(fullscreen.active);
   useEffect(() => {
@@ -323,15 +323,15 @@ function MediaLightboxContent({
     resetZoom();
   }
 
-  // La ayuda devuelve el foco a su disparador al cerrarse (patrón de overlay).
+  // Help returns focus to its trigger upon closing (overlay pattern).
   function closeHelp() {
     setHelpOpen(false);
     helpButtonRef.current?.focus();
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    // Cualquier interacción de teclado revive una toolbar oculta por inactividad
-    // (poke() es no-op si el usuario la ocultó explícitamente): así un usuario de
+    // Any keyboard interaction revives a toolbar hidden due to inactivity
+    // (poke() is a no-op if the user explicitly hid it): this way a keyboard
     // teclado estacionario recupera la toolbar y el feedback de zoom.
     autoHide.poke();
     const target = event.target as HTMLElement;
@@ -361,9 +361,9 @@ function MediaLightboxContent({
         last?.focus();
       } else if (!event.shiftKey && active === dialogRef.current) {
         // El propio root del dialog enfocado (p.ej. tras click en contenido no
-        // enfocable, o foco puesto ahí programáticamente): avanza al ÚLTIMO
+        // focusable, or focus placed there programmatically): advances to the LAST
         // focusable, igual que en v1 cuando Close era el primer nodo del DOM
-        // inmediatamente después del root.
+        // immediately after the root.
         event.preventDefault();
         last?.focus();
       } else if (
@@ -407,10 +407,10 @@ function MediaLightboxContent({
       const delta = pan[event.key];
       if (delta) {
         event.preventDefault();
-        // panBy() clampa contra el tamaño LIVE del viewport/contenido (lee los
+        // panBy() clamps against the LIVE size of the viewport/content (reads the
         // refs en el momento de la llamada): si no hay desborde real, el propio
         // clamp deja tx/ty en 0 y esto es un no-op. No usamos zoomPan.canPan
-        // aquí porque es una foto fija del render en que se leyó (no se
+        // here because it is a snapshot of the render in which it was read (it does not
         // recalcula si el layout cambia sin que el componente vuelva a
         // renderizar), y dependemos de la lectura fresca de panBy.
         zoomPan.panBy(delta[0], delta[1]);
@@ -427,8 +427,8 @@ function MediaLightboxContent({
 
   function onRootPointerMove(event: PointerEvent<HTMLDivElement>) {
     autoHide.poke();
-    // Con botón pulsado ya panea el drag de useZoomPan sobre el viewport; este camino
-    // cubre "Espacio + mover" sin botón y evita duplicar el delta del arrastre.
+    // With a button pressed, useZoomPan's drag already pans over the viewport; this path
+    // covers "Space + move" without a button and avoids duplicating the drag delta.
     if (!spacePan || event.buttons !== 0) {
       lastPointRef.current = null;
       return;
@@ -441,11 +441,11 @@ function MediaLightboxContent({
   function onOverlayClick(event: MouseEvent<HTMLDivElement>) {
     // Un pan que termina en click no debe cerrar.
     if (zoomPan.consumeDrag()) return;
-    // T25 QA fix, defensa en profundidad: si el pointerdown que originó este gesto
-    // nació en un control interactivo (botón, <video controls>…), no cerrar. La causa
-    // raíz (setPointerCapture incondicional) ya está resuelta en useZoomPan, pero este
-    // segundo guard no depende de dónde termine el click retargeteado — se basa en lo
-    // que se observó ANTES de cualquier posible retargeteo.
+    // T25 QA fix, defense in depth: if the pointerdown that originated this gesture
+    // started on an interactive control (button, <video controls>…), do not close. The root
+    // cause (unconditional setPointerCapture) is already resolved in useZoomPan, but this
+    // second guard does not depend on where the retargeted click ends up — it relies on what
+    // was observed BEFORE any possible retargeting.
     if (zoomPan.consumeInteractiveDown()) return;
     if (event.target === event.currentTarget || event.target === viewportRef.current) onClose();
   }
@@ -484,14 +484,14 @@ function MediaLightboxContent({
           )}
         </div>
       </div>
-      {/* Anuncio de zoom: vive en el root del dialog, FUERA de la región auto-ocultable,
-          por lo que nunca se inertiza y anuncia el zoom en cualquier estado (incluso con
-          la toolbar oculta o con controls=false). Debounced al valor final del gesto. */}
+      {/* Zoom announcement: lives in the dialog root, OUTSIDE the auto-hideable region,
+          so it never becomes inert and announces zoom in any state (even with
+          the toolbar hidden or with controls=false). Debounced to the final gesture value. */}
       <span className="mk-visually-hidden" aria-live="polite">
         {template(labels.zoomLevel, { percent: announced })}
       </span>
-      {/* Esquina persistente, siempre visible, fuera de la región auto-ocultable:
-          cerrar (ambos modos) + toggle de la toolbar (solo con controls). */}
+      {/* Persistent corner, always visible, outside the auto-hideable region:
+          close (both modes) + toolbar toggle (only with controls). */}
       <div className="mk-lightbox__corner">
         <button
           ref={helpButtonRef}

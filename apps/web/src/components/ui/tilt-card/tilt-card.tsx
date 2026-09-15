@@ -9,21 +9,21 @@ const GLOW_RADIUS_PX = 240;
 
 type TiltCardProps = {
   children: ReactNode;
-  /** Inclinación máxima en grados, en cada eje. */
+  /** Maximum tilt in degrees per axis. */
   maxTilt?: number;
   className?: string;
 };
 
 /**
- * Envuelve contenido con un tilt 3D sutil + glow radial que sigue el puntero.
+ * Wraps content with a subtle 3D tilt + radial glow that tracks the pointer.
  *
- * Capacidades resueltas una vez al montar (no reactivas a cambios en vivo, igual
- * que `prefersReducedMotion`): puntero fino (`(hover: hover) and (pointer: fine)`)
- * habilita el glow; puntero fino SIN `prefers-reduced-motion` habilita además el
- * tilt. En touch queda como un div inerte (sin glow ni tilt). Con reduced-motion,
- * el glow sigue disponible mostrado al hover, pero centrado y estático — no sigue
- * al puntero, porque el tilt (que actualiza `--tilt-gx/gy`) está desactivado.
- * `will-change: transform` solo mientras hay puntero encima.
+ * Capabilities resolved once on mount (not reactive to live changes, just
+ * like `prefersReducedMotion`): fine pointer (`(hover: hover) and (pointer: fine)`)
+ * enables the glow; fine pointer WITHOUT `prefers-reduced-motion` also enables the
+ * tilt. On touch it remains an inert div (no glow or tilt). With reduced-motion,
+ * the glow is still available shown on hover, but centered and static — does not track
+ * the pointer, because the tilt (which updates `--tilt-gx/gy`) is disabled.
+ * `will-change: transform` only while the pointer is over it.
  */
 export function TiltCard({ children, maxTilt = DEFAULT_MAX_TILT_DEG, className }: TiltCardProps) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -39,7 +39,7 @@ export function TiltCard({ children, maxTilt = DEFAULT_MAX_TILT_DEG, className }
   }, []);
 
   // Cancela un frame en vuelo si el componente se desmonta antes de que corra
-  // (p.ej. navegación mientras el puntero seguía sobre la card).
+  // (e.g. navigation while the pointer was still over the card).
   useEffect(() => {
     return () => {
       if (frameRef.current != null) cancelAnimationFrame(frameRef.current);
@@ -54,9 +54,9 @@ export function TiltCard({ children, maxTilt = DEFAULT_MAX_TILT_DEG, className }
     if (!root || !rect || rect.width === 0 || rect.height === 0) return;
     const px = (event.clientX - rect.left) / rect.width;
     const py = (event.clientY - rect.top) / rect.height;
-    // Batchea los 4 writes en un único rAF: cancela el frame anterior si todavía
-    // no corrió (moves más rápidos que el refresh del navegador) para que solo se
-    // aplique la posición más reciente.
+    // Batches writes into single rAF: cancels previous frame if pending.
+    // did not run (moves faster than browser refresh) so that only the
+    // most recent position is applied.
     if (frameRef.current != null) cancelAnimationFrame(frameRef.current);
     frameRef.current = requestAnimationFrame(() => {
       frameRef.current = null;

@@ -10,7 +10,7 @@ describe('Input', () => {
     expect(screen.getByRole('textbox')).toHaveValue('Nico');
   });
 
-  it('tiene transición de color y hover coherente con Button', () => {
+  it('has color transition and hover consistent with Button', () => {
     render(<Input aria-label="Nombre" />);
     expect(screen.getByRole('textbox')).toHaveClass('transition-colors', 'hover:border-fg-muted');
   });

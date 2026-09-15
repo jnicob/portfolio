@@ -34,7 +34,7 @@ describe('PortraitCompareDemo', () => {
     expect(before).toHaveAttribute('height', '900');
   });
 
-  it('el lado "después" es un MediaSource con fullSrc HD, resuelto por el propio slider', () => {
+  it('the "after" side is a MediaSource with HD fullSrc, resolved by the slider itself', () => {
     renderDemo();
     const after = screen.getByAltText('');
     expect(after).toHaveAttribute('src', '/demo/portrait.webp');
@@ -46,7 +46,7 @@ describe('PortraitCompareDemo', () => {
     expect(screen.getByRole('slider', { name: compareLabel })).toBeInTheDocument();
   });
 
-  it('muestra el botón expand con el label pasado por props, sin fullscreen nativo', () => {
+  it('shows the expand button with the label passed via props, without native fullscreen', () => {
     renderDemo();
     expect(screen.getByRole('button', { name: expand.buttonLabel })).toBeInTheDocument();
     expect(
@@ -63,9 +63,9 @@ describe('PortraitCompareDemo', () => {
   });
 
   // Perf (T30/qa-B1): portrait.webp es 1600×900, muy por encima del ancho real de esta
-  // figure en mobile. srcSet deja elegir la variante ~840w (el lado "después", MediaSource
-  // con fullSrc HD, ya lo resuelve el propio paquete — no se toca aquí).
-  it('el lado "antes" (ReactNode) ofrece una variante ~840w vía srcSet', () => {
+  // figure on mobile. srcSet allows choosing the ~840w variant (the "after" side, MediaSource
+  // with fullSrc HD, is already resolved by the package itself — not touched here).
+  it('the "antes" side (ReactNode) offers a ~840w variant via srcSet', () => {
     renderDemo();
     const before = screen.getByAltText(beforeAlt);
     expect(before).toHaveAttribute(

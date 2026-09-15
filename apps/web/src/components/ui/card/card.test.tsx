@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { Card, CardContent, CardHeader, CardTitle } from './card';
 
 describe('Card', () => {
-  it('compone header, título y contenido', () => {
+  it('composes header, title, and content', () => {
     render(
       <Card>
         <CardHeader>

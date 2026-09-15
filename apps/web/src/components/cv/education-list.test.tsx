@@ -4,7 +4,7 @@ import { education } from '@/data/education';
 import { EducationList } from './education-list';
 
 describe('EducationList', () => {
-  it('renderiza degree, institución y rango de años de cada entrada', () => {
+  it('renders degree, institution, and year range for each entry', () => {
     render(<EducationList education={education} locale="es" />);
 
     for (const entry of education) {

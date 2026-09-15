@@ -3,9 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { VideoScrubPreview } from './video-scrub-preview';
 
 /**
- * jsdom no implementa `requestAnimationFrame` con un scheduler real y el scrub por
- * puntero lo usa para el throttle: se stubea para ejecutar el callback de forma
- * síncrona e inmediata, así los tests no dependen de temporizadores.
+ * jsdom does not implement `requestAnimationFrame` with a real scheduler and pointer
+ * scrub uses it for throttling: it is stubbed to execute the callback
+ * synchronously and immediately, so tests do not depend on timers.
  */
 function stubImmediateRaf() {
   vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
@@ -88,7 +88,7 @@ describe('scrub v3 (v0.6)', () => {
     vi.restoreAllMocks();
   });
 
-  it('el scrub se activa cuando loadedmetadata llega después del hover', async () => {
+  it('scrub activates when loadedmetadata arrives after hover', async () => {
     const { container } = render(<VideoScrubPreview src="/v.mp4" label="Scrub" />);
     const root = container.querySelector('.mk-scrub') as HTMLElement;
     const video = container.querySelector('video') as HTMLVideoElement;
@@ -100,7 +100,7 @@ describe('scrub v3 (v0.6)', () => {
     setDuration(video, 10);
     fireEvent.loadedMetadata(video);
     // Discriminante: si el scrub dependiera del fallback `?? video.duration` en vez del
-    // estado interno capturado en onLoadedMetadata, este reset a NaN haría el siguiente
+    // internal state captured in onLoadedMetadata, this reset to NaN would make the next
     // move un no-op de nuevo. Solo pasa si `scrubTo` usa el `duration` de estado.
     setDuration(video, Number.NaN);
     fireEvent.pointerMove(root, { clientX: 50 });
@@ -115,7 +115,7 @@ describe('scrub v3 (v0.6)', () => {
     expect(container.querySelector('.mk-scrub__time')).toHaveTextContent('0:00 / 1:30');
   });
 
-  it('duration no finita (Infinity) no rompe el chip: se mantiene vacío', () => {
+  it('non-finite duration (Infinity) does not break the chip: it stays empty', () => {
     const { container } = render(<VideoScrubPreview src="/v.mp4" label="Scrub" />);
     const video = container.querySelector('video') as HTMLVideoElement;
     setDuration(video, Number.POSITIVE_INFINITY);

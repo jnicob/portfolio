@@ -73,7 +73,7 @@ describe('SkinSwitcher', () => {
     expect(screen.queryByRole('combobox', { name: 'Filter skins' })).not.toBeInTheDocument();
   });
 
-  it('Escape con el filtro ya vacío cierra el panel y devuelve el foco al botón', async () => {
+  it('Escape with already empty filter closes the panel and returns focus to the button', async () => {
     const user = userEvent.setup();
     render(<SkinSwitcher labels={LABELS} />);
 
@@ -85,7 +85,7 @@ describe('SkinSwitcher', () => {
     expect(button).toHaveFocus();
   });
 
-  it('muestra cursor pointer en el botón disparador', () => {
+  it('shows pointer cursor on trigger button', () => {
     render(<SkinSwitcher labels={LABELS} />);
     expect(screen.getByRole('button', { name: 'Skin' })).toHaveClass('cursor-pointer');
   });
@@ -96,10 +96,10 @@ describe('SkinSwitcher', () => {
     fireEvent.click(screen.getByRole('button', { name: LABELS.button }));
     const option = screen.getByRole('option', { name: new RegExp(LABELS.skinNames.terminal) });
     expect(option).toHaveAttribute('aria-current', 'true');
-    // El resaltado activo (teclado/ratón) debe coincidir con la skin marcada desde
+    // The active highlight (keyboard/mouse) must match the skin selected from
     // el primer render, no solo el aria-current: si selectedSkin llegara tarde
     // (p.ej. via useEffect tras montar FilterableList), aria-activedescendant se
-    // quedaría en el primer item de la lista en vez de la skin real.
+    // would stay on the first item in the list instead of the actual skin.
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-activedescendant', option.id);
   });
 });

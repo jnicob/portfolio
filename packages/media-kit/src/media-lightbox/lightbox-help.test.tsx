@@ -29,14 +29,14 @@ const LABELS: MediaLightboxLabels = {
 };
 
 describe('LightboxHelp', () => {
-  it('es una región group etiquetada con helpTitle, enfocable programáticamente', () => {
+  it('is a group region labeled with helpTitle, programmatically focusable', () => {
     render(<LightboxHelp labels={LABELS} />);
     const panel = screen.getByRole('group', { name: 'Atajos de teclado' });
     expect(panel).toHaveAttribute('data-mk-help');
     expect(panel).toHaveAttribute('tabindex', '-1');
   });
 
-  it('renderiza una fila por atajo con la descripción de labels', () => {
+  it('renders a row per shortcut with description from labels', () => {
     render(<LightboxHelp labels={LABELS} />);
     for (const description of [
       'Acercar / alejar',

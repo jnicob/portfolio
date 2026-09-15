@@ -40,7 +40,7 @@ export function Tabs({ defaultValue, children }: { defaultValue: string; childre
 export function TabList({ label, children }: { label: string; children: ReactNode }) {
   const listRef = useRef<HTMLDivElement>(null);
 
-  // Activación con flechas siguiendo APG: selección sigue al foco, con wrap.
+  // Arrow navigation following APG: selection follows focus with wrap.
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
     const tabs = Array.from(
@@ -84,10 +84,8 @@ export function Tab({ value, children }: { value: string; children: ReactNode })
         // Cursor + hover reutilizan el lenguaje de Button (T14): activo ~ variante primary
         // (bg-accent + hover:bg-accent-hover). El inactivo NO puede copiar el hover
         // `hover:bg-surface` de Button ghost tal cual: `TabList` ya pinta su fondo con
-        // `bg-surface`, así que ese hover quedaría invisible sobre sí mismo (verificado en
-        // navegador). Se usa el siguiente escalón semántico, `border` (ya usado en todo el
-        // repo como el paso "surface → un poco más marcado"), que sí contrasta. `cursor-pointer`
-        // explícito porque en Tailwind v4 `<button>` ya no lo trae por defecto (A2/A3).
+        // `bg-surface` hover would be invisible over itself. Semantic step `border`
+        // provides contrast. Explicit `cursor-pointer` because Tailwind v4 no longer sets it by default.
         'cursor-pointer rounded-control px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
         selected
           ? 'bg-accent text-accent-fg hover:bg-accent-hover'
@@ -104,10 +102,10 @@ export function TabPanel({ value, children }: { value: string; children: ReactNo
   const selected = active === value;
   // Ambos paneles quedan montados y comparten la misma celda de grid
   // (`col-start-1 row-start-2`, ver `Tabs`): la altura del contenedor pasa a
-  // ser la del panel más alto, así que cambiar de tab no la desplaza. El
+  // be that of the tallest panel, so switching tabs does not shift it. The
   // inactivo usa `invisible` (visibility:hidden) en vez de `hidden`
-  // (display:none) — conserva su caja para que el grid siga midiéndola.
-  // `aria-hidden` lo saca del árbol de accesibilidad y `tabIndex` desaparece
+  // (display:none) — retains its box so the grid keeps measuring it.
+  // `aria-hidden` removes it from the accessibility tree and `tabIndex` disappears
   // (undefined) para que no sea focusable. El activo hace fade-in 150ms.
   return (
     <div

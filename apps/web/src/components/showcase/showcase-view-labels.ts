@@ -1,22 +1,22 @@
 import type { ShowcaseViewLabels } from './showcase-view';
 
-/** Forma mínima que necesitamos de un translator de next-intl con namespace `showcase`. */
+/** Minimal shape we need from a next-intl translator with namespace `showcase`. */
 type ShowcaseTranslator = {
   (key: string): string;
   raw(key: string): string;
 };
 
 /**
- * Construye las labels de `ShowcaseView` a partir de un translator con namespace `showcase`
- * (server o client, ambos exponen la misma forma). Extraído de `page.tsx` para poder testear
- * el contrato de `index.showing` con los mensajes reales — ver `showcase-view.test.tsx`.
+ * Builds the labels for `ShowcaseView` from a translator with namespace `showcase`
+ * (server or client, both expose the same shape). Extracted from `page.tsx` to be able to test
+ * the contract of `index.showing` with real messages — see `showcase-view.test.tsx`.
  *
- * `showing` se lee con `t.raw`, no con `t()`: el mensaje trae el placeholder literal
- * `{section}` (`"Mostrando: {section}"`), que `ShowcaseView` interpola a mano con
- * `.replace('{section}', activeLabel)` una vez conoce, en cliente, qué sección está activa.
- * Pedirlo con `t('index.showing')` obliga a next-intl a formatear el ICU ahí mismo sin el
- * argumento `section` (que todavía no existe en ese momento) — dispara FORMATTING_ERROR y
- * next-intl devuelve como fallback la key cruda (`namespace.key`) en su lugar del patrón.
+ * `showing` is read with `t.raw`, not with `t()`: the message includes the literal placeholder
+ * `{section}` (`"Mostrando: {section}"`), which `ShowcaseView` interpolates manually with
+ * `.replace('{section}', activeLabel)` once it knows, on the client, which section is active.
+ * Requesting it with `t('index.showing')` forces next-intl to format ICU right there without the
+ * `section` argument (which does not exist yet at that moment) — triggers FORMATTING_ERROR and
+ * next-intl returns the raw key (`namespace.key`) as a fallback instead of the pattern.
  */
 export function buildShowcaseViewLabels(t: ShowcaseTranslator): ShowcaseViewLabels {
   return {

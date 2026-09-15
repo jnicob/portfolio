@@ -97,7 +97,7 @@ describe('CompareModesDemo', () => {
 
   // Perf (T30/qa-B1): mismo fix que MediaKitDemo — landscape.webp es 1600×900, muy por
   // encima del ancho real de esta figure en mobile. srcSet deja elegir la variante ~840w.
-  it('ambos lados ofrecen una variante ~840w vía srcSet', () => {
+  it('both sides offer a ~840w variant via srcSet', () => {
     const { container } = renderDemo();
     const landscapeImages = Array.from(
       container.querySelectorAll<HTMLImageElement>('img[src="/demo/landscape.webp"]'),

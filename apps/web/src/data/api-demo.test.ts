@@ -3,7 +3,7 @@ import { apiDemoExamples } from './api-demo';
 import { galleryItems } from './gallery';
 
 describe('apiDemoExamples', () => {
-  it('expone los 4 ejemplos en orden imagen, vídeo, audio, error', () => {
+  it('exposes the 4 examples in order image, video, audio, error', () => {
     expect(apiDemoExamples.map((example) => example.id)).toEqual([
       'image',
       'video',
@@ -12,7 +12,7 @@ describe('apiDemoExamples', () => {
     ]);
   });
 
-  it('los previews de medios reutilizan assets existentes de la galería', () => {
+  it('media previews reuse existing assets from the gallery', () => {
     const sources = new Set(
       galleryItems.flatMap((item) =>
         Object.values(item).filter((value) => typeof value === 'string'),

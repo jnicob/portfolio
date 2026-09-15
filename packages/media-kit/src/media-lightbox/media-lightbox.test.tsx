@@ -32,7 +32,7 @@ describe('MediaLightbox', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('abre como dialog modal etiquetado y enfoca el botón de cerrar', async () => {
+  it('opens as a labeled modal dialog and focuses the close button', async () => {
     render(<Harness />);
     await userEvent.click(screen.getByRole('button', { name: 'Abrir' }));
     const dialog = screen.getByRole('dialog', { name: 'Vista de imagen' });
@@ -56,20 +56,20 @@ describe('MediaLightbox', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Abrir' }));
     const close = screen.getByRole('button', { name: 'Close' });
     const link = screen.getByRole('link', { name: 'Descargar' });
-    // Orden de foco tras el rediseño: contenido (enlace) → toggle/close (esquina) →
-    // botones de la toolbar. El último focusable es el botón de fit.
+    // Focus order after the redesign: content (link) → toggle/close (corner) →
+    // toolbar buttons. The last focusable is the fit button.
     const fit = screen.getByRole('button', { name: 'Fit: contain. Switch to cover' });
     expect(close).toHaveFocus();
-    // Shift+Tab desde el primer focusable (el enlace) envuelve al último (fit), sin salir.
+    // Shift+Tab from the first focusable (the link) wraps to the last (fit), without exiting.
     link.focus();
     await userEvent.tab({ shift: true });
     expect(fit).toHaveFocus();
-    // Tab desde el último envuelve al primero (el enlace).
+    // Tab from the last wraps to the first (the link).
     await userEvent.tab();
     expect(link).toHaveFocus();
   });
 
-  it('Tab desde un elemento no rastreado (p.ej. vídeo enfocado) no escapa del dialog', async () => {
+  it('Tab from an untracked element (e.g. focused video) does not escape the dialog', async () => {
     render(
       <MediaLightbox open onClose={() => {}} label="V">
         <div tabIndex={-1} data-testid="media-surface" />
@@ -79,13 +79,13 @@ describe('MediaLightbox', () => {
     screen.getByTestId('media-surface').focus();
     expect(screen.getByTestId('media-surface')).toHaveFocus();
     await userEvent.tab();
-    // El primer focusable del dialog ahora es el enlace del contenido (la toolbar va después).
+    // The dialog's first focusable is now the content link (the toolbar comes after).
     expect(screen.getByRole('link', { name: 'Descargar' })).toHaveFocus();
   });
 
   it('con el foco en el root del dialog (click en contenido no enfocable), Escape y Tab siguen funcionando', async () => {
     // En navegador, click sobre contenido no enfocable mueve el foco al ancestro
-    // enfocable más cercano; el root del dialog debe serlo (tabIndex=-1) para que
+    // nearest focusable; the dialog root must be one (tabIndex=-1) so that
     // sus handlers de teclado sigan recibiendo los eventos.
     const onClose = vi.fn();
     render(
@@ -97,8 +97,8 @@ describe('MediaLightbox', () => {
     const dialog = screen.getByRole('dialog');
     dialog.focus();
     expect(dialog).toHaveFocus();
-    // Con el root enfocado, Tab avanza al último focusable del dialog (el botón de fit)
-    // en vez de escapar a la página.
+    // With the root focused, Tab advances to the dialog's last focusable (the fit button)
+    // instead of escaping to the page.
     await userEvent.tab();
     expect(screen.getByRole('button', { name: 'Fit: contain. Switch to cover' })).toHaveFocus();
     dialog.focus();
@@ -284,10 +284,10 @@ describe('MediaLightbox v2', () => {
     expect(screen.getByRole('button', { name: 'Schließen' })).toBeInTheDocument();
   });
 
-  it('al ocultar la toolbar con foco dentro reubica el foco fuera de la región antes de inertizarla', async () => {
+  it('when hiding the toolbar with focus inside, relocates focus outside the region before making it inert', async () => {
     // El auto-hide por inactividad no puede dispararse con foco dentro (queda pineada),
-    // así que el camino "ocultar con foco dentro" es la tecla "c" (o el toggle). Tras él,
-    // el foco NO debe quedar huérfano en la región inertizada.
+    // so the "hide with focus inside" path is the "c" key (or the toggle). After it,
+    // the focus must NOT be left orphaned in the inerted region.
     render(
       <MediaLightbox open onClose={() => {}} label="V">
         <img src="/a.png" alt="a" />
@@ -299,13 +299,13 @@ describe('MediaLightbox v2', () => {
     await userEvent.keyboard('c');
     const region = document.querySelector('.mk-lightbox__controls-region') as HTMLElement;
     expect(region).toHaveAttribute('inert');
-    // El foco NO quedó atrapado dentro de la región inertizada...
+    // The focus was NOT trapped inside the inerted region...
     expect(region.contains(document.activeElement)).toBe(false);
-    // ...sigue dentro del diálogo, en el toggle siempre visible.
+    // ...still inside the dialog, on the always-visible toggle.
     expect(screen.getByRole('button', { name: 'Show controls' })).toHaveFocus();
   });
 
-  it('el anuncio de zoom (aria-live) vive fuera de la región y no se inertiza al auto-ocultar', () => {
+  it('the zoom announcement (aria-live) lives outside the region and is not made inert on auto-hide', () => {
     vi.useFakeTimers();
     try {
       render(
@@ -315,10 +315,10 @@ describe('MediaLightbox v2', () => {
       );
       const live = document.querySelector('[aria-live="polite"]') as HTMLElement;
       const region = document.querySelector('.mk-lightbox__controls-region') as HTMLElement;
-      // Presente, con la plantilla de zoomLevel, y fuera de la región de controles.
+      // Present, with the zoomLevel template, and outside the controls region.
       expect(live).toHaveTextContent('Zoom 100%');
       expect(region.contains(live)).toBe(false);
-      // Tras el auto-hide la región se inertiza, pero el aria-live no: sigue anunciando.
+      // After auto-hide the region is inerted, but aria-live is not: it continues announcing.
       act(() => vi.advanceTimersByTime(3000));
       expect(region).toHaveAttribute('inert');
       expect(live.closest('[inert]')).toBeNull();
@@ -382,7 +382,7 @@ describe('MediaLightbox v2.1 — pan con Espacio (B1)', () => {
     expect(media.style.transform).toContain('translate(0px, 0px)');
   });
 
-  it('Espacio con el foco en un botón NO entra en modo pan (el botón se sigue activando)', () => {
+  it('Space with focus on a button does NOT enter pan mode (the button still activates)', () => {
     openWithOverflow();
     const close = screen.getByRole('button', { name: 'Close' });
     close.focus();
@@ -403,7 +403,7 @@ describe('MediaLightbox v2.1 — ayuda de teclado (B2)', () => {
     expect(screen.queryByRole('group', { name: 'Keyboard shortcuts' })).not.toBeInTheDocument();
   });
 
-  it('el botón ? abre la ayuda y refleja aria-expanded', async () => {
+  it('the ? button opens help and reflects aria-expanded', async () => {
     render(<Harness />);
     await userEvent.click(screen.getByRole('button', { name: 'Abrir' }));
     const helpButton = screen.getByRole('button', { name: 'Keyboard shortcuts' });
@@ -413,7 +413,7 @@ describe('MediaLightbox v2.1 — ayuda de teclado (B2)', () => {
     expect(screen.getByRole('group', { name: 'Keyboard shortcuts' })).toBeInTheDocument();
   });
 
-  it('Escape cierra la ayuda ANTES que el lightbox y devuelve el foco al botón ?', async () => {
+  it('Escape closes help BEFORE the lightbox and returns focus to the ? button', async () => {
     render(<Harness />);
     await userEvent.click(screen.getByRole('button', { name: 'Abrir' }));
     const helpButton = screen.getByRole('button', { name: 'Keyboard shortcuts' });
@@ -440,7 +440,7 @@ describe('MediaLightbox v2.1 — toggle ojo y tooltips (B3)', () => {
     expect(toggle).toHaveAttribute('data-mk-tooltip', 'Show controls');
   });
 
-  it('el botón de ayuda también lleva tooltip', async () => {
+  it('the help button also has a tooltip', async () => {
     render(<Harness />);
     await userEvent.click(screen.getByRole('button', { name: 'Abrir' }));
     expect(screen.getByRole('button', { name: 'Keyboard shortcuts' })).toHaveAttribute(
@@ -561,7 +561,7 @@ describe('MediaLightbox v2.2 — compare (C2)', () => {
     expect(onClose).toHaveBeenCalledOnce();
   });
 
-  it('sin compare, children sigue funcionando (regresión v2)', () => {
+  it('without compare, children still works (v2 regression)', () => {
     render(
       <MediaLightbox open onClose={() => {}} label="V">
         <img src="/a.png" alt="contenido" />
@@ -680,7 +680,7 @@ describe('fullscreen focus (v0.5)', () => {
 });
 
 describe('tooltips (v0.5)', () => {
-  it('el botón close lleva tooltip', () => {
+  it('the close button has a tooltip', () => {
     render(
       <MediaLightbox open onClose={() => {}} label="V">
         <img alt="" src="/x.png" />
@@ -706,13 +706,13 @@ describe('tooltips (v0.5)', () => {
 });
 
 describe('MediaLightbox — no secuestrar punteros de children interactivos (T25 QA fix)', () => {
-  // Causa raíz (t25-qa-a11y.md): useZoomPan capturaba el puntero de CUALQUIER
+  // Root cause (t25-qa-a11y.md): useZoomPan captured the pointer of ANY
   // pointerdown dentro del viewport salvo [data-mk-drag-exempt]. En un navegador
   // real eso retargetea el pointerup/click subsiguiente al div del viewport, y
-  // onOverlayClick (target === viewportRef.current) cierra el diálogo en vez de
-  // dejar que el botón reciba su propio click (p.ej. play/pause del audio).
+  // onOverlayClick (target === viewportRef.current) closes the dialog instead of
+  // letting the button receive its own click (e.g. audio play/pause).
 
-  it('pointerdown sobre un botón hijo de children NO captura el puntero del viewport', () => {
+  it('pointerdown on a child button of children does NOT capture the viewport pointer', () => {
     render(
       <MediaLightbox open onClose={() => {}} label="V">
         <button type="button">Reproducir</button>
@@ -731,7 +731,7 @@ describe('MediaLightbox — no secuestrar punteros de children interactivos (T25
     expect(captureSpy).not.toHaveBeenCalled();
   });
 
-  it('click en un botón hijo de children no cierra el diálogo', async () => {
+  it('click on a child button of children does not close the dialog', async () => {
     const onClose = vi.fn();
     render(
       <MediaLightbox open onClose={onClose} label="V">
@@ -744,7 +744,7 @@ describe('MediaLightbox — no secuestrar punteros de children interactivos (T25
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it('click en los controles nativos de un <video controls> hijo de children no cierra el diálogo', () => {
+  it('click on native controls of a <video controls> child of children does not close the dialog', () => {
     const onClose = vi.fn();
     render(
       <MediaLightbox open onClose={onClose} label="V">
@@ -769,7 +769,7 @@ describe('MediaLightbox — no secuestrar punteros de children interactivos (T25
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it('regresión: pointerdown sobre el propio contenido (imagen, no interactivo) SÍ captura el puntero (pan intacto)', () => {
+  it('regression: pointerdown on content itself (image, non-interactive) DOES capture the pointer (pan intact)', () => {
     render(
       <MediaLightbox open onClose={() => {}} label="V">
         <img src="/a.png" alt="contenido" />
@@ -788,7 +788,7 @@ describe('MediaLightbox — no secuestrar punteros de children interactivos (T25
     expect(captureSpy).toHaveBeenCalledWith(1);
   });
 
-  it('defensa en profundidad: onOverlayClick no cierra si el pointerdown que originó el gesto nació en un control interactivo, aunque el click llegue retargeteado al viewport', () => {
+  it('defense in depth: onOverlayClick does not close if the pointerdown that originated the gesture started on an interactive control, even if the click arrives retargeted to the viewport', () => {
     const onClose = vi.fn();
     render(
       <MediaLightbox open onClose={onClose} label="V">
@@ -804,8 +804,8 @@ describe('MediaLightbox — no secuestrar punteros de children interactivos (T25
       button: 0,
       pointerType: 'mouse',
     });
-    // Simula el retargeteo que produciría setPointerCapture en un navegador real:
-    // el click sintético llega al viewport, no al botón.
+    // Simulates the retargeting that setPointerCapture would produce in a real browser:
+    // the synthetic click reaches the viewport, not the button.
     fireEvent.click(viewport);
     expect(onClose).not.toHaveBeenCalled();
   });

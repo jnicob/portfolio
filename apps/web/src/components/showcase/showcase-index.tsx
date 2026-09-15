@@ -10,11 +10,11 @@ export type ShowcaseIndexProps = {
   placeholder?: string;
   /** Invocado con el id del item elegido; no toca `location.hash` (lo hace quien filtra, ShowcaseView). */
   onSelect: (id: string) => void;
-  /** Id del item actualmente aplicado (marca la opción activa en la lista). */
+  /** ID of the currently applied item (marks the active option in the list). */
   selectedId?: string;
 };
 
-/** Índice filtrable del showcase (T23): la selección se delega vía `onSelect` (B1 — filtra, no hace scroll). */
+/** Filterable index of the showcase (T23): selection is delegated via `onSelect` (B1 — filters, does not scroll). */
 export function ShowcaseIndex({
   items,
   inputLabel,

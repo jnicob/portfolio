@@ -1,8 +1,8 @@
 /**
- * Modelo de medio con variante HD opcional (C3): permite que compare-slider y
- * media-lightbox decidan, según el tamaño/densidad de pantalla, si sirven la
- * imagen base o una versión de mayor resolución (`fullSrc`) — sin acoplar esa
- * decisión a los componentes de React. Módulo puro, sin dependencias de React.
+ * Media model with optional HD variant (C3): allows compare-slider and
+ * media-lightbox to decide, based on screen size/density, whether to serve the
+ * base image or a higher-resolution version (`fullSrc`) — without coupling that
+ * decision to React components. Pure module, no React dependencies.
  */
 export type MediaSource = { src: string; fullSrc?: string; alt: string };
 
@@ -18,16 +18,16 @@ export function isMediaSource(value: unknown): value is MediaSource {
 export const FULL_SRC_MIN_EFFECTIVE_WIDTH = 2000;
 
 /**
- * Criterio cerrado (spec C3): pantallas < 1024 css px (móviles) NUNCA cargan el
- * HD, aunque su dpr las lleve por encima del umbral efectivo. El dpr se capa a 2x
- * para no sobre-servir a desktops/tablets con dpr 3+.
+ * Strict criterion (spec C3): screens < 1024 css px (mobile) NEVER load
+ * HD, even if their dpr puts them above the effective threshold. The dpr is capped at 2x
+ * to avoid over-serving desktops/tablets with dpr 3+.
  */
 export function shouldUseFullSrc(screenWidth: number, devicePixelRatio: number): boolean {
   if (screenWidth < 1024) return false;
   return screenWidth * Math.min(devicePixelRatio, 2) >= FULL_SRC_MIN_EFFECTIVE_WIDTH;
 }
 
-/** Elige la URL para fullscreen según la pantalla actual (SSR-safe: sin window → src). */
+/** Selects the URL for fullscreen based on the current screen (SSR-safe: no window → src). */
 export function pickFullscreenSrc(source: MediaSource): string {
   if (!source.fullSrc) return source.src;
   if (typeof window === 'undefined') return source.src;
@@ -36,7 +36,7 @@ export function pickFullscreenSrc(source: MediaSource): string {
   return shouldUseFullSrc(screenWidth, devicePixelRatio) ? source.fullSrc : source.src;
 }
 
-// Módulo-level: idempotencia de la precarga entre llamadas (no repite la misma URL).
+// Module-level: preload idempotency across calls (does not repeat the same URL).
 const preloadedUrls = new Set<string>();
 
 /** Precarga los fullSrc que la pantalla justifica (new Image()). Idempotente. */

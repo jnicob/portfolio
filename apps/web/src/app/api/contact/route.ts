@@ -29,7 +29,7 @@ export async function POST(request: Request) {
 
     // 2. Anti-spam Honeypot check
     if (!verifyHoneypot(body.honeypot)) {
-      // Retornar 200 ficticio para engañar a los spambots sin procesar el envío
+      // Return simulated 200 to mislead spambots without processing submission
       return NextResponse.json({ success: true, message: 'Mensaje procesado' });
     }
 
@@ -60,14 +60,14 @@ export async function POST(request: Request) {
     const cleanPhone = phone ? sanitizeHeader(phone) : '';
     const cleanMessage = sanitizeText(message);
 
-    // 5. Envío seguro de email (Resend / Webhook / Log dev)
+    // 5. Secure email sending (Resend / Webhook / Dev log)
     const destinationEmail = process.env.CONTACT_DESTINATION_EMAIL || 'j.nico.b@gmail.com';
     const resendApiKey = process.env.RESEND_API_KEY;
     const webhookUrl = process.env.CONTACT_WEBHOOK;
 
     let emailSent = false;
 
-    // A) Envío vía Resend API (si está configurada la API key)
+    // A) Sending via Resend API (if API key is configured)
     if (resendApiKey) {
       try {
         const resendResponse = await fetch('https://api.resend.com/emails', {
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // C) Envío vía Webhook genérico (si está configurado)
+    // C) Sending via generic Webhook (if configured)
     if (!emailSent && webhookUrl) {
       try {
         const webhookResponse = await fetch(webhookUrl, {
@@ -123,7 +123,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // Log para desarrollo local
+    // Log for local development
     if (process.env.NODE_ENV !== 'production') {
       console.log('[Contact API] Mensaje procesado localmente:', {
         destination: destinationEmail,

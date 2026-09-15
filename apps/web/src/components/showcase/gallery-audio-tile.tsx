@@ -11,12 +11,12 @@ type Props = {
   height: number;
   labels: GalleryAudioTileLabels;
   /**
-   * Omite la carátula y deja solo controles compactos (fix design review T25 I1):
-   * el lightbox de audio ya pinta su propia carátula grande por encima, así que
-   * una segunda instancia de este componente con su propia carátula duplicaba la
-   * imagen y desbordaba el viewport. Con `hideCover` el layout pasa de "carátula +
-   * botón superpuesto" a una fila horizontal botón+barra de ancho completo.
-   * Default `false` (tile de la grid, sin cambios).
+   * Omits the cover and leaves only compact controls (fix design review T25 I1):
+   * the audio lightbox already renders its own large cover on top, so
+   * a second instance of this component with its own cover duplicated the
+   * image and overflowed the viewport. With `hideCover` the layout changes from "cover +
+   * overlaid button" to a full-width horizontal button+bar row.
+   * Default `false` (grid tile, unchanged).
    */
   hideCover?: boolean;
   className?: string;
@@ -24,22 +24,22 @@ type Props = {
 };
 
 /**
- * Tile de galería para un ítem de audio (spec F3.7 / T10): carátula +
- * overlay play/pause + barra de progreso fina.
+ * Gallery tile for an audio item (spec F3.7 / T10): cover +
+ * play/pause overlay + thin progress bar.
  *
- * Sin `title` propio (fix review T11): el nombre accesible por ítem ya lo
- * llevan `labels.play`/`labels.pause` (interpolados por el consumidor, p.ej.
- * "Reproducir Lo-fi") y, en `GalleryDemo`, el `<figcaption>` visible del tile.
- * Un tercer `<span sr-only>{title}</span>` aquí solo triplicaba esa misma
- * información para lectores de pantalla.
+ * No `title` of its own (fix review T11): the accessible name per item is already
+ * provided by `labels.play`/`labels.pause` (interpolated by the consumer, e.g.
+ * "Play Lo-fi") and, in `GalleryDemo`, the visible `<figcaption>` of the tile.
+ * A third `<span sr-only>{title}</span>` here would only triplicate that same
+ * information for screen readers.
  *
- * Facade: el `<audio src>` no se monta hasta la PRIMERA pulsación de play —
- * 0 bytes de red antes de esa interacción (mismo patrón que `VideoScrubDemo`
- * con el `<video>`). `mounted` solo pasa de `false` a `true` una vez; el
- * efecto que llama a `play()` en esa transición cubre el arranque inicial,
- * cuando el nodo `<audio>` todavía no existía en el momento del click.
- * Los toggles posteriores (ya montado) llaman a `play()`/`pause()`
- * directamente desde el handler.
+ * Facade: `<audio src>` is not mounted until the FIRST play press —
+ * 0 network bytes before that interaction (same pattern as `VideoScrubDemo`
+ * with `<video>`). `mounted` only transitions from `false` to `true` once; the
+ * effect that calls `play()` on that transition covers the initial start,
+ * when the `<audio>` node did not exist yet at the time of the click.
+ * Subsequent toggles (already mounted) call `play()`/`pause()`
+ * directly from the handler.
  */
 export function GalleryAudioTile({
   cover,

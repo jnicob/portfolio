@@ -92,7 +92,7 @@ describe('MediaKitDemo', () => {
     expect(desaturatedImages).toHaveLength(1);
   });
 
-  it('las imágenes de landscape ofrecen una variante ~840w vía srcSet, con sizes acorde al grid', () => {
+  it('landscape images offer a ~840w variant via srcSet, with sizes matching the grid', () => {
     const { container } = render(<MediaKitDemo labels={enLabels} strings={enStrings} />);
     const landscapeImages = Array.from(
       container.querySelectorAll<HTMLImageElement>('img[src="/demo/landscape.webp"]'),

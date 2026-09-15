@@ -9,10 +9,10 @@ const BASE_DOT_RADIUS_PX = 1;
 const MAX_DOT_RADIUS_PX = 2.5;
 // Con 0.15 el grid en reposo quedaba casi invisible en dark (design review
 // F3.6 T21, finding "canvas dark en reposo"): el degradado de --color-accent
-// sobre el fondo oscuro necesita más alpha base para leerse como textura sin
+// over the dark background it needs more base alpha to read as a texture without
 // puntero encima. 0.35 iguala el "piso" que ya usaba el propio elemento
-// <canvas> (ver `opacity-[0.35]` más abajo) — mismo valor en ambos temas
-// (verificado en dev: en light no se vuelve chillón, sigue siendo un fondo
+// <canvas> (see `opacity-[0.35]` below) — same value in both themes
+// (verified in dev: in light it doesn't get loud, it remains a background
 // sutil de puntos).
 const BASE_DOT_ALPHA = 0.35;
 const MAX_DEVICE_PIXEL_RATIO = 2;
@@ -20,17 +20,17 @@ const MAX_DEVICE_PIXEL_RATIO = 2;
 type PointerPosition = { x: number; y: number };
 
 /**
- * Canvas decorativo posicionado detrás del contenido del Hero: un grid de
- * puntos (paso de `GRID_STEP_PX`) cuyo radio/opacidad sube con falloff cerca
- * del puntero (`POINTER_RADIUS_PX`). Puramente visual — `pointer-events: none`
- * + `aria-hidden`, sin i18n ni copy.
+ * Decorative canvas positioned behind the Hero content: a grid of
+ * dots (`GRID_STEP_PX` step) whose radius/opacity increases with falloff near
+ * the pointer (`POINTER_RADIUS_PX`). Purely visual — `pointer-events: none`
+ * + `aria-hidden`, without i18n or copy.
  *
- * El bucle de rAF solo corre mientras hay puntero sobre el contenedor padre,
- * sin `prefers-reduced-motion` y con la pestaña visible; fuera de esas
- * condiciones queda en reposo: un único frame estático, sin bucle. El color
- * se lee de `--color-accent` computado y se re-lee (MutationObserver) cuando
- * cambia `data-theme`/`data-skin` en `<html>`, porque ese valor no es
- * observable por CSS. `devicePixelRatio` se capa a 2 para el backing buffer.
+ * The rAF loop only runs while there is a pointer over the parent container,
+ * without `prefers-reduced-motion` and with the tab visible; outside those
+ * conditions it remains at rest: a single static frame, no loop. The color
+ * is read from computed `--color-accent` and re-read (MutationObserver) when
+ * `data-theme`/`data-skin` changes on `<html>`, because that value is not
+ * observable via CSS. `devicePixelRatio` is capped at 2 for the backing buffer.
  */
 export function HeroCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -42,10 +42,10 @@ export function HeroCanvas() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Declaradas como const/arrow (no `function` hoisteada): así TS conserva el
+    // Declared as const/arrow (not hoisted `function`): this way TS preserves the
     // estrechamiento de `canvas`/`container`/`ctx` a no-nulos dentro de estos
     // closures — con declaraciones hoisteadas, TS no puede asumir que se
-    // invocan después del guard de arriba y las trata como posiblemente null.
+    // invoked after the guard above and treats them as possibly null.
     const readAccentColor = () =>
       getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
 
@@ -57,8 +57,8 @@ export function HeroCanvas() {
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
-      // Sin `--color-accent` resuelto todavía (o en medio de una transición de
-      // tema) dejamos el frame vacío en vez de pintar con un color por
+      // Without `--color-accent` resolved yet (or in the middle of a
+      // theme transition) we leave the frame empty instead of painting with a color by
       // defecto: cero fallbacks de color hardcodeados.
       if (!accent) return;
       ctx.fillStyle = accent;
@@ -82,13 +82,13 @@ export function HeroCanvas() {
       height = rect.height;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
-      // <canvas> es un elemento reemplazado: sin tamaño CSS explícito, su caja
-      // de layout toma el tamaño INTRÍNSECO de los atributos width/height de
+      // <canvas> is a replaced element: without an explicit CSS size, its box
+      // layout box takes the INTRINSIC size from the width/height attributes of
       // arriba — que ya vienen escalados por dpr. Con dpr > 1 (cualquier
-      // pantalla HiDPI) eso deja la caja del canvas más grande que el
+      // HiDPI display) that leaves the canvas box larger than the
       // contenedor real y, con overflow-hidden en el Hero, el grid solo llena
       // el cuadrante superior-izquierdo, desalineado del puntero. Fijamos el
-      // tamaño CSS al tamaño real medido, independiente del backing buffer.
+      // CSS size to the actual measured size, independent of the backing buffer.
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -110,7 +110,7 @@ export function HeroCanvas() {
       }
     };
 
-    /** Arranca el bucle si las condiciones lo permiten; si no, deja un frame estático. */
+    /** Starts loop if conditions allow; otherwise renders a static frame. */
     const maybeStartLoop = () => {
       if (frame != null) return;
       if (!pointer || prefersReducedMotion() || document.hidden) {
@@ -148,8 +148,8 @@ export function HeroCanvas() {
 
     resize();
 
-    // jsdom no implementa ResizeObserver: se degrada al tamaño medido al montar
-    // (mismo patrón defensivo que AnimatedMetric con IntersectionObserver).
+    // jsdom does not implement ResizeObserver: falls back to the size measured on mount
+    // (same defensive pattern as AnimatedMetric with IntersectionObserver).
     let resizeObserver: ResizeObserver | undefined;
     if (typeof ResizeObserver !== 'undefined') {
       resizeObserver = new ResizeObserver(resize);

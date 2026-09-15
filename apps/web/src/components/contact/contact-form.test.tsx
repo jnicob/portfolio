@@ -56,7 +56,7 @@ describe('ContactForm', () => {
     expect(screen.getByRole('button', { name: /Enviar mensaje/i })).toBeInTheDocument();
   });
 
-  it('muestra mensajes de error Zod si se intenta enviar vacío', async () => {
+  it('shows Zod error messages when attempting to submit empty', async () => {
     const user = userEvent.setup();
     render(<ContactForm labels={MOCK_LABELS} />);
 
@@ -71,7 +71,7 @@ describe('ContactForm', () => {
     ).toBeInTheDocument();
   });
 
-  it('procesa el envío exitosamente cuando los campos son válidos', async () => {
+  it('processes submission successfully when fields are valid', async () => {
     const user = userEvent.setup();
     const handleSubmit = vi.fn().mockResolvedValue({ success: true });
 

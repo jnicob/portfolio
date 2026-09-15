@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { AlertTriangleIcon } from './alert-triangle-icon';
 
 describe('AlertTriangleIcon', () => {
-  it('es decorativo y hereda el color semántico del estado', () => {
+  it('is decorative and inherits the semantic state color', () => {
     const { container } = render(<AlertTriangleIcon />);
     const icon = container.querySelector('svg');
 

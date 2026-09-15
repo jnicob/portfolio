@@ -74,14 +74,14 @@ describe('LightboxControls', () => {
     ).toBeInTheDocument();
   });
 
-  it('deshabilita zoom out en el mínimo y muestra el porcentaje', () => {
+  it('disables zoom out at minimum and displays percentage', () => {
     renderControls({ percent: 150, atMin: false, atMax: true });
     expect(screen.getByRole('button', { name: 'Zoom in' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Zoom out' })).toBeEnabled();
     expect(screen.getByText('150%')).toBeInTheDocument();
   });
 
-  it('sin soporte fullscreen no renderiza el botón', () => {
+  it('without fullscreen support does not render the button', () => {
     renderControls({ fullscreenSupported: false });
     expect(screen.queryByRole('button', { name: 'Enter fullscreen' })).not.toBeInTheDocument();
   });

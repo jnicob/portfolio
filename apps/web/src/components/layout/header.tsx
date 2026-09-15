@@ -5,7 +5,7 @@ import { SkinSwitcher } from './skin-switcher';
 import { ThemeSwitcher } from './theme-switcher';
 import { NavLink } from './nav-link';
 
-/** Header compartido: navegación principal + cambio de tema/skin/idioma. RSC-compatible. */
+/** Shared header: primary navigation + theme/skin/locale switchers. RSC-compatible. */
 export function SiteHeader() {
   const t = useTranslations('nav');
   const tSwitchers = useTranslations('switchers');

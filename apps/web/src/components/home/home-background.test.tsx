@@ -16,7 +16,7 @@ describe('HomeBackground', () => {
     expect(main.querySelector('canvas')?.parentElement).toBe(main);
   });
 
-  it('el contenido queda en una capa interior constreñida a max-w-5xl', () => {
+  it('content is placed in an inner layer constrained to max-w-5xl', () => {
     render(
       <HomeBackground>
         <section>Contenido completo del inicio</section>

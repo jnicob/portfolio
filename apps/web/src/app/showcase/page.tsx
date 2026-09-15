@@ -4,7 +4,7 @@ import { siteUrl } from '@/lib/site-url';
 const SITE_URL = siteUrl();
 const TARGET = `/${routing.defaultLocale}/showcase`;
 
-// Redirect estático: meta refresh (izado por React 19) + JS + enlace visible.
+// Static redirect: meta refresh (hoisted by React 19) + JS + visible link.
 export default function ShowcaseRedirect() {
   return (
     <>

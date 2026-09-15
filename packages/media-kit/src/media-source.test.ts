@@ -18,7 +18,7 @@ afterEach(() => {
 });
 
 describe('isMediaSource', () => {
-  it('reconoce un MediaSource válido (con y sin fullSrc)', () => {
+  it('recognizes a valid MediaSource (with and without fullSrc)', () => {
     expect(isMediaSource({ src: '/a.png', alt: 'A' })).toBe(true);
     expect(isMediaSource({ src: '/a.png', fullSrc: '/a-full.png', alt: 'A' })).toBe(true);
   });
@@ -35,7 +35,7 @@ describe('isMediaSource', () => {
     expect(isMediaSource({ src: '/a.png', alt: 'A', fullSrc: 1 })).toBe(false); // fullSrc no string
   });
 
-  it('no confunde un ReactNode (string/número) con un MediaSource', () => {
+  it('does not confuse a ReactNode (string/number) with a MediaSource', () => {
     expect(isMediaSource('/a.png')).toBe(false);
   });
 });
@@ -71,7 +71,7 @@ describe('pickFullscreenSrc', () => {
     expect(pickFullscreenSrc(source)).toBe('/a-full.png');
   });
 
-  it('con fullSrc y pantalla chica (móvil) devuelve src', () => {
+  it('returns src with fullSrc and small screen (mobile)', () => {
     stubScreen(390, 3);
     expect(pickFullscreenSrc(source)).toBe('/a.png');
   });
@@ -101,7 +101,7 @@ describe('preloadFullSources', () => {
     expect(calls).toEqual(['/a-full-unique-1.png', '/c-full-unique-1.png']);
   });
 
-  it('en pantalla chica no precarga ningún fullSrc', () => {
+  it('does not preload any fullSrc on small screen', () => {
     stubScreen(390, 3);
     const calls: string[] = [];
     class FakeImage {
