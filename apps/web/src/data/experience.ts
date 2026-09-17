@@ -11,29 +11,25 @@ const entries = [
     start: '2022-07',
     end: '2026-07',
     summary: {
-      es: 'Plataforma pública de APIs de Freepik/Magnific (IA, stock, estado de tareas) y su web: specs, servidor, gateway, facturación, documentación, Playground y panel de desarrollador. Antes, plataformas de gestión de contenido, colaboradores y fiscal.',
-      en: 'Freepik/Magnific public API platform (AI, stock, task status) and its web: specs, server, gateway, billing, documentation, Playground and developer dashboard. Previously, content and contributor management platforms.',
+      es: 'Plataforma pública para desarrolladores y clientes enterprise que monetiza y expone el catálogo de APIs de IA y stock de Freepik/Magnific. Desarrollo full-stack de la web, panel de control, servicios y backoffice.',
+      en: "Public platform for developers and enterprise clients monetizing and exposing Freepik/Magnific's AI and stock API catalog. Full-stack development across web landings, developer dashboard, API services, and backoffice.",
     },
     highlights: [
       {
-        es: 'Más de 1.000 PRs entre GitHub y Bitbucket en el ecosistema de la plataforma y el backoffice.',
-        en: '1,000+ PRs across GitHub and Bitbucket in the platform and backoffice ecosystem.',
+        es: 'Catálogo multimodal con más de 40 modelos de IA y 350+ endpoints servidos en producción, soportando alto tráfico y procesamiento asíncrono.',
+        en: 'Multimodal catalog serving 40+ AI models and 350+ endpoints in production, handling high traffic and asynchronous task workflows.',
       },
       {
-        es: 'APIs públicas de generación de IA, stock y estado de tareas: del spec OpenAPI a producción (FastAPI, gateway APISIX, docs), incluida Flows API para encadenar modelos.',
-        en: 'Public AI generation, stock and task-status APIs: from OpenAPI spec to production (FastAPI, APISIX gateway, docs), including the Flows API for chaining models.',
+        es: 'Automatización con agentes de IA: diseño del pipeline que traduce especificaciones OpenAPI a endpoints FastAPI, reglas de gateway (APISIX) y documentación interactiva, acelerando la integración de nuevos servicios.',
+        en: 'AI agent automation: designed pipelines translating OpenAPI specs into FastAPI endpoints, APISIX gateway rules, and interactive docs, drastically speeding up service onboarding.',
       },
       {
-        es: 'Integración automatizada de servicios mediante agentes de IA: de la definición del servicio a spec, implementación, precios, permisos, documentación y playground.',
-        en: 'Automated service integration through AI agents: from the service definition to spec, implementation, pricing, permissions, documentation and playground.',
+        es: 'Liderazgo técnico práctico: definición de estándares de API (OpenAPI), revisión de código (PRs) con foco en calidad/testing y desarrollo del Playground interactivo y portal de facturación/uso.',
+        en: 'Pragmatic tech leadership: defined OpenAPI standards, conducted rigorous PR code reviews focused on quality/testing, and built the interactive API Playground and billing/usage dashboard.',
       },
       {
-        es: 'Playground web de la API y panel de desarrollador (uso, presupuesto, límites, facturación y API keys).',
-        en: 'API web Playground and developer dashboard (usage, budget, limits, billing and API keys).',
-      },
-      {
-        es: 'Backoffice de contenido Freepik/Flaticon: catalogación, moderación, workflow de producción y portal fiscal (Laravel/Nova, Vue, Slim).',
-        en: 'Freepik/Flaticon content backoffice: cataloguing, moderation, production workflow and tax portal (Laravel/Nova, Vue, Slim).',
+        es: 'Más de 1.000 PRs entregados en producción con alta cobertura de tests para asegurar la estabilidad de servicios y backoffice de contenidos (Freepik/Flaticon).',
+        en: '1,000+ PRs delivered to production with comprehensive automated test coverage ensuring reliability across core services and backoffice systems.',
       },
     ],
     tags: ['python', 'fastapi', 'openapi', 'apisix', 'nextjs', 'vue', 'ai'],
@@ -48,25 +44,25 @@ const entries = [
     start: '2020-09',
     end: '2022-10',
     summary: {
-      es: 'Consultora de desarrollo de software: frontend y fullstack para varios clientes de EE. UU.',
-      en: 'Software development consultancy: frontend and full-stack work for several US-based clients.',
+      es: 'Desarrollo de plataformas SaaS y comercio electrónico a medida para clientes corporativos de EE. UU. y Latinoamérica.',
+      en: 'Custom SaaS and e-commerce platform development for enterprise clients across the US and Latin America.',
     },
     highlights: [
       {
-        es: 'Cadi: plataforma e-commerce de artículos de golf. React / Next.js / Material UI con servicios REST en Node.js / Express / PostgreSQL / Sequelize / Swell.',
-        en: 'Cadi: golf e-commerce platform. React / Next.js / Material UI with REST services in Node.js / Express / PostgreSQL / Sequelize / Swell.',
+        es: 'Cadi: plataforma e-commerce de artículos de golf en React / Next.js / Material UI con servicios REST escalables en Node.js, Express y PostgreSQL.',
+        en: 'Cadi: golf e-commerce platform built with React / Next.js / Material UI and scalable REST services in Node.js, Express, and PostgreSQL.',
       },
       {
-        es: 'GDS: plataforma de gestión y soporte de acciones operativas en puntos de venta. React / Material UI con Node.js / Express / SQL Server.',
-        en: 'GDS: management and support platform for point-of-sale operations. React / Material UI with Node.js / Express / SQL Server.',
+        es: 'GDS: plataforma web para gestión operativa, seguimiento de stock y operaciones en puntos de venta en tiempo real (React, Node.js, SQL Server).',
+        en: 'GDS: web platform for operational management, stock tracking, and point-of-sale operations in real time (React, Node.js, SQL Server).',
       },
       {
-        es: 'Candidate Viewer: plataforma de gestión de candidatos. React / Material UI con Node.js / Express / MySQL / Sequelize.',
-        en: 'Candidate Viewer: job-candidate management platform. React / Material UI with Node.js / Express / MySQL / Sequelize.',
+        es: 'Candidate Viewer: plataforma de evaluación y gestión de candidatos para procesos de selección (React, Node.js, Express, MySQL).',
+        en: 'Candidate Viewer: job-candidate screening and talent management platform (React, Node.js, Express, MySQL).',
       },
       {
-        es: 'DevelopIntelligence: app para que instructores gestionen cursos y disponibilidad, con Lightning Components de Salesforce.',
-        en: 'DevelopIntelligence: app for instructors to manage courses and availability, built with Salesforce Lightning Components.',
+        es: 'DevelopIntelligence: aplicación para instructores y gestión de disponibilidad en cursos técnicos corporativos con Salesforce Lightning Components.',
+        en: 'DevelopIntelligence: technical training course management and instructor scheduling app built with Salesforce Lightning Components.',
       },
     ],
     tags: ['react', 'nextjs', 'nodejs', 'express', 'postgresql'],
@@ -81,21 +77,21 @@ const entries = [
     start: '2012-07',
     end: '2021-03',
     summary: {
-      es: 'Análisis, diseño, desarrollo e implementación del Sistema de Gestión Hospitalaria Municipal (HIS).',
-      en: 'Analysis, design, development and implementation of the Municipal Hospital Information System (HIS).',
+      es: 'Sistema central de historia clínica electrónica y gestión hospitalaria (HIS) para la red municipal de salud pública (centros de salud y hospitales).',
+      en: 'Central Electronic Health Record (EHR) and Hospital Information System (HIS) for the municipal public health network.',
     },
     highlights: [
       {
-        es: 'Electronic Health Record (EHR) y mensajería HL7 V2 (ADT, OML, ORL, ORU) con Mirth Connect; Master Patient Index (MPI) y Health Information Exchange (HIE).',
-        en: 'Electronic Health Record (EHR) and HL7 V2 messaging (ADT, OML, ORL, ORU) with Mirth Connect; Master Patient Index (MPI) and Health Information Exchange (HIE).',
+        es: 'Desarrollo e implantación del sistema de historia clínica digital, garantizando la trazabilidad médica y atención de miles de pacientes en centros municipales.',
+        en: 'Developed and rolled out the digital health record system, ensuring medical traceability and care continuity for thousands of patients across municipal centers.',
       },
       {
-        es: 'Interfaces de comunicación con otros sistemas clínicos (RIS, LIS) y de georreferenciación (GIS).',
-        en: 'Communication interfaces with other clinical (RIS, LIS) and geo-referencing (GIS) systems.',
+        es: 'Interoperabilidad clínica crítica: integración en tiempo real entre laboratorios (LIS), diagnóstico por imagen (RIS) y padrón de pacientes mediante estándares HL7 V2 y Mirth Connect.',
+        en: 'Critical healthcare interoperability: real-time integration between laboratories (LIS), radiology (RIS), and patient registries via HL7 V2 and Mirth Connect.',
       },
       {
-        es: 'Stack: PHP / CodeIgniter / Doctrine ORM, JavaScript / jQuery / AJAX, RESTful API, MySQL / SQL Server.',
-        en: 'Stack: PHP / CodeIgniter / Doctrine ORM, JavaScript / jQuery / AJAX, RESTful API, MySQL / SQL Server.',
+        es: 'Servicios web y base de datos relacional de alta disponibilidad con PHP (CodeIgniter/Doctrine), JavaScript y MySQL/SQL Server.',
+        en: 'High-availability web services and relational database architecture built with PHP (CodeIgniter/Doctrine), JavaScript, and MySQL/SQL Server.',
       },
     ],
     tags: ['php', 'javascript', 'codeigniter', 'hl7', 'healthcare-it', 'mysql'],
@@ -139,21 +135,17 @@ const entries = [
     start: '2007-07',
     end: '2021-04',
     summary: {
-      es: 'Desarrollo, administración y consultoría de sistemas de gestión del conocimiento y soporte a la toma de decisiones en salud.',
-      en: 'Development, administration and consulting for knowledge-management and decision-support systems in healthcare.',
+      es: 'Sistemas de información y soporte a la decisión clínica para laboratorios de análisis clínicos e instituciones de salud.',
+      en: 'Healthcare information and clinical decision support systems for laboratories and medical institutions.',
     },
     highlights: [
       {
-        es: 'HL7 Infobuttons e interoperabilidad con vocabulario médico controlado (SNOMED CT, LOINC, CIE-10) y un Clinical Decision Support System (CDSS).',
-        en: 'HL7 Infobuttons and interoperability with controlled medical vocabularies (SNOMED CT, LOINC, ICD-10) and a Clinical Decision Support System (CDSS).',
+        es: 'Integración de vocabularios médicos controlados (SNOMED CT, LOINC, CIE-10) y desarrollo de herramientas de ayuda al diagnóstico médico (CDSS).',
+        en: 'Integration of controlled medical vocabularies (SNOMED CT, LOINC, ICD-10) and development of clinical decision support systems (CDSS).',
       },
       {
-        es: 'Stack: PHP / Laravel / WordPress / Delphi, JavaScript / jQuery, RESTful API.',
-        en: 'Stack: PHP / Laravel / WordPress / Delphi, JavaScript / jQuery, RESTful API.',
-      },
-      {
-        es: 'Administración de servidores Linux Debian con Apache y virtualización Xen.',
-        en: 'Server administration on Linux Debian with Apache and Xen virtualization.',
+        es: 'Desarrollo de servicios web y APIs con PHP / Laravel y administración de servidores Linux Debian.',
+        en: 'Web services and API development with PHP / Laravel, alongside Linux Debian server administration.',
       },
     ],
     tags: ['php', 'laravel', 'mysql', 'hl7', 'healthcare-it'],
