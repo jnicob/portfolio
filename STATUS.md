@@ -1,6 +1,6 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-09-15 · Foto del CV en espejo, más espacio en experiencia compacta, encuadre de Nico a la derecha en Home, UX mobile de Hero tipo CV, sección Idiomas y calibración de impresión (1 y 2 páginas) con tests PDF
+> Actualizado: 2026-09-17 · Optimización de propuesta de valor profesional (ingeniería, IA y productos digitales), impacto con métricas y claridad de negocio en experiencia laboral; calibración A4 intacta
 
 ## Ahora
 
@@ -10,6 +10,7 @@
 
 ## Hecho
 
+- ✅ **Propuesta de valor e impacto en el CV**: Actualizados `profile.ts` y `experience.ts` incorporando foco en productos digitales completos, rigor técnico (performance, observabilidad, seguridad, TDD y Clean Code) y aceleración con agentes de IA. Reforzadas las métricas reales (40+ modelos de IA, 350+ endpoints en producción, 1.000+ PRs) y el propósito de negocio de cada proyecto (Freepik, AccelOne, HIS municipal y Fares Taie).
 - ✅ **Foto del CV en espejo**: Invertida horizontalmente (`sharp.flop()`) en `avatar-cv.jpg` y `avatar-cv.webp` para que el torso y mirada se orienten hacia el interior del documento (hacia el nombre y contenido).
 - ✅ **Espaciado en CV compacto**: Incrementada la separación entre las tarjetas de experiencia laboral (`gap-4`) para una lectura más desahogada.
 - ✅ **Encuadre de Nico en el Home**: Re-extracción de `hero-portrait.webp` (`left: 760`) para posicionar a Nico apenas más a la derecha, logrando un encuadre circular perfectamente centrado y equilibrado.

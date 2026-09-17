@@ -13,12 +13,12 @@ export const profile = profileSchema.parse({
   summary: {
     paragraphs: {
       es: [
-        'Ingeniero en Informática con más de 15 años de experiencia en análisis, arquitectura y desarrollo de software full-stack. He trabajado en soluciones para empresas y proyectos de España, EE. UU. y Latinoamérica, abarcando plataformas web a medida, servicios de API, e-commerce, sistemas de gestión, citas, historias clínicas e interoperabilidad en salud.',
-        'Aplico e integro activamente flujos de trabajo con Agentes de IA y skills especializadas para la automatización de especificaciones, desarrollo guiado y reglas de negocio. Experiencia trabajando en equipos multidisciplinarios, distribuidos y remotos.',
+        'Ingeniero en Informática con más de 15 años construyendo productos digitales completos, desde interfaces web modernas y accesibles hasta arquitecturas de microservicios y APIs distribuidas. Experiencia en equipos internacionales resolviendo retos de integración de servicios, interoperabilidad de datos y modernización de sistemas.',
+        'Aporto valor uniendo el rigor de ingeniería (rendimiento, observabilidad, seguridad, testing y buenas prácticas / Clean Code) con la aceleración que ofrecen los agentes de IA para entregar software robusto y mantenible en plazos reducidos.',
       ],
       en: [
-        'Computer Engineer with 15+ years of experience in software analysis, architecture, and full-stack development. Worked on solutions for companies and projects across Spain, the US, and Latin America, covering custom web platforms, API services, e-commerce, management systems, appointment scheduling, EHR/clinical records, and healthcare interoperability.',
-        'Actively integrating AI Agent workflows and custom skills to automate specifications, code generation, and business rules. Proven experience collaborating in multidisciplinary, distributed, and remote teams.',
+        'Computer Engineer with 15+ years of experience building end-to-end digital products, from modern, accessible web interfaces to microservices and distributed API platforms. Proven track record across international teams solving service integration, data interoperability, and system modernization challenges.',
+        'I deliver value by pairing solid engineering practices (performance, observability, security, automated testing, and Clean Code) with AI agent workflows to build robust, maintainable software at high velocity.',
       ],
     },
     coreTechTitle: {
