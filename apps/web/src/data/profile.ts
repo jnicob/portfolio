@@ -63,7 +63,7 @@ export const profile = profileSchema.parse({
       },
     ],
   },
-  location: { es: 'España', en: 'Spain' },
+  location: { es: 'Almería, España', en: 'Almería, Spain' },
   links: {
     website: 'https://jnicob.dev',
     github: 'https://github.com/jnicob',

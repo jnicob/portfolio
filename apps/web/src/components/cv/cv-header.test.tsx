@@ -25,6 +25,7 @@ describe('CvHeader', () => {
       'href',
       profile.links.linkedin,
     );
+    expect(screen.getByText(profile.location.es)).toBeInTheDocument();
   });
 
   it('displays professional brief by default and toggles visibility on click', async () => {

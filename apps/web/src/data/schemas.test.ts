@@ -117,6 +117,15 @@ describe('experienceEntrySchema', () => {
   it('rechaza claves extra', () => {
     expect(experienceEntrySchema.safeParse({ ...entry, notes: 'extra' }).success).toBe(false);
   });
+
+  it('accepts optional location field with localized strings', () => {
+    expect(
+      experienceEntrySchema.safeParse({
+        ...entry,
+        location: { es: 'Málaga, España', en: 'Málaga, Spain' },
+      }).success,
+    ).toBe(true);
+  });
 });
 
 describe('educationEntrySchema', () => {

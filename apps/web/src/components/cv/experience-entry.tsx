@@ -39,6 +39,9 @@ export function ExperienceEntryBlock({
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <h3 className="font-semibold text-fg">
           {entry.role[locale]}, <span>{entry.company}</span>
+          {entry.location && (
+            <span className="font-normal text-fg-muted"> · {entry.location[locale]}</span>
+          )}
         </h3>
         {!hideDates && (
           <p className="text-sm text-fg-muted">{formatExperienceRange(entry, presentLabel)}</p>

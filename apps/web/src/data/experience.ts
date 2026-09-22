@@ -10,9 +10,13 @@ const entries = [
     },
     start: '2022-07',
     end: '2026-07',
+    location: {
+      es: 'Málaga, España (Remoto)',
+      en: 'Málaga, Spain (Remote)',
+    },
     summary: {
-      es: 'Plataforma pública para desarrolladores y clientes enterprise que monetiza y expone el catálogo de APIs de IA y stock de Freepik/Magnific. Desarrollo full-stack de la web, panel de control, servicios y backoffice.',
-      en: "Public platform for developers and enterprise clients monetizing and exposing Freepik/Magnific's AI and stock API catalog. Full-stack development across web landings, developer dashboard, API services, and backoffice.",
+      es: 'Plataforma pública para desarrolladores y clientes enterprise que monetiza y expone el catálogo de APIs de IA y stock de Freepik Company (Málaga, España). Desarrollo full-stack de la web, panel de control, servicios y backoffice para escala global.',
+      en: 'Public platform for developers and enterprise clients monetizing and exposing the AI and stock API catalog of Freepik Company (Málaga, Spain). Full-stack development across web landings, developer dashboard, API services, and backoffice for global scale.',
     },
     highlights: [
       {
@@ -43,6 +47,10 @@ const entries = [
     },
     start: '2020-09',
     end: '2022-10',
+    location: {
+      es: 'EE. UU. (Remoto)',
+      en: 'US (Remote)',
+    },
     summary: {
       es: 'Desarrollo de plataformas SaaS y comercio electrónico a medida para clientes corporativos de EE. UU. y Latinoamérica.',
       en: 'Custom SaaS and e-commerce platform development for enterprise clients across the US and Latin America.',
@@ -76,6 +84,10 @@ const entries = [
     },
     start: '2012-07',
     end: '2021-03',
+    location: {
+      es: 'Argentina',
+      en: 'Argentina',
+    },
     summary: {
       es: 'Sistema central de historia clínica electrónica y gestión hospitalaria (HIS) para la red municipal de salud pública (centros de salud y hospitales).',
       en: 'Central Electronic Health Record (EHR) and Hospital Information System (HIS) for the municipal public health network.',
@@ -105,6 +117,10 @@ const entries = [
     },
     start: '2013-05',
     end: '2017-12',
+    location: {
+      es: 'Argentina',
+      en: 'Argentina',
+    },
     summary: {
       es: 'I+D de un equipo de laboratorio automatizado (ELISA) financiado por créditos FONTAR, con gestión de proyecto y desarrollo de software embebido.',
       en: 'R&D of an automated laboratory device (ELISA) funded by FONTAR grants, covering project management and embedded software development.',
@@ -134,6 +150,10 @@ const entries = [
     },
     start: '2007-07',
     end: '2021-04',
+    location: {
+      es: 'Argentina',
+      en: 'Argentina',
+    },
     summary: {
       es: 'Sistemas de información y soporte a la decisión clínica para laboratorios de análisis clínicos e instituciones de salud.',
       en: 'Healthcare information and clinical decision support systems for laboratories and medical institutions.',
