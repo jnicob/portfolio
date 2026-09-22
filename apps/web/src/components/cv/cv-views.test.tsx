@@ -76,7 +76,7 @@ describe('las 3 vistas del CV', () => {
 describe('CvTimeline — fecha en badge', () => {
   it('muestra la fecha en badge dentro de la card y no duplicada', () => {
     render(<CvTimeline locale="es" strings={STRINGS} />);
-    const freepikCard = screen.getByText('Freepik/Magnific').closest('li')!;
+    const freepikCard = screen.getByText(experience[0]!.company).closest('li')!;
     // The range Badge has data-testid="timeline-date"
     expect(within(freepikCard).getByTestId('timeline-date')).toHaveTextContent(/2022/);
     // ExperienceEntryBlock does not repaint the range (hideDates)

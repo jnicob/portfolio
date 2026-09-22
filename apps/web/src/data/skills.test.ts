@@ -7,7 +7,7 @@ describe('skills data', () => {
     expect(byName['JavaScript']).toBe(5);
     expect(byName['React / Next.js']).toBe(4);
     expect(byName['TypeScript']).toBe(4);
-    expect(byName['Vue 2/3']).toBe(3);
+    expect(byName['Vue']).toBe(3);
     expect(byName['React']).toBeUndefined();
     expect(byName['Next.js']).toBeUndefined();
   });

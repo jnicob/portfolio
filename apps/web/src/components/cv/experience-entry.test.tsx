@@ -16,6 +16,14 @@ describe('ExperienceEntryBlock', () => {
     expect(screen.getByText(entry.summary.es)).toBeInTheDocument();
   });
 
+  it('renderiza location en el heading si está presente', () => {
+    const entry = experience[0]!;
+    render(<ExperienceEntryBlock entry={entry} locale="es" presentLabel={PRESENT_LABEL} />);
+
+    const heading = screen.getByRole('heading', { level: 3 });
+    expect(heading).toHaveTextContent(entry.location!.es);
+  });
+
   it('muestra el rango de fechas con presentLabel cuando end es null', () => {
     // No real entry has end === null (all stages are closed);
     // builds synthetic entry to test component contract.
@@ -57,5 +65,13 @@ describe('ExperienceEntryBlock', () => {
     );
 
     expect(screen.queryByText(`${entry.start} — ${entry.end}`)).not.toBeInTheDocument();
+  });
+
+  it('renderiza los tags como píldoras con borde y sin background', () => {
+    const entry = experience[0]!;
+    render(<ExperienceEntryBlock entry={entry} locale="es" presentLabel={PRESENT_LABEL} />);
+
+    const firstTag = screen.getByText(entry.tags[0]!);
+    expect(firstTag).toHaveClass('border', 'border-border', 'rounded-full');
   });
 });

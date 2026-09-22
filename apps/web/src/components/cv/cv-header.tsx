@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 import { profile } from '@/data/profile';
+import { STORAGE_KEYS } from '@/lib/appearance';
 
 import type { Locale } from '@/i18n/routing';
 
@@ -27,7 +28,7 @@ type CvHeaderProps = {
  * - Supports an optional profile photo (interactive toggle, off by default for ATS).
  * - Displays public contact links (GitHub, LinkedIn, Website, Contact form).
  * - Provides interactive toggles for brief and photo customization.
- * - Strictly preserves toggle state in @media print.
+ * - Strictly preserves toggle state in @media print and across locale switches.
  */
 export function CvHeader({
   locale,
@@ -39,6 +40,29 @@ export function CvHeader({
 }: CvHeaderProps) {
   const [showBrief, setShowBrief] = useState(true);
   const [showPhoto, setShowPhoto] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEYS.cvPhoto);
+      if (stored !== null) {
+        setShowPhoto(stored === 'true');
+      }
+    } catch {
+      /* Storage not available (e.g. private browsing mode) */
+    }
+  }, []);
+
+  const handleTogglePhoto = () => {
+    setShowPhoto((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(STORAGE_KEYS.cvPhoto, String(next));
+      } catch {
+        /* Storage not available */
+      }
+      return next;
+    });
+  };
 
   const displayName = profile.fullName ? profile.fullName[locale] : profile.name;
 
@@ -89,6 +113,26 @@ export function CvHeader({
           </div>
         </div>
         <div className="flex flex-col gap-1.5 text-sm text-fg-muted items-start">
+          {profile.location && (
+            <div className="flex items-center gap-2 print:text-fg">
+              <svg
+                viewBox="0 0 24 24"
+                width={15}
+                height={15}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+                className="shrink-0 text-fg-muted print:text-fg"
+              >
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span>{profile.location[locale]}</span>
+            </div>
+          )}
           {profile.links.website && (
             <div className="flex items-center gap-2">
               <svg
@@ -242,7 +286,7 @@ export function CvHeader({
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setShowPhoto((prev) => !prev)}
+          onClick={handleTogglePhoto}
           className="text-xs text-fg-muted hover:text-fg flex items-center gap-1.5 px-2 h-7"
         >
           {showPhoto ? (

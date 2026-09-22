@@ -9,7 +9,7 @@ const entries = [
     tags: ['react', 'nextjs', 'ssr', 'ui'],
   },
   { name: 'TypeScript', level: 4, category: 'frontend', tags: ['typescript', 'javascript'] },
-  { name: 'Vue 2/3', level: 3, category: 'frontend', tags: ['vue', 'typescript', 'ui'] },
+  { name: 'Vue', level: 3, category: 'frontend', tags: ['vue', 'typescript', 'ui'] },
   { name: 'PHP / Laravel', level: 4, category: 'backend', tags: ['php', 'laravel', 'rest-api'] },
   {
     name: 'Node.js / Express',

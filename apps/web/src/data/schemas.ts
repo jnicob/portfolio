@@ -63,6 +63,7 @@ export const experienceEntrySchema = z
     role: localizedStringSchema,
     start: yearMonth,
     end: yearMonth.nullable(),
+    location: localizedStringSchema.optional(),
     summary: localizedStringSchema,
     highlights: z.array(localizedStringSchema).min(1),
     tags: z.array(z.string().min(1)),
