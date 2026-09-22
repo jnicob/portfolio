@@ -3,7 +3,7 @@ import { experienceEntrySchema, type ExperienceEntry } from './schemas';
 const entries = [
   {
     id: 'freepik',
-    company: 'Freepik/Magnific',
+    company: 'Magnific (Freepik Company)',
     role: {
       es: 'Senior FullStack / Frontend Developer',
       en: 'Senior FullStack / Frontend Developer',
@@ -15,28 +15,28 @@ const entries = [
       en: 'Málaga, Spain (Remote)',
     },
     summary: {
-      es: 'Plataforma pública para desarrolladores y clientes enterprise que monetiza y expone el catálogo de APIs de IA y stock de Freepik Company (Málaga, España). Desarrollo full-stack de la web, panel de control, servicios y backoffice para escala global.',
-      en: 'Public platform for developers and enterprise clients monetizing and exposing the AI and stock API catalog of Freepik Company (Málaga, Spain). Full-stack development across web landings, developer dashboard, API services, and backoffice for global scale.',
+      es: 'Ecosistema de productos de IA y stock en Magnific (www.magnific.com, anteriormente Freepik Company). Desarrollo frontend y full-stack abarcando múltiples proyectos: landings de producto de alto impacto y tráfico, Playground interactivo, panel de desarrollador para la API de IA (Magnific API) y backoffice operativo (Freepik/Flaticon).',
+      en: 'AI and creative stock product ecosystem at Magnific (www.magnific.com, formerly Freepik Company). Frontend and full-stack engineering across key initiatives: high-impact product landings, interactive AI Playground, developer dashboard (Magnific API), and operational backoffice (Freepik/Flaticon).',
     },
     highlights: [
       {
-        es: 'Catálogo multimodal con más de 40 modelos de IA y 350+ endpoints servidos en producción, soportando alto tráfico y procesamiento asíncrono.',
-        en: 'Multimodal catalog serving 40+ AI models and 350+ endpoints in production, handling high traffic and asynchronous task workflows.',
+        es: 'Webs y landings de alto impacto: desarrollo frontend de landings públicas de producto (/api, generación y upscale de imágenes), optimización de Core Web Vitals, diseño responsive accesible y SEO técnico, junto con la creación del Playground interactivo y el dashboard de analíticas y consumo en tiempo real.',
+        en: 'High-impact web applications & landings: frontend development for public product landings (/api, image generation and upscaler), Core Web Vitals optimization, responsive accessible design, and technical SEO, alongside the interactive AI Playground and real-time usage dashboard.',
       },
       {
-        es: 'Automatización con agentes de IA: diseño del pipeline que traduce especificaciones OpenAPI a endpoints FastAPI, reglas de gateway (APISIX) y documentación interactiva, acelerando la integración de nuevos servicios.',
-        en: 'AI agent automation: designed pipelines translating OpenAPI specs into FastAPI endpoints, APISIX gateway rules, and interactive docs, drastically speeding up service onboarding.',
+        es: 'Catálogo multimodal de IA y arquitectura de servicios: monetización y exposición de más de 40 modelos de IA y 350+ endpoints en producción con FastAPI, APISIX gateway y procesamiento asíncrono para soportar alto tráfico.',
+        en: 'Multimodal AI catalog & service architecture: monetizing and serving 40+ AI models and 350+ endpoints in production with FastAPI, APISIX gateway, and asynchronous task workflows under high traffic.',
       },
       {
-        es: 'Liderazgo técnico práctico: definición de estándares de API (OpenAPI), revisión de código (PRs) con foco en calidad/testing y desarrollo del Playground interactivo y portal de facturación/uso.',
-        en: 'Pragmatic tech leadership: defined OpenAPI standards, conducted rigorous PR code reviews focused on quality/testing, and built the interactive API Playground and billing/usage dashboard.',
+        es: 'Automatización con agentes de IA: diseño del pipeline que traduce especificaciones OpenAPI a endpoints FastAPI, reglas de gateway (APISIX) y documentación interactiva, acelerando la integración de nuevos servicios de IA.',
+        en: 'AI agent automation: designed pipelines translating OpenAPI specs into FastAPI endpoints, APISIX gateway rules, and interactive docs, drastically speeding up new AI service onboarding.',
       },
       {
-        es: 'Más de 1.000 PRs entregados en producción con alta cobertura de tests para asegurar la estabilidad de servicios y backoffice de contenidos (Freepik/Flaticon).',
-        en: '1,000+ PRs delivered to production with comprehensive automated test coverage ensuring reliability across core services and backoffice systems.',
+        es: 'Backoffice y operaciones de contenido (Freepik/Flaticon): desarrollo full-stack en PHP/Laravel y Vue para gestión, moderación y producción de activos digitales, con más de 1.000 PRs entregados en producción y rigurosa cobertura de tests.',
+        en: 'Content backoffice & operations (Freepik/Flaticon): full-stack engineering across PHP/Laravel and Vue for digital asset moderation, cataloguing, and production, delivering 1,000+ PRs to production with high test coverage.',
       },
     ],
-    tags: ['python', 'fastapi', 'openapi', 'apisix', 'nextjs', 'vue', 'ai'],
+    tags: ['python', 'fastapi', 'openapi', 'apisix', 'nextjs', 'react', 'vue', 'typescript', 'ai'],
   },
   {
     id: 'accelone',

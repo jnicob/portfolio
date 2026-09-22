@@ -5,7 +5,12 @@ export type Appearance = { theme: Theme; skin: Skin };
 
 export const DEFAULT_APPEARANCE: Appearance = { theme: 'dark', skin: 'dev-tool' };
 
-export const STORAGE_KEYS = { theme: 'theme', skin: 'skin', cvView: 'cv-view' } as const;
+export const STORAGE_KEYS = {
+  theme: 'theme',
+  skin: 'skin',
+  cvView: 'cv-view',
+  cvPhoto: 'cv-photo',
+} as const;
 
 /** Validated value against a const-union, without zod (this module enters client bundle). */
 export function parseValid<T extends string>(

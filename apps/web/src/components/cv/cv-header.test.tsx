@@ -74,4 +74,36 @@ describe('CvHeader', () => {
     expect(screen.queryByTestId('cv-photo')).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Incluir foto' })).toBeInTheDocument();
   });
+
+  it('preserves photo visibility when changing locale / remounting', async () => {
+    localStorage.clear();
+    const user = userEvent.setup();
+    const { unmount } = render(
+      <CvHeader
+        locale="es"
+        showPhotoLabel="Incluir foto"
+        hidePhotoLabel="Quitar foto"
+        photoSrc="/profile/avatar-cv.jpg"
+      />,
+    );
+
+    expect(screen.queryByTestId('cv-photo')).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Incluir foto' }));
+    expect(screen.getByTestId('cv-photo')).toBeInTheDocument();
+
+    // Switch locale to English
+    unmount();
+    render(
+      <CvHeader
+        locale="en"
+        showPhotoLabel="Include photo"
+        hidePhotoLabel="Remove photo"
+        photoSrc="/profile/avatar-cv.jpg"
+      />,
+    );
+
+    expect(screen.getByTestId('cv-photo')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Remove photo' })).toBeInTheDocument();
+  });
 });

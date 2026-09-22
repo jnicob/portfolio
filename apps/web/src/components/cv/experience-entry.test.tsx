@@ -66,4 +66,12 @@ describe('ExperienceEntryBlock', () => {
 
     expect(screen.queryByText(`${entry.start} — ${entry.end}`)).not.toBeInTheDocument();
   });
+
+  it('renderiza los tags como píldoras con borde y sin background', () => {
+    const entry = experience[0]!;
+    render(<ExperienceEntryBlock entry={entry} locale="es" presentLabel={PRESENT_LABEL} />);
+
+    const firstTag = screen.getByText(entry.tags[0]!);
+    expect(firstTag).toHaveClass('border', 'border-border', 'rounded-full');
+  });
 });
