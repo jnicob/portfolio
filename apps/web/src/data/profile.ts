@@ -43,8 +43,8 @@ export const profile = profileSchema.parse({
       {
         label: { es: 'Datos & Middleware', en: 'Data & Middleware' },
         value: {
-          es: 'PostgreSQL, MySQL, SQL Server, RESTful APIs, Mirth Connect, HL7, SNOMED CT.',
-          en: 'PostgreSQL, MySQL, SQL Server, RESTful APIs, Mirth Connect, HL7, SNOMED CT.',
+          es: 'Redis, MongoDB / NoSQL, PostgreSQL, MySQL, SQL Server, RESTful APIs, Mirth Connect, HL7, SNOMED CT.',
+          en: 'Redis, MongoDB / NoSQL, PostgreSQL, MySQL, SQL Server, RESTful APIs, Mirth Connect, HL7, SNOMED CT.',
         },
       },
       {

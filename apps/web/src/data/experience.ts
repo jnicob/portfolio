@@ -15,8 +15,8 @@ const entries = [
       en: 'Málaga, Spain (Remote)',
     },
     summary: {
-      es: 'Ecosistema de productos de IA y stock en Magnific (www.magnific.com, anteriormente Freepik Company). Desarrollo frontend y full-stack abarcando múltiples proyectos: landings de producto de alto impacto y tráfico, Playground interactivo, panel de desarrollador para la API de IA (Magnific API) y backoffice operativo (Freepik/Flaticon).',
-      en: 'AI and creative stock product ecosystem at Magnific (www.magnific.com, formerly Freepik Company). Frontend and full-stack engineering across key initiatives: high-impact product landings, interactive AI Playground, developer dashboard (Magnific API), and operational backoffice (Freepik/Flaticon).',
+      es: 'Ecosistema de productos de IA y stock en Magnific (www.magnific.com, anteriormente Freepik). Desarrollo frontend y full-stack abarcando múltiples proyectos: APIs de servicios de IA y stock, landings de producto de alto impacto y tráfico, Playground interactivo, panel de desarrollador y estadísticas para APIs y backoffice operativo (Freepik/Flaticon).',
+      en: 'AI and creative stock product ecosystem at Magnific (www.magnific.com, formerly Freepik). Frontend and full-stack engineering across key initiatives: APIs for AI services and stock, high-impact product landings, interactive AI Playground, developer dashboard and statistics for APIs and operational backoffice (Freepik/Flaticon).',
     },
     highlights: [
       {
@@ -24,8 +24,8 @@ const entries = [
         en: 'High-impact web applications & landings: frontend development for public product landings (/api, image generation and upscaler), Core Web Vitals optimization, responsive accessible design, and technical SEO, alongside the interactive AI Playground and real-time usage dashboard.',
       },
       {
-        es: 'Catálogo multimodal de IA y arquitectura de servicios: monetización y exposición de más de 40 modelos de IA y 350+ endpoints en producción con FastAPI, APISIX gateway y procesamiento asíncrono para soportar alto tráfico.',
-        en: 'Multimodal AI catalog & service architecture: monetizing and serving 40+ AI models and 350+ endpoints in production with FastAPI, APISIX gateway, and asynchronous task workflows under high traffic.',
+        es: 'Catálogo multimodal de IA y arquitectura de servicios: monetización y exposición de más de 40 modelos de IA y 350+ endpoints en producción con FastAPI y APISIX gateway, optimizando tiempos de respuesta mediante caching distribuido (Redis), rate-limiting y procesamiento asíncrono para soportar alto tráfico.',
+        en: 'Multimodal AI catalog & service architecture: monetizing and serving 40+ AI models and 350+ endpoints in production with FastAPI and APISIX gateway, minimizing response times through distributed caching (Redis), rate-limiting, and asynchronous workflows under high traffic.',
       },
       {
         es: 'Automatización con agentes de IA: diseño del pipeline que traduce especificaciones OpenAPI a endpoints FastAPI, reglas de gateway (APISIX) y documentación interactiva, acelerando la integración de nuevos servicios de IA.',
@@ -36,7 +36,18 @@ const entries = [
         en: 'Content backoffice & operations (Freepik/Flaticon): full-stack engineering across PHP/Laravel and Vue for digital asset moderation, cataloguing, and production, delivering 1,000+ PRs to production with high test coverage.',
       },
     ],
-    tags: ['python', 'fastapi', 'openapi', 'apisix', 'nextjs', 'react', 'vue', 'typescript', 'ai'],
+    tags: [
+      'python',
+      'fastapi',
+      'openapi',
+      'apisix',
+      'redis',
+      'nextjs',
+      'react',
+      'vue',
+      'typescript',
+      'ai',
+    ],
   },
   {
     id: 'accelone',
