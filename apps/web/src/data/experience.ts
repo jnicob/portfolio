@@ -15,8 +15,8 @@ const entries = [
       en: 'Málaga, Spain (Remote)',
     },
     summary: {
-      es: 'Ecosistema de productos de IA y stock en Magnific (www.magnific.com, anteriormente Freepik). Desarrollo frontend y full-stack abarcando múltiples proyectos: APIs de servicios de IA y stock, landings de producto de alto impacto y tráfico, Playground interactivo, panel de desarrollador y estadísticas para APIs y backoffice operativo (Freepik/Flaticon).',
-      en: 'AI and creative stock product ecosystem at Magnific (www.magnific.com, formerly Freepik). Frontend and full-stack engineering across key initiatives: APIs for AI services and stock, high-impact product landings, interactive AI Playground, developer dashboard and statistics for APIs and operational backoffice (Freepik/Flaticon).',
+      es: 'Ecosistema de productos de IA y stock en Magnific (www.magnific.com, anteriormente Freepik). Desarrollo frontend y full-stack abarcando múltiples proyectos: APIs de servicios de IA y stock, landings de producto de alto impacto y tráfico, Playground interactivo, panel de estadísticas para APIs y proyectos de backoffice (Freepik/Flaticon).',
+      en: 'AI and creative stock product ecosystem at Magnific (www.magnific.com, formerly Freepik). Frontend and full-stack engineering across key initiatives: APIs for AI services and stock, high-impact product landings, interactive AI Playground, developer dashboard and statistics for APIs and backoffice tools (Freepik/Flaticon).',
     },
     highlights: [
       {
@@ -37,16 +37,16 @@ const entries = [
       },
     ],
     tags: [
-      'python',
-      'fastapi',
-      'openapi',
-      'apisix',
-      'redis',
       'nextjs',
       'react',
       'vue',
       'typescript',
       'ai',
+      'python',
+      'fastapi',
+      'openapi',
+      'apisix',
+      'redis',
     ],
   },
   {
@@ -84,7 +84,7 @@ const entries = [
         en: 'DevelopIntelligence: technical training course management and instructor scheduling app built with Salesforce Lightning Components.',
       },
     ],
-    tags: ['react', 'nextjs', 'nodejs', 'express', 'postgresql'],
+    tags: ['react', 'nextjs', 'nodejs', 'express', 'postgresql', 'sql-server', 'salesforce'],
   },
   {
     id: 'municipalidad-general-pueyrredon',
@@ -150,7 +150,7 @@ const entries = [
         en: 'Stack: PHP, JavaScript / jQuery / AJAX, SQLite; hardware with Arduino and Raspberry Pi.',
       },
     ],
-    tags: ['php', 'embedded', 'arduino', 'project-management'],
+    tags: ['php', 'javascript', 'sqlite', 'embedded', 'arduino', 'project-management'],
   },
   {
     id: 'fares-taie-biotecnologia',
@@ -179,7 +179,7 @@ const entries = [
         en: 'Web services and API development with PHP / Laravel, alongside Linux Debian server administration.',
       },
     ],
-    tags: ['php', 'laravel', 'mysql', 'hl7', 'healthcare-it'],
+    tags: ['php', 'javascript', 'laravel', 'mysql', 'hl7', 'healthcare-it'],
   },
 ];
 
