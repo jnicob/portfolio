@@ -15,25 +15,25 @@ const entries = [
       en: 'Málaga, Spain (Remote)',
     },
     summary: {
-      es: 'Ecosistema de productos de IA y stock en Magnific (www.magnific.com, anteriormente Freepik). Desarrollo frontend y full-stack abarcando múltiples proyectos: APIs de servicios de IA y stock, landings de producto de alto impacto y tráfico, Playground interactivo, panel de estadísticas para APIs y proyectos de backoffice (Freepik/Flaticon).',
-      en: 'AI and creative stock product ecosystem at Magnific (www.magnific.com, formerly Freepik). Frontend and full-stack engineering across key initiatives: APIs for AI services and stock, high-impact product landings, interactive AI Playground, developer dashboard and statistics for APIs and backoffice tools (Freepik/Flaticon).',
+      es: 'Ecosistema de productos de IA y stock en magnific.com (anteriormente Freepik). Desarrollo frontend y full-stack abarcando múltiples proyectos: APIs de servicios de IA y stock, landings de producto de alto impacto y tráfico, playground interactivo, panel de estadísticas para APIs y proyectos de backoffice (Freepik/Flaticon).',
+      en: 'AI and creative stock product ecosystem at magnific.com (formerly Freepik). Frontend and full-stack engineering across key initiatives: APIs for AI services and stock, high-impact product landings, interactive playground, API statistics dashboard and backoffice projects (Freepik/Flaticon).',
     },
     highlights: [
       {
-        es: 'Webs y landings de alto impacto: desarrollo frontend de landings públicas de producto (/api, generación y upscale de imágenes), optimización de Core Web Vitals, diseño responsive accesible y SEO técnico, junto con la creación del Playground interactivo y el dashboard de analíticas y consumo en tiempo real.',
-        en: 'High-impact web applications & landings: frontend development for public product landings (/api, image generation and upscaler), Core Web Vitals optimization, responsive accessible design, and technical SEO, alongside the interactive AI Playground and real-time usage dashboard.',
+        es: 'Webs y landings de alto impacto: desarrollo frontend de landings públicas de producto (APIs, generación y edición de imágenes/audio/video), optimización de Core Web Vitals, SEO técnico, testing y puesta en producción. Playground interactivo para probar modelos desde el navegador, dashboards de consumo, límites, facturación y gestión de API keys.',
+        en: 'High-impact web applications & landings: frontend development for public product landings (APIs, image/audio/video generation and editing), Core Web Vitals optimization, technical SEO, testing and production deployment. Interactive playground to test models from the browser, consumption dashboards, limits, billing and API key management.',
       },
       {
-        es: 'Catálogo multimodal de IA y arquitectura de servicios: monetización y exposición de más de 40 modelos de IA y 350+ endpoints en producción con FastAPI y APISIX gateway, optimizando tiempos de respuesta mediante caching distribuido (Redis), rate-limiting y procesamiento asíncrono para soportar alto tráfico.',
-        en: 'Multimodal AI catalog & service architecture: monetizing and serving 40+ AI models and 350+ endpoints in production with FastAPI and APISIX gateway, minimizing response times through distributed caching (Redis), rate-limiting, and asynchronous workflows under high traffic.',
+        es: 'Catálogo multimodal de IA: exposición y monetización de más de 40 modelos de IA y más de 350 endpoints con FastAPI y APISIX gateway, reduciendo latencias mediante caché distribuida (Redis) y rate-limiting con alto tráfico.',
+        en: 'Multimodal AI catalog: monetizing and serving 40+ AI models and 350+ endpoints in production with FastAPI and APISIX gateway, minimizing response times through distributed caching (Redis), rate-limiting, and asynchronous workflows under high traffic.',
       },
       {
-        es: 'Automatización con agentes de IA: diseño del pipeline que traduce especificaciones OpenAPI a endpoints FastAPI, reglas de gateway (APISIX) y documentación interactiva, acelerando la integración de nuevos servicios de IA.',
-        en: 'AI agent automation: designed pipelines translating OpenAPI specs into FastAPI endpoints, APISIX gateway rules, and interactive docs, drastically speeding up new AI service onboarding.',
+        es: 'Automatización con agentes de IA: pipelines para convertir especificaciones OpenAPI en endpoints FastAPI, reglas de gateway, configuración de precios/créditos, playground y documentación interactiva.',
+        en: 'AI agent automation: pipelines converting OpenAPI specs into FastAPI endpoints, gateway rules, pricing/credits configuration, playground, and interactive documentation.',
       },
       {
-        es: 'Backoffice y operaciones de contenido (Freepik/Flaticon): desarrollo full-stack en PHP/Laravel y Vue para gestión, moderación y producción de activos digitales, con más de 1.000 PRs entregados en producción y rigurosa cobertura de tests.',
-        en: 'Content backoffice & operations (Freepik/Flaticon): full-stack engineering across PHP/Laravel and Vue for digital asset moderation, cataloguing, and production, delivering 1,000+ PRs to production with high test coverage.',
+        es: 'Backoffice, gestión de contenido y colaboradores (Freepik/Flaticon): ingeniería full-stack en PHP/Laravel y JS/Vue para moderación y gestión de activos digitales, colaboradores y portal fiscal.',
+        en: 'Backoffice, content management and contributors (Freepik/Flaticon): full-stack engineering across PHP/Laravel and JS/Vue for digital asset moderation, contributor management, and tax portal.',
       },
     ],
     tags: [
@@ -42,11 +42,14 @@ const entries = [
       'vue',
       'typescript',
       'ai',
+      'javascript',
       'python',
       'fastapi',
       'openapi',
       'apisix',
       'redis',
+      'laravel',
+      'php',
     ],
   },
   {
@@ -84,7 +87,16 @@ const entries = [
         en: 'DevelopIntelligence: technical training course management and instructor scheduling app built with Salesforce Lightning Components.',
       },
     ],
-    tags: ['react', 'nextjs', 'nodejs', 'express', 'postgresql', 'sql-server', 'salesforce'],
+    tags: [
+      'react',
+      'nextjs',
+      'nodejs',
+      'javascript',
+      'express',
+      'postgresql',
+      'sql-server',
+      'salesforce',
+    ],
   },
   {
     id: 'municipalidad-general-pueyrredon',
@@ -117,7 +129,17 @@ const entries = [
         en: 'High-availability web services and relational database architecture built with PHP (CodeIgniter/Doctrine), JavaScript, and MySQL/SQL Server.',
       },
     ],
-    tags: ['php', 'javascript', 'codeigniter', 'hl7', 'healthcare-it', 'mysql'],
+    tags: [
+      'php',
+      'javascript',
+      'codeigniter',
+      'hl7',
+      'healthcare-it',
+      'mysql',
+      'sql-server',
+      'doctrine',
+      'mirth-connect',
+    ],
   },
   {
     id: 'iac-internacional',
@@ -179,7 +201,7 @@ const entries = [
         en: 'Web services and API development with PHP / Laravel, alongside Linux Debian server administration.',
       },
     ],
-    tags: ['php', 'javascript', 'laravel', 'mysql', 'hl7', 'healthcare-it'],
+    tags: ['php', 'javascript', 'laravel', 'mysql', 'hl7', 'healthcare-it', 'project-management'],
   },
 ];
 
