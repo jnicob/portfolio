@@ -20,20 +20,20 @@ const entries = [
     },
     highlights: [
       {
-        es: 'Webs y landings de alto impacto: desarrollo frontend de landings públicas de producto (APIs, generación y edición de imágenes/audio/video), optimización de Core Web Vitals, SEO técnico, testing y puesta en producción. Playground interactivo para probar modelos desde el navegador, dashboards de consumo, límites, facturación y gestión de API keys.',
-        en: 'High-impact web applications & landings: frontend development for public product landings (APIs, image/audio/video generation and editing), Core Web Vitals optimization, technical SEO, testing and production deployment. Interactive playground to test models from the browser, consumption dashboards, limits, billing and API key management.',
+        es: 'Catálogo multimodal de IA y arquitectura de servicios: exposición y monetización de más de 40 modelos de IA y más de 350 endpoints con FastAPI y APISIX gateway, reduciendo latencias mediante caché distribuida (Redis) y rate-limiting con alto tráfico.',
+        en: 'Multimodal AI catalog & service architecture: monetizing and serving 40+ AI models and 350+ endpoints in production with FastAPI and APISIX gateway, minimizing response times through distributed caching (Redis), rate-limiting, and asynchronous workflows under high traffic.',
       },
       {
-        es: 'Catálogo multimodal de IA: exposición y monetización de más de 40 modelos de IA y más de 350 endpoints con FastAPI y APISIX gateway, reduciendo latencias mediante caché distribuida (Redis) y rate-limiting con alto tráfico.',
-        en: 'Multimodal AI catalog: monetizing and serving 40+ AI models and 350+ endpoints in production with FastAPI and APISIX gateway, minimizing response times through distributed caching (Redis), rate-limiting, and asynchronous workflows under high traffic.',
+        es: 'Backoffice, gestión de contenido y colaboradores (Freepik/Flaticon): ingeniería full-stack en PHP/Laravel y JS/Vue para moderación y gestión de activos digitales, colaboradores y portal fiscal.',
+        en: 'Backoffice, content management and contributors (Freepik/Flaticon): full-stack engineering across PHP/Laravel and JS/Vue for digital asset moderation, contributor management, and tax portal.',
       },
       {
         es: 'Automatización con agentes de IA: pipelines para convertir especificaciones OpenAPI en endpoints FastAPI, reglas de gateway, configuración de precios/créditos, playground y documentación interactiva.',
         en: 'AI agent automation: pipelines converting OpenAPI specs into FastAPI endpoints, gateway rules, pricing/credits configuration, playground, and interactive documentation.',
       },
       {
-        es: 'Backoffice, gestión de contenido y colaboradores (Freepik/Flaticon): ingeniería full-stack en PHP/Laravel y JS/Vue para moderación y gestión de activos digitales, colaboradores y portal fiscal.',
-        en: 'Backoffice, content management and contributors (Freepik/Flaticon): full-stack engineering across PHP/Laravel and JS/Vue for digital asset moderation, contributor management, and tax portal.',
+        es: 'Webs y landings de alto impacto: desarrollo frontend de landings públicas de producto (APIs, generación y edición de imágenes/audio/video), optimización de Core Web Vitals, SEO técnico, testing y puesta en producción. Playground interactivo para probar modelos desde el navegador, dashboards de consumo, límites, facturación y gestión de API keys.',
+        en: 'High-impact web applications & landings: frontend development for public product landings (APIs, image/audio/video generation and editing), Core Web Vitals optimization, technical SEO, testing and production deployment. Interactive playground to test models from the browser, consumption dashboards, limits, billing and API key management.',
       },
     ],
     tags: [
@@ -112,12 +112,12 @@ const entries = [
       en: 'Argentina',
     },
     summary: {
-      es: 'Sistema central de historia clínica electrónica y gestión hospitalaria (HIS) para la red municipal de salud pública (centros de salud y hospitales).',
-      en: 'Central Electronic Health Record (EHR) and Hospital Information System (HIS) for the municipal public health network.',
+      es: 'Sistema de historia clínica electrónica y gestión hospitalaria (HIS) para la red municipal de salud pública (centros de salud y hospitales).',
+      en: 'Electronic Health Record (EHR) and Hospital Information System (HIS) for the municipal public health network.',
     },
     highlights: [
       {
-        es: 'Desarrollo e implantación del sistema de historia clínica digital, garantizando la trazabilidad médica y atención de miles de pacientes en centros municipales.',
+        es: 'Desarrollo e implantación del sistema de historia clínica electrónica, garantizando la trazabilidad médica y atención de miles de pacientes en centros municipales.',
         en: 'Developed and rolled out the digital health record system, ensuring medical traceability and care continuity for thousands of patients across municipal centers.',
       },
       {
@@ -175,8 +175,8 @@ const entries = [
     tags: ['php', 'javascript', 'sqlite', 'embedded', 'arduino', 'project-management'],
   },
   {
-    id: 'fares-taie-biotecnologia',
-    company: 'Fares Taie Biotecnología',
+    id: 'fares-taie',
+    company: 'Laboratorio Fares Taie',
     role: {
       es: 'Líder de Proyecto / Backend Developer',
       en: 'Project Lead / Backend Developer',
@@ -188,8 +188,8 @@ const entries = [
       en: 'Argentina',
     },
     summary: {
-      es: 'Sistemas de información y soporte a la decisión clínica para laboratorios de análisis clínicos e instituciones de salud.',
-      en: 'Healthcare information and clinical decision support systems for laboratories and medical institutions.',
+      es: 'Sistemas de información y soporte a la decisión clínica para laboratorios de análisis clínicos y empresas de salud.',
+      en: 'Healthcare information and clinical decision support systems for laboratories and medical systems.',
     },
     highlights: [
       {
@@ -197,11 +197,20 @@ const entries = [
         en: 'Integration of controlled medical vocabularies (SNOMED CT, LOINC, ICD-10) and development of clinical decision support systems (CDSS).',
       },
       {
-        es: 'Desarrollo de servicios web y APIs con PHP / Laravel y administración de servidores Linux Debian.',
-        en: 'Web services and API development with PHP / Laravel, alongside Linux Debian server administration.',
+        es: 'Desarrollo de servicios web y APIs con PHP / Laravel, Java y administración de servidores Linux.',
+        en: 'Web services and API development with PHP / Laravel, Java and Linux server administration.',
       },
     ],
-    tags: ['php', 'javascript', 'laravel', 'mysql', 'hl7', 'healthcare-it', 'project-management'],
+    tags: [
+      'php',
+      'java',
+      'javascript',
+      'laravel',
+      'mysql',
+      'hl7',
+      'healthcare-it',
+      'project-management',
+    ],
   },
 ];
 

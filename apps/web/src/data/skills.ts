@@ -30,6 +30,12 @@ const entries = [
     tags: ['python', 'fastapi', 'openapi'],
   },
   {
+    name: 'Java',
+    level: 2,
+    category: 'backend',
+    tags: ['java'],
+  },
+  {
     name: 'AI Engineering & Agent Orchestration',
     level: 4,
     category: 'ai',

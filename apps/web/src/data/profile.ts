@@ -7,18 +7,18 @@ export const profile = profileSchema.parse({
     en: 'Juan Nicolas Behm',
   },
   headline: {
-    es: 'Ingeniero en Informática - desarrollador web full-stack',
-    en: 'Computer Engineer - full-stack web developer',
+    es: 'Full-Stack Engineer | Analista Funcional Técnico — Web, Microservicios, APIs, Cloud & AI dev',
+    en: 'Full-Stack Engineer | Technical Functional Analyst — Web, Microservices, APIs, Cloud & AI dev',
   },
   summary: {
     paragraphs: {
       es: [
-        'Ingeniero en Informática con más de 15 años construyendo productos digitales completos, desde interfaces web modernas y accesibles hasta arquitecturas de microservicios y APIs distribuidas. Experiencia en equipos internacionales resolviendo retos de integración de servicios, interoperabilidad de datos y modernización de sistemas.',
-        'Aporto valor uniendo el rigor de ingeniería (rendimiento, observabilidad, seguridad, testing y buenas prácticas / Clean Code) con la aceleración que ofrecen los agentes de IA para entregar software robusto y mantenible en plazos reducidos.',
+        'Ingeniero en Informática con más de 15 años de trayectoria diseñando, evolucionando y construyendo soluciones de software de extremo a extremo: desde interfaces web modernas y sistemas de backoffice transaccionales hasta arquitecturas de microservicios y plataformas de APIs distribuidas en la nube.',
+        'Aporto valor uniendo mentalidad de producto y análisis funcional (traduciendo requerimientos de negocio en especificaciones robustas y contratos de APIs) con un riguroso estándar de ingeniería (TDD, Clean Code, seguridad, observabilidad y rendimiento). Además, integro agentes de IA para acelerar el ciclo de desarrollo sin comprometer la fiabilidad a largo plazo.',
       ],
       en: [
-        'Computer Engineer with 15+ years of experience building end-to-end digital products, from modern, accessible web interfaces to microservices and distributed API platforms. Proven track record across international teams solving service integration, data interoperability, and system modernization challenges.',
-        'I deliver value by pairing solid engineering practices (performance, observability, security, automated testing, and Clean Code) with AI agent workflows to build robust, maintainable software at high velocity.',
+        'Computer Engineer with 15+ years of experience designing, building, and evolving end-to-end software solutions: from modern web interfaces and transactional backoffice systems to microservice architectures and distributed Cloud API platforms.',
+        'I deliver value by pairing product thinking and functional analysis (translating business requirements into robust technical specifications and API contracts) with solid engineering standards (TDD, Clean Code, security, observability, and performance). In addition, I leverage AI agents to accelerate development cycles while ensuring long-term system reliability.',
       ],
     },
     coreTechTitle: {
