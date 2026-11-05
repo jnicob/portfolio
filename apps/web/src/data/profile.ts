@@ -29,8 +29,8 @@ export const profile = profileSchema.parse({
       {
         label: { es: 'Lenguajes & Frameworks', en: 'Languages & Frameworks' },
         value: {
-          es: 'TypeScript, JavaScript, Node.js, React / Next.js, Vue, PHP (Laravel, CodeIgniter, WordPress), Python (FastAPI).',
-          en: 'TypeScript, JavaScript, Node.js, React / Next.js, Vue, PHP (Laravel, CodeIgniter, WordPress), Python (FastAPI).',
+          es: 'Python (FastAPI), React / Next.js, TypeScript, JavaScript, Node.js, Vue, PHP (Laravel, CodeIgniter, WordPress).',
+          en: 'Python (FastAPI), React / Next.js, TypeScript, JavaScript, Node.js, Vue, PHP (Laravel, CodeIgniter, WordPress).',
         },
       },
       {
