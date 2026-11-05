@@ -15,8 +15,8 @@ const entries = [
       en: 'Málaga, Spain (Remote)',
     },
     summary: {
-      es: 'Ecosistema de productos de IA y stock en magnific.com (anteriormente Freepik). Desarrollo frontend y full-stack abarcando múltiples proyectos: APIs de servicios de IA y stock, landings de producto de alto impacto y tráfico, playground interactivo, panel de estadísticas para APIs y proyectos de backoffice (Freepik/Flaticon).',
-      en: 'AI and creative stock product ecosystem at magnific.com (formerly Freepik). Frontend and full-stack engineering across key initiatives: APIs for AI services and stock, high-impact product landings, interactive playground, API statistics dashboard and backoffice projects (Freepik/Flaticon).',
+      es: 'Ecosistema de productos de IA y stock en magnific.com (+2M de usuarios y +1M de suscriptores activos). Desarrollo frontend y full-stack abarcando múltiples proyectos: APIs de servicios de IA y stock, landings de producto de alto impacto y tráfico, playground interactivo, panel de estadísticas para APIs y proyectos de backoffice (Freepik/Flaticon).',
+      en: 'AI and creative stock product ecosystem at magnific.com (+2M users and +1M active subscribers). Frontend and full-stack engineering across key initiatives: APIs for AI services and stock, high-impact product landings, interactive playground, API statistics dashboard and backoffice projects (Freepik/Flaticon).',
     },
     highlights: [
       {
