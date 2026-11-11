@@ -9,6 +9,12 @@ const entries = [
     tags: ['react', 'nextjs', 'ssr', 'ui'],
   },
   { name: 'TypeScript', level: 4, category: 'frontend', tags: ['typescript', 'javascript'] },
+  {
+    name: 'React Query / Zustand / Jotai / Redux',
+    level: 4,
+    category: 'frontend',
+    tags: ['react-query', 'zustand', 'jotai', 'redux', 'context-api'],
+  },
   { name: 'Vue', level: 3, category: 'frontend', tags: ['vue', 'typescript', 'ui'] },
   { name: 'PHP / Laravel', level: 4, category: 'backend', tags: ['php', 'laravel', 'rest-api'] },
   {

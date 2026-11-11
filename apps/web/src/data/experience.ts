@@ -20,27 +20,30 @@ const entries = [
     },
     highlights: [
       {
-        es: 'Catálogo multimodal de IA y arquitectura de servicios: exposición y monetización de más de 40 modelos de IA y más de 350 endpoints con FastAPI y APISIX gateway, reduciendo latencias mediante caché distribuida (Redis) y rate-limiting con alto tráfico.',
-        en: 'Multimodal AI catalog & service architecture: monetizing and serving 40+ AI models and 350+ endpoints in production with FastAPI and APISIX gateway, minimizing response times through distributed caching (Redis), rate-limiting, and asynchronous workflows under high traffic.',
+        es: 'Webs y landings de alto impacto: desarrollo frontend de landings públicas de producto (APIs, generación y edición de imágenes/audio/video), optimización de Core Web Vitals, SEO técnico, testing y puesta en producción. Playground interactivo para probar modelos desde el navegador, dashboards de consumo, límites, facturación y gestión de API keys (React, Next.js, TypeScript, React Query, Zustand, Jotai).',
+        en: 'High-impact web applications & landings: frontend development for public product landings (APIs, image/audio/video generation and editing), Core Web Vitals optimization, technical SEO, testing and production deployment. Interactive playground to test models from the browser, consumption dashboards, limits, billing and API key management (React, Next.js, TypeScript, React Query, Zustand, Jotai).',
       },
       {
-        es: 'Backoffice, gestión de contenido y colaboradores (Freepik/Flaticon): ingeniería full-stack en PHP/Laravel y JS/Vue para moderación y gestión de activos digitales, colaboradores y portal fiscal.',
-        en: 'Backoffice, content management and contributors (Freepik/Flaticon): full-stack engineering across PHP/Laravel and JS/Vue for digital asset moderation, contributor management, and tax portal.',
+        es: 'Catálogo multimodal de IA y arquitectura de servicios: exposición y monetización de más de 40 modelos de IA y más de 350 endpoints con FastAPI y APISIX gateway, reduciendo latencias mediante caché distribuida (Redis) y rate-limiting con alto tráfico.',
+        en: 'Multimodal AI catalog & service architecture: monetizing and serving 40+ AI models and 350+ endpoints in production with FastAPI and APISIX gateway, minimizing response times through distributed caching (Redis), rate-limiting, and asynchronous workflows under high traffic.',
       },
       {
         es: 'Automatización con agentes de IA: pipelines para convertir especificaciones OpenAPI en endpoints FastAPI, reglas de gateway, configuración de precios/créditos, playground y documentación interactiva, reduciendo el tiempo de integración de nuevos modelos de días a minutos.',
         en: 'AI agent automation: pipelines converting OpenAPI specs into FastAPI endpoints, gateway rules, pricing/credits configuration, playground, and interactive documentation, cutting new model integration time from days to minutes.',
       },
       {
-        es: 'Webs y landings de alto impacto: desarrollo frontend de landings públicas de producto (APIs, generación y edición de imágenes/audio/video), optimización de Core Web Vitals, SEO técnico, testing y puesta en producción. Playground interactivo para probar modelos desde el navegador, dashboards de consumo, límites, facturación y gestión de API keys.',
-        en: 'High-impact web applications & landings: frontend development for public product landings (APIs, image/audio/video generation and editing), Core Web Vitals optimization, technical SEO, testing and production deployment. Interactive playground to test models from the browser, consumption dashboards, limits, billing and API key management.',
+        es: 'Backoffice, gestión de contenido y colaboradores (Freepik/Flaticon): ingeniería full-stack en PHP/Laravel y JS/Vue para moderación y gestión de activos digitales, colaboradores y portal fiscal.',
+        en: 'Backoffice, content management and contributors (Freepik/Flaticon): full-stack engineering across PHP/Laravel and JS/Vue for digital asset moderation, contributor management, and tax portal.',
       },
     ],
     tags: [
       'nextjs',
       'react',
-      'vue',
       'typescript',
+      'react-query',
+      'zustand',
+      'jotai',
+      'vue',
       'ai',
       'javascript',
       'python',
@@ -71,12 +74,12 @@ const entries = [
     },
     highlights: [
       {
-        es: 'Cadi: plataforma e-commerce de artículos de golf en React / Next.js / Material UI con servicios REST escalables en Node.js, Express y PostgreSQL.',
-        en: 'Cadi: golf e-commerce platform built with React / Next.js / Material UI and scalable REST services in Node.js, Express, and PostgreSQL.',
+        es: 'Cadi: plataforma e-commerce de artículos de golf en React / Next.js / Context API / Material UI con servicios REST escalables en Node.js, Express y PostgreSQL.',
+        en: 'Cadi: golf e-commerce platform built with React / Next.js / Context API / Material UI and scalable REST services in Node.js, Express, and PostgreSQL.',
       },
       {
-        es: 'GDS: plataforma web para gestión operativa, seguimiento de stock y operaciones en puntos de venta en tiempo real (React, Node.js, SQL Server).',
-        en: 'GDS: web platform for operational management, stock tracking, and point-of-sale operations in real time (React, Node.js, SQL Server).',
+        es: 'GDS: plataforma web para gestión operativa, seguimiento de stock y operaciones en puntos de venta en tiempo real (React, Redux, Node.js, SQL Server).',
+        en: 'GDS: web platform for operational management, stock tracking, and point-of-sale operations in real time (React, Redux, Node.js, SQL Server).',
       },
       {
         es: 'Candidate Viewer: plataforma de evaluación y gestión de candidatos para procesos de selección (React, Node.js, Express, MySQL).',
@@ -90,6 +93,7 @@ const entries = [
     tags: [
       'react',
       'nextjs',
+      'redux',
       'nodejs',
       'javascript',
       'express',

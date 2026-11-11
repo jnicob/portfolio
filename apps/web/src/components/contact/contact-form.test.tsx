@@ -188,7 +188,7 @@ describe('ContactForm', () => {
 
     await user.type(screen.getByLabelText(/Asunto/i), 'prueba desde web +');
     await user.type(screen.getByLabelText(/Correo electrónico/i), 'j.nicob@gmail.com');
-    await user.type(screen.getByLabelText(/Teléfono/i), '672814490');
+    await user.type(screen.getByLabelText(/Teléfono/i), '672814444');
     await user.type(screen.getByLabelText(/Mensaje/i), 'prueba de que sigue funcionando');
 
     await user.click(screen.getByRole('button', { name: /Enviar mensaje/i }));
@@ -204,7 +204,7 @@ describe('ContactForm', () => {
     expect(parsedBody).toMatchObject({
       subject: 'prueba desde web +',
       email: 'j.nicob@gmail.com',
-      phone: '672814490',
+      phone: '672814444',
       message: 'prueba de que sigue funcionando',
       honeypot: '',
     });

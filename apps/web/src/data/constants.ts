@@ -13,5 +13,5 @@ export type Skin = (typeof SKINS)[number];
 export const CV_VIEWS = ['standard', 'compact', 'timeline'] as const;
 export type CvView = (typeof CV_VIEWS)[number];
 
-export const SKILL_CATEGORIES = ['backend', 'frontend', 'ai', 'platform', 'tooling'] as const;
+export const SKILL_CATEGORIES = ['frontend', 'backend', 'ai', 'platform', 'tooling'] as const;
 export type SkillCategory = (typeof SKILL_CATEGORIES)[number];
