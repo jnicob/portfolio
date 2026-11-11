@@ -5,8 +5,8 @@ const entries = [
     id: 'freepik',
     company: 'Magnific (Freepik Company)',
     role: {
-      es: 'Senior FullStack / Frontend Developer',
-      en: 'Senior FullStack / Frontend Developer',
+      es: 'Senior Full-Stack / Frontend & AI Engineer',
+      en: 'Senior Full-Stack / Frontend & AI Engineer',
     },
     start: '2022-07',
     end: '2026-07',
@@ -15,8 +15,8 @@ const entries = [
       en: 'Málaga, Spain (Remote)',
     },
     summary: {
-      es: 'Ecosistema de productos de IA y stock en magnific.com (+2M de usuarios y +1M de suscriptores activos). Desarrollo frontend y full-stack abarcando múltiples proyectos: APIs de servicios de IA y stock, landings de producto de alto impacto y tráfico, playground interactivo, panel de estadísticas para APIs y proyectos de backoffice (Freepik/Flaticon).',
-      en: 'AI and creative stock product ecosystem at magnific.com (+2M users and +1M active subscribers). Frontend and full-stack engineering across key initiatives: APIs for AI services and stock, high-impact product landings, interactive playground, API statistics dashboard and backoffice projects (Freepik/Flaticon).',
+      es: 'Ecosistema de productos de IA y stock en magnific.com (+2M de usuarios, +1M de suscriptores activos y +1.000 PRs desplegadas en producción). Desarrollo frontend y full-stack abarcando múltiples proyectos: APIs de servicios de IA y stock, landings de producto de alto impacto y tráfico, playground interactivo, panel de estadísticas para APIs y proyectos de backoffice con Vue y PHP/Laravel (Freepik/Flaticon).',
+      en: 'AI and creative stock product ecosystem at magnific.com (+2M users, +1M active subscribers, and 1,000+ PRs shipped to production). Frontend and full-stack engineering across key initiatives: APIs for AI services and stock, high-impact product landings, interactive playground, API statistics dashboard, and backoffice projects with Vue and PHP/Laravel (Freepik/Flaticon).',
     },
     highlights: [
       {
@@ -28,8 +28,8 @@ const entries = [
         en: 'Backoffice, content management and contributors (Freepik/Flaticon): full-stack engineering across PHP/Laravel and JS/Vue for digital asset moderation, contributor management, and tax portal.',
       },
       {
-        es: 'Automatización con agentes de IA: pipelines para convertir especificaciones OpenAPI en endpoints FastAPI, reglas de gateway, configuración de precios/créditos, playground y documentación interactiva.',
-        en: 'AI agent automation: pipelines converting OpenAPI specs into FastAPI endpoints, gateway rules, pricing/credits configuration, playground, and interactive documentation.',
+        es: 'Automatización con agentes de IA: pipelines para convertir especificaciones OpenAPI en endpoints FastAPI, reglas de gateway, configuración de precios/créditos, playground y documentación interactiva, reduciendo el tiempo de integración de nuevos modelos de días a minutos.',
+        en: 'AI agent automation: pipelines converting OpenAPI specs into FastAPI endpoints, gateway rules, pricing/credits configuration, playground, and interactive documentation, cutting new model integration time from days to minutes.',
       },
       {
         es: 'Webs y landings de alto impacto: desarrollo frontend de landings públicas de producto (APIs, generación y edición de imágenes/audio/video), optimización de Core Web Vitals, SEO técnico, testing y puesta en producción. Playground interactivo para probar modelos desde el navegador, dashboards de consumo, límites, facturación y gestión de API keys.',

@@ -18,10 +18,10 @@ const entries = [
     tags: ['nodejs', 'express', 'rest-api'],
   },
   {
-    name: 'MySQL / SQL Server',
+    name: 'SQL (MySQL / PostgreSQL / SQL Server)',
     level: 4,
     category: 'backend',
-    tags: ['mysql', 'sql-server', 'database'],
+    tags: ['mysql', 'postgresql', 'sql-server', 'database'],
   },
   {
     name: 'Python / FastAPI',
