@@ -35,7 +35,7 @@ export function sanitizeText(input: string): string {
 }
 
 /**
- * Sanitiza campos de cabecera de email (Subject, Email) evitando inyecciones CRLF (\r\n).
+ * Sanitizes email header fields (Subject, Email) preventing CRLF (\r\n) injection.
  */
 export function sanitizeHeader(input: string): string {
   if (!input) return '';

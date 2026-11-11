@@ -61,7 +61,7 @@ Guía y estándares de despliegue para el portfolio estático (`output: 'export'
 - **Plantilla `.env.php.local`**:
   ```php
   <?php return [
-      'CONTACT_TO'        => 'j.nico.b@gmail.com',
+      'CONTACT_TO'        => '${CONTACT_TO}',
       'CONTACT_FROM'      => 'no-reply@montecervino.net',
       'MAIL_TRANSPORT'    => 'mail', // 'mail' o 'smtp'
       'ALLOWED_ORIGIN'    => 'https://jnicob.dev',

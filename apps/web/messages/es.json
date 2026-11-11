@@ -306,6 +306,7 @@
       "errors": {
         "subjectRequired": "El asunto debe tener al menos 3 caracteres",
         "emailInvalid": "Introduce un email válido",
+        "phoneInvalid": "El teléfono debe contener al menos 6 dígitos y solo caracteres válidos (+, -, espacios, paréntesis)",
         "messageRequired": "El mensaje debe tener al menos 10 caracteres"
       }
     },

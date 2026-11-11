@@ -11,8 +11,8 @@ export const localizedStringSchema = z
   .strict();
 export type LocalizedString = z.infer<typeof localizedStringSchema>;
 
-const yearMonth = z.string().regex(/^\d{4}-\d{2}$/, 'formato YYYY-MM');
-const dateish = z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/, 'formato YYYY-MM o YYYY-MM-DD');
+const yearMonth = z.string().regex(/^\d{4}-\d{2}$/, 'YYYY-MM format');
+const dateish = z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/, 'YYYY-MM or YYYY-MM-DD format');
 
 export const profileSummaryBulletSchema = z
   .object({
@@ -76,10 +76,10 @@ export const educationEntrySchema = z
     id: z.string().min(1),
     institution: z.string().min(1),
     degree: localizedStringSchema,
-    start: z.string().regex(/^\d{4}$/, 'formato YYYY'),
+    start: z.string().regex(/^\d{4}$/, 'YYYY format'),
     end: z
       .string()
-      .regex(/^\d{4}$/, 'formato YYYY')
+      .regex(/^\d{4}$/, 'YYYY format')
       .nullable(),
   })
   .strict();
@@ -191,7 +191,7 @@ export const contactSchema = z
       .string()
       .trim()
       .min(3, 'El asunto debe tener al menos 3 caracteres')
-      .max(100, 'El asunto no puede superar 100 caracteres'),
+      .max(200, 'El asunto no puede superar 200 caracteres'),
     email: z.string().trim().email('Introduce un email válido'),
     phone: z
       .string()
@@ -216,6 +216,7 @@ export const contactSchema = z
       .min(10, 'El mensaje debe tener al menos 10 caracteres')
       .max(2000, 'El mensaje no puede superar 2000 caracteres'),
     honeypot: z.string().max(0, 'Bot detected').optional().or(z.literal('')),
+    ts: z.number().optional(),
   })
   .strict();
 

@@ -536,6 +536,16 @@ describe('contactSchema (nico-zod)', () => {
   it('rechaza campos desconocidos extra (strict)', () => {
     expect(contactSchema.safeParse({ ...validContact, unknownField: 123 }).success).toBe(false);
   });
+
+  it('accepts optional anti-bot ts number and subject up to 200 characters', () => {
+    expect(contactSchema.safeParse({ ...validContact, ts: Date.now() }).success).toBe(true);
+    expect(contactSchema.safeParse({ ...validContact, subject: 'A'.repeat(200) }).success).toBe(
+      true,
+    );
+    expect(contactSchema.safeParse({ ...validContact, subject: 'A'.repeat(201) }).success).toBe(
+      false,
+    );
+  });
 });
 
 describe('beyondCodeSchema', () => {

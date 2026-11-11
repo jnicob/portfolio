@@ -61,14 +61,14 @@ export async function POST(request: Request) {
     const cleanMessage = sanitizeText(message);
 
     // 5. Secure email sending (Resend / Webhook / Dev log)
-    const destinationEmail = process.env.CONTACT_DESTINATION_EMAIL || 'j.nico.b@gmail.com';
+    const destinationEmail = process.env.CONTACT_DESTINATION_EMAIL || process.env.CONTACT_TO || '';
     const resendApiKey = process.env.RESEND_API_KEY;
     const webhookUrl = process.env.CONTACT_WEBHOOK;
 
     let emailSent = false;
 
-    // A) Sending via Resend API (if API key is configured)
-    if (resendApiKey) {
+    // A) Sending via Resend API (if API key and destination email are configured)
+    if (resendApiKey && destinationEmail) {
       try {
         const resendResponse = await fetch('https://api.resend.com/emails', {
           method: 'POST',

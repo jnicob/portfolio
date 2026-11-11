@@ -1,29 +1,28 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-09-17 · Optimización de propuesta de valor profesional (ingeniería, IA y productos digitales), impacto con métricas y claridad de negocio en experiencia laboral; calibración A4 intacta
+> Actualizado: 2026-11-11 · Optimización de presentación (LinkedIn, Home, Hero y CV), skills en píldoras sin puntos subjetivos, incorporación del caso de estudio Lauquen Transporte y correcciones técnicas de auditoría
 
 ## Ahora
 
-**Auditoría y Validación Visual**
+**Validación y Despliegue**
 
-- Validar en navegador y móvil las nuevas vistas: Hero con avatar integrado en mobile, sección Idiomas en las 3 vistas del CV e impresión en PDF (1 página compacto, 2 páginas estándar y timeline).
+- Revisar el PR `feat/portfolio-cv-and-lauquen-improvements` y actualizar en LinkedIn el titular, resumen (About), las 5 aptitudes principales y el proyecto destacado Lauquen Transporte.
 
 ## Hecho
 
-- ✅ **Propuesta de valor e impacto en el CV**: Actualizados `profile.ts` y `experience.ts` incorporando foco en productos digitales completos, rigor técnico (performance, observabilidad, seguridad, TDD y Clean Code) y aceleración con agentes de IA. Reforzadas las métricas reales (40+ modelos de IA, 350+ endpoints en producción, 1.000+ PRs) y el propósito de negocio de cada proyecto (Freepik, AccelOne, HIS municipal y Fares Taie).
-- ✅ **Foto del CV en espejo**: Invertida horizontalmente (`sharp.flop()`) en `avatar-cv.jpg` y `avatar-cv.webp` para que el torso y mirada se orienten hacia el interior del documento (hacia el nombre y contenido).
-- ✅ **Espaciado en CV compacto**: Incrementada la separación entre las tarjetas de experiencia laboral (`gap-4`) para una lectura más desahogada.
-- ✅ **Encuadre de Nico en el Home**: Re-extracción de `hero-portrait.webp` (`left: 760`) para posicionar a Nico apenas más a la derecha, logrando un encuadre circular perfectamente centrado y equilibrado.
-- ✅ **UX & diseño Mobile en el Hero**: En pantallas móviles (`< lg`), el avatar se muestra integrado junto al nombre y titular (`flex items-center gap-4 sm:gap-6`) con el mismo patrón visual del encabezado del CV, ocultando la columna derecha grande descolgada al final.
-- ✅ **Sección de Idiomas en CV**: Incorporación de `languages.ts` y `languageEntrySchema` (Español nativo + Inglés B2 Upper Intermediate) con tipografía semántica y componente `LanguageList` en las 3 vistas (Compacta, Estándar y Cronológica).
-- ✅ **Calibración de impresión A4 garantizada**:
-  - Compacto: Formación e Idiomas en dos columnas (`print:grid-cols-2`), asegurando estrictamente **1 página A4**.
-  - Estándar: Exactamente **2 páginas A4**.
-  - Cronológico (Timeline): Cards compactadas en impresión (`print:p-2.5 print:gap-1.5`), resolviendo el salto de 1 línea y asegurando exactamente **2 páginas A4**.
-- ✅ **Tests automatizados**:
-  - `cv-print-pages.test.ts`: Validación automatizada con Google Chrome headless y `pdfinfo` comprobando que las 3 vistas generan exactamente 1, 2 y 2 páginas.
-  - `language-list.test.tsx` y tests en `schemas.test.ts` y `cv-views.test.tsx`.
-- ✅ **100% verde en local**: 75 suites de test (484 tests pasados), TypeScript estricto, ESLint 0 warnings, Prettier y build estático (28/28 páginas en 15.9s).
+- ✅ **Titular y Resumen unificados (`profile.ts` y LinkedIn)**: Titular actualizado a `Senior Full-Stack & AI Engineer | Analista Funcional Técnico — TypeScript, React/Next.js, Python/FastAPI, PHP/Laravel, APIs & Cloud` (ES/EN), mención explícita de escala (`+2M de usuarios y +350 endpoints en producción`) y refuerzo de agentes de IA para testing, buenas prácticas y seguridad, además de incluir `Drizzle` en ORMs.
+- ✅ **Experiencia en Magnific (`experience.ts`)**: Rol actualizado a `Senior Full-Stack / Frontend & AI Engineer`, incorporación de `+1.000 PRs desplegadas en producción`, mención explícita a proyectos de backoffice con Vue y PHP/Laravel y métrica de impacto en agentes de IA (`reduciendo el tiempo de integración de nuevos modelos de días a minutos`).
+- ✅ **Visualización de Skills en Píldoras/Chips (`skill-group.tsx`, `skills-summary.tsx`, `skills.ts`)**: Sustitución del indicador subjetivo de 5 puntos por píldoras/chips limpios ordenados por dominio/proficiencia tanto en Home como en las 3 vistas del CV. Añadido `PostgreSQL` junto a MySQL y SQL Server manteniendo `Python / FastAPI` y `Java`.
+- ✅ **Proyecto independiente y Caso de Estudio `Lauquen Transporte` (`projects.ts`, `lauquen-transporte.mdx`)**: Incorporado como proyecto destacado (`featured: true`, `caseStudy: true`) en español e inglés, detallando la migración ETL desde Microsoft Access 97 (Jet 3.5, 11.300+ registros) a Next.js 16, React 19, TypeScript, Drizzle ORM y MySQL 8.0, modelado polimórfico, RBAC, auditoría inmutable, migraciones idempotentes, backups `.sql.gz`, reportes ExcelJS y 279 tests en Vitest.
+- ✅ **Optimización de Home & Hero (`hero.tsx`, `page.tsx`)**: Reordenado `FeaturedProjects` por encima de `SkillsSummary`, localizado el badge superior del Hero y actualizadas las 4 tarjetas de métricas (`+15`, `+2M Users`, `Clean Arch`, `AI-Driven`).
+- ✅ **Correcciones Técnicas de Auditoría**:
+  - Solucionado el error de servidor `FORMATTING_ERROR` en `/contact` usando `t.raw('form.charCount')`.
+  - Alineado `contactSchema` (`subject` máx. 200 caracteres y `ts` opcional) para que `/api/contact` no rechace envíos con `.strict()`.
+  - Localizados los mensajes de validación del formulario de contacto en inglés/español (`labels.form.errors`).
+  - Eliminado el email personal hardcodeado en `contact.php`, `route.ts` y `SKILL.md`.
+  - Añadido `/contact` a `sitemap.ts` y enriquecido `knowsAbout` en `seo.ts` (`OpenAPI`, `APISIX`, `Redis`, `Drizzle ORM`, `Spec-Driven Development`).
+  - Traducidos al inglés los comentarios de código restantes y extraídos los textos inline de JSX a `messages/*.json`.
+- ✅ **Calibración de impresión A4 garantizada**: Compacto en 1 página A4; Estándar y Timeline en 2 páginas A4 (`cv-print-pages.test.ts` en verde).
 
 ## Pendientes del usuario (no bloqueantes)
 

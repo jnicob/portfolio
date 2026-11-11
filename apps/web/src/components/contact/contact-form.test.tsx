@@ -130,4 +130,32 @@ describe('ContactForm', () => {
     // No debe haber llamado al backend real
     expect(handleSubmit).not.toHaveBeenCalled();
   });
+
+  it('displays localized English validation messages from labels.form.errors instead of hardcoded Spanish schema strings', async () => {
+    const user = userEvent.setup();
+    const enLabels: ContactFormLabels = {
+      ...MOCK_LABELS,
+      form: {
+        ...MOCK_LABELS.form,
+        submit: 'Send message',
+        errors: {
+          subjectRequired: 'Subject must be at least 3 characters',
+          emailInvalid: 'Please enter a valid email',
+          phoneInvalid: 'Phone must contain at least 6 digits and only valid characters',
+          messageRequired: 'Message must be at least 10 characters',
+        },
+      },
+    };
+
+    render(<ContactForm labels={enLabels} />);
+    await user.type(screen.getByLabelText(/Teléfono/i), '123');
+    await user.click(screen.getByRole('button', { name: /Send message/i }));
+
+    expect(await screen.findByText('Subject must be at least 3 characters')).toBeInTheDocument();
+    expect(screen.getByText('Please enter a valid email')).toBeInTheDocument();
+    expect(
+      screen.getByText('Phone must contain at least 6 digits and only valid characters'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Message must be at least 10 characters')).toBeInTheDocument();
+  });
 });

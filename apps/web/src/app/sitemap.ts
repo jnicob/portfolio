@@ -6,7 +6,7 @@ import { SITE_URL } from '@/lib/seo';
 // Required by `output: 'export'`: this route does not support dynamic request data.
 export const dynamic = 'force-static';
 
-const STATIC_PATHS = ['', '/cv', '/projects', '/showcase'];
+const STATIC_PATHS = ['', '/cv', '/projects', '/showcase', '/contact'];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];

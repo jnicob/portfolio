@@ -46,6 +46,10 @@ describe('seo', () => {
     expect(ld.nationality[0]?.name).toBe('Spain');
     expect(ld.nationality[1]?.name).toBe('Argentina');
     expect(ld.knowsAbout.length).toBeGreaterThan(10);
+    expect(ld.knowsAbout).toContain('OpenAPI');
+    expect(ld.knowsAbout).toContain('APISIX');
+    expect(ld.knowsAbout).toContain('Redis');
+    expect(ld.knowsAbout).toContain('Drizzle ORM');
     expect(JSON.stringify(ld)).not.toMatch(/@[\w-]+\.[a-z]{2,}/i);
   });
 

@@ -306,6 +306,7 @@
       "errors": {
         "subjectRequired": "Subject must be at least 3 characters",
         "emailInvalid": "Please enter a valid email",
+        "phoneInvalid": "Phone must contain at least 6 digits and only valid characters (+, -, spaces, parentheses)",
         "messageRequired": "Message must be at least 10 characters"
       }
     },

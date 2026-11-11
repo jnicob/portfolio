@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 import { profile } from '@/data/profile';
 import { Link } from '@/i18n/navigation';
 
-/** Footer compartido: enlaces sociales y contacto. RSC-compatible. */
+/** Shared site footer: social and contact links. RSC-compatible. */
 export function SiteFooter() {
   const t = useTranslations('footer');
   const tNav = useTranslations('nav');

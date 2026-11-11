@@ -31,6 +31,7 @@ export type ContactFormLabels = {
     errors: {
       subjectRequired: string;
       emailInvalid: string;
+      phoneInvalid?: string;
       messageRequired: string;
     };
   };
@@ -78,12 +79,30 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
     }
   };
 
+  const getLocalizedErrorMessage = (field: keyof ContactInput, fallbackMessage: string): string => {
+    switch (field) {
+      case 'subject':
+        return labels.form.errors.subjectRequired || fallbackMessage;
+      case 'email':
+        return labels.form.errors.emailInvalid || fallbackMessage;
+      case 'phone':
+        return labels.form.errors.phoneInvalid || fallbackMessage;
+      case 'message':
+        return labels.form.errors.messageRequired || fallbackMessage;
+      default:
+        return fallbackMessage;
+    }
+  };
+
   const handleBlur = (field: keyof ContactInput) => {
     const parseResult = contactSchema.safeParse(formData);
     if (!parseResult.success) {
       const issue = parseResult.error.issues.find((item) => item.path[0] === field);
       if (issue) {
-        setErrors((prev) => ({ ...prev, [field]: issue.message }));
+        setErrors((prev) => ({
+          ...prev,
+          [field]: getLocalizedErrorMessage(field, issue.message),
+        }));
       }
     }
   };
@@ -106,7 +125,7 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
       parseResult.error.issues.forEach((issue) => {
         const fieldName = issue.path[0] as keyof ContactInput;
         if (fieldName && !fieldErrors[fieldName]) {
-          fieldErrors[fieldName] = issue.message;
+          fieldErrors[fieldName] = getLocalizedErrorMessage(fieldName, issue.message);
         }
       });
       setErrors(fieldErrors);
@@ -221,7 +240,7 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
             <p className="text-sm text-fg-muted">{labels.subtitle}</p>
           </div>
 
-          {/* Campo Trampas Honeypot (Oculto visualmente) */}
+          {/* Honeypot trap field (visually hidden) */}
           <div className="hidden aria-hidden:hidden" aria-hidden="true">
             <label htmlFor="website">Website (no rellenar)</label>
             <input

@@ -12,12 +12,15 @@ describe('sitemap', () => {
     expect(urls).toContain(`${SITE_URL}/es`);
     expect(urls).toContain(`${SITE_URL}/en`);
     expect(urls).toContain(`${SITE_URL}/en/cv`);
+    expect(urls).toContain(`${SITE_URL}/es/contact`);
+    expect(urls).toContain(`${SITE_URL}/en/contact`);
     expect(urls).toContain(`${SITE_URL}/en/projects/freepik-api-platform`);
+    expect(urls).toContain(`${SITE_URL}/es/projects/lauquen-transporte`);
 
     const slugCounts = await Promise.all(
       routing.locales.map(async (locale) => (await getProjectSlugs(locale)).length),
     );
-    const expectedLength = slugCounts.reduce((total, count) => total + 4 + count, 0);
+    const expectedLength = slugCounts.reduce((total, count) => total + 5 + count, 0);
     expect(entries).toHaveLength(expectedLength);
   });
 });

@@ -5,19 +5,18 @@ import { resolveOutputMode } from './src/lib/output-mode';
 
 const mode = resolveOutputMode(process.env);
 
-// Dominio propio pendiente: avisa en build de producción sin romperlo (SEO cae al placeholder).
+// Warn during production build if NEXT_PUBLIC_SITE_URL is unset (SEO falls back to placeholder).
 if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_SITE_URL) {
-  console.warn('[build] NEXT_PUBLIC_SITE_URL no definido: el SEO apunta al placeholder');
+  console.warn('[build] NEXT_PUBLIC_SITE_URL is not defined: SEO points to the placeholder URL');
 }
 
 const nextConfig: NextConfig = {
   trailingSlash: true,
-  // Modo 'export': estático puro (hosting compartido). Modo 'node': SSR + route handlers.
+  // 'export' mode: pure static export (shared hosting). 'node' mode: SSR + route handlers.
   ...(mode === 'export' ? { output: 'export' as const } : {}),
-  // output:'export' no soporta el optimizador de imágenes server-side.
+  // output:'export' does not support the server-side image optimizer.
   images: { unoptimized: mode === 'export' },
-  // Fija la raíz del monorepo pnpm: evita que Turbopack detecte un lockfile
-  // ajeno más arriba en el árbol de directorios (p. ej. en $HOME) como root.
+  // Pin the pnpm monorepo root so Turbopack does not pick up an unrelated lockfile higher up the directory tree.
   turbopack: { root: path.join(__dirname, '..', '..') },
 };
 

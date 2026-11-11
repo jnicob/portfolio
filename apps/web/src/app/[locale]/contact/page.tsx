@@ -43,10 +43,11 @@ export default async function ContactPage({ params }: Props) {
       messagePlaceholder: t('form.messagePlaceholder'),
       submit: t('form.submit'),
       submitting: t('form.submitting'),
-      charCount: t('form.charCount'),
+      charCount: t.raw('form.charCount') as string,
       errors: {
         subjectRequired: t('form.errors.subjectRequired'),
         emailInvalid: t('form.errors.emailInvalid'),
+        phoneInvalid: t('form.errors.phoneInvalid'),
         messageRequired: t('form.errors.messageRequired'),
       },
     },

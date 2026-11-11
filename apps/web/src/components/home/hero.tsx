@@ -163,9 +163,7 @@ export function Hero({ locale, cvLabel }: HeroProps) {
           <div className="mt-1 text-xs font-medium text-fg-muted">{t('stats.exp')}</div>
         </div>
         <div className="rounded-2xl border border-border/70 bg-surface/60 p-4.5 shadow-2xs backdrop-blur-xs transition-colors hover:border-accent/60 hover:bg-surface">
-          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-accent">
-            +2M Users
-          </div>
+          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-accent">+2M Users</div>
           <div className="mt-1 text-xs font-medium text-fg-muted">{t('stats.architecture')}</div>
         </div>
         <div className="rounded-2xl border border-border/70 bg-surface/60 p-4.5 shadow-2xs backdrop-blur-xs transition-colors hover:border-accent/60 hover:bg-surface">

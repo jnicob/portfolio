@@ -1,18 +1,17 @@
 <?php
 /**
- * Endpoint de contacto del Portfolio jnicob.dev (hosting compartido, PHP >= 8.1).
+ * Contact endpoint for Portfolio jnicob.dev (shared hosting, PHP >= 8.1).
  *
- * Patrón idéntico al de hotel_mc/php/contact.php, adaptado al esquema del
- * formulario del portfolio (subject, email, phone?, message, honeypot).
+ * Mirrors the portfolio contactSchema (subject, email, phone?, message, honeypot, ts).
  *
- * Configuración por VARIABLES DE ENTORNO del hosting (sin credenciales en repo):
- *   CONTACT_TO       destinatario (obligatoria en producción)
- *   CONTACT_FROM     remitente del sobre (default no-reply@jnicob.dev)
- *   ALLOWED_ORIGIN   origen CORS permitido (default https://jnicob.dev)
- *   MAIL_TRANSPORT   mail | smtp | log   (default mail; log = solo desarrollo)
+ * Configured via hosting ENVIRONMENT VARIABLES or .env.php.local (no credentials in repo):
+ *   CONTACT_TO       recipient address (required in production)
+ *   CONTACT_FROM     envelope sender (default no-reply@jnicob.dev)
+ *   ALLOWED_ORIGIN   allowed CORS origin (default https://jnicob.dev)
+ *   MAIL_TRANSPORT   mail | smtp | log   (default mail; log = dev only)
  *   SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASS / SMTP_EHLO_HOST
- *   RATE_MAX / RATE_WINDOW   rate-limit por IP (default 5 / 3600s)
- *   MIN_SECONDS      tiempo mínimo de rellenado (default 3)
+ *   RATE_MAX / RATE_WINDOW   per-IP rate limit (default 5 / 3600s)
+ *   MIN_SECONDS      minimum form fill time (default 3)
  */
 
 declare(strict_types=1);
@@ -29,7 +28,7 @@ if (file_exists(__DIR__ . '/.env.php.local')) {
     }
 }
 
-/** getenv con default que respeta valores "0". */
+/** getenv with fallback that respects "0" values. */
 function env(string $key, string $default): string
 {
     $value = getenv($key);
@@ -37,7 +36,7 @@ function env(string $key, string $default): string
 }
 
 $config = [
-    'to'          => env('CONTACT_TO', 'j.nico.b@gmail.com'),
+    'to'          => env('CONTACT_TO', ''),
     'from'        => env('CONTACT_FROM', 'no-reply@jnicob.dev'),
     'ehlo_host'   => env('SMTP_EHLO_HOST', 'jnicob.dev'),
     'origin'      => env('ALLOWED_ORIGIN', 'https://jnicob.dev'),
@@ -52,11 +51,11 @@ $config = [
     'state_dir'   => env('CONTACT_STATE_DIR', sys_get_temp_dir()),
 ];
 
-// Límites de campo (espejo de contactSchema en schemas.ts)
+// Field limits (mirror of contactSchema in schemas.ts)
 const FIELD_LIMITS = [
     'subject' => ['min' => 3,  'max' => 200],
     'email'   => ['min' => 3,  'max' => 200],
-    'phone'   => ['min' => 0,  'max' => 30],   // opcional
+    'phone'   => ['min' => 0,  'max' => 30],   // optional
     'message' => ['min' => 10, 'max' => 2000],
 ];
 const PHONE_PATTERN    = '/^[0-9+().\-\s]+$/';
@@ -64,7 +63,7 @@ const MIN_PHONE_DIGITS = 6;
 const ALLOWED_FIELDS   = ['subject', 'email', 'phone', 'message', 'honeypot', 'ts'];
 const MAX_BODY_BYTES   = 10240;
 
-// ---------- Cabeceras ----------
+// ---------- Headers ----------
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: no-referrer');
@@ -98,7 +97,7 @@ if (!str_starts_with($_SERVER['CONTENT_TYPE'] ?? '', 'application/json')) {
     respond(415, ['ok' => false, 'error' => 'unsupported_media_type']);
 }
 
-// ---------- Cuerpo ----------
+// ---------- Body ----------
 $raw = file_get_contents('php://input', false, null, 0, MAX_BODY_BYTES + 1);
 if ($raw === false || strlen($raw) > MAX_BODY_BYTES) {
     respond(413, ['ok' => false, 'error' => 'payload_too_large']);
@@ -109,13 +108,13 @@ if (!is_array($data)) {
     respond(400, ['ok' => false, 'error' => 'invalid_json']);
 }
 
-// Allowlist estricta
+// Strict allowlist
 $unknown = array_diff(array_keys($data), ALLOWED_FIELDS);
 if ($unknown !== []) {
     respond(400, ['ok' => false, 'error' => 'validation', 'fields' => array_values($unknown)]);
 }
 
-// ---------- Anti-spam silencioso (responde ok sin enviar) ----------
+// ---------- Silent anti-spam (returns ok without sending) ----------
 $honeypot = trim((string) ($data['honeypot'] ?? ''));
 $ts       = is_numeric($data['ts'] ?? null) ? (float) $data['ts'] : 0.0;
 $elapsedS = (microtime(true) * 1000 - $ts) / 1000;
@@ -123,7 +122,7 @@ if ($honeypot !== '' || $ts <= 0 || $elapsedS < $config['min_seconds']) {
     respond(200, ['ok' => true]);
 }
 
-// ---------- Validación (espejo de contactSchema) ----------
+// ---------- Validation (mirror of contactSchema) ----------
 function str_len(string $value): int
 {
     return function_exists('mb_strlen') ? mb_strlen($value) : strlen($value);
@@ -145,7 +144,7 @@ foreach (FIELD_LIMITS as $field => $limits) {
 if ($fields['email'] !== '' && filter_var($fields['email'], FILTER_VALIDATE_EMAIL) === false) {
     $errors[] = 'email';
 }
-// Teléfono opcional: si se ingresó, validar formato y mínimo de dígitos
+// Optional phone: if provided, validate format and minimum digit count
 if ($fields['phone'] !== '') {
     if (
         preg_match(PHONE_PATTERN, $fields['phone']) !== 1
@@ -158,7 +157,7 @@ if ($errors !== []) {
     respond(400, ['ok' => false, 'error' => 'validation', 'fields' => array_values(array_unique($errors))]);
 }
 
-// ---------- Rate limit por IP (ventana deslizante, flock, fail-closed) ----------
+// ---------- Per-IP rate limit (sliding window, flock, fail-closed) ----------
 $ip   = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 $file = $config['state_dir'] . '/portfolio-rl-' . sha1($ip) . '.json';
 $now  = time();
@@ -184,7 +183,7 @@ fwrite($fh, json_encode($timestamps));
 flock($fh, LOCK_UN);
 fclose($fh);
 
-// ---------- Composición del mensaje (texto plano, sin HTML de usuario) ----------
+// ---------- Message composition (plain text, no user HTML) ----------
 $stripHeader = fn (string $v): string => str_replace(["\r", "\n"], '', $v);
 
 $subject = '=?UTF-8?B?' . base64_encode($stripHeader('[Portfolio] ' . $fields['subject'])) . '?=';
@@ -197,7 +196,7 @@ $body = "Nuevo mensaje de contacto desde jnicob.dev\n\n"
 $fromSafe    = $stripHeader($config['from']);
 $replyToSafe = $stripHeader($fields['email']);
 
-// ---------- Transportes ----------
+// ---------- Transports ----------
 function smtp_send(array $cfg, string $to, string $from, string $replyTo, string $subject, string $body): bool
 {
     $ctx = stream_context_create([
@@ -265,7 +264,7 @@ function smtp_send(array $cfg, string $to, string $from, string $replyTo, string
     return true;
 }
 
-// Transporte log = SOLO desarrollo
+// Log transport = development ONLY
 $writeLog = function (string $subject, string $body) use ($config): bool {
     $path = $config['state_dir'] . '/portfolio-contact.log';
     if (is_link($path)) {
@@ -283,6 +282,10 @@ $writeLog = function (string $subject, string $body) use ($config): bool {
         FILE_APPEND | LOCK_EX,
     );
 };
+
+if ($config['to'] === '' && $config['transport'] !== 'log') {
+    respond(500, ['ok' => false, 'error' => 'recipient_not_configured']);
+}
 
 $sent = match ($config['transport']) {
     'log' => $writeLog($subject, $body),
