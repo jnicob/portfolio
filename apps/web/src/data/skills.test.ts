@@ -55,14 +55,14 @@ describe('skills and experience frontend prioritization', () => {
     expect(profile.summary.coreTechBullets[1]?.value.en).toMatch(/Claude Code/);
     expect(profile.summary.coreTechBullets[1]?.value.en).toMatch(/skills and commands/);
 
-    expect(profile.summary.coreTechBullets[4]?.value.es).toMatch(/sistemas de diseño/);
+    expect(profile.summary.coreTechBullets[4]?.value.es).toMatch(/sistema de diseño/);
     expect(profile.summary.coreTechBullets[4]?.value.es).toMatch(/accesibilidad \(WCAG\)/);
-    expect(profile.summary.coreTechBullets[4]?.value.en).toMatch(/design systems/);
+    expect(profile.summary.coreTechBullets[4]?.value.en).toMatch(/design system/);
     expect(profile.summary.coreTechBullets[4]?.value.en).toMatch(/accessibility \(WCAG\)/);
 
     const freepik = experience.find((e) => e.id === 'freepik')!;
-    expect(freepik.highlights[0]?.es).toMatch(/sistemas de diseño accesibles/);
-    expect(freepik.highlights[0]?.en).toMatch(/accessible design systems/);
+    expect(freepik.highlights[0]?.es).toMatch(/sistema de diseño, accesibilidad/);
+    expect(freepik.highlights[0]?.en).toMatch(/design system, accessibility/);
     expect(freepik.highlights[1]?.es).toMatch(/procesos asíncronos/);
     expect(freepik.highlights[1]?.en).toMatch(/asynchronous workflows/);
     expect(freepik.highlights[2]?.es).toMatch(/Claude Code, skills y commands/);

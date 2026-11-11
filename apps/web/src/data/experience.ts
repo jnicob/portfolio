@@ -20,8 +20,8 @@ const entries = [
     },
     highlights: [
       {
-        es: 'Webs y landings de alto impacto: desarrollo frontend y sistemas de diseño accesibles para landings públicas de producto (APIs, generación y edición de imágenes/audio/video), optimización de Core Web Vitals, SEO técnico, testing y puesta en producción. Playground interactivo para probar modelos desde el navegador, dashboards de consumo, límites, facturación y gestión de API keys (React, Next.js, TypeScript, React Query, Zustand, Jotai).',
-        en: 'High-impact web applications & landings: frontend development and accessible design systems for public product landings (APIs, image/audio/video generation and editing), Core Web Vitals optimization, technical SEO, testing and production deployment. Interactive playground to test models from the browser, consumption dashboards, limits, billing and API key management (React, Next.js, TypeScript, React Query, Zustand, Jotai).',
+        es: 'Webs y landings de alto impacto: desarrollo frontend para landings públicas de producto (APIs, generación y edición de imágenes/audio/video), sistema de diseño, accesibilidad, optimización de Core Web Vitals, SEO técnico, testing y puesta en producción. Playground interactivo para probar modelos desde el navegador, dashboards de consumo, límites, facturación y gestión de API keys (React, Next.js, TypeScript, React Query, Zustand, Jotai).',
+        en: 'High-impact web applications & landings: frontend development for public product landings (APIs, image/audio/video generation and editing), design system, accessibility, Core Web Vitals optimization, technical SEO, testing and production deployment. Interactive playground to test models from the browser, consumption dashboards, limits, billing and API key management (React, Next.js, TypeScript, React Query, Zustand, Jotai).',
       },
       {
         es: 'Catálogo multimodal de IA y arquitectura de servicios: exposición y monetización de más de 40 modelos de IA y más de 350 endpoints con FastAPI y APISIX gateway, reduciendo latencias mediante caché distribuida (Redis), rate-limiting y procesos asíncronos con alto tráfico.',

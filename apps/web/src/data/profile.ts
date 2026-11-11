@@ -57,8 +57,8 @@ export const profile = profileSchema.parse({
       {
         label: { es: 'Arquitectura & Prácticas', en: 'Architecture & Practices' },
         value: {
-          es: 'TDD, SOLID, Clean Code, patrones de diseño (MVC, DDD), sistemas de diseño, accesibilidad (WCAG), metodologías ágiles.',
-          en: 'TDD, SOLID, Clean Code, design patterns (MVC, DDD), design systems, accessibility (WCAG), agile methodologies.',
+          es: 'TDD, SOLID, Clean Code, patrones de diseño (MVC, DDD), sistema de diseño, accesibilidad (WCAG), metodologías ágiles.',
+          en: 'TDD, SOLID, Clean Code, design patterns (MVC, DDD), design system, accessibility (WCAG), agile methodologies.',
         },
       },
     ],
