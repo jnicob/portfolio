@@ -37,13 +37,16 @@ describe('SkillsSummary', () => {
     }
   });
 
-  it('expone el nivel de cada skill via aria-label localizado y 5 puntos visuales', () => {
-    renderSkillsSummary();
+  it('renders skills as unrated pills/chips ordered by category without level dots', () => {
+    const { container } = renderSkillsSummary();
     const react = skills.find((s) => s.name === 'React / Next.js')!;
-    const group = screen.getByLabelText(`${react.name}: level ${react.level} of 5`);
-    expect(group).toBeInTheDocument();
-    const dots = group.querySelectorAll('[aria-hidden="true"]');
-    expect(dots).toHaveLength(5);
+    expect(screen.getByText(react.name)).toBeInTheDocument();
+    expect(
+      screen.queryByLabelText(`${react.name}: level ${react.level} of 5`),
+    ).not.toBeInTheDocument();
+    const lists = container.querySelectorAll('ul');
+    expect(lists.length).toBeGreaterThan(0);
+    expect(lists[0]?.className).toContain('flex-wrap');
   });
 
   it('groups categories into a compact multi-column grid (not one full-width row per skill)', () => {

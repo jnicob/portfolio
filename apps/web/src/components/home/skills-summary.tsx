@@ -2,23 +2,18 @@ import { SKILL_CATEGORIES } from '@/data/constants';
 import type { Skill } from '@/data/schemas';
 import { skills } from '@/data/skills';
 import type { Locale } from '@/i18n/routing';
-import { SkillLevel } from '@/components/cv/skill-level';
 
 type SkillsSummaryProps = {
   locale: Locale;
   title: string;
-  /** Localized template with `{name}`/`{level}` placeholders, e.g. "{name}: level {level} of 5". */
-  levelTemplate: string;
+  /** Optional legacy localized template with `{name}`/`{level}` placeholders. */
+  levelTemplate?: string;
   /** Localized category labels (`cv.categories` namespace) — never the raw slug. */
   categoryLabels: Record<Skill['category'], string>;
 };
 
-function levelLabel(template: string, name: string, level: number): string {
-  return template.replace('{name}', name).replace('{level}', String(level));
-}
-
-/** Skills summary grouped by category, with visual + accessible level. RSC-compatible. */
-export function SkillsSummary({ title, levelTemplate, categoryLabels }: SkillsSummaryProps) {
+/** Skills summary grouped by category and rendered as clean pills/chips ordered by proficiency. RSC-compatible. */
+export function SkillsSummary({ title, categoryLabels }: SkillsSummaryProps) {
   return (
     <section className="flex flex-col gap-4 py-8">
       <h2 className="text-2xl font-semibold text-fg">{title}</h2>
@@ -32,14 +27,13 @@ export function SkillsSummary({ title, levelTemplate, categoryLabels }: SkillsSu
               <h3 className="text-sm font-semibold uppercase tracking-wide text-fg-muted">
                 {categoryLabels[category]}
               </h3>
-              <ul className="flex flex-col gap-1.5">
+              <ul className="flex flex-wrap gap-2">
                 {categorySkills.map((skill) => (
-                  <li key={skill.name} className="flex items-center justify-between gap-4">
-                    <span>{skill.name}</span>
-                    <SkillLevel
-                      level={skill.level}
-                      label={levelLabel(levelTemplate, skill.name, skill.level)}
-                    />
+                  <li
+                    key={skill.name}
+                    className="rounded-badge border border-border bg-surface px-3 py-1 text-sm font-medium text-fg"
+                  >
+                    {skill.name}
                   </li>
                 ))}
               </ul>

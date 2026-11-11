@@ -17,30 +17,32 @@ describe('SkillGroup', () => {
     }
   });
 
-  it('expone el nivel de cada skill via un aria-label accesible con 5 puntos visuales', () => {
-    render(
+  it('by default omits level dots and renders skills as pills/chips', () => {
+    const { container } = render(
       <SkillGroup category="backend" categoryLabel="Backend" skills={backendSkills} locale="en" />,
     );
 
-    const first = backendSkills[0]!;
-    const group = screen.getByLabelText(`${first.name}: ${first.level}/5`);
-    expect(group.querySelectorAll('[aria-hidden="true"]')).toHaveLength(5);
+    for (const skill of backendSkills) {
+      expect(screen.queryByLabelText(`${skill.name}: ${skill.level}/5`)).not.toBeInTheDocument();
+      expect(screen.getByText(skill.name)).toBeInTheDocument();
+    }
+    const list = container.querySelector('ul');
+    expect(list?.className).toContain('flex-wrap');
   });
 
-  it('con showLevel=false omite los puntos de nivel', () => {
+  it('when showLevel=true, exposes each skill level via an accessible aria-label with 5 visual dots', () => {
     render(
       <SkillGroup
         category="backend"
         categoryLabel="Backend"
         skills={backendSkills}
         locale="en"
-        showLevel={false}
+        showLevel
       />,
     );
 
-    for (const skill of backendSkills) {
-      expect(screen.queryByLabelText(`${skill.name}: ${skill.level}/5`)).not.toBeInTheDocument();
-    }
-    expect(screen.getByText(backendSkills[0]!.name)).toBeInTheDocument();
+    const first = backendSkills[0]!;
+    const group = screen.getByLabelText(`${first.name}: ${first.level}/5`);
+    expect(group.querySelectorAll('[aria-hidden="true"]')).toHaveLength(5);
   });
 });
