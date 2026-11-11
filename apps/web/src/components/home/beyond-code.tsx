@@ -5,6 +5,7 @@ import { BeyondCodeGallery } from './beyond-code-gallery';
 
 type BeyondCodeSectionProps = {
   locale: Locale;
+  badgeLabel?: string;
 };
 
 /**
@@ -12,7 +13,7 @@ type BeyondCodeSectionProps = {
  * Highlights personal roots, Mediterranean outdoor activities, maker curiosities (IoT/Raspberry Pi),
  * and remote collaboration philosophy, accompanied by an interactive photo carousel.
  */
-export function BeyondCodeSection({ locale }: BeyondCodeSectionProps) {
+export function BeyondCodeSection({ locale, badgeLabel }: BeyondCodeSectionProps) {
   return (
     <section className="flex flex-col gap-6 py-8">
       <div className="flex flex-col gap-2">
@@ -20,7 +21,7 @@ export function BeyondCodeSection({ locale }: BeyondCodeSectionProps) {
           <h2 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">
             {beyondCode.title[locale]}
           </h2>
-          <Badge variant="accent">{locale === 'es' ? 'Personal' : 'Life'}</Badge>
+          <Badge variant="accent">{badgeLabel ?? (locale === 'es' ? 'Personal' : 'Life')}</Badge>
         </div>
         <p className="max-w-3xl text-base text-fg-muted">{beyondCode.subtitle[locale]}</p>
       </div>

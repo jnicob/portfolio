@@ -38,6 +38,7 @@ export default async function CvPage({ params }: Props) {
     contactTitle: t('contactTitle'),
     contactGithub: tFooter('github'),
     contactLinkedin: tFooter('linkedin'),
+    contactForm: t('contactForm'),
     briefTitle: t('briefTitle'),
     showBrief: t('showBrief'),
     hideBrief: t('hideBrief'),

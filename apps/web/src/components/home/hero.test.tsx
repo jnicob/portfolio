@@ -38,6 +38,7 @@ describe('Hero', () => {
 
   it('renders official technology icons strip and metric stats cards', () => {
     renderHero();
+    expect(screen.getByText(es.home.roleBadge)).toBeInTheDocument();
     expect(screen.getByText(es.home.technologiesLabel)).toBeInTheDocument();
     expect(screen.getByText('TypeScript')).toBeInTheDocument();
     expect(screen.getByText('JavaScript')).toBeInTheDocument();
@@ -49,9 +50,9 @@ describe('Hero', () => {
     // Stats bar cards
     expect(screen.getByText('+15')).toBeInTheDocument();
     expect(screen.getByText(es.home.stats.exp)).toBeInTheDocument();
-    expect(screen.getByText('High-Scale')).toBeInTheDocument();
+    expect(screen.getByText('+2M Users')).toBeInTheDocument();
     expect(screen.getByText(es.home.stats.architecture)).toBeInTheDocument();
-    expect(screen.getByText('TDD & SOLID')).toBeInTheDocument();
+    expect(screen.getByText('Clean Arch')).toBeInTheDocument();
     expect(screen.getByText(es.home.stats.cleanCode)).toBeInTheDocument();
     expect(screen.getByText('AI-Driven')).toBeInTheDocument();
     expect(screen.getByText(es.home.stats.ai)).toBeInTheDocument();

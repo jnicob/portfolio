@@ -44,19 +44,19 @@ export default async function HomePage({ params }: Props) {
     <HomeBackground>
       <JsonLd data={personJsonLd(locale)} />
       <Hero locale={locale} cvLabel={t('cvCta')} />
-      <SkillsSummary
-        locale={locale}
-        title={t('skillsTitle')}
-        levelTemplate={t.raw('skillLevel')}
-        categoryLabels={categoryLabels}
-      />
       <FeaturedProjects
         locale={locale}
         title={t('featuredTitle')}
         moreTitle={t('featuredMoreTitle')}
         moreCountTemplate={t.raw('featuredMoreCount')}
       />
-      <BeyondCodeSection locale={locale} />
+      <SkillsSummary
+        locale={locale}
+        title={t('skillsTitle')}
+        levelTemplate={t.raw('skillLevel')}
+        categoryLabels={categoryLabels}
+      />
+      <BeyondCodeSection locale={locale} badgeLabel={t('beyondCodeBadge')} />
       <Link
         href="/showcase"
         className="text-accent underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"

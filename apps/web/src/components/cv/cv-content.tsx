@@ -65,6 +65,7 @@ export function CvContent({
         hideBriefLabel={strings.hideBrief}
         showPhotoLabel={strings.showPhoto}
         hidePhotoLabel={strings.hidePhoto}
+        contactFormLabel={strings.contactForm}
       />
       {view === 'standard' && <CvStandard locale={locale} strings={strings} />}
       {view === 'compact' && <CvCompact locale={locale} strings={strings} />}

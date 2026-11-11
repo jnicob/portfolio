@@ -34,7 +34,7 @@ export function Hero({ locale, cvLabel }: HeroProps) {
           <div className="flex flex-wrap items-center gap-2.5">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-semibold tracking-wide text-accent uppercase">
               <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-              Full-Stack &amp; AI Architect
+              {t('roleBadge')}
             </span>
             <Badge variant="accent">{t('availability')}</Badge>
           </div>
@@ -164,13 +164,13 @@ export function Hero({ locale, cvLabel }: HeroProps) {
         </div>
         <div className="rounded-2xl border border-border/70 bg-surface/60 p-4.5 shadow-2xs backdrop-blur-xs transition-colors hover:border-accent/60 hover:bg-surface">
           <div className="text-2xl sm:text-3xl font-bold tracking-tight text-accent">
-            High-Scale
+            +2M Users
           </div>
           <div className="mt-1 text-xs font-medium text-fg-muted">{t('stats.architecture')}</div>
         </div>
         <div className="rounded-2xl border border-border/70 bg-surface/60 p-4.5 shadow-2xs backdrop-blur-xs transition-colors hover:border-accent/60 hover:bg-surface">
           <div className="text-2xl sm:text-3xl font-bold tracking-tight text-accent">
-            TDD & SOLID
+            Clean Arch
           </div>
           <div className="mt-1 text-xs font-medium text-fg-muted">{t('stats.cleanCode')}</div>
         </div>

@@ -24,6 +24,7 @@ export type CvStrings = {
   contactTitle: string;
   contactGithub: string;
   contactLinkedin: string;
+  contactForm?: string;
   briefTitle?: string;
   showBrief?: string;
   hideBrief?: string;

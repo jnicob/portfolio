@@ -19,6 +19,7 @@ type CvHeaderProps = {
   hideBriefLabel?: string;
   showPhotoLabel?: string;
   hidePhotoLabel?: string;
+  contactFormLabel?: string;
   photoSrc?: string;
 };
 
@@ -36,6 +37,7 @@ export function CvHeader({
   hideBriefLabel = 'Ocultar resumen',
   showPhotoLabel = 'Incluir foto',
   hidePhotoLabel = 'Quitar foto',
+  contactFormLabel,
   photoSrc = '/profile/avatar-cv.jpg',
 }: CvHeaderProps) {
   const [showBrief, setShowBrief] = useState(true);
@@ -229,7 +231,7 @@ export function CvHeader({
               <polyline points="22,6 12,13 2,6" />
             </svg>
             <a href={`/${locale}/contact`} className="text-accent hover:underline font-medium">
-              {locale === 'es' ? 'Formulario de contacto' : 'Contact form'}
+              {contactFormLabel ?? (locale === 'es' ? 'Formulario de contacto' : 'Contact form')}
             </a>
           </div>
         </div>

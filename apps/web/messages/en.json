@@ -34,12 +34,14 @@
       "title": "Nico Behm — Full-stack engineer",
       "description": "Full-stack engineer with 15+ years across healthcare, international product and large-scale AI API platforms."
     },
+    "roleBadge": "Product & Platform Engineering",
+    "beyondCodeBadge": "Life",
     "showcaseCta": "View component showcase →",
     "projectsCta": "View Projects",
     "technologiesLabel": "Technologies I work with",
     "stats": {
       "exp": "Years Experience",
-      "architecture": "High-Scale API & Platform",
+      "architecture": "API Platform (350+ Endpoints)",
       "cleanCode": "TDD, SOLID & Clean Code",
       "ai": "AI Agents & Automation"
     },
@@ -77,6 +79,7 @@
     "skillsTitle": "Skills",
     "present": "Present",
     "contactTitle": "Contact",
+    "contactForm": "Contact form",
     "categories": {
       "backend": "Backend",
       "frontend": "Frontend",
