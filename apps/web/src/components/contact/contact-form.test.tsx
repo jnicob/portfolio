@@ -1,7 +1,9 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
-import { ContactForm, type ContactFormLabels } from './contact-form';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { POST as postContactRoute } from '@/app/api/contact/route';
+import { clearRateLimitStore } from '@/lib/contact-security';
+import { ContactForm, resolveContactEndpoint, type ContactFormLabels } from './contact-form';
 
 vi.mock('@/i18n/navigation', () => ({
   Link: (props: Record<string, unknown>) => <a {...props} />,
@@ -157,5 +159,109 @@ describe('ContactForm', () => {
       screen.getByText('Phone must contain at least 6 digits and only valid characters'),
     ).toBeInTheDocument();
     expect(screen.getByText('Message must be at least 10 characters')).toBeInTheDocument();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('resolves endpoint to /api/contact/ on localhost or development and /api/contact.php in production', () => {
+    expect(resolveContactEndpoint(undefined, 'localhost', 'production')).toBe('/api/contact/');
+    expect(resolveContactEndpoint(undefined, '127.0.0.1', 'production')).toBe('/api/contact/');
+    expect(resolveContactEndpoint(undefined, 'jnicob.dev', 'development')).toBe('/api/contact/');
+    expect(resolveContactEndpoint(undefined, 'jnicob.dev', 'production')).toBe('/api/contact.php');
+    expect(resolveContactEndpoint('/custom/endpoint', 'jnicob.dev', 'production')).toBe(
+      '/custom/endpoint',
+    );
+  });
+
+  it('submits via real fetch to /api/contact/ on localhost without hitting 405 on static contact.php', async () => {
+    const user = userEvent.setup();
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    render(<ContactForm labels={MOCK_LABELS} />);
+
+    await user.type(screen.getByLabelText(/Asunto/i), 'prueba desde web +');
+    await user.type(screen.getByLabelText(/Correo electrónico/i), 'j.nicob@gmail.com');
+    await user.type(screen.getByLabelText(/Teléfono/i), '672814490');
+    await user.type(screen.getByLabelText(/Mensaje/i), 'prueba de que sigue funcionando');
+
+    await user.click(screen.getByRole('button', { name: /Enviar mensaje/i }));
+
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const [calledUrl, calledInit] = fetchSpy.mock.calls[0]!;
+    expect(calledUrl).toBe('/api/contact/');
+    expect(calledInit?.method).toBe('POST');
+    const parsedBody = JSON.parse(String(calledInit?.body));
+    expect(parsedBody).toMatchObject({
+      subject: 'prueba desde web +',
+      email: 'j.nicob@gmail.com',
+      phone: '672814490',
+      message: 'prueba de que sigue funcionando',
+      honeypot: '',
+    });
+    expect(typeof parsedBody.ts).toBe('number');
+    expect(await screen.findByText('¡Mensaje enviado!')).toBeInTheDocument();
+  });
+
+  it('automatically retries the alternate endpoint if the primary endpoint returns 405 Method Not Allowed', async () => {
+    const user = userEvent.setup();
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(null, { status: 405, statusText: 'Method Not Allowed' }))
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ ok: true, success: true }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      );
+
+    render(<ContactForm labels={MOCK_LABELS} />);
+
+    await user.type(screen.getByLabelText(/Asunto/i), 'prueba fallback 405');
+    await user.type(screen.getByLabelText(/Correo electrónico/i), 'j.nicob@gmail.com');
+    await user.type(screen.getByLabelText(/Mensaje/i), 'prueba de que el fallback 405 funciona');
+
+    await user.click(screen.getByRole('button', { name: /Enviar mensaje/i }));
+
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
+    });
+
+    expect(fetchSpy.mock.calls[0]?.[0]).toBe('/api/contact/');
+    expect(fetchSpy.mock.calls[1]?.[0]).toBe('/api/contact.php');
+    expect(await screen.findByText('¡Mensaje enviado!')).toBeInTheDocument();
+  });
+
+  it('integrates end-to-end with the real POST /api/contact/ Route Handler without schema or method mismatches', async () => {
+    clearRateLimitStore();
+    const user = userEvent.setup();
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async (input, init) => {
+      const url = typeof input === 'string' ? `http://localhost:3000${input}` : input.toString();
+      const req = new Request(url, init);
+      return postContactRoute(req);
+    });
+
+    render(<ContactForm labels={MOCK_LABELS} />);
+
+    await user.type(screen.getByLabelText(/Asunto/i), 'prueba desde web +');
+    await user.type(screen.getByLabelText(/Correo electrónico/i), 'j.nicob@gmail.com');
+    await user.type(screen.getByLabelText(/Teléfono/i), '672814490');
+    await user.type(screen.getByLabelText(/Mensaje/i), 'prueba de que sigue funcionando');
+
+    await user.click(screen.getByRole('button', { name: /Enviar mensaje/i }));
+
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+    });
+    expect(await screen.findByText('¡Mensaje enviado!')).toBeInTheDocument();
   });
 });

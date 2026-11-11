@@ -62,6 +62,29 @@ const INITIAL_FORM: ContactInput = {
   honeypot: '',
 };
 
+/**
+ * Resolves the primary contact submission endpoint:
+ * - Explicit `NEXT_PUBLIC_CONTACT_ENDPOINT` override takes precedence.
+ * - Local development / `localhost` / `127.0.0.1` uses the Next.js Node Route Handler (`/api/contact/`),
+ *   avoiding `405 Method Not Allowed` when Next.js serves `public/api/contact.php` as a static file.
+ * - Production static hosting uses `/api/contact.php`.
+ */
+export function resolveContactEndpoint(
+  envEndpoint: string | undefined = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT,
+  hostname: string | undefined = typeof window !== 'undefined'
+    ? window.location.hostname
+    : undefined,
+  nodeEnv: string | undefined = process.env.NODE_ENV,
+): string {
+  if (envEndpoint && envEndpoint.trim().length > 0) {
+    return envEndpoint.trim();
+  }
+  if (nodeEnv === 'development' || hostname === 'localhost' || hostname === '127.0.0.1') {
+    return '/api/contact/';
+  }
+  return '/api/contact.php';
+}
+
 export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
   const [formData, setFormData] = useState<ContactInput>(INITIAL_FORM);
   const [errors, setErrors] = useState<Partial<Record<keyof ContactInput, string>>>({});
@@ -148,21 +171,29 @@ export function ContactForm({ labels, onSubmitHandler }: ContactFormProps) {
         return;
       }
 
-      // Configurable endpoint: PHP in production, Node Route Handler in local dev
-      const endpoint = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT || '/api/contact.php';
-
-      const response = await fetch(endpoint, {
+      const endpoint = resolveContactEndpoint();
+      const requestInit: RequestInit = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...parseResult.data,
           ts: formStartTs,
         }),
-      });
+      };
+
+      let response = await fetch(endpoint, requestInit);
+
+      // Resilient fallback: if primary endpoint returns 405 Method Not Allowed or 404 Not Found
+      // (e.g., static server rejecting POST to .php or static export missing Node route),
+      // automatically retry against the alternate runtime endpoint.
+      if (response.status === 405 || response.status === 404) {
+        const fallbackEndpoint = endpoint.endsWith('.php') ? '/api/contact/' : '/api/contact.php';
+        response = await fetch(fallbackEndpoint, requestInit);
+      }
 
       const data = await response.json().catch(() => null);
 
-      if (response.ok && data?.ok !== false) {
+      if (response.ok && data?.ok !== false && data?.success !== false) {
         setStatus('success');
         setFormData(INITIAL_FORM);
         setErrors({});
