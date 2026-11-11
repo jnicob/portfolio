@@ -1,0 +1,103 @@
+---
+title: Lauquen Transporte — sistema de control y gestión de gastos operativos
+summary: 'Modernización integral de un sistema legacy en Microsoft Access 97 (Jet 3.5) hacia una arquitectura web empresarial (Next.js 16, React 19, TypeScript, Drizzle ORM y MySQL 8.0) para la gestión y auditoría de gastos de flota de transporte (combustible, peajes, repuestos, mano de obra y servicios de terceros). Incluye migración ETL de más de 11.300 registros históricos, modelado polimórfico, RBAC, auditoría inmutable, migraciones idempotentes, backups .sql.gz y reportes Excel.'
+role: Arquitecto de software & desarrollador full-stack
+stack: [nextjs, react, typescript, drizzle-orm, mysql, zod, tailwind, vitest, exceljs]
+links:
+  repo: https://github.com/jnicob/lauquen-transporte
+metrics:
+  - label: Registros históricos migrados
+    value: '11.300+'
+  - label: Tests automatizados (TDD)
+    value: '279'
+  - label: Catálogos maestros auditados
+    value: '6'
+date: '2026-10'
+---
+
+## Contexto y desafío de negocio
+
+**Lauquen Transporte** operaba el control y seguimiento de los gastos operativos de su flota de camiones y unidades utilitarias sobre una base de datos de escritorio **Microsoft Access 97 (Jet 3.5 `.MDB`)** acumulada durante años. Aunque el sistema original capturaba las reglas de negocio reales de la operatoria diaria, presentaba limitaciones críticas para la continuidad del negocio:
+
+- **Acoplamiento a un único puesto local**: imposibilidad de acceso concurrente seguro desde múltiples terminales o ubicaciones.
+- **Fragilidad de integridad referencial**: ausencia de bloqueos transaccionales modernos, control de sesiones por rol y trazabilidad de quién creó o modificó cada registro.
+- **Riesgo de pérdida de datos históricos**: más de **11.300 movimientos operativos históricos** almacenados en archivos binarios Jet 3.5 con desvíos horarios (GMT-3) y esquemas desnormalizados.
+
+El objetivo del proyecto fue diseñar y construir desde cero una plataforma web transaccional moderna que preservara el 100% de la historia operativa y elevara el estándar de seguridad, auditoría y generación de reportes ejecutivos.
+
+- **Repositorio público y documentación de arquitectura**: [github.com/jnicob/lauquen-transporte](https://github.com/jnicob/lauquen-transporte)
+
+## Arquitectura de la solución
+
+La plataforma se construyó siguiendo principios de **Clean Architecture**, **Domain-Driven Design (DDD)** y **Test-Driven Development (TDD)** sobre un stack full-stack tipado de extremo a extremo:
+
+```
++-------------------------------------------------------------------+
+|                   Capa de Presentación (UI)                       |
+|   Next.js 16 (App Router) + React 19 + Tailwind CSS v4            |
+|   - Dashboard de KPIs, grillas operativas, filtros sincronizados  |
+|   - Formularios reactivos con cálculo de costos en tiempo real    |
++-------------------------------------------------------------------+
+                                 |
+                                 v
++-------------------------------------------------------------------+
+|              Capa de Aplicación & Casos de Uso                    |
+|   Server Actions + Route Handlers + Esquemas Zod                  |
+|   - Validación dual (cliente/servidor) + RBAC (admin / operador)  |
+|   - Generación de reportes multi-pestaña en streaming (ExcelJS)   |
++-------------------------------------------------------------------+
+                                 |
+                                 v
++-------------------------------------------------------------------+
+|              Capa de Dominio & Persistencia                       |
+|   Drizzle ORM + MySQL 8.0 + Motor de Migraciones Idempotentes     |
+|   - Movimientos polimórficos + 6 catálogos maestros               |
+|   - Soft-delete con integridad referencial + Auditoría inmutable  |
++-------------------------------------------------------------------+
+```
+
+### 1. Pipeline ETL desde Microsoft Access 97 (Jet 3.5) a MySQL 8.0
+
+Se desarrolló un pipeline de extracción, transformación y carga (`mdb-reader` → normalización → lotes transaccionales en MySQL 8.0) capaz de procesar directamente los archivos `.MDB` originales:
+
+- **Saneamiento de husos horarios y tipos**: corrección determinista de desvíos horarios históricos (GMT-3 de Jet 3.5) a fechas UTC/ISO consistentes y conversión de importes en punto flotante a tipos `DECIMAL(12,2)` exactos.
+- **Preservación de claves y relaciones**: migración íntegra de más de **11.300 movimientos operativos** manteniendo la correlación con choferes, móviles, empresas, destinos y proveedores históricos.
+
+### 2. Modelado de dominio polimórfico para gastos de flota
+
+El corazón del dominio es la entidad `movimientos`, que modela de forma polimórfica y fuertemente tipada las tres grandes categorías de gasto operativo del transporte:
+
+1. **Combustible (`COMBUSTIBLE`)**: control de litros cargados, precio unitario, proveedor de combustible, kilometraje del odómetro, chofer, unidad móvil, empresa y destino.
+2. **Peajes (`PEAJE`)**: imputación ágil por unidad móvil, recorrido/destino, chofer y comprobante.
+3. **Repuestos, Mano de Obra y Servicios de Terceros (`REPUESTOS_MO_TERCEROS`)**: desglose detallado de costos de repuestos, horas/costos de taller y reparaciones externas asociadas a proveedores de repuestos y unidades de la flota.
+
+Tanto los esquemas de validación en **Zod** como los formularios en React aplican **validación condicional por categoría**, asegurando que cada tipo de movimiento exija exactamente los atributos requeridos por el negocio y calcule totales en tiempo real.
+
+### 3. Catálogos maestros, borrado lógico e integridad referencial
+
+El sistema administra **6 catálogos maestros** (`choferes`, `nombre_moviles`, `t_empresas`, `t_destinos`, `proveedores_comb`, `t_prov_repuestos`) bajo dos reglas estrictas de integridad:
+
+- **Borrado lógico (`activo = 0`)**: las entidades dadas de baja dejan de aparecer en los selectores de nuevos movimientos pero permanecen intactas para consultas y reportes históricos.
+- **Verificación de integridad referencial antes de eliminación física**: el motor comprueba activamente si un registro maestro posee movimientos históricos vinculados antes de permitir cualquier purga física.
+
+### 4. Seguridad, RBAC y pista de auditoría inmutable
+
+- **Autenticación y control de acceso basado en roles (RBAC)**: sesiones firmadas mediante **HMAC-SHA256** (`AUTH_SECRET`) y contraseñas hasheadas con `scrypt`, separando permisos entre el rol `operador` (carga y consulta operativa) y `admin` (gestión de usuarios, catálogos críticos y backups).
+- **Trazabilidad en movimientos**: cada movimiento registra automáticamente `creado_por_id` y `actualizado_por_id`.
+- **Auditoría inmutable (`auditoria_maestros`)**: cada alta, modificación o baja sobre los catálogos maestros persiste un evento inmutable con fecha, usuario actor, entidad afectada y payload JSON del cambio.
+
+### 5. Operaciones de producción: migraciones idempotentes y backups `.sql.gz`
+
+Para facilitar despliegues desatendidos y operación segura en producción:
+
+- **Motor de migraciones idempotente (estilo Laravel)**: registrado en `instrumentation.ts` al iniciar el servidor Node.js, ejecuta migraciones SQL pendientes contra la tabla de control `system_migrations` dentro de transacciones seguras.
+- **Backups automatizados y bajo demanda**: endpoint y utilidad de exportación comprimida en streaming (`.sql.gz`), protegidos mediante comparación criptográfica en tiempo constante (`crypto.timingSafeEqual`) para ejecución desde cronjobs o panel de administración.
+
+### 6. Dashboard analítico y exportación ejecutiva en Excel
+
+- **Dashboard de KPIs operativos**: visualización de gasto total por período, distribución porcentual por categoría (Combustible vs. Repuestos/Taller vs. Peajes), ranking de gasto por unidad móvil (`Top Móviles`) y evolución mensual.
+- **Reportes multi-pestaña (`ExcelJS`)**: generación de libros `.xlsx` con formato contable, encabezados fijados, totales sumarizados y pestañas desglosadas respetando exactamente los filtros activos en pantalla.
+
+## Calidad de software y documentación viva
+
+El proyecto se desarrolló íntegramente bajo **TDD**, alcanzando **279 tests automatizados distribuidos en 38 suites** con Vitest (cubriendo reglas de dominio, validaciones Zod, Server Actions, migraciones, permisos RBAC y componentes de interfaz). Además, incluye un script de verificación arquitectónica (`scripts/verify-architecture.ts`) que audita en CI que cada módulo, tabla y ruta implementada esté documentada en la especificación técnica del repositorio.

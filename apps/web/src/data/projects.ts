@@ -221,6 +221,44 @@ const entries = [
   },
   // ——— Independent / Freelance Projects ———
   {
+    slug: 'lauquen-transporte',
+    title: {
+      es: 'Lauquen Transporte — sistema de control y gestión de gastos operativos',
+      en: 'Lauquen Transporte — operational expense control & management system',
+    },
+    summary: {
+      es: 'Modernización integral de un sistema legacy en Microsoft Access 97 (Jet 3.5) hacia una arquitectura web empresarial (Next.js 16, React 19, TypeScript, Drizzle ORM y MySQL 8.0) para la gestión y auditoría de gastos de flota de transporte (combustible, peajes, repuestos, mano de obra y servicios de terceros). Incluye migración ETL de más de 11.300 registros históricos, modelado polimórfico, RBAC, auditoría inmutable, migraciones idempotentes, backups .sql.gz y reportes Excel.',
+      en: 'End-to-end modernization of a legacy Microsoft Access 97 (Jet 3.5) desktop application into an enterprise web platform (Next.js 16, React 19, TypeScript, Drizzle ORM, and MySQL 8.0) for fleet operational expense management and auditing (fuel, tolls, spare parts, labor, and third-party services). Features an ETL migration of 11,300+ historical records, polymorphic domain modeling, RBAC, immutable audit trails, idempotent migrations, .sql.gz backups, and Excel reporting.',
+    },
+    role: {
+      es: 'Arquitecto de software & desarrollador full-stack',
+      en: 'Software architect & full-stack developer',
+    },
+    stack: [
+      'nextjs',
+      'react',
+      'typescript',
+      'drizzle-orm',
+      'mysql',
+      'zod',
+      'tailwind',
+      'vitest',
+      'exceljs',
+    ],
+    links: { repo: 'https://github.com/jnicob/lauquen-transporte' },
+    metrics: [
+      {
+        label: { es: 'Registros históricos migrados', en: 'Migrated historical records' },
+        value: '11.300+',
+      },
+      { label: { es: 'Tests automatizados (TDD)', en: 'Automated TDD tests' }, value: '279' },
+      { label: { es: 'Catálogos maestros auditados', en: 'Audited master catalogs' }, value: '6' },
+    ],
+    featured: true,
+    caseStudy: true,
+    date: '2026-10',
+  },
+  {
     slug: 'hotel-monte-cervino',
     title: {
       es: 'Hotel Monte Cervino — web institucional y reservas',

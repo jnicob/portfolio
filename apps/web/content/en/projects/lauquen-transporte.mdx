@@ -1,0 +1,103 @@
+---
+title: Lauquen Transporte — operational expense control & management system
+summary: 'End-to-end modernization of a legacy Microsoft Access 97 (Jet 3.5) desktop application into an enterprise web platform (Next.js 16, React 19, TypeScript, Drizzle ORM, and MySQL 8.0) for fleet operational expense management and auditing (fuel, tolls, spare parts, labor, and third-party services). Features an ETL migration of 11,300+ historical records, polymorphic domain modeling, RBAC, immutable audit trails, idempotent migrations, .sql.gz backups, and Excel reporting.'
+role: Software architect & full-stack developer
+stack: [nextjs, react, typescript, drizzle-orm, mysql, zod, tailwind, vitest, exceljs]
+links:
+  repo: https://github.com/jnicob/lauquen-transporte
+metrics:
+  - label: Migrated historical records
+    value: '11.300+'
+  - label: Automated TDD tests
+    value: '279'
+  - label: Audited master catalogs
+    value: '6'
+date: '2026-10'
+---
+
+## Business Context & Challenge
+
+**Lauquen Transporte** managed the operational expenses of its truck and utility vehicle fleet using a legacy desktop **Microsoft Access 97 (Jet 3.5 `.MDB`)** database accumulated over years of daily operations. While the legacy system captured core business rules, it posed critical operational risks:
+
+- **Single-workstation lock-in**: inability to support safe concurrent access across multiple terminals or remote offices.
+- **Fragile referential integrity**: lack of modern transactional guarantees, role-based session governance, and user-level auditability over created or modified records.
+- **Historical data risk**: over **11,300 historical operational movements** stored in binary Jet 3.5 files with timezone drift (GMT-3) and denormalized schemas.
+
+The goal of the project was to architect and build a modern transactional web platform from the ground up that preserved 100% of historical operational records while introducing enterprise-grade security, auditability, and executive reporting.
+
+- **Public repository & architecture documentation**: [github.com/jnicob/lauquen-transporte](https://github.com/jnicob/lauquen-transporte)
+
+## Solution Architecture
+
+The platform was engineered following **Clean Architecture**, **Domain-Driven Design (DDD)**, and **Test-Driven Development (TDD)** principles on top of a strictly typed full-stack ecosystem:
+
+```
++-------------------------------------------------------------------+
+|                   Presentation Layer (UI)                         |
+|   Next.js 16 (App Router) + React 19 + Tailwind CSS v4            |
+|   - KPI dashboard, operational data grids, URL-synced filters     |
+|   - Reactive forms with real-time cost calculation                |
++-------------------------------------------------------------------+
+                                 |
+                                 v
++-------------------------------------------------------------------+
+|              Application & Use-Case Layer                         |
+|   Server Actions + Route Handlers + Zod Schemas                   |
+|   - Dual validation (client/server) + RBAC (admin / operator)     |
+|   - Streaming multi-sheet Excel report generation (ExcelJS)       |
++-------------------------------------------------------------------+
+                                 |
+                                 v
++-------------------------------------------------------------------+
+|              Domain & Persistence Layer                           |
+|   Drizzle ORM + MySQL 8.0 + Idempotent Migration Engine           |
+|   - Polymorphic movements + 6 master catalogs                     |
+|   - Referential soft-delete + Immutable audit trail               |
++-------------------------------------------------------------------+
+```
+
+### 1. ETL Pipeline from Microsoft Access 97 (Jet 3.5) to MySQL 8.0
+
+A custom extraction, transformation, and loading pipeline (`mdb-reader` → normalization → batched MySQL 8.0 transactions) was built to process the original `.MDB` binary files directly:
+
+- **Timezone and type sanitization**: deterministic normalization of legacy GMT-3 date shifts into consistent UTC/ISO dates and conversion of floating-point currency amounts into exact `DECIMAL(12,2)` columns.
+- **Relational preservation**: lossless migration of **11,300+ operational movements** preserving links to historical drivers, fleet vehicles, companies, destinations, and suppliers.
+
+### 2. Polymorphic Domain Modeling for Fleet Expenses
+
+At the core of the domain is the `movimientos` entity, which models the three primary fleet expense categories polymorphically:
+
+1. **Fuel (`COMBUSTIBLE`)**: tracks liters dispensed, unit price, fuel supplier, odometer mileage, driver, fleet unit, company, and destination.
+2. **Tolls (`PEAJE`)**: streamlined allocation by fleet unit, route/destination, driver, and voucher.
+3. **Spare Parts, Labor & Third-Party Services (`REPUESTOS_MO_TERCEROS`)**: granular breakdown of spare part costs, workshop labor, and external third-party repairs linked to parts suppliers and fleet vehicles.
+
+Both **Zod** schemas and React forms enforce **category-conditional validation**, guaranteeing that each movement type requires the exact attributes mandated by business rules while computing totals in real time.
+
+### 3. Master Catalogs, Soft-Delete & Referential Integrity
+
+The system governs **6 master catalogs** (`choferes`, `nombre_moviles`, `t_empresas`, `t_destinos`, `proveedores_comb`, `t_prov_repuestos`) under two strict integrity invariants:
+
+- **Soft-delete (`activo = 0`)**: deactivated entities are hidden from new movement selectors while remaining intact for historical queries and financial audits.
+- **Pre-delete referential integrity check**: the persistence layer actively verifies whether a master record is referenced by any historical movement before allowing physical deletion.
+
+### 4. Security, RBAC & Immutable Audit Trail
+
+- **Authentication & Role-Based Access Control (RBAC)**: sessions signed with **HMAC-SHA256** (`AUTH_SECRET`) and `scrypt` password hashing, separating permissions between `operador` (daily operational entry and queries) and `admin` (user governance, master catalog administration, and database backups).
+- **Movement traceability**: every operational record automatically tracks `creado_por_id` (created by) and `actualizado_por_id` (updated by).
+- **Immutable audit log (`auditoria_maestros`)**: every creation, update, or deactivation across master catalogs writes an immutable audit event capturing timestamp, acting user, target entity, and a JSON change payload.
+
+### 5. Production Operations: Idempotent Migrations & `.sql.gz` Backups
+
+To support zero-friction deployments and reliable production operations:
+
+- **Laravel-style idempotent migration engine**: hooked into Next.js `instrumentation.ts` on server startup, automatically executing pending SQL migrations tracked in `system_migrations` inside safe transactions.
+- **Automated and on-demand backups**: streaming compressed database dump endpoint (`.sql.gz`) protected via constant-time token comparison (`crypto.timingSafeEqual`) for scheduled cron execution or one-click admin downloads.
+
+### 6. Analytical Dashboard & Multi-Sheet Excel Reporting
+
+- **Operational KPI Dashboard**: real-time breakdown of total expenditure by period, percentage split across categories (Fuel vs. Parts/Workshop vs. Tolls), top-spending fleet vehicles (`Top Móviles`), and monthly trends.
+- **Multi-sheet Excel exports (`ExcelJS`)**: generates `.xlsx` workbooks with accounting formatting, frozen headers, summary totals, and dedicated breakdown sheets matching the active UI filters.
+
+## Software Quality & Living Documentation
+
+Built strictly with **TDD**, the repository maintains **279 automated tests across 38 suites** powered by Vitest (covering domain invariants, Zod schemas, Server Actions, migrations, RBAC policies, and UI components). It also includes a custom architectural verification script (`scripts/verify-architecture.ts`) that runs in CI to guarantee that every database table, route, and module stays synchronized with the repository's technical documentation.

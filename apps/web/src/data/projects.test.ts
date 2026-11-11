@@ -15,4 +15,12 @@ describe('projects data', () => {
     expect(backoffice?.summary.es.length).toBeLessThanOrEqual(200);
     expect(backoffice?.summary.en.length).toBeLessThanOrEqual(200);
   });
+
+  it('includes lauquen-transporte as a featured case study with GitHub repository link', () => {
+    const lauquen = projects.find((project) => project.slug === 'lauquen-transporte');
+    expect(lauquen).toBeDefined();
+    expect(lauquen?.featured).toBe(true);
+    expect(lauquen?.caseStudy).toBe(true);
+    expect(lauquen?.links.repo).toBe('https://github.com/jnicob/lauquen-transporte');
+  });
 });

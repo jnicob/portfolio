@@ -21,9 +21,14 @@ function renderFeaturedProjects() {
 }
 
 describe('FeaturedProjects', () => {
-  it('destaca freepik-api-platform, ai-service-integration y freepik-api-playground', () => {
+  it('destaca freepik-api-platform, ai-service-integration, freepik-api-playground y lauquen-transporte', () => {
     expect(featured.map((p) => p.slug).sort()).toEqual(
-      ['freepik-api-platform', 'ai-service-integration', 'freepik-api-playground'].sort(),
+      [
+        'freepik-api-platform',
+        'ai-service-integration',
+        'freepik-api-playground',
+        'lauquen-transporte',
+      ].sort(),
     );
   });
 
@@ -58,8 +63,8 @@ describe('FeaturedProjects', () => {
     }
   });
 
-  it('hay 16 proyectos en total', () => {
-    expect(projects).toHaveLength(16);
+  it('hay 17 proyectos en total', () => {
+    expect(projects).toHaveLength(17);
   });
 
   it('envuelve cada celda del grid (proyectos destacados + MoreProjectsCard) con TiltCard', () => {
@@ -78,22 +83,19 @@ describe('FeaturedProjects', () => {
     }
   });
 
-  it('with an odd number of featured items (768px, sm:grid-cols-2), the last featured card is not orphaned: spans 2 columns on sm and reverts to 1 on lg (design review F3.6 T21, "card huérfana 768")', () => {
-    // 3 destacados en un grid sm:grid-cols-2 lg:grid-cols-3: en el rango sm (640-1024,
-    // includes 768) the 3rd card was left alone in its row with an empty gap next to it.
-    expect(featured.length % 2).toBe(1);
+  it('with 4 featured items in a sm:grid-cols-2 lg:grid-cols-3 grid, the last featured card spans 3 columns on lg so it is not orphaned', () => {
+    expect(featured.length % 3).toBe(1);
     renderFeaturedProjects();
     const lastFeatured = featured[featured.length - 1]!;
     const lastLink = screen.getByRole('link', { name: lastFeatured.title.en });
     const tiltWrapper = lastLink.closest('[data-tilt]') as HTMLElement;
-    expect(tiltWrapper.className).toContain('sm:col-span-2');
-    expect(tiltWrapper.className).toContain('lg:col-span-1');
+    expect(tiltWrapper.className).toContain('lg:col-span-3');
     // Other featured cards DO NOT carry this extra span.
     const otherFeatured = featured.slice(0, -1);
     for (const project of otherFeatured) {
       const link = screen.getByRole('link', { name: project.title.en });
       const wrapper = link.closest('[data-tilt]') as HTMLElement;
-      expect(wrapper.className).not.toContain('sm:col-span-2');
+      expect(wrapper.className).not.toContain('lg:col-span-3');
     }
   });
 
