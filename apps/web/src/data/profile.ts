@@ -36,8 +36,8 @@ export const profile = profileSchema.parse({
       {
         label: { es: 'AI & API Platform', en: 'AI & API Platform' },
         value: {
-          es: 'API Gateways (APISIX), OpenAPI, Orquestación de Agentes de IA (Claude, Codex, Gemini), Spec-Driven Development (SDD), automatización con skills.',
-          en: 'API Gateways (APISIX), OpenAPI, AI Agent Orchestration (Claude, Codex, Gemini), Spec-Driven Development (SDD), custom skill automation.',
+          es: 'API Gateways (APISIX), OpenAPI, Orquestación de Agentes de IA (Claude Code, Codex, Gemini), Spec-Driven Development (SDD), automatización con skills y commands.',
+          en: 'API Gateways (APISIX), OpenAPI, AI Agent Orchestration (Claude Code, Codex, Gemini), Spec-Driven Development (SDD), custom skills and commands automation.',
         },
       },
       {
@@ -57,8 +57,8 @@ export const profile = profileSchema.parse({
       {
         label: { es: 'Arquitectura & Prácticas', en: 'Architecture & Practices' },
         value: {
-          es: 'TDD, SOLID, Clean Code, patrones de diseño (MVC, DDD), metodologías ágiles.',
-          en: 'TDD, SOLID, Clean Code, design patterns (MVC, DDD), agile methodologies.',
+          es: 'TDD, SOLID, Clean Code, patrones de diseño (MVC, DDD), sistemas de diseño, accesibilidad (WCAG), metodologías ágiles.',
+          en: 'TDD, SOLID, Clean Code, design patterns (MVC, DDD), design systems, accessibility (WCAG), agile methodologies.',
         },
       },
     ],

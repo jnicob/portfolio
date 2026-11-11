@@ -48,10 +48,10 @@ const entries = [
     tags: ['openapi', 'ai-agents', 'llm', 'api-design'],
   },
   {
-    name: 'Claude / Codex / Gemini',
+    name: 'Claude Code / Codex / Gemini',
     level: 3,
     category: 'ai',
-    tags: ['claude', 'codex', 'gemini', 'llm'],
+    tags: ['claude', 'claude-code', 'codex', 'gemini', 'llm'],
   },
   {
     name: 'Gateway APISIX',
@@ -72,10 +72,10 @@ const entries = [
     tags: ['hl7', 'mirth-connect', 'snomed-ct'],
   },
   {
-    name: 'CI/CD (GitHub Actions / Tekton / Jenkins)',
+    name: 'Docker & CI/CD (GitHub Actions / Tekton / Jenkins)',
     level: 2,
     category: 'platform',
-    tags: ['cicd', 'github-actions', 'jenkins', 'tekton', 'spinnaker'],
+    tags: ['docker', 'cicd', 'github-actions', 'jenkins', 'tekton', 'spinnaker'],
   },
   {
     name: 'Observability & Product Analytics',

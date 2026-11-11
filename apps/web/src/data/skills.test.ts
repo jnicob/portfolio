@@ -44,4 +44,28 @@ describe('skills and experience frontend prioritization', () => {
     expect(profile.summary.coreTechBullets[0]?.value.es).toMatch(/Zustand/);
     expect(profile.summary.coreTechBullets[0]?.value.es).toMatch(/Jotai/);
   });
+
+  it('highlights Claude Code, skills/commands, accessible design systems, async workflows, and Docker & CI/CD across profile, experience, and skills', () => {
+    const names = skills.map((s) => s.name);
+    expect(names).toContain('Claude Code / Codex / Gemini');
+    expect(names).toContain('Docker & CI/CD (GitHub Actions / Tekton / Jenkins)');
+
+    expect(profile.summary.coreTechBullets[1]?.value.es).toMatch(/Claude Code/);
+    expect(profile.summary.coreTechBullets[1]?.value.es).toMatch(/skills y commands/);
+    expect(profile.summary.coreTechBullets[1]?.value.en).toMatch(/Claude Code/);
+    expect(profile.summary.coreTechBullets[1]?.value.en).toMatch(/skills and commands/);
+
+    expect(profile.summary.coreTechBullets[4]?.value.es).toMatch(/sistemas de diseño/);
+    expect(profile.summary.coreTechBullets[4]?.value.es).toMatch(/accesibilidad \(WCAG\)/);
+    expect(profile.summary.coreTechBullets[4]?.value.en).toMatch(/design systems/);
+    expect(profile.summary.coreTechBullets[4]?.value.en).toMatch(/accessibility \(WCAG\)/);
+
+    const freepik = experience.find((e) => e.id === 'freepik')!;
+    expect(freepik.highlights[0]?.es).toMatch(/sistemas de diseño accesibles/);
+    expect(freepik.highlights[0]?.en).toMatch(/accessible design systems/);
+    expect(freepik.highlights[1]?.es).toMatch(/procesos asíncronos/);
+    expect(freepik.highlights[1]?.en).toMatch(/asynchronous workflows/);
+    expect(freepik.highlights[2]?.es).toMatch(/Claude Code, skills y commands/);
+    expect(freepik.highlights[2]?.en).toMatch(/Claude Code, skills & commands/);
+  });
 });
