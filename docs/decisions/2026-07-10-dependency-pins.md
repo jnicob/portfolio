@@ -1,6 +1,6 @@
 # Decision: dependency pins for Node 20.17 compatibility
 
-**Date:** 2026-07-10 · **Status:** active · **Remove when:** local/CI Node ≥ 22 everywhere
+**Date:** 2026-07-10 · **Status:** superseded (2026-11-16: upgraded to Node ≥ 22 everywhere; `pnpm.overrides` removed) · **Remove when:** local/CI Node ≥ 22 everywhere
 
 Local development runs Node 20.17.0 (`engines.node >=20`, `engine-strict`). These pins
 work around that:

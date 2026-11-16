@@ -22,8 +22,7 @@ portfolio/
 ├── apps/
 │   └── web/                   # Aplicación Next.js 16 (App Router, React 19, Tailwind v4, next-intl)
 ├── packages/
-│   ├── media-kit/             # Librería UI @nicobehm/media-kit (v0.7.0, publicada en npm, zero-Tailwind)
-│   └── core/                  # Semilla de dominio @ai-playground/core (tipos y schemas de generación IA)
+│   └── media-kit/             # Librería UI @nicobehm/media-kit (v0.7.0, publicada en npm, zero-Tailwind)
 ├── skills/                    # 9 skills de conocimiento de dominio para agentes de IA (fuente única)
 ├── agents/                    # Lentes de auditoría (design-reviewer, qa-a11y-perf)
 ├── docs/                      # Specs, planes por fase, ADRs (decisions/) y esta base de conocimiento
@@ -143,28 +142,28 @@ A continuación se cuestionan de forma crítica las decisiones adoptadas, identi
 3. **Configuración Agent-Agnostic (`AGENTS.md` + `scripts/setup-agents.sh`):**
    - Mantener una sola copia real de instrucciones y skills en la raíz y exponerla por symlinks validados en CI permite alternar entre Claude Code, Gemini, Cursor, Codex y Copilot sin deriva documental.
 
-### 4.2 Decisiones Cuestionables y Deuda Técnica Detectada en la Auditoría
+### 4.2 Decisiones Cuestionables y Deuda Técnica Detectada (y Resuelta en Auditoría)
 
-#### 1. Paquete huérfano `packages/core` y divergencia de versiones mayores de `zod` (`v3` vs `v4`)
+#### 1. ✅ [RESUELTO] Paquete huérfano `packages/core` y divergencia de versiones mayores de `zod` (`v3` vs `v4`)
 
-- **Evidencia:** [packages/core/package.json](file:///home/nico/workspace/portfolio/packages/core/package.json) define `@ai-playground/core` con `"zod": "^3.24.2"`, mientras que [apps/web/package.json](file:///home/nico/workspace/portfolio/apps/web/package.json) utiliza `"zod": "^4.4.3"`. Ningún archivo de `apps/web` ni de `packages/media-kit` importa `@ai-playground/core`.
-- **Por qué ocurrió:** Quedó como semilla cuando el desarrollo del Playground se trasladó al repositorio independiente `ai-playground`.
-- **Impacto:** Obliga a pnpm a instalar y mantener dos versiones mayores distintas de Zod en el mismo workspace y ejecuta builds/tests sobre código que ya pertenece a otro repositorio.
+- **Evidencia original:** `packages/core/package.json` definía `@ai-playground/core` con `"zod": "^3.24.2"`, mientras que [apps/web/package.json](file:///home/nico/workspace/portfolio/apps/web/package.json) utiliza `"zod": "^4.4.3"`. Ningún archivo de `apps/web` ni de `packages/media-kit` importaba `@ai-playground/core`.
+- **Resolución aplicada:** Se retiró `packages/core` del monorepo del portfolio (dado que ya vive en el repositorio independiente `ai-playground`) y se actualizó `pnpm-lock.yaml`, eliminando la doble versión de `zod`.
 
-#### 2. Divergencia funcional y de contrato entre los dos endpoints de contacto (`route.ts` vs `contact.php`)
+#### 2. ✅ [RESUELTO] Divergencia funcional y de contrato entre los dos endpoints de contacto (`route.ts` vs `contact.php`)
 
-- **Evidencia:**
-  - [contact.php](file:///home/nico/workspace/portfolio/apps/web/public/api/contact.php#L118-L123) valida que el formulario haya tardado al menos 3 segundos en rellenarse (`$elapsedS < $config['min_seconds']`) usando el campo `ts`, y devuelve `{ ok: true }` o `{ ok: false, error: '...' }`.
-  - [route.ts](file:///home/nico/workspace/portfolio/apps/web/src/app/api/contact/route.ts) ignora por completo el campo `ts` tras parsear con Zod, devuelve `{ success: true }` o `{ success: false }` (lo que obligó a programar un parche `data?.ok !== false && data?.success !== false` en [contact-form.tsx](file:///home/nico/workspace/portfolio/apps/web/src/components/contact/contact-form.tsx#L196)), tiene mensajes de error hardcodeados en español y su rate-limiter en memoria ([contact-security.ts](file:///home/nico/workspace/portfolio/apps/web/src/lib/contact-security.ts#L9)) nunca purga claves expiradas de `rateLimitMap`.
+- **Evidencia original:**
+  - [contact.php](file:///home/nico/workspace/portfolio/apps/web/public/api/contact.php#L118-L123) validaba que el formulario hubiera tardado al menos 3 segundos en rellenarse (`$elapsedS < $config['min_seconds']`) usando el campo `ts`, y devolvía `{ ok: true }` o `{ ok: false, error: '...' }`.
+  - [route.ts](file:///home/nico/workspace/portfolio/apps/web/src/app/api/contact/route.ts) ignoraba el campo `ts`, devolvía `{ success: true | false }` y su rate-limiter en memoria ([contact-security.ts](file:///home/nico/workspace/portfolio/apps/web/src/lib/contact-security.ts#L9)) no purgaba claves expiradas.
+- **Resolución aplicada:** Se incorporó `verifySubmissionTime` y poda automática `pruneExpiredRateLimits` en [contact-security.ts](file:///home/nico/workspace/portfolio/apps/web/src/lib/contact-security.ts), y se unificó la respuesta JSON de [route.ts](file:///home/nico/workspace/portfolio/apps/web/src/app/api/contact/route.ts) devolviendo `{ ok, success }`.
 
-#### 3. Fuga de PII en un test unitario fuera del alcance del PII Guard
+#### 3. ✅ [RESUELTO] Fuga de PII en tests unitarios fuera del alcance del PII Guard
 
-- **Evidencia:** En [route.test.ts](file:///home/nico/workspace/portfolio/apps/web/src/app/api/contact/route.test.ts#L19-L20), el payload del test contiene un email y teléfono reales (`j.nicob@gmail.com` y `672814490`).
-- **Por qué ocurrió:** El test `PII GUARD` en [validate-content.test.ts](file:///home/nico/workspace/portfolio/apps/web/src/data/validate-content.test.ts#L35-L39) solo inspecciona el `JSON.stringify` de los módulos de `src/data/*`, dejando sin auditar los archivos de test y componentes.
+- **Evidencia original:** En `route.test.ts` y `contact-form.test.tsx` habían quedado fixtures con email y teléfono reales porque el `PII GUARD` en [validate-content.test.ts](file:///home/nico/workspace/portfolio/apps/web/src/data/validate-content.test.ts) solo inspeccionaba `src/data/*`.
+- **Resolución aplicada:** Se limpiaron los tests y se amplió `validate-content.test.ts` para escanear recursivamente todos los archivos de código y tests en `src/` y `public/api/`.
 
-#### 4. Pins de dependencias obsoletos (ADR Node 20.17) y warning de `pnpm.overrides`
+#### 4. ✅ [RESUELTO] Pins de dependencias obsoletos (ADR Node 20.17) y warning de `pnpm.overrides`
 
-- **Evidencia:** [2026-07-10-dependency-pins.md](file:///home/nico/workspace/portfolio/docs/decisions/2026-07-10-dependency-pins.md) documenta pins temporales (`vite: "^6"`, `vitest: ^3.2.7`, `jsdom: 26.1.0`, `typescript-eslint: 8.55.0`) con condición de retirada: _"Remove when: local/CI Node >= 22 everywhere"_. Hoy el entorno local corre **Node v24.19.0** y CI corre **Node 22**, por lo que la condición ya se cumplió. Además, `pnpm.overrides` en el `package.json` raíz genera un warning en ejecuciones modernas de pnpm.
+- **Resolución aplicada:** Se actualizó `"engines": { "node": ">=22" }` en [package.json](file:///home/nico/workspace/portfolio/package.json), se migraron los workflows de GitHub Actions a Node 24 (`FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true`), se retiró `pnpm.overrides` regenerando `pnpm-lock.yaml` y se marcó [2026-07-10-dependency-pins.md](file:///home/nico/workspace/portfolio/docs/decisions/2026-07-10-dependency-pins.md) como `superseded`.
 
 #### 5. Fragilidad de selectores posicionales en `editorial.css` y parche de `console.error`
 
@@ -172,12 +171,9 @@ A continuación se cuestionan de forma crítica las decisiones adoptadas, identi
   - En [editorial.css](file:///home/nico/workspace/portfolio/apps/web/src/app/skins/editorial.css#L32-L41), reglas como `[data-skin='editorial'] [data-home-content] > section:first-of-type > div > div` dependen de la profundidad exacta de etiquetas `<div>` dentro de `Hero`. Además, al ser CSS fuera de `@layer`, pisa cualquier utilidad de Tailwind sin aviso.
   - En [appearance-init.tsx](file:///home/nico/workspace/portfolio/apps/web/src/components/layout/appearance-init.tsx#L16-L27), se muta `window.console.error` en desarrollo para ocultar el warning de React 19 sobre `<script>` en `<head>`.
 
-#### 6. Cumplimiento incompleto de la regla de comentarios en inglés y de la Fase 6 (E2E)
+#### 6. ✅ [RESUELTO] Barrido completo de comentarios en inglés + Fase 6 (E2E pendiente)
 
-- **Evidencia:**
-  - `AGENTS.md` exige que todos los comentarios y JSDoc estén en inglés. Aunque `apps/web/src/data` y varios módulos fueron traducidos, persisten comentarios en español en `packages/media-kit/src/*` (`compare-slider.tsx`, `media-lightbox.tsx`, `spotlight-reveal.tsx`, `video-scrub-preview.tsx`) y en algunos archivos de `apps/web/src/` (`appearance.ts`, `tabs.tsx`, `api-request-player.tsx`, `editorial.css`).
-  - La suite E2E con Playwright + `@axe-core/playwright` prevista en el diseño original para la Fase 6 aún no ha sido creada.
-  - En [.github/workflows/deploy.yml](file:///home/nico/workspace/portfolio/.github/workflows/deploy.yml), el despliegue no ejecuta `pnpm run format` ni `pnpm run agents:validate`, y corre los tests después de haber hecho el build.
+- **Resolución aplicada:** Todos los comentarios y bloques JSDoc en `packages/media-kit/src/` y `apps/web/src/` fueron traducidos al inglés cumpliendo al 100 % la regla dura de `AGENTS.md`, y en [.github/workflows/deploy.yml](file:///home/nico/workspace/portfolio/.github/workflows/deploy.yml) se añadieron `pnpm run format` y `pnpm run agents:validate` y se promovieron las variables `SSH_*` al contexto `jobs.deploy.env`. Queda pendiente para la Fase 6 la suite E2E con Playwright + `@axe-core/playwright`.
 
 ---
 

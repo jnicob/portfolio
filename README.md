@@ -20,7 +20,6 @@ This monorepo uses `pnpm` workspaces:
 ├── apps/
 │   └── web/                   # Next.js 16 App Router (Dual Runtime: Static Export default / Node)
 ├── packages/
-│   ├── core/                  # Core types, registry and schemas for AI Playground (@ai-playground/core)
 │   └── media-kit/             # Custom UI library (@nicobehm/media-kit) for rich media interactions
 ├── skills/                    # Knowledge skills loaded by AI coding assistants
 ├── agents/                    # Subagent review lenses (Design, QA, Accessibility, Performance)
@@ -43,7 +42,7 @@ This monorepo uses `pnpm` workspaces:
 
 ### Prerequisites
 
-- Node.js (v20+ recommended)
+- Node.js (v22+ recommended)
 - `pnpm` (v9+)
 
 ### Installation

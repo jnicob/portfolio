@@ -16,7 +16,9 @@ const EMAIL_GLOBAL = /[a-zA-Z0-9._+-]+@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
 const PHONE = /\+?(?:\d[\s().-]?){9,}/;
 const ALLOWED_TEST_EMAIL_DOMAINS = new Set([
   'example.com',
+  'example.org',
   'ejemplo.com',
+  'test.com',
   'b.com',
   'resend.dev',
   'jnicob.dev',
