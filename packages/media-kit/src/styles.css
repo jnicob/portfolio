@@ -159,8 +159,8 @@
 }
 
 /*
- * Anillo de foco de dos capas (halo claro + acento): visible sobre cualquier
- * medio en cualquier tema; un solo color puede coincidir con la imagen de fondo.
+ * Two-layer focus ring (light halo + accent): visible over any
+ * media in any theme; a single color could blend into the background image.
  */
 .mk-compare__handle:focus-visible {
   outline: none;
@@ -169,7 +169,7 @@
     0 0 0 4px var(--mk-focus-ring);
 }
 
-/* C1: CTA fullscreen por ejemplo, overlay dentro de la figura. */
+/* C1: Fullscreen CTA per example, overlay inside the figure. */
 .mk-compare__expand {
   position: absolute;
   top: 0.5rem;
@@ -232,9 +232,9 @@
   right: 0.5rem;
 }
 
-/* compareMode (v0.5, spec A3): wipe (default) no cambia; onion y side-by-side
-   reemplazan el eje clip-path/divisor por opacidad o por un grid de dos medios
-   completos, respectivamente. */
+/* compareMode (v0.5, spec A3): wipe (default) is unchanged; onion and side-by-side
+   replace the clip-path/divider axis with opacity or a grid of two full
+   media items, respectively. */
 .mk-compare[data-compare-mode='onion'] .mk-compare__after {
   clip-path: none;
   /* --mk-compare-pos is a <percentage> (e.g. '50%'); dividing by 100% (not
@@ -273,8 +273,8 @@
   object-fit: cover;
 }
 
-/* blink: alterna before/after por opacidad (data-blink-side, timer en JS); sin
-   divisor ni handle, igual que side-by-side (defensivo: JSX ya no los renderiza). */
+/* blink: alternates before/after via opacity (data-blink-side, timer in JS); no
+   divider or handle, same as side-by-side (defensive: JSX no longer renders them). */
 .mk-compare[data-compare-mode='blink'] .mk-compare__after {
   clip-path: none;
   opacity: 0;
@@ -287,8 +287,8 @@
   display: none;
 }
 
-/* Switch de pausa de blink: mismo look de control flotante que .mk-compare__expand,
-   en la esquina opuesta para no chocar con el CTA de `expand` (top-right). */
+/* Blink pause switch: same floating control look as .mk-compare__expand,
+   in the opposite corner so it does not collide with the `expand` CTA (top-right). */
 .mk-compare__blink-toggle {
   position: absolute;
   top: 0.5rem;
@@ -381,7 +381,7 @@
   user-select: none;
 }
 
-/* B1: Espacio mantenido = modo pan. Solo affordance de cursor; el pan lo hace JS. */
+/* B1: Space held = pan mode. Cursor affordance only; panning is handled by JS. */
 .mk-lightbox[data-space-pan] .mk-lightbox__viewport {
   cursor: grab;
 }
@@ -426,7 +426,7 @@
   height: auto;
 }
 
-/* Esquina persistente superior derecha: cerrar + toggle de la toolbar. */
+/* Persistent top-right corner: close + toolbar toggle. */
 .mk-lightbox__corner {
   position: absolute;
   top: 1rem;
@@ -531,7 +531,7 @@
   display: none;
 }
 
-/* B2: panel de ayuda de teclado, bajo el cluster de la esquina. */
+/* B2: keyboard help panel, below the corner cluster. */
 .mk-lightbox__help {
   position: absolute;
   top: 4.5rem;
@@ -567,8 +567,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;
-  align-self: start; /* el dt no se estira al alto de la fila del grid */
-  align-items: start; /* y cada kbd conserva su altura natural */
+  align-self: start; /* dt does not stretch to the grid row height */
+  align-items: start; /* and each kbd keeps its natural height */
 }
 
 .mk-lightbox__help dd {
@@ -590,7 +590,7 @@
   }
 }
 
-/* Toolbar del lightbox */
+/* Lightbox toolbar */
 .mk-lightbox__controls-region {
   position: absolute;
   bottom: 1rem;

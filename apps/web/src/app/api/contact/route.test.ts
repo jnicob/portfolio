@@ -16,17 +16,18 @@ describe('POST /api/contact route handler', () => {
       },
       body: JSON.stringify({
         subject: 'prueba desde web +',
-        email: 'j.nicob@gmail.com',
-        phone: '672814490',
+        email: 'contact@example.com',
+        phone: '+34 600 000 000',
         message: 'prueba de que sigue funcionando',
         honeypot: '',
-        ts: 1794397787598,
+        ts: Date.now() - 5000,
       }),
     });
 
     const response = await POST(request);
     expect(response.status).toBe(200);
     const data = await response.json();
+    expect(data.ok).toBe(true);
     expect(data.success).toBe(true);
   });
 
@@ -43,13 +44,14 @@ describe('POST /api/contact route handler', () => {
         phone: '',
         message: 'short',
         honeypot: '',
-        ts: Date.now(),
+        ts: Date.now() - 5000,
       }),
     });
 
     const response = await POST(request);
     expect(response.status).toBe(400);
     const data = await response.json();
+    expect(data.ok).toBe(false);
     expect(data.success).toBe(false);
     expect(data.errors).toBeDefined();
   });
@@ -67,13 +69,44 @@ describe('POST /api/contact route handler', () => {
         phone: '',
         message: 'Automated spam message content',
         honeypot: 'https://spambot.example',
-        ts: Date.now(),
+        ts: Date.now() - 5000,
       }),
     });
 
     const response = await POST(request);
     expect(response.status).toBe(200);
     const data = await response.json();
+    expect(data.ok).toBe(true);
     expect(data.success).toBe(true);
+  });
+
+  it('silently returns 200 OK without sending when submission timestamp is faster than anti-bot threshold', async () => {
+    process.env.CONTACT_MIN_SECONDS = '3';
+    try {
+      const request = new Request('http://localhost:3000/api/contact/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-forwarded-for': '127.0.0.4',
+        },
+        body: JSON.stringify({
+          subject: 'Instant bot submission',
+          email: 'bot@example.com',
+          phone: '',
+          message: 'Submitted in 0ms by automated script',
+          honeypot: '',
+          ts: Date.now(),
+        }),
+      });
+
+      const response = await POST(request);
+      expect(response.status).toBe(200);
+      const data = await response.json();
+      expect(data.ok).toBe(true);
+      expect(data.success).toBe(true);
+      expect(data.emailSentReal).toBeUndefined();
+    } finally {
+      delete process.env.CONTACT_MIN_SECONDS;
+    }
   });
 });

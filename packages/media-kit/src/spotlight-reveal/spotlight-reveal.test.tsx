@@ -181,8 +181,8 @@ describe('SpotlightReveal', () => {
   // 160ms, the circle ended up chasing the cursor instead of following it 1:1
   // (measured: an instantaneous position jump took ~160ms to reflect).
   // Fix: `--mk-spot-active-radius` (0 inactive / active radius) is the ONLY
-  // variable que anima (ver styles.css); `--mk-spot-radius` (usado por el
-  // anillo) se mantiene fijo siempre, sin depender de `active`.
+  // variable that animates (see styles.css); `--mk-spot-radius` (used by the
+  // ring) stays fixed at all times, regardless of `active`.
   describe('--mk-spot-active-radius (mecanismo del fix de lag, F3.6 bloque D)', () => {
     it('es 0px sin foco ni puntero (inactivo)', () => {
       render(<SpotlightReveal base={<div />} reveal={<div />} label="S" />);
@@ -197,7 +197,7 @@ describe('SpotlightReveal', () => {
       mockRect(root, { left: 0, top: 0, width: 200, height: 100 });
       fireEvent.pointerMove(root, { clientX: 100, clientY: 25 });
       expect(root.style.getPropertyValue('--mk-spot-active-radius')).toBe('60px');
-      // El radio "base" (usado por el anillo) no depende de active: mismo valor.
+      // The "base" radius (used by the ring) does not depend on active: same value.
       expect(root.style.getPropertyValue('--mk-spot-radius')).toBe('60px');
     });
 

@@ -1,0 +1,5 @@
+{
+  "css.lint.unknownAtRules": "ignore",
+  "tailwindCSS.experimental.configFile": "apps/web/src/app/globals.css",
+  "typescript.tsdk": "apps/web/node_modules/typescript/lib"
+}

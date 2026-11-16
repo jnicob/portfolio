@@ -14,7 +14,7 @@ export function isMediaSource(value: unknown): value is MediaSource {
   return true;
 }
 
-/** C3: pantalla efectiva (css px × dpr, dpr capado a 2x) ≥ umbral → merece el asset HD. */
+/** C3: effective screen (css px × dpr, dpr capped at 2x) ≥ threshold → warrants the HD asset. */
 export const FULL_SRC_MIN_EFFECTIVE_WIDTH = 2000;
 
 /**
@@ -39,7 +39,7 @@ export function pickFullscreenSrc(source: MediaSource): string {
 // Module-level: preload idempotency across calls (does not repeat the same URL).
 const preloadedUrls = new Set<string>();
 
-/** Precarga los fullSrc que la pantalla justifica (new Image()). Idempotente. */
+/** Preloads fullSrc URLs warranted by the screen (new Image()). Idempotent. */
 export function preloadFullSources(sources: readonly MediaSource[]): void {
   if (typeof window === 'undefined') return;
   const screenWidth = window.screen.width;

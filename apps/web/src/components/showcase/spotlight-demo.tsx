@@ -26,13 +26,13 @@ const PORTRAIT_SIZES = '(min-width: 28rem) 28rem, calc(100vw - 3rem)';
 export type SpotlightDemoStrings = {
   /** Accessible name of the spotlight interactive area. */
   label: string;
-  /** Alt del lado "base" (ReactNode con `filter: grayscale(1)`). */
+  /** Alt text for the "base" side (ReactNode with `filter: grayscale(1)`). */
   baseAlt: string;
-  /** Badge superpuesto en el lado base. */
+  /** Badge overlaid on the base side. */
   baseBadge: string;
-  /** Badge superpuesto en el lado reveal. */
+  /** Badge overlaid on the reveal side. */
   revealBadge: string;
-  /** Texto del figcaption. */
+  /** Figcaption text. */
   caption: string;
 };
 

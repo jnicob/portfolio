@@ -34,9 +34,9 @@ const ROWS: HelpRow[] = [
 ];
 
 /**
- * Panel presentacional del mapa de teclado. La visibilidad, el foco y la
- * precedencia de Escape los gobierna media-lightbox (estado helpOpen).
- * role="group" (no dialog): ya vivimos dentro de un dialog modal.
+ * Presentational panel for the keyboard map. Visibility, focus, and
+ * Escape precedence are governed by media-lightbox (helpOpen state).
+ * role="group" (not dialog): we already live inside a modal dialog.
  */
 export function LightboxHelp({ labels }: LightboxHelpProps) {
   return (

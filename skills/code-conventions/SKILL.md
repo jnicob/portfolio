@@ -56,6 +56,7 @@ Complements `code-principles` (the _why_); this skill is the _how_ — concrete 
   low-level events RTL can't produce (pointer gestures, non-bubbling events).
 - Async UI: `findBy*`/`waitFor`, never arbitrary sleeps. No snapshot tests.
 - Test names state behavior + condition; assert observable behavior, not internals.
+- **Zero PII in test fixtures**: Never use personal email addresses or real phone numbers in test payloads (`*.test.ts`, `*.test.tsx`); always use RFC 2606 example domains (`@example.com`, `@ejemplo.com`) and synthetic phone numbers (`+34 600 000 000`). Enforced by the recursive source scan in `apps/web/src/data/validate-content.test.ts`.
 
 ## Verification & Pre-commit Protocol
 

@@ -49,13 +49,13 @@ describe('Tabs', () => {
   });
 });
 
-// Contrato actualizado en Fase 3.6 (B2): los paneles pasan de `hidden` (display:none,
-// altura 0) a compartir celda de grid con el inactivo en `invisible` (visibility:hidden,
-// conserva su caja) — esto es lo que elimina el salto de layout al cambiar de tab, algo
-// which the `hidden` of C1/2.6 did not guarantee (different heights → the block shrank).
+// Contract updated in Phase 3.6 (B2): panels move from `hidden` (display:none,
+// height 0) to sharing a grid cell with the inactive one set to `invisible` (visibility:hidden,
+// preserves its box) — this is what eliminates layout shift when switching tabs, something
+// which the `hidden` from C1/2.6 did not guarantee (different heights → the block shrank).
 // Documented contract change, not a regression: both panels remain mounted; the
-// inactivo ya no tiene el atributo `hidden`, en su lugar `aria-hidden="true"` + `invisible`
-// y sin `tabIndex` (no focusable).
+// inactive one no longer has the `hidden` attribute, instead using `aria-hidden="true"` + `invisible`
+// and no `tabIndex` (not focusable).
 describe('Tabs v3.6 — paneles apilados en grid, sin desplazamiento (B2)', () => {
   it('mantiene ambos paneles montados; ninguno tiene el atributo hidden', () => {
     renderTabs();
@@ -92,7 +92,7 @@ describe('Tabs v3.6 — paneles apilados en grid, sin desplazamiento (B2)', () =
 
     await userEvent.click(screen.getByRole('tab', { name: 'API' }));
 
-    // Mismos nodos de antes del click: no se desmontaron.
+    // Same nodes as before the click: they were not unmounted.
     expect(api).toHaveAttribute('aria-hidden', 'false');
     expect(api).toHaveClass('opacity-100');
     expect(api).toHaveAttribute('tabindex', '0');
@@ -103,11 +103,11 @@ describe('Tabs v3.6 — paneles apilados en grid, sin desplazamiento (B2)', () =
   });
 });
 
-// A3 (feedback de Nico): en Tailwind v4 `<button>` ya no trae `cursor: pointer` por
+// A3 (Nico's feedback): in Tailwind v4 `<button>` no longer includes `cursor: pointer` by
 // default (preflight change compared to v3) — without an explicit class the Tabs did not
 // show a pointer or noticeable hover. Phase 3.6 (A2) convention: a control
-// muestra `cursor-pointer` si y solo si es interactivo real; el hover reutiliza los
-// mismos tokens que Button (ghost/primary, T14) en vez de inventar un estado nuevo.
+// shows `cursor-pointer` if and only if it is truly interactive; the hover reuses the
+// same tokens as Button (ghost/primary, T14) instead of inventing a new state.
 describe('Tabs — cursor y hover (A2/A3)', () => {
   it('cada trigger es cursor-pointer, sea cual sea su estado', () => {
     renderTabs();

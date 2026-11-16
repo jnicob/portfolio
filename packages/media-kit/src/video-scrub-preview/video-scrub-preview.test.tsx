@@ -93,15 +93,15 @@ describe('scrub v3 (v0.6)', () => {
     const root = container.querySelector('.mk-scrub') as HTMLElement;
     const video = container.querySelector('video') as HTMLVideoElement;
     vi.spyOn(root, 'getBoundingClientRect').mockReturnValue({ left: 0, width: 100 } as DOMRect);
-    // Sin metadata: no-op (comportamiento actual, sin errores)
+    // Without metadata: no-op (current behavior, no errors)
     fireEvent.pointerMove(root, { clientX: 50 });
     expect(video.currentTime).toBe(0);
-    // Llega el metadata → el estado interno captura duration=10
+    // Metadata arrives → internal state captures duration=10
     setDuration(video, 10);
     fireEvent.loadedMetadata(video);
-    // Discriminante: si el scrub dependiera del fallback `?? video.duration` en vez del
+    // Discriminator: if scrubbing relied on the `?? video.duration` fallback instead of the
     // internal state captured in onLoadedMetadata, this reset to NaN would make the next
-    // move un no-op de nuevo. Solo pasa si `scrubTo` usa el `duration` de estado.
+    // move a no-op again. Only passes if `scrubTo` uses the state `duration`.
     setDuration(video, Number.NaN);
     fireEvent.pointerMove(root, { clientX: 50 });
     await waitFor(() => expect(video.currentTime).toBeCloseTo(5));

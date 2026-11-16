@@ -16,13 +16,13 @@ export type UseZoomPanResult = {
   scale: number;
   minZoom: number;
   maxZoom: number;
-  /** true si el contenido desborda el viewport y tiene sentido panear. */
+  /** true if content overflows the viewport and panning makes sense. */
   canPan: boolean;
-  /** Estilo (transform) para el wrapper del contenido. */
+  /** Style (transform) for the content wrapper. */
   style: CSSProperties;
   zoomIn: () => void;
   zoomOut: () => void;
-  /** Zoom a un factor, opcionalmente anclado a un punto (px desde el centro del viewport). */
+  /** Zoom to a factor, optionally anchored to a point (px from the viewport center). */
   zoomTo: (scale: number, anchor?: { x: number; y: number }) => void;
   reset: () => void;
   panBy: (dx: number, dy: number) => void;
@@ -39,14 +39,14 @@ export type UseZoomPanResult = {
 
 type ZoomPanState = { scale: number; tx: number; ty: number };
 
-/** Paso multiplicativo de botones y teclado. */
+/** Multiplicative step for buttons and keyboard. */
 const BUTTON_STEP = 1.5;
 
-// T25 QA fix (t25-qa-a11y.md, bloqueante): controles nativos/interactivos que
-// `MediaLightbox` renderiza como `children` (play/pause de audio, `<video controls>`,
-// enlaces de descarga…) no deben perder su pointerdown/click a manos del pan. Antes
-// solo `[data-mk-drag-exempt]` (el handle del compare-slider) estaba exento; se
-// generaliza a cualquier control nativo interactivo.
+// T25 QA fix (t25-qa-a11y.md, blocker): native/interactive controls that
+// `MediaLightbox` renders as `children` (audio play/pause, `<video controls>`,
+// download links…) must not lose their pointerdown/click to panning. Previously
+// only `[data-mk-drag-exempt]` (the compare-slider handle) was exempt; this is
+// generalized to any native interactive control.
 const INTERACTIVE_SELECTOR =
   'button, a, input, select, textarea, video, audio, [data-mk-drag-exempt]';
 
@@ -126,7 +126,7 @@ export function useZoomPan(
     return interactive;
   }, []);
 
-  // Gestos: listeners nativos sobre el viewport (wheel necesita passive: false).
+  // Gestures: native listeners on the viewport (wheel requires passive: false).
   useEffect(() => {
     const vp = viewportRef.current;
     if (!vp) return;
@@ -265,7 +265,7 @@ export function useZoomPan(
   const { maxTx, maxTy } = bounds(state.scale);
   const canPan = maxTx > 0 || maxTy > 0;
 
-  // Affordance del cursor grab/grabbing (CSS) y ancla para T13: solo cuando hay
+  // Grab/grabbing cursor affordance (CSS) and anchor for T13: only when there is
   // actual overflow. Cleaned up on unmount to avoid leaving an orphaned attribute.
   useEffect(() => {
     const vp = viewportRef.current;

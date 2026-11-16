@@ -18,7 +18,7 @@ export type FilterGalleryItem = {
   id: string;
   categories: readonly string[];
   node: ReactNode;
-  /** Ancho/alto del medio; masonry/justified usan 1 cuando se omite. */
+  /** Media width/height; masonry/justified use 1 when omitted. */
   aspectRatio?: number;
 };
 
@@ -26,16 +26,16 @@ export type FilterGalleryCategory = { id: string; label: string };
 
 export type FilterGalleryProps = {
   items: readonly FilterGalleryItem[];
-  /** Filtro controlado; `null` = todos. Omitir para modo no controlado. */
+  /** Controlled filter; `null` = all. Omit for uncontrolled mode. */
   filter?: string | null;
-  /** Filtro inicial en modo no controlado. Default `null` (todos). */
+  /** Initial filter in uncontrolled mode. Default `null` (all). */
   defaultFilter?: string | null;
   onFilterChange?: (filter: string | null) => void;
-  /** Si se pasa, renderiza la botonera de filtros (siempre incluye "All"). */
+  /** If provided, renders the filter button bar (always includes "All"). */
   categories?: readonly FilterGalleryCategory[];
   /** Label for the "all" button. Default `'All'`. */
   allLabel?: string;
-  /** Nombre accesible de la botonera de filtros y del grid. */
+  /** Accessible name of the filter button bar and the grid. */
   label: string;
   /** FLIP animation duration in ms. Default 240. */
   duration?: number;
@@ -43,14 +43,14 @@ export type FilterGalleryProps = {
   visibleIds?: readonly string[];
   /** Item layout. Default `grid`. */
   layout?: FilterGalleryLayout;
-  /** Alto fijo del chrome de cada tile que los layouts JS suman al medio. */
+  /** Fixed height of each tile's chrome that JS layouts add to the media. */
   itemExtraHeight?: number;
   className?: string;
 };
 
 /**
- * Busca el `<li>` de un item por id sin depender de `CSS.escape` (los ids pueden
- * traer caracteres no seguros en un selector CSS).
+ * Finds an item's `<li>` by id without relying on `CSS.escape` (ids may
+ * contain characters that are unsafe in a CSS selector).
  */
 function findItemElement(grid: HTMLUListElement, id: string): HTMLElement | null {
   for (const el of grid.querySelectorAll<HTMLElement>('[data-fg-id]')) {
@@ -89,9 +89,9 @@ export function FilterGallery({
 }: FilterGalleryProps) {
   const gridRef = useRef<HTMLUListElement>(null);
   const previousRectsRef = useRef<Map<string, DOMRect>>(new Map());
-  // Valor inicial calculado directamente desde props (no desde `activeFilter`, que
+  // Initial value calculated directly from props (not from `activeFilter`, which
   // depends on the state declared below): on the initial render they coincide, so
-  // el layout effect ve `filterChanged = false` y no anima el montaje inicial.
+  // the layout effect sees `filterChanged = false` and does not animate the initial mount.
   const previousFilterRef = useRef(filter !== undefined ? filter : defaultFilter);
   const previousVisibleIdsRef = useRef(visibleIds ? visibleIds.join('\u0000') : '');
   const previousLayoutRef = useRef(layout);
@@ -107,12 +107,12 @@ export function FilterGallery({
   );
   const visibleIdSet = new Set(visible.map((item) => item.id));
 
-  // Salida animada (v0.6): ids que dejaron de estar en `visible` pero siguen
-  // montados mientras dura su fade-out. `previousRenderedIdsRef` guarda los ids
-  // visibles del render anterior para detectar altas/bajas dentro del layout
-  // effect; `exitAnimationsRef` guarda el handle de `Animation` en curso por id
-  // (para poder cancelarlo si el item vuelve a ser visible antes de terminar, o si
-  // el componente entero se desmonta con una salida en curso).
+  // Animated exit (v0.6): ids that ceased to be in `visible` but remain
+  // mounted while their fade-out lasts. `previousRenderedIdsRef` stores the
+  // visible ids from the previous render to detect additions/removals inside the layout
+  // effect; `exitAnimationsRef` stores the ongoing `Animation` handle per id
+  // (so it can be cancelled if the item becomes visible again before finishing, or if
+  // the entire component unmounts with an exit in progress).
   const [exitingIds, setExitingIds] = useState<readonly string[]>([]);
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
   const previousRenderedIdsRef = useRef<readonly string[]>(visible.map((item) => item.id));
@@ -153,13 +153,13 @@ export function FilterGallery({
         }
       : undefined;
 
-  // Cleanup de solo-desmontaje (deps `[]`, no confundir con el layout effect de
-  // abajo que corre en cada render): si FilterGallery se desmonta con alguna
-  // salida en curso, cancela sus `Animation` (libera el efecto sobre el nodo) y
+  // Unmount-only cleanup (deps `[]`, not to be confused with the layout effect
+  // below that runs on every render): if FilterGallery unmounts with any
+  // exit in progress, cancels its `Animation` instances (releases the effect on the node) and
   // sets `isMountedRef` to false. `dropExiting` respects that flag: even if some
   // environment fires `onfinish` after `cancel()` (the WAAPI spec does not,
-  // pero no todos los polyfills la siguen al pie de la letra), no se llama a
-  // `setExitingIds` sobre un componente ya desmontado.
+  // but not all polyfills follow it to the letter), `setExitingIds` is not called
+  // on an already-unmounted component.
   const isMountedRef = useRef(true);
   useEffect(() => {
     isMountedRef.current = true;
@@ -194,15 +194,15 @@ export function FilterGallery({
     previousLayoutRef.current = layout;
     if (!grid) return;
 
-    // Detecta bajas (removed) y reentradas (reentered) comparando contra los ids
-    // visible from the previous render. `exitingIds` here is the value from THIS render
+    // Detects removals (removed) and re-entries (reentered) by comparing against the
+    // visible ids from the previous render. `exitingIds` here is the value from THIS render
     // (closure); if we just added new ids with `setExitingIds`, that change
     // will only be visible on the next pass of the effect — which occurs synchronously
-    // (antes de pintar) porque este `setState` se dispara dentro de un layout
+    // (before painting) because this `setState` is triggered inside a layout
     // effect. That is why the "start animation" loop below only acts
-    // sobre `exitingIds` (no sobre `removed`): en la primera pasada el `<li>`
-    // exiting item does not exist in the DOM yet (the deferred render mounts it in the
-    // pasada siguiente).
+    // on `exitingIds` (not on `removed`): on the first pass the exiting `<li>`
+    // does not exist in the DOM yet (the deferred render mounts it on the
+    // next pass).
     const currentIds = visible.map((item) => item.id);
     const removed = previousRenderedIdsRef.current.filter((id) => !visibleIdSet.has(id));
     const reentered = exitingIds.filter((id) => visibleIdSet.has(id));

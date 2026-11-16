@@ -22,13 +22,13 @@ describe('MoreProjectsCard', () => {
     );
     const links = screen.getAllByRole('link');
     expect(links).toHaveLength(1);
-    // localePrefix: 'always' (i18n/routing.ts) antepone el locale a cualquier href de <Link>.
+    // localePrefix: 'always' (i18n/routing.ts) prepends the locale to any <Link> href.
     expect(links[0]).toHaveAttribute('href', '/es/projects');
-    // WCAG 2.5.3 (Label in Name): el nombre accesible debe CONTENER el texto visible.
+    // WCAG 2.5.3 (Label in Name): the accessible name must CONTAIN the visible text.
     // Previously, an aria-label="Todos los proyectos" truncated the name to just the title,
-    // ignorando el resto del contenido visible del link (preview de proyectos + contador)
-    // — axe (label-content-name-mismatch) lo marca como mismatch porque el nombre no
-    // contiene TODO el texto visible anidado. Sin aria-label, el nombre se computa del
+    // ignoring the rest of the link's visible content (project preview + counter)
+    // — axe (label-content-name-mismatch) flags it as a mismatch because the name does not
+    // contain ALL nested visible text. Without aria-label, the name is computed from its
     // own content: by construction it contains (starts with) the visible title.
     expect(links[0]).not.toHaveAttribute('aria-label');
     expect(links[0]).toHaveAccessibleName(/^Todos los proyectos/);

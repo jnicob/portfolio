@@ -16,7 +16,7 @@ export type VideoScrubPreviewProps = {
   poster?: string;
   /** Accessible name of the interactive area. */
   label: string;
-  /** Habilita el scrub por teclado (flechas ±5%, Home/End). Default `true`. */
+  /** Enables keyboard scrubbing (arrows ±5%, Home/End). Default `true`. */
   scrubOnFocus?: boolean;
   className?: string;
 };
@@ -24,7 +24,7 @@ export type VideoScrubPreviewProps = {
 /** Keyboard arrow step, as a fraction 0-1 (5%). */
 const KEY_STEP = 0.05;
 
-/** Formatea segundos como `m:ss` (p.ej. 90 → "1:30"). */
+/** Formats seconds as `m:ss` (e.g. 90 → "1:30"). */
 function formatTime(seconds: number): string {
   const total = Math.max(0, Math.round(seconds));
   const minutes = Math.floor(total / 60);
@@ -60,7 +60,7 @@ export function VideoScrubPreview({
       try {
         event.currentTarget.setPointerCapture(event.pointerId);
       } catch {
-        // Ignorar en entornos sin soporte
+        // Ignore in unsupported environments
       }
     }
     onPointerMove(event);
@@ -71,7 +71,7 @@ export function VideoScrubPreview({
       try {
         event.currentTarget.releasePointerCapture(event.pointerId);
       } catch {
-        // Ignorar
+        // Ignore
       }
     }
   }

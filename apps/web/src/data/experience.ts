@@ -20,16 +20,16 @@ const entries = [
     },
     highlights: [
       {
-        es: 'Webs y landings de alto impacto: desarrollo frontend de landings públicas de producto (APIs, generación y edición de imágenes/audio/video), optimización de Core Web Vitals, SEO técnico, testing y puesta en producción. Playground interactivo para probar modelos desde el navegador, dashboards de consumo, límites, facturación y gestión de API keys (React, Next.js, TypeScript, React Query, Zustand, Jotai).',
-        en: 'High-impact web applications & landings: frontend development for public product landings (APIs, image/audio/video generation and editing), Core Web Vitals optimization, technical SEO, testing and production deployment. Interactive playground to test models from the browser, consumption dashboards, limits, billing and API key management (React, Next.js, TypeScript, React Query, Zustand, Jotai).',
+        es: 'Webs y landings de alto impacto: desarrollo frontend para landings públicas de producto (APIs, generación y edición de imágenes/audio/video), sistema de diseño, accesibilidad, optimización de Core Web Vitals, SEO técnico, testing y puesta en producción. Playground interactivo para probar modelos desde el navegador, dashboards de consumo, límites, facturación y gestión de API keys (React, Next.js, TypeScript, React Query, Zustand, Jotai).',
+        en: 'High-impact web applications & landings: frontend development for public product landings (APIs, image/audio/video generation and editing), design system, accessibility, Core Web Vitals optimization, technical SEO, testing and production deployment. Interactive playground to test models from the browser, consumption dashboards, limits, billing and API key management (React, Next.js, TypeScript, React Query, Zustand, Jotai).',
       },
       {
-        es: 'Catálogo multimodal de IA y arquitectura de servicios: exposición y monetización de más de 40 modelos de IA y más de 350 endpoints con FastAPI y APISIX gateway, reduciendo latencias mediante caché distribuida (Redis) y rate-limiting con alto tráfico.',
+        es: 'Catálogo multimodal de IA y arquitectura de servicios: exposición y monetización de más de 40 modelos de IA y más de 350 endpoints con FastAPI y APISIX gateway, reduciendo latencias mediante caché distribuida (Redis), rate-limiting y procesos asíncronos con alto tráfico.',
         en: 'Multimodal AI catalog & service architecture: monetizing and serving 40+ AI models and 350+ endpoints in production with FastAPI and APISIX gateway, minimizing response times through distributed caching (Redis), rate-limiting, and asynchronous workflows under high traffic.',
       },
       {
-        es: 'Automatización con agentes de IA: pipelines para convertir especificaciones OpenAPI en endpoints FastAPI, reglas de gateway, configuración de precios/créditos, playground y documentación interactiva, reduciendo el tiempo de integración de nuevos modelos de días a minutos.',
-        en: 'AI agent automation: pipelines converting OpenAPI specs into FastAPI endpoints, gateway rules, pricing/credits configuration, playground, and interactive documentation, cutting new model integration time from days to minutes.',
+        es: 'Automatización con agentes de IA (Claude Code, skills y commands): pipelines para convertir especificaciones OpenAPI en endpoints FastAPI, reglas de gateway, configuración de precios/créditos, playground y documentación interactiva, reduciendo el tiempo de integración de nuevos modelos de días a minutos.',
+        en: 'AI agent automation (Claude Code, skills & commands): pipelines converting OpenAPI specs into FastAPI endpoints, gateway rules, pricing/credits configuration, playground, and interactive documentation, cutting new model integration time from days to minutes.',
       },
       {
         es: 'Backoffice, gestión de contenido y colaboradores (Freepik/Flaticon): ingeniería full-stack en PHP/Laravel y JS/Vue para moderación y gestión de activos digitales, colaboradores y portal fiscal.',
@@ -129,8 +129,8 @@ const entries = [
         en: 'Critical healthcare interoperability: real-time integration between laboratories (LIS), radiology (RIS), and patient registries via HL7 V2 and Mirth Connect.',
       },
       {
-        es: 'Servicios web y base de datos relacional de alta disponibilidad con PHP (CodeIgniter/Doctrine), JavaScript y MySQL/SQL Server.',
-        en: 'High-availability web services and relational database architecture built with PHP (CodeIgniter/Doctrine), JavaScript, and MySQL/SQL Server.',
+        es: 'Diseño, mantenimiento e integración de servicios web, APIs REST y capa de presentación (HTML5, CSS, Bootstrap, JavaScript, jQuery, AJAX) con PHP (CodeIgniter/Doctrine ORM) y MySQL/SQL Server.',
+        en: 'Design, maintenance, and integration of web services, REST APIs, and presentation layer (HTML5, CSS, Bootstrap, JavaScript, jQuery, AJAX) with PHP (CodeIgniter/Doctrine ORM) and MySQL/SQL Server.',
       },
     ],
     tags: [
@@ -197,12 +197,12 @@ const entries = [
     },
     highlights: [
       {
-        es: 'Integración de vocabularios médicos controlados (SNOMED CT, LOINC, CIE-10) y desarrollo de herramientas de ayuda al diagnóstico médico (CDSS).',
-        en: 'Integration of controlled medical vocabularies (SNOMED CT, LOINC, ICD-10) and development of clinical decision support systems (CDSS).',
+        es: 'Desarrollo de servicios de Soporte a la Toma de Decisiones Clínicas (CDSS) con HL7 FHIR y HL7 V3 Infobuttons, integrando vocabularios médicos controlados (SNOMED CT, LOINC, CIE-10).',
+        en: 'Development of Clinical Decision Support Systems (CDSS) services using HL7 FHIR and HL7 V3 Infobuttons, integrating controlled medical vocabularies (SNOMED CT, LOINC, ICD-10).',
       },
       {
-        es: 'Desarrollo de servicios web y APIs con PHP / Laravel, Java y administración de servidores Linux.',
-        en: 'Web services and API development with PHP / Laravel, Java and Linux server administration.',
+        es: 'Diseño, mantenimiento e integración de servicios web y APIs RESTful con Java, PHP / Laravel, JavaScript (AJAX / jQuery, DOM, Bootstrap) y administración de servidores Linux.',
+        en: 'Design, maintenance, and integration of web services and RESTful APIs with Java, PHP / Laravel, JavaScript (AJAX / jQuery, DOM, Bootstrap), and Linux server administration.',
       },
     ],
     tags: [
@@ -212,6 +212,7 @@ const entries = [
       'laravel',
       'mysql',
       'hl7',
+      'fhir',
       'healthcare-it',
       'project-management',
     ],

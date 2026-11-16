@@ -76,8 +76,8 @@ describe('ShowcaseView', () => {
   });
 
   // Regression (code review F3.6/replaceState): clearing the filter called
-  // `replaceState(null, '', window.location.pathname)`, perdiendo cualquier query
-  // string existente (p.ej. `?utm_source=...`) al volver a "Todas".
+  // `replaceState(null, '', window.location.pathname)`, losing any existing
+  // query string (e.g. `?utm_source=...`) when returning to "Todas".
   it('al restaurar "Todas", conserva el query string de la URL (no solo el pathname)', () => {
     window.history.pushState({}, '', '/es/showcase?foo=bar');
     renderView();
@@ -101,10 +101,10 @@ describe('ShowcaseView', () => {
 
   // Regression (design review F3.6/I2): the index <nav> had `hidden lg:block`,
   // so on <lg (mobile/tablet) there was no way to filter or reach the
-  // deep-links por hash — la feature estrella de la fase. jsdom no aplica Tailwind
-  // (there is no real CSS), so the test anchors the contract to the classes of the
-  // elemento: nunca debe llevar `hidden` (visible en todo breakpoint); `lg:` es lo
-  // only one that changes layout (sticky/column) above that breakpoint.
+  // hash deep-links — the flagship feature of the phase. jsdom does not apply Tailwind
+  // (there is no real CSS), so the test anchors the contract to the element's
+  // classes: it must never carry `hidden` (visible at every breakpoint); `lg:` is the
+  // only modifier that changes layout (sticky/column) above that breakpoint.
   it('the index/filter never has the "hidden" class: it is visible at all breakpoints', () => {
     const { container } = render(
       <NextIntlClientProvider locale="es" messages={{}}>
@@ -119,7 +119,7 @@ describe('ShowcaseView', () => {
   it('el filtro sigue siendo operable en el DOM aunque el layout de <lg lo coloque encima del contenido', () => {
     renderView();
     // Without any "hidden" class blocking it, the index listbox is reachable
-    // y operable independientemente del breakpoint (jsdom no mide layout real).
+    // and operable regardless of the breakpoint (jsdom does not measure real layout).
     const listbox = screen.getByRole('listbox');
     expect(listbox).toBeInTheDocument();
     fireEvent.click(within(listbox).getByRole('option', { name: /card/i }));
@@ -129,7 +129,7 @@ describe('ShowcaseView', () => {
 });
 
 // Regression: FORMATTING_ERROR in console + status text showing the raw key
-// ("showcase.index.showing") en vez de "Mostrando: {section}" — visto en /es/showcase
+// ("showcase.index.showing") instead of "Mostrando: {section}" — seen on /es/showcase
 // (normal load and hash deep-link) during F3.6. Root cause: `buildShowcaseViewLabels`
 // (used by `page.tsx`) read `index.showing` with `t()` instead of `t.raw()`; that message
 // has the literal `{section}` placeholder that `ShowcaseView` interpolates manually later

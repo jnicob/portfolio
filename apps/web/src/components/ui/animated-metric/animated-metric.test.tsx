@@ -38,11 +38,11 @@ function stubAnimationEnvironment() {
   vi.spyOn(performance, 'now').mockImplementation(() => clock);
 
   return {
-    /** Simula el elemento entrando en viewport. */
+    /** Simulates the element entering the viewport. */
     intersect: () => {
       act(() => ioCallback([{ isIntersecting: true }]));
     },
-    /** Ejecuta los callbacks de rAF pendientes con `now` como timestamp del frame. */
+    /** Executes pending rAF callbacks with `now` as the frame timestamp. */
     flush: (now: number) => {
       clock = now;
       const pending = Array.from(frames.values());
@@ -101,10 +101,10 @@ describe('AnimatedMetric — camino animado (IntersectionObserver + rAF disponib
   });
 
   it('antes de intersectar (primer render) muestra el valor final, igual que el SSR', () => {
-    // Hydration contract: server renders target value to avoid mismatch.
-    // el valor final directo. El cliente debe pintar exactamente lo mismo en su
-    // first render -even if IO is available- so as not to produce a mismatch of
-    // texto (React #418). El conteo 0→N solo arranca cuando el IO intersecta.
+    // Hydration contract: the server renders the final value directly to avoid mismatch.
+    // The client must paint the exact same value on its
+    // first render — even if IO is available — so as not to produce a text
+    // mismatch (React #418). The 0→N count only starts when IO intersects.
     stubAnimationEnvironment();
     render(<AnimatedMetric value="1.000+" durationMs={1000} />);
     expect(screen.getByText('1.000+', { selector: '[aria-hidden]' })).toBeInTheDocument();
@@ -119,7 +119,7 @@ describe('AnimatedMetric — camino animado (IntersectionObserver + rAF disponib
     env.flush(500);
     expect(screen.getByText('875+', { selector: '[aria-hidden]' })).toBeInTheDocument();
 
-    // t = 1 → eased = 1 → 1000, reformateado con el separador de miles original.
+    // t = 1 → eased = 1 → 1000, reformatted with the original thousands separator.
     env.flush(1000);
     expect(screen.getByText('1.000+', { selector: '[aria-hidden]' })).toBeInTheDocument();
     // At t=1 tick schedules no more frames: animation completes.
@@ -175,7 +175,7 @@ describe('AnimatedMetric — camino animado (IntersectionObserver + rAF disponib
     const { unmount } = render(<AnimatedMetric value="1.000+" durationMs={1000} />);
 
     env.intersect();
-    env.flush(500); // t<1: el tick reprograma un siguiente frame antes de desmontar.
+    env.flush(500); // t<1: the tick reschedules a next frame before unmounting.
     expect(env.pendingFrameCount()).toBe(1);
 
     unmount();

@@ -53,7 +53,7 @@ function renderControls(overrides: Record<string, unknown> = {}) {
   return handlers;
 }
 
-// Defaults de renderControls(): fit='contain', nextFit='cover' (fit lleva plantilla).
+// renderControls() defaults: fit='contain', nextFit='cover' (fit uses a template).
 function expectedLabel(key: 'zoomOut' | 'zoomIn' | 'reset' | 'fit' | 'fullscreen'): string {
   if (key === 'fit') return template(LABELS.fit, { current: 'contain', next: 'cover' });
   return LABELS[key];
@@ -61,8 +61,8 @@ function expectedLabel(key: 'zoomOut' | 'zoomIn' | 'reset' | 'fit' | 'fullscreen
 
 describe('LightboxControls', () => {
   it('grupo etiquetado con todos los comandos', () => {
-    // El cierre ya no vive en la toolbar (ahora es persistente en la esquina, en
-    // media-lightbox); la toolbar solo lleva zoom/reset/fit/fullscreen.
+    // Close no longer lives in the toolbar (it is now persistent in the corner, in
+    // media-lightbox); the toolbar only holds zoom/reset/fit/fullscreen.
     renderControls();
     expect(screen.getByRole('group', { name: 'Controls' })).toBeInTheDocument();
     for (const name of ['Zoom out', 'Zoom in', 'Reset view', 'Enter fullscreen']) {

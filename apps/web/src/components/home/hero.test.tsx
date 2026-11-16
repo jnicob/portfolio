@@ -66,4 +66,13 @@ describe('Hero', () => {
     const img = screen.getByRole('img', { name: profile.name });
     expect(img).toHaveAttribute('src', '/profile/hero-portrait.webp');
   });
+
+  it('exposes semantic data-hero-* hooks for skin layout decoupling', () => {
+    renderHero();
+    expect(document.querySelector('[data-hero-header]')).toBeInTheDocument();
+    expect(document.querySelector('[data-hero-badges]')).toBeInTheDocument();
+    expect(document.querySelector('[data-hero-title]')).toBeInTheDocument();
+    expect(document.querySelector('[data-hero-headline]')).toBeInTheDocument();
+    expect(document.querySelector('[data-hero-actions]')).toBeInTheDocument();
+  });
 });

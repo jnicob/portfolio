@@ -129,8 +129,8 @@ describe('useZoomPan gestos', () => {
     const { viewport, latest } = setupProbe();
     fireEvent.wheel(viewport, { deltaY: -100, clientX: 600, clientY: 300 });
     expect(latest().scale).toBeCloseTo(1.1);
-    // ancla x = 600 − 400 = 200 → tx = 200 − 200·1.1 = −20 (con tolerancia de fp: 200*1.1 no
-    // is exact in IEEE-754, the zoomTo formula from Task 4 core carries that residue).
+    // anchor x = 600 − 400 = 200 → tx = 200 − 200·1.1 = −20 (with fp tolerance: 200*1.1 is not
+    // exact in IEEE-754, the zoomTo formula from Task 4 core carries that residue).
     const match = (latest().style.transform ?? '').match(
       /^translate\(([-\d.]+)px, ([-\d.]+)px\) scale\(1\.1\)$/,
     );
@@ -196,7 +196,7 @@ describe('useZoomPan gestos', () => {
       pointerType: 'touch',
       button: 0,
     });
-    // distancia 200 → 400: escala ×2
+    // distance 200 → 400: scale ×2
     fireEvent.pointerMove(viewport, { pointerId: 1, clientX: 200, clientY: 300 });
     fireEvent.pointerMove(viewport, { pointerId: 2, clientX: 600, clientY: 300 });
     expect(latest().scale).toBeCloseTo(2, 1);
@@ -261,7 +261,7 @@ describe('useZoomPan — re-clamp del pan al cambiar el viewport', () => {
     });
     expect(result.current.style.transform).toBe('translate(600px, 450px) scale(2)');
 
-    // el viewport crece (p.ej. al entrar en fullscreen): el desborde desaparece.
+    // the viewport grows (e.g. when entering fullscreen): the overflow disappears.
     growViewport(viewport, 1600, 1200);
     act(() => {
       window.dispatchEvent(new Event('resize'));
@@ -291,7 +291,7 @@ describe('useZoomPan — re-clamp del pan al cambiar el viewport', () => {
 
 describe('useZoomPan — no capturar el puntero de controles interactivos (T25 QA fix)', () => {
   // Root cause (t25-qa-a11y.md): onPointerDown was capturing the pointer for ANY
-  // target dentro del viewport salvo [data-mk-drag-exempt], lo que retargeteaba el
+  // target inside the viewport except [data-mk-drag-exempt], which retargeted the
   // subsequent click (e.g. from a play/pause button) to the viewport div.
   function setupProbe() {
     let latest: UseZoomPanResult | undefined;

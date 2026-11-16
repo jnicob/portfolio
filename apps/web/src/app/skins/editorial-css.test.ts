@@ -12,7 +12,7 @@ import { describe, expect, it } from 'vitest';
 const CSS_PATH = path.resolve(__dirname, 'editorial.css');
 const css = readFileSync(CSS_PATH, 'utf-8');
 
-/** Selectores de regla: lo que precede a cada `{`, ignorando comentarios y @media. */
+/** Rule selectors: what precedes each `{`, ignoring comments and @media. */
 function ruleSelectors(source: string): string[] {
   const clean = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@media[^{]*\{/g, '');
   const selectors: string[] = [];
@@ -31,7 +31,7 @@ function sourceFiles(dir: string): string[] {
     .map((entry) => path.join(entry.parentPath, entry.name));
 }
 
-describe('editorial.css (disposición del skin editorial)', () => {
+describe('editorial.css (editorial skin layout)', () => {
   it('every selector is scoped to [data-skin=editorial]', () => {
     const selectors = ruleSelectors(css);
     expect(selectors.length).toBeGreaterThan(0);
@@ -40,24 +40,36 @@ describe('editorial.css (disposición del skin editorial)', () => {
     }
   });
 
-  it('no contiene colores hex (solo tokens)', () => {
+  it('does not contain hex colors (tokens only)', () => {
     expect(css).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
   });
 
-  it('no contiene funciones de color (rgb/hsl/oklch/color/…) (solo tokens)', () => {
+  it('does not contain color functions (rgb/hsl/oklch/color/…) (tokens only)', () => {
     expect(css).not.toMatch(/\b(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(/i);
   });
 
-  it('no contiene named colors sueltos (black/white/red/blue/gray/grey) (solo tokens)', () => {
+  it('does not contain bare named colors (black/white/red/blue/gray/grey) (tokens only)', () => {
     // Boundaries excluding hyphens so as not to trigger on CSS identifiers
-    // como `white-space` o `off-white` (no son el color named "white").
+    // such as `white-space` or `off-white` (which are not the named color "white").
     expect(css).not.toMatch(/(?<![\w-])(black|white|red|blue|gray|grey)(?![\w-])/i);
   });
 
+  it('uses explicit semantic data-hero-* hooks instead of fragile positional > div chains in the Hero masthead', () => {
+    const selectors = ruleSelectors(css);
+    for (const selector of selectors) {
+      expect(selector).not.toMatch(/>\s*div\b/);
+    }
+    expect(css).toContain('[data-hero-header]');
+    expect(css).toContain('[data-hero-title]');
+    expect(css).toContain('[data-hero-headline]');
+    expect(css).toContain('[data-hero-badges]');
+    expect(css).toContain('[data-hero-actions]');
+  });
+
   it('CV vertical rhythm has a single owner: editorial overrides layout gap and declares the total', () => {
-    // Higiene adjudicada en el design review de F3.9: los 4.5rem entre secciones
-    // (2.5rem sobre la hairline + 2rem bajo ella) viven ENTEROS en este parcial,
-    // no repartidos entre el gap-10 del layout base y este padding.
+    // Hygiene established in the F3.9 design review: the 4.5rem between sections
+    // (2.5rem above the hairline + 2rem below it) live ENTIRELY in this partial,
+    // rather than split between the base layout's gap-10 and this padding.
     const container = css.match(/\[data-skin='editorial'\] \[data-cv-sections\]\s*\{([^}]*)\}/);
     expect(container).not.toBeNull();
     expect(container?.[1]).toMatch(/row-gap:\s*0/);

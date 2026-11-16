@@ -11,22 +11,22 @@ import {
 import { isMediaSource, type MediaSource } from '../media-source';
 
 export type SpotlightRevealProps = {
-  /** Capa siempre visible. */
+  /** Always-visible layer. */
   base: ReactNode | MediaSource;
-  /** Capa revelada bajo la lente (recortada con `clip-path`). */
+  /** Layer revealed under the lens (clipped with `clip-path`). */
   reveal: ReactNode | MediaSource;
   /** Accessible name of the interactive area. */
   label: string;
-  /** Radio de la lente en px. Default 110. */
+  /** Lens radius in px. Default 110. */
   radius?: number;
   /** Initial position of the lens, % 0-100. Default `{ x: 50, y: 50 }`. */
   defaultPosition?: { x: number; y: number };
-  /** Badges superpuestos (`aria-hidden`), esquina superior izquierda/derecha. */
+  /** Overlay badges (`aria-hidden`), top-left/right corners. */
   overlayLabels?: { base?: string; reveal?: string };
   className?: string;
 };
 
-/** Paso de las flechas de teclado, en %. Shift usa el paso fino. */
+/** Keyboard arrow step, in %. Shift uses the fine step. */
 const STEP = 5;
 const FINE_STEP = 1;
 
@@ -102,7 +102,7 @@ export function SpotlightReveal({
     '--mk-spot-radius': `${radius}px`,
     // "Effective" radius of the clip: 0 when inactive, the configured radius
     // when active. Only THIS variable transitions (see styles.css) — x/y and
-    // incluso --mk-spot-radius (usado por el anillo) se aplican siempre al instante.
+    // even --mk-spot-radius (used by the ring) are always applied instantly.
     '--mk-spot-active-radius': active ? `${radius}px` : '0px',
   } as CSSProperties;
 

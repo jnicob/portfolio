@@ -210,7 +210,7 @@ describe('HeroCanvas', () => {
 
     fireEvent.pointerMove(getContainer(), { clientX: 50, clientY: 50 });
     expect(frame.pendingCount()).toBe(1);
-    frame.flush(); // el tick corre y se reprograma: el puntero sigue dentro.
+    frame.flush(); // the tick runs and reschedules itself: the pointer is still inside.
     expect(frame.pendingCount()).toBe(1);
 
     vi.spyOn(document, 'hidden', 'get').mockReturnValue(true);
@@ -284,10 +284,10 @@ describe('HeroCanvas', () => {
     expect(canvas.width).toBe(1600);
     expect(canvas.height).toBe(600);
     // ...but CSS box must remain at actual container size: a
-    // <canvas> is a replaced element — without an explicit CSS size, its
+    // <canvas> is a replaced element — without an explicit CSS size, its box
     // uses the width/height attributes (already scaled), not the intrinsic size
-    // of the container, and on HiDPI the grid would only fill the upper quadrant
-    // izquierdo del hero.
+    // of the container, and on HiDPI the grid would only fill the upper-left
+    // quadrant of the hero.
     expect(canvas.style.width).toBe('800px');
     expect(canvas.style.height).toBe('300px');
   });
@@ -311,7 +311,7 @@ describe('HeroCanvas', () => {
     stubContainerRect({ width: 200, height: 100 });
 
     render(<HeroCanvas />);
-    expect(ctx.clearRect).toHaveBeenCalled(); // el frame se limpia igual...
+    expect(ctx.clearRect).toHaveBeenCalled(); // the frame is cleared anyway...
     expect(ctx.fill).not.toHaveBeenCalled(); // ...without filling default black/color.
   });
 });

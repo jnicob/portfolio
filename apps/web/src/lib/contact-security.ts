@@ -52,6 +52,29 @@ export function verifyHoneypot(honeypotValue?: string | null): boolean {
 }
 
 /**
+ * Verifies that the form submission took at least `minSeconds` since `ts` (form mount time).
+ * If `ts` is omitted (`undefined` or `null`), returns `true`.
+ */
+export function verifySubmissionTime(
+  ts?: number | null,
+  minSeconds: number = 3,
+  nowMs: number = Date.now(),
+): boolean {
+  if (ts === undefined || ts === null) return true;
+  if (!Number.isFinite(ts) || ts <= 0) return false;
+  const elapsedSeconds = (nowMs - ts) / 1000;
+  return elapsedSeconds >= minSeconds;
+}
+
+function pruneExpiredRateLimits(now: number): void {
+  for (const [key, entry] of rateLimitMap.entries()) {
+    if (now > entry.expiresAt) {
+      rateLimitMap.delete(key);
+    }
+  }
+}
+
+/**
  * In-memory sliding window rate limiting.
  * Limits to `maxRequests` per `windowMs` milliseconds for the given identifier.
  */
@@ -61,6 +84,7 @@ export function checkRateLimit(
   windowMs: number = 10 * 60 * 1000, // 10 minutes by default
 ): RateLimitResult {
   const now = Date.now();
+  pruneExpiredRateLimits(now);
   const record = rateLimitMap.get(identifier);
 
   if (!record || now > record.expiresAt) {
@@ -83,6 +107,13 @@ export function checkRateLimit(
     remaining: maxRequests - record.count,
     resetMs: record.expiresAt - now,
   };
+}
+
+/**
+ * Returns the active number of tracked identifiers in the rate limit store.
+ */
+export function getRateLimitStoreSize(): number {
+  return rateLimitMap.size;
 }
 
 /**

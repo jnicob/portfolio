@@ -39,7 +39,7 @@ export type ShowcaseViewProps = {
 export function ShowcaseView({ toc, labels, sections, children }: ShowcaseViewProps) {
   const [filter, setFilter] = useState<string | null>(null);
 
-  // Solo al montar: sincroniza el filtro inicial con el deep-link (#id) si existe.
+  // On mount only: syncs the initial filter with the deep-link (#id) if present.
   useEffect(() => {
     const hash = window.location.hash.slice(1);
     if (hash && toc.some((item) => item.id === hash)) {
@@ -49,10 +49,10 @@ export function ShowcaseView({ toc, labels, sections, children }: ShowcaseViewPr
   }, []);
 
   // Skips the first execution: on mount, this effect runs in the same commit as
-  // el de arriba, ANTES de que su setFilter surta efecto (el filtro inicial sigue siendo
+  // the one above, BEFORE its setFilter takes effect (the initial filter is still
   // `null` in that first step), so it would write the URL without a hash and clear it
   // momentarily on a deep-link — only to then "restore" it when the filter
-  // actualice. Sin esta guarda, el hash desaparece y reaparece en cada carga con deep-link.
+  // updates. Without this guard, the hash disappears and reappears on every deep-link load.
   const isFirstRun = useRef(true);
   useEffect(() => {
     if (isFirstRun.current) {

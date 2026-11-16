@@ -3,8 +3,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ThemeSwitcher } from './theme-switcher';
 
 vi.mock('@/lib/appearance', () => ({
-  // The mock-implementation replicates the actual mutation of applyTheme on the
-  // DOM (dataset.theme), que es lo que el MutationObserver observa.
+  // The mock implementation replicates the actual mutation of applyTheme on the
+  // DOM (dataset.theme), which is what the MutationObserver observes.
   applyTheme: vi.fn((theme: string) => {
     document.documentElement.dataset.theme = theme;
   }),

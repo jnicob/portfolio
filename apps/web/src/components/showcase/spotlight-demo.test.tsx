@@ -18,7 +18,7 @@ describe('SpotlightDemo', () => {
     const base = screen.getByAltText(strings.baseAlt);
     expect(base).toHaveAttribute('src', '/demo/gallery/nbp-retrato-neon.webp');
     expect(base.style.filter).toBe('grayscale(1)');
-    // Dimensiones reales del asset (apps/web/src/data/gallery.ts): 1200×1608, retrato.
+    // Actual asset dimensions (apps/web/src/data/gallery.ts): 1200×1608, portrait.
     expect(base).toHaveAttribute('width', '1200');
     expect(base).toHaveAttribute('height', '1608');
   });

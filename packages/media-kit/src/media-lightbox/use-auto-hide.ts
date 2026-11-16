@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export type UseAutoHideOptions = {
-  /** ms de inactividad antes de ocultar; null desactiva el auto-hide. */
+  /** ms of inactivity before hiding; null disables auto-hide. */
   delay: number | null;
-  /** Visibilidad inicial (false = user-hidden). */
+  /** Initial visibility (false = user-hidden). */
   defaultVisible?: boolean;
 };
 

@@ -1,7 +1,7 @@
 import type { AnchorHTMLAttributes } from 'react';
 import { Link } from '@/i18n/navigation';
 
-/** Externo = absoluto http(s) o protocolo-relativo, que hereda el esquema. */
+/** External = absolute http(s) or protocol-relative, which inherits the scheme. */
 const EXTERNAL_HREF = /^(https?:)?\/\//;
 
 /** MDX content `<a>` link: external opens in new tab with safe rel, internal uses i18n Link. */

@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { CompareSlider, type CompareSliderMode } from '@nicobehm/media-kit';
 import { Button } from '@/components/ui/button';
 
-/** Perf (T30/qa-B1): ver el mismo comentario en media-kit-demo.tsx — variante ~840w. */
+/** Perf (T30/qa-B1): see the same comment in media-kit-demo.tsx — ~840w variant. */
 const LANDSCAPE_SRC_SET = '/demo/landscape-840.webp 840w, /demo/landscape.webp 1600w';
-/** Figure a ancho completo del contenido (sin grid), en cualquier breakpoint. */
+/** Full-content-width figure (no grid), at any breakpoint. */
 const FULL_WIDTH_SIZES = '(min-width: 1024px) 1000px, calc(100vw - 3rem)';
 
 /** Display order of the modes in the button bar (spec B4). */
@@ -18,17 +18,17 @@ const MODES = [
 ] as const satisfies readonly CompareSliderMode[];
 
 export type CompareModesDemoStrings = {
-  /** Nombre accesible del `role="group"` de la botonera. */
+  /** Accessible name of the button bar `role="group"`. */
   groupLabel: string;
-  /** Un label por modo, indexado por `CompareSliderMode`. */
+  /** One label per mode, indexed by `CompareSliderMode`. */
   modeLabels: Record<CompareSliderMode, string>;
-  /** Alt del lado "antes" (ReactNode con filtro desaturado). */
+  /** Alt text for the "before" side (ReactNode with desaturated filter). */
   beforeAlt: string;
-  /** Nombre accesible del divisor del CompareSlider. */
+  /** Accessible name of the CompareSlider divider. */
   compareLabel: string;
-  /** Anunciado al pausar el hover-follow del divisor (modos wipe/onion, C6). */
+  /** Announced when pausing the divider hover-follow (wipe/onion modes, C6). */
   pauseLabel: string;
-  /** Anunciado al reanudar el hover-follow del divisor (modos wipe/onion, C6). */
+  /** Announced when resuming the divider hover-follow (wipe/onion modes, C6). */
   resumeLabel: string;
   /**
    * Text for the blink mode pause/resume switch when running (switches to
@@ -39,7 +39,7 @@ export type CompareModesDemoStrings = {
   blinkPauseLabel: string;
   /** Text for the blink switch when paused (switches to "running" on press). */
   blinkResumeLabel: string;
-  /** Texto del figcaption. */
+  /** Figcaption text. */
   caption: string;
 };
 

@@ -52,8 +52,8 @@ export function MoreProjectsCard({ locale, title, countTemplate }: MoreProjectsC
           {remaining > 0 && (
             // Design review F3.6 T21 ("hierarchy and 8 more"): at the same size as the
             // preview list, the count suffix competed visually with the project titles.
-            // text-sm lo baja de peso sin tocar el orden del contenido (nombre accesible
-            // del Link intacto, T30).
+            // text-sm lowers its weight without touching content order (accessible name
+            // of the Link remains intact, T30).
             <p className="text-sm text-fg-muted">{countLabel(countTemplate, remaining)}</p>
           )}
         </CardContent>
