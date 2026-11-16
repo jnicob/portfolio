@@ -9,7 +9,10 @@
     "menuOpen": "Open menu",
     "menuClose": "Close menu"
   },
-  "footer": { "github": "GitHub", "linkedin": "LinkedIn" },
+  "footer": {
+    "github": "GitHub",
+    "linkedin": "LinkedIn"
+  },
   "share": {
     "share": "Share this view",
     "copied": "Link copied",
@@ -92,8 +95,8 @@
     "briefTitle": "Professional Summary",
     "showBrief": "Show summary",
     "hideBrief": "Hide summary",
-    "showPhoto": "Include photo",
-    "hidePhoto": "Remove photo",
+    "showPhoto": "Show photo",
+    "hidePhoto": "Hide photo",
     "views": {
       "standard": "Standard",
       "compact": "Compact",

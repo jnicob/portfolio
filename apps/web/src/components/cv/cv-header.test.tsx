@@ -97,13 +97,13 @@ describe('CvHeader', () => {
     render(
       <CvHeader
         locale="en"
-        showPhotoLabel="Include photo"
-        hidePhotoLabel="Remove photo"
+        showPhotoLabel="Show photo"
+        hidePhotoLabel="Hide photo"
         photoSrc="/profile/avatar-cv.jpg"
       />,
     );
 
     expect(screen.getByTestId('cv-photo')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Remove photo' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Hide photo' })).toBeInTheDocument();
   });
 });

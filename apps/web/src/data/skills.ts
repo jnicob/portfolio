@@ -10,18 +10,30 @@ const entries = [
   },
   { name: 'TypeScript', level: 4, category: 'frontend', tags: ['typescript', 'javascript'] },
   {
-    name: 'React Query / Zustand / Jotai / Redux',
+    name: 'Hooks & State Management (React Query / Zustand / Jotai / Redux)',
     level: 4,
     category: 'frontend',
-    tags: ['react-query', 'zustand', 'jotai', 'redux', 'context-api'],
+    tags: ['hooks', 'react-query', 'zustand', 'jotai', 'redux', 'context-api'],
   },
   { name: 'Vue', level: 3, category: 'frontend', tags: ['vue', 'typescript', 'ui'] },
+  {
+    name: 'HTML5 / CSS3 / DOM / AJAX / jQuery',
+    level: 5,
+    category: 'frontend',
+    tags: ['html5', 'css3', 'dom', 'ajax', 'jquery'],
+  },
   { name: 'PHP / Laravel', level: 4, category: 'backend', tags: ['php', 'laravel', 'rest-api'] },
   {
     name: 'Node.js / Express',
     level: 4,
     category: 'backend',
     tags: ['nodejs', 'express', 'rest-api'],
+  },
+  {
+    name: 'RESTful APIs & ORMs (Doctrine / Eloquent / Prisma / Drizzle)',
+    level: 4,
+    category: 'backend',
+    tags: ['rest-api', 'doctrine', 'eloquent', 'prisma', 'drizzle', 'orm'],
   },
   {
     name: 'SQL (MySQL / PostgreSQL / SQL Server)',
@@ -66,10 +78,10 @@ const entries = [
     tags: ['linux', 'apache', 'server-admin'],
   },
   {
-    name: 'HL7 / healthcare interoperability',
+    name: 'HL7 (V2 / V3 / FHIR) & Healthcare Interoperability',
     level: 4,
     category: 'platform',
-    tags: ['hl7', 'mirth-connect', 'snomed-ct'],
+    tags: ['hl7', 'fhir', 'infobuttons', 'mirth-connect', 'snomed-ct', 'cdss'],
   },
   {
     name: 'Docker & CI/CD (GitHub Actions / Tekton / Jenkins)',
@@ -78,10 +90,10 @@ const entries = [
     tags: ['docker', 'cicd', 'github-actions', 'jenkins', 'tekton', 'spinnaker'],
   },
   {
-    name: 'Observability & Product Analytics',
+    name: 'Observability (OpenSearch / Kibana / Analytics)',
     level: 3,
     category: 'platform',
-    tags: ['opensearch', 'gcp-logs', 'posthog', 'calibre', 'web-vitals'],
+    tags: ['opensearch', 'kibana', 'gcp-logs', 'posthog', 'calibre', 'web-vitals'],
   },
   {
     name: 'Testing (Jest / PHPUnit / Vitest)',
@@ -90,10 +102,10 @@ const entries = [
     tags: ['jest', 'phpunit', 'vitest', 'testing'],
   },
   {
-    name: 'Tailwind CSS',
+    name: 'Tailwind CSS / Bootstrap',
     level: 4,
     category: 'tooling',
-    tags: ['tailwind', 'css', 'ui'],
+    tags: ['tailwind', 'bootstrap', 'css', 'ui'],
   },
   { name: 'Git', level: 5, category: 'tooling', tags: ['git', 'version-control'] },
 ];
