@@ -3,9 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { TiltCard } from './tilt-card';
 
 /**
- * Stubea matchMedia por query (no un booleano global): TiltCard consulta dos
- * media queries independientes — puntero fino y reduced-motion — y cada test
- * necesita combinarlas de forma distinta.
+ * Stubs matchMedia per query (not a single global boolean): TiltCard queries two
+ * independent media queries — fine pointer and reduced-motion — and each test
+ * needs to combine them differently.
  */
 function stubMatchMedia(queries: Record<string, boolean>) {
   Object.defineProperty(window, 'matchMedia', {

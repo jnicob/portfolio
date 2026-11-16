@@ -7,13 +7,13 @@ const GRID_STEP_PX = 24;
 const POINTER_RADIUS_PX = 140;
 const BASE_DOT_RADIUS_PX = 1;
 const MAX_DOT_RADIUS_PX = 2.5;
-// Con 0.15 el grid en reposo quedaba casi invisible en dark (design review
-// F3.6 T21, finding "canvas dark en reposo"): el degradado de --color-accent
-// over the dark background it needs more base alpha to read as a texture without
-// puntero encima. 0.35 iguala el "piso" que ya usaba el propio elemento
-// <canvas> (see `opacity-[0.35]` below) — same value in both themes
-// (verified in dev: in light it doesn't get loud, it remains a background
-// sutil de puntos).
+// At 0.15 the resting grid was nearly invisible in dark mode (design review
+// F3.6 T21, finding "dark canvas at rest"): the --color-accent gradient
+// over the dark background needs more base alpha to read as a texture without
+// a pointer over it. 0.35 matches the "floor" already used by the <canvas>
+// element itself (see `opacity-[0.35]` below) — same value in both themes
+// (verified in dev: in light mode it doesn't get loud, remaining a subtle
+// dotted background).
 const BASE_DOT_ALPHA = 0.35;
 const MAX_DEVICE_PIXEL_RATIO = 2;
 
@@ -43,8 +43,8 @@ export function HeroCanvas() {
     if (!ctx) return;
 
     // Declared as const/arrow (not hoisted `function`): this way TS preserves the
-    // estrechamiento de `canvas`/`container`/`ctx` a no-nulos dentro de estos
-    // closures — con declaraciones hoisteadas, TS no puede asumir que se
+    // narrowing of `canvas`/`container`/`ctx` to non-null inside these
+    // closures — with hoisted declarations, TS cannot assume they are
     // invoked after the guard above and treats them as possibly null.
     const readAccentColor = () =>
       getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
@@ -58,8 +58,8 @@ export function HeroCanvas() {
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
       // Without `--color-accent` resolved yet (or in the middle of a
-      // theme transition) we leave the frame empty instead of painting with a color by
-      // defecto: cero fallbacks de color hardcodeados.
+      // theme transition) we leave the frame empty instead of painting with a
+      // default color: zero hardcoded color fallbacks.
       if (!accent) return;
       ctx.fillStyle = accent;
       for (let gy = GRID_STEP_PX / 2; gy < height; gy += GRID_STEP_PX) {
@@ -82,12 +82,12 @@ export function HeroCanvas() {
       height = rect.height;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
-      // <canvas> is a replaced element: without an explicit CSS size, its box
-      // layout box takes the INTRINSIC size from the width/height attributes of
-      // arriba — que ya vienen escalados por dpr. Con dpr > 1 (cualquier
-      // HiDPI display) that leaves the canvas box larger than the
-      // contenedor real y, con overflow-hidden en el Hero, el grid solo llena
-      // el cuadrante superior-izquierdo, desalineado del puntero. Fijamos el
+      // <canvas> is a replaced element: without an explicit CSS size, its
+      // layout box takes the INTRINSIC size from the width/height attributes
+      // above — which are already scaled by dpr. With dpr > 1 (any
+      // HiDPI display) that leaves the canvas box larger than the actual
+      // container and, with overflow-hidden on the Hero, the grid only fills
+      // the upper-left quadrant, misaligned with the pointer. We lock the
       // CSS size to the actual measured size, independent of the backing buffer.
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;

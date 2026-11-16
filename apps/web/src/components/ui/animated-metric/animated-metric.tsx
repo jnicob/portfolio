@@ -38,9 +38,9 @@ type AnimatedMetricProps = {
  */
 export function AnimatedMetric({ value, durationMs = DEFAULT_DURATION_MS }: AnimatedMetricProps) {
   const targetRef = useRef<HTMLSpanElement>(null);
-  // El estado inicial es siempre el valor final, igual en servidor y cliente:
-  // Server (without IntersectionObserver) renders final value to prevent hydration mismatch.
-  // cliente debe pintar lo mismo en su primer render para no producir un
+  // Initial state is always the final value, identical on server and client:
+  // the server (without IntersectionObserver) renders the final value, and the
+  // client must paint the same on its first render so as not to produce a
   // hydration mismatch. The 0→N count starts only upon intersecting (see
   // effect below), never before the first paint.
   const [display, setDisplay] = useState(value);
@@ -49,8 +49,8 @@ export function AnimatedMetric({ value, durationMs = DEFAULT_DURATION_MS }: Anim
 
   useEffect(() => {
     const node = targetRef.current;
-    // Metrics without digits (e.g. text lists like "Kling, WAN") have nothing to animate.
-    // animar: se quedan en el literal directo, sin observar el elemento.
+    // Metrics without digits (e.g. text lists like "Kling, WAN") have nothing to
+    // animate: they remain as the direct literal, without observing the element.
     if (
       !node ||
       !hasDigits ||

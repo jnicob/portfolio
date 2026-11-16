@@ -108,7 +108,7 @@ describe('FilterableList', () => {
 
     const option = screen.getByRole('option', { name: 'Button' });
     expect(option.id).toMatch(/-option-button$/);
-    // El id se mantiene estable entre renders (misma instancia montada).
+    // The id remains stable across renders (same mounted instance).
     expect(screen.getByRole('option', { name: 'Button' }).id).toBe(option.id);
   });
 

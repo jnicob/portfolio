@@ -8,7 +8,7 @@ export type ShowcaseIndexProps = {
   inputLabel: string;
   emptyMessage: string;
   placeholder?: string;
-  /** Invocado con el id del item elegido; no toca `location.hash` (lo hace quien filtra, ShowcaseView). */
+  /** Invoked with the chosen item's id; does not touch `location.hash` (handled by the filter owner, ShowcaseView). */
   onSelect: (id: string) => void;
   /** ID of the currently applied item (marks the active option in the list). */
   selectedId?: string;

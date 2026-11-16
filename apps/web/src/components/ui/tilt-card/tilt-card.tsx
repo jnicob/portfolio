@@ -38,7 +38,7 @@ export function TiltCard({ children, maxTilt = DEFAULT_MAX_TILT_DEG, className }
     setTiltEnabled(fine && !prefersReducedMotion());
   }, []);
 
-  // Cancela un frame en vuelo si el componente se desmonta antes de que corra
+  // Cancels an in-flight frame if the component unmounts before it runs
   // (e.g. navigation while the pointer was still over the card).
   useEffect(() => {
     return () => {

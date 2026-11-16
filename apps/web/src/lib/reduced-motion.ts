@@ -1,12 +1,12 @@
 /**
- * Lee `prefers-reduced-motion` en tiempo de llamada (no reactivo: no se suscribe a
- * cambios). Usado como valor inicial de estado (lazy initializer), no dentro de un
- * effect que necesite reaccionar a que el usuario cambie la preferencia en vivo.
- * `typeof window` guarda SSR/static export; `matchMedia` es opcional por si un
- * entorno de test no lo define.
+ * Reads `prefers-reduced-motion` at call time (non-reactive: does not subscribe to
+ * changes). Used as an initial state value (lazy initializer), not inside an
+ * effect that needs to react when the user changes the preference live.
+ * `typeof window` guards SSR/static export; `matchMedia` is optional in case a
+ * test environment does not define it.
  *
- * Duplicado intencional de `packages/media-kit/src/internal/prefers-reduced-motion.ts`:
- * es API interna del paquete, no se importa desde la app.
+ * Intentional duplicate of `packages/media-kit/src/internal/prefers-reduced-motion.ts`:
+ * that is internal package API and is not imported from the app.
  */
 export function prefersReducedMotion(): boolean {
   return (

@@ -41,7 +41,7 @@ describe('Button', () => {
 
   // A2 (cursor convention, Phase 3.6): in Tailwind v4 `<button>` no longer comes with
   // `cursor: pointer` by default — without this explicit class, every real button in the
-  // app (incl. los del showcase) mostraba cursor por defecto pese a ser interactivo.
+  // app (including showcase ones) showed the default cursor despite being interactive.
   it('es cursor-pointer en cualquier variante (es un control interactivo real)', () => {
     render(<Button>Ok</Button>);
     expect(screen.getByRole('button')).toHaveClass('cursor-pointer');

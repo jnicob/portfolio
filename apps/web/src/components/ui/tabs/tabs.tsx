@@ -30,8 +30,8 @@ export function Tabs({ defaultValue, children }: { defaultValue: string; childre
   const baseId = useId();
   return (
     <TabsContext.Provider value={{ active, setActive, baseId }}>
-      {/* Root en grid: fila 1 auto para `TabList`, fila 2 (1fr) compartida por
-          todos los `TabPanel` (misma celda, ver comentario en TabPanel). */}
+      {/* Grid root: row 1 auto for `TabList`, row 2 (1fr) shared by
+          all `TabPanel`s (same cell, see comment in TabPanel). */}
       <div className="grid grid-rows-[auto_1fr]">{children}</div>
     </TabsContext.Provider>
   );
@@ -81,10 +81,10 @@ export function Tab({ value, children }: { value: string; children: ReactNode })
       tabIndex={selected ? 0 : -1}
       onClick={() => setActive(value)}
       className={cn(
-        // Cursor + hover reutilizan el lenguaje de Button (T14): activo ~ variante primary
-        // (bg-accent + hover:bg-accent-hover). El inactivo NO puede copiar el hover
-        // `hover:bg-surface` de Button ghost tal cual: `TabList` ya pinta su fondo con
-        // `bg-surface` hover would be invisible over itself. Semantic step `border`
+        // Cursor + hover reuse Button's visual language (T14): active ~ primary variant
+        // (bg-accent + hover:bg-accent-hover). Inactive CANNOT copy Button ghost's
+        // `hover:bg-surface` as-is: `TabList` already paints its background with
+        // `bg-surface`, so that hover would be invisible over itself. Semantic step `border`
         // provides contrast. Explicit `cursor-pointer` because Tailwind v4 no longer sets it by default.
         'cursor-pointer rounded-control px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
         selected
@@ -100,13 +100,13 @@ export function Tab({ value, children }: { value: string; children: ReactNode })
 export function TabPanel({ value, children }: { value: string; children: ReactNode }) {
   const { active, baseId } = useTabs('TabPanel');
   const selected = active === value;
-  // Ambos paneles quedan montados y comparten la misma celda de grid
-  // (`col-start-1 row-start-2`, ver `Tabs`): la altura del contenedor pasa a
-  // be that of the tallest panel, so switching tabs does not shift it. The
-  // inactivo usa `invisible` (visibility:hidden) en vez de `hidden`
-  // (display:none) — retains its box so the grid keeps measuring it.
-  // `aria-hidden` removes it from the accessibility tree and `tabIndex` disappears
-  // (undefined) para que no sea focusable. El activo hace fade-in 150ms.
+  // Both panels stay mounted and share the same grid cell
+  // (`col-start-1 row-start-2`, see `Tabs`): the container height becomes
+  // that of the tallest panel, so switching tabs does not shift it. The
+  // inactive panel uses `invisible` (visibility:hidden) instead of `hidden`
+  // (display:none) — retaining its box so the grid keeps measuring it.
+  // `aria-hidden` removes it from the accessibility tree and `tabIndex` is omitted
+  // (undefined) so it is not focusable. The active panel fades in over 150ms.
   return (
     <div
       role="tabpanel"

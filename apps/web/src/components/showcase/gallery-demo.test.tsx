@@ -3,9 +3,9 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GalleryDemo, type GalleryDemoLabels } from './gallery-demo';
 
-// Mock parcial: solo `preloadFullSources` se sustituye por un spy (para poder
-// aserto sobre sus llamadas); el resto del paquete (FilterGallery, HoverVideo,
-// MediaLightbox…) se usa real, tal como pide el brief.
+// Partial mock: only `preloadFullSources` is replaced by a spy (to assert
+// on its calls); the rest of the package (FilterGallery, HoverVideo,
+// MediaLightbox…) uses the real implementation, as requested in the brief.
 vi.mock('@nicobehm/media-kit', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@nicobehm/media-kit')>();
   return { ...actual, preloadFullSources: vi.fn() };

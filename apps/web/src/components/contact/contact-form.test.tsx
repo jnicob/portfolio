@@ -129,7 +129,7 @@ describe('ContactForm', () => {
       expect(screen.getByText('¡Mensaje enviado!')).toBeInTheDocument();
     });
 
-    // No debe haber llamado al backend real
+    // Must not have called the real backend
     expect(handleSubmit).not.toHaveBeenCalled();
   });
 

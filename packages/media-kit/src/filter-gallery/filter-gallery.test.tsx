@@ -76,10 +76,10 @@ function fireResize(width: number) {
 }
 
 /**
- * Stub de `element.animate` que devuelve un handle fake (con `onfinish` capturable
- * y `cancel` espiable) por cada llamada, en vez de `vi.fn()` a secas: los tests de
- * salida animada necesitan disparar `onfinish` manualmente y comprobar que una
- * reentrada cancela el handle en curso.
+ * `element.animate` stub that returns a fake handle (with a capturable `onfinish`
+ * and a spyable `cancel`) on each call, instead of a plain `vi.fn()`: animated
+ * exit tests need to fire `onfinish` manually and verify that a
+ * re-entry cancels the ongoing handle.
  */
 function stubAnimateWithHandles() {
   const handles: { onfinish: (() => void) | null; cancel: ReturnType<typeof vi.fn> }[] = [];
@@ -133,7 +133,7 @@ describe('FilterGallery', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
     fireEvent.click(screen.getByRole('button', { name: 'All' }));
     expect(onFilterChange).toHaveBeenCalledWith(null);
-    expect(screen.getAllByRole('listitem')).toHaveLength(2); // controlado: no cambia solo
+    expect(screen.getAllByRole('listitem')).toHaveLength(2); // controlled: does not change on its own
   });
 
   it('anima con FLIP al filtrar (spy en element.animate)', () => {
@@ -278,11 +278,11 @@ describe('exit animation (v0.6)', () => {
     expect(item).not.toHaveAttribute('aria-hidden');
     expect(item).not.toHaveAttribute('inert');
 
-    // El onfinish del handle cancelado es un "stale callback": no debe reabrir una
-    // nueva fase de salida (nada de `data-fg-exiting` de vuelta) ni disparar una
+    // The cancelled handle's onfinish is a "stale callback": it must not reopen a
+    // new exit phase (no `data-fg-exiting` coming back) nor trigger an
     // extra animation — without the reentrancy guard, dropExiting('a') wouldn't break
-    // nada visualmente (el item sigue en `visible`), pero esto confirma que ni
-    // siquiera se re-procesa como si acabara de salir.
+    // anything visually (the item is still in `visible`), but this confirms that it is not
+    // even re-processed as if it had just exited.
     const animateCallsBeforeStaleFinish = animate.mock.calls.length;
     act(() => handles[0]?.onfinish?.());
     expect(animate.mock.calls.length).toBe(animateCallsBeforeStaleFinish);
@@ -292,9 +292,9 @@ describe('exit animation (v0.6)', () => {
   });
 
   it('desmonta con una salida en curso: cancela la Animation pendiente (mecanismo, no solo ausencia de crash)', () => {
-    // Igual que en api-request-player.test.tsx: React 19 vuelve un no-op silencioso
-    // el setState post-unmount (ya no hay warning "state update on an unmounted
-    // component"), so "does not throw / does not console.error" does NOT distinguish on its
+    // Same as in api-request-player.test.tsx: React 19 turns post-unmount setState
+    // into a silent no-op (there is no longer a "state update on an unmounted
+    // component" warning), so "does not throw / does not console.error" does NOT distinguish on its
     // own whether cleanup stops canceling the Animation. The real assertion is that
     // `cancel()` was called on the handle on unmount; the `console.error` spy is
     // an additional check that no other warning appears either.
@@ -302,13 +302,13 @@ describe('exit animation (v0.6)', () => {
     const { handles } = stubAnimateWithHandles();
     const { rerender, unmount } = render(<FilterGallery items={ITEMS} filter={null} label="G" />);
     rerender(<FilterGallery items={ITEMS} filter="video" label="G" />);
-    expect(screen.getByText('A')).toBeInTheDocument(); // salida en curso
+    expect(screen.getByText('A')).toBeInTheDocument(); // exit in progress
 
     unmount();
     expect(handles[0]?.cancel).toHaveBeenCalled();
 
-    // An `onfinish` that fires after unmount (some environments do
-    // incluso tras `cancel()`) no debe lanzar ni imprimir warnings.
+    // An `onfinish` that fires after unmount (some environments do this
+    // even after `cancel()`) must not throw or print warnings.
     expect(() => act(() => handles[0]?.onfinish?.())).not.toThrow();
     expect(consoleError).not.toHaveBeenCalled();
   });

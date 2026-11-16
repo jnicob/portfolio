@@ -18,7 +18,7 @@ import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
 import { GalleryAudioTile } from './gallery-audio-tile';
 
 const PENDING_MS = 600;
-/** ~800 caracteres/s a 60fps ≈ 13.3 car/frame, redondeado a 14. */
+/** ~800 chars/s at 60fps ≈ 13.3 chars/frame, rounded to 14. */
 const CHARS_PER_FRAME = 14;
 const COPY_FEEDBACK_MS = 2000;
 
@@ -29,22 +29,22 @@ export type ApiRequestPlayerLabels = {
   examples: Record<ApiDemoExampleId, string>;
   run: string;
   running: string;
-  /** Etiqueta de estado (font-mono) junto al spinner mientras `state === 'pending'`. */
+  /** Status label (font-mono) next to the spinner while `state === 'pending'`. */
   pending: string;
-  /** Etiqueta de estado (font-mono) junto al caret mientras `state === 'streaming'`. */
+  /** Status label (font-mono) next to the caret while `state === 'streaming'`. */
   streaming: string;
   copy: string;
   copied: string;
   done: string;
   /** Response `<pre>` content when `state === 'idle'`, before the first run. */
   responsePlaceholder: string;
-  /** Nombre accesible del tab "Preview" (T13, columna visor Preview|Response). */
+  /** Accessible name of the "Preview" tab (T13, Preview|Response viewer column). */
   previewTab: string;
-  /** Nombre accesible del tab "Response". */
+  /** Accessible name of the "Response" tab. */
   responseTab: string;
-  /** Placeholder del panel Preview mientras `state !== 'done'` (idle/pending/streaming). */
+  /** Preview panel placeholder while `state !== 'done'` (idle/pending/streaming). */
   previewIdle: string;
-  /** `alt` de la imagen de preview mostrada en `state === 'done'`. */
+  /** `alt` of the preview image shown when `state === 'done'`. */
   previewAlt: string;
   /** aria-label for the ⛶ button that preloads HD and opens the lightbox. */
   fullscreen: string;
@@ -260,7 +260,7 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
       clearTimeout(copyTimeout.current);
       copyTimeout.current = setTimeout(() => setCopied(false), COPY_FEEDBACK_MS);
     } catch {
-      // Sin feedback de error dedicado: esta demo no simula fallos de portapapeles.
+      // No dedicated error feedback: this demo does not simulate clipboard failures.
     }
   }
 
@@ -290,7 +290,7 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
                 label: labels.examples[entry.id],
               }))}
               // w-auto overrides (via tailwind-merge) the default w-full of Select: here
-              // el ancho lo gobierna flex-1 y el w-full quedaba como utility muerta.
+              // the width is governed by flex-1 and w-full remained as a dead utility.
               className="h-9 w-auto min-w-0 flex-1 cursor-pointer px-2 font-mono"
             />
           </label>
@@ -312,7 +312,7 @@ export function ApiRequestPlayer({ examples, labels }: Props) {
         </div>
       </div>
 
-      {/* Columna visor: fila de estado reservada + Tabs Preview|Response. */}
+      {/* Viewer column: reserved status row + Preview|Response Tabs. */}
       <div className="flex flex-col gap-2">
         {/* ALWAYS rendered (even in idle, empty): reserves min-h-8 so that
             showing/hiding spinner, label, or badge does not shift the layout. */}

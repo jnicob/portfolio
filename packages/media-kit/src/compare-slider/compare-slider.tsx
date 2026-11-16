@@ -12,17 +12,17 @@ import { prefersReducedMotion } from '../internal/prefers-reduced-motion';
 import { MediaLightbox, type MediaLightboxLabels } from '../media-lightbox';
 import { isMediaSource, preloadFullSources, type MediaSource } from '../media-source';
 
-/** Cadencia del alterno before/after en `compareMode="blink"` (spec A3). */
+/** Before/after alternation cadence in `compareMode="blink"` (spec A3). */
 const BLINK_INTERVAL_MS = 800;
-/** Ancho de contenedor bajo el cual side-by-side pasa a apilado. */
+/** Container width below which side-by-side switches to stacked. */
 const STACK_BREAKPOINT = 480;
 
 export type CompareSliderExpand = {
-  /** aria-label del dialog del compare-lightbox. */
+  /** aria-label of the compare-lightbox dialog. */
   lightboxLabel: string;
   /** Overlay button text. Default 'Full Screen'. */
   buttonLabel?: string;
-  /** Labels del MediaLightbox interno (i18n). */
+  /** Labels of the internal MediaLightbox (i18n). */
   lightboxLabels?: Partial<MediaLightboxLabels>;
 };
 
@@ -54,9 +54,9 @@ const EXPAND_ICON = (
 export type CompareSliderMode = 'wipe' | 'onion' | 'blink' | 'side-by-side';
 
 export type CompareSliderOverlayLabels = {
-  /** Label superpuesto en el lado `before` (esquina inferior izquierda). */
+  /** Overlay label on the `before` side (bottom-left corner). */
   before: string;
-  /** Label superpuesto en el lado `after` (esquina inferior derecha). */
+  /** Overlay label on the `after` side (bottom-right corner). */
   after: string;
 };
 
@@ -66,9 +66,9 @@ export type CompareSliderProps = {
    * Accepts a `MediaSource`: the slider internally renders its `<img src alt draggable={false}>`.
    */
   before: ReactNode | MediaSource;
-  /** Medio procesado. Se revela a la derecha / abajo del divisor. Mismas reglas que `before`. */
+  /** Processed media. Revealed to the right / bottom of the divider. Same rules as `before`. */
   after: ReactNode | MediaSource;
-  /** Nombre accesible del divisor. */
+  /** Accessible name of the divider. */
   label?: string;
   /** Initial divider position, 0-100. */
   initialPosition?: number;
@@ -106,10 +106,10 @@ export type CompareSliderProps = {
    * Default `true`.
    */
   pauseOnClick?: boolean;
-  /** Anunciado por el aria-live al pausar (hover-pause, C6). Default `'Comparison paused'`. */
+  /** Announced by aria-live when pausing (hover-pause, C6). Default `'Comparison paused'`. */
   pauseLabel?: string;
   /**
-   * Anunciado por el aria-live al reanudar (hover-pause, C6). Default
+   * Announced by aria-live when resuming (hover-pause, C6). Default
    * `'Comparison following pointer'`.
    */
   resumeLabel?: string;
@@ -129,15 +129,15 @@ export type CompareSliderProps = {
    */
   blinkResumeLabel?: string;
   /**
-   * Badges superpuestos en cada lado (paridad C5), esquina inferior izquierda/derecha.
-   * `aria-hidden`: el nombre accesible del medio ya lo da el `alt` del `<img>` (interno
-   * si el lado es `MediaSource`, o el que ponga el consumidor si es `ReactNode`).
+   * Overlay badges on each side (C5 parity), bottom-left/right corners.
+   * `aria-hidden`: the accessible name of the media is already provided by the `alt` of the `<img>` (internal
+   * if the side is `MediaSource`, or whatever the consumer provides if it is `ReactNode`).
    */
   overlayLabels?: CompareSliderOverlayLabels;
   /**
-   * `object-fit` de los `<img>` internos que el paquete renderiza para un lado
-   * `MediaSource` (T14). Un lado `ReactNode` es opaco al componente — este prop NO le
-   * llega; el consumidor controla su propio `object-fit`. Default `'cover'`.
+   * `object-fit` of the internal `<img>` elements rendered by the package for a
+   * `MediaSource` side (T14). A `ReactNode` side is opaque to the component — this prop does NOT
+   * reach it; the consumer controls its own `object-fit`. Default `'cover'`.
    */
   objectFit?: 'cover' | 'contain';
   /**
@@ -171,8 +171,8 @@ function renderSide(
     <img
       // Hydration (static export): native `load` may fire BEFORE
       // React attaches onLoad; without this check the side would remain pending forever
-      // (data-loading permanente, opacidad 0). Un nodo ya completo al adjuntar el ref
-      // se marca cargado directamente. naturalWidth>0 distingue carga OK de error
+      // (permanent data-loading, opacity 0). A node already complete when attaching the ref
+      // is marked loaded directly. naturalWidth>0 distinguishes a successful load from an error
       // (a broken img also reports complete=true, but with naturalWidth 0).
       ref={(node) => {
         if (node?.complete && node.naturalWidth > 0) onSideLoaded(sideKey);
@@ -207,20 +207,20 @@ export function CompareSlider({
   compareMode = 'wipe',
 }: CompareSliderProps) {
   const [position, setPosition] = useState(() => clamp(initialPosition));
-  // Declarado incondicional (reglas de hooks) aunque solo se use con `expand`.
+  // Declared unconditionally (rules of hooks) even though it is only used with `expand`.
   const [expanded, setExpanded] = useState(false);
-  // C6: pausa del hover-follow por click; `announcement` alterna entre los dos
-  // labels para que el aria-live re-anuncie cada toggle.
+  // C6: hover-follow pause via click; `announcement` alternates between the two
+  // labels so that aria-live re-announces each toggle.
   const [paused, setPaused] = useState(false);
   const [announcement, setAnnouncement] = useState('');
-  // C5: carga por lado, idempotente (ref de nodo ya completo + onLoad pueden
+  // C5: per-side loading, idempotent (already-complete node ref + onLoad may
   // overlap after hydration: two signals, a single "loaded" per side).
   // Documented limitation: if a side's src changes after mounting, its flag
-  // NO se resetea (data-loading no reaparece para la nueva fuente).
+  // is NOT reset (data-loading does not reappear for the new source).
   const [loadedSides, setLoadedSides] = useState({ before: false, after: false });
-  // Blink (spec A3): lado mostrado por el timer y si sigue corriendo. Arranca
-  // pausado si el usuario prefiere menos movimiento (lazy initializer: se lee
-  // una sola vez al montar, no reactivo a que la preferencia cambie en vivo).
+  // Blink (spec A3): side shown by the timer and whether it is still running. Starts
+  // paused if the user prefers reduced motion (lazy initializer: read
+  // once on mount, not reactive to live preference changes).
   const [blinkShowsAfter, setBlinkShowsAfter] = useState(false);
   const [blinkRunning, setBlinkRunning] = useState(
     () => compareMode === 'blink' && !prefersReducedMotion(),
@@ -233,26 +233,26 @@ export function CompareSlider({
   const downPosRef = useRef<{ x: number; y: number } | null>(null);
   const draggedSinceDownRef = useRef(false);
   const horizontal = orientation === 'horizontal';
-  // Derivado en render: solo los lados MediaSource son rastreables; sin ninguno,
-  // `data-loading` nunca se activa (ReactNode es opaco, su carga no se puede
-  // observe from here — documented in the JSDoc of objectFit/overlayLabels).
+  // Derived during render: only MediaSource sides are trackable; without any,
+  // `data-loading` never activates (ReactNode is opaque, its load cannot be
+  // observed from here — documented in the JSDoc of objectFit/overlayLabels).
   const loading =
     (isMediaSource(before) && !loadedSides.before) || (isMediaSource(after) && !loadedSides.after);
-  // `side-by-side` y `blink` no tienen divisor ni handle: el gesto de
-  // puntero/teclado de esta superficie no aplica y hace early-return.
+  // `side-by-side` and `blink` have neither divider nor handle: pointer/keyboard
+  // gestures on this surface do not apply and return early.
   const hasSlider = compareMode === 'wipe' || compareMode === 'onion';
 
-  // Timer de blink: solo corre en compareMode="blink" y con blinkRunning=true;
+  // Blink timer: only runs in compareMode="blink" and with blinkRunning=true;
   // the pause switch (below) toggles blinkRunning and this effect cleans up the
-  // interval anterior antes de crear uno nuevo (o al desmontar).
+  // previous interval before creating a new one (or on unmount).
   useEffect(() => {
     if (compareMode !== 'blink' || !blinkRunning) return;
     const id = window.setInterval(() => setBlinkShowsAfter((v) => !v), BLINK_INTERVAL_MS);
     return () => window.clearInterval(id);
   }, [compareMode, blinkRunning]);
 
-  // side-by-side responsive: ResizeObserver para detectar cuando el contenedor
-  // es estrecho (<480px) y apilar verticalmente.
+  // Responsive side-by-side: ResizeObserver to detect when the container
+  // is narrow (<480px) and stack vertically.
   useEffect(() => {
     if (compareMode !== 'side-by-side') return;
     const root = containerRef.current;
@@ -267,7 +267,7 @@ export function CompareSlider({
     return () => observer.disconnect();
   }, [compareMode]);
 
-  // Sincronizar y resetear estado de pausa de forma inmediata durante el render si el modo cambia
+  // Synchronize and reset pause state immediately during render if mode changes
   const [prevMode, setPrevMode] = useState(mode);
   if (mode !== prevMode) {
     setPrevMode(mode);
@@ -283,17 +283,17 @@ export function CompareSlider({
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    // Sin handle no hay teclado que gobernar (side-by-side/blink): el handle ni
-    // siquiera se renderiza, pero el guard documenta la invariante.
+    // Without a handle there is no keyboard to govern (side-by-side/blink): the handle is not
+    // even rendered, but the guard documents the invariant.
     if (!hasSlider) return;
     const step: Record<string, number> = horizontal
       ? { ArrowRight: 1, ArrowLeft: -1, PageUp: 10, PageDown: -10 }
       : { ArrowUp: 1, ArrowDown: -1, PageUp: 10, PageDown: -10 };
     if (event.key === 'Home') {
       event.preventDefault();
-      // El keydown del lightbox es un handler de React en el root del dialog (no un
+      // The lightbox keydown is a React handler on the dialog root (not a
       // native listener), so stopPropagation does stop it: with focus on the handle,
-      // Home/End/flechas mueven el divisor y NO llegan al pan/zoom por teclado del visor.
+      // Home/End/arrows move the divider and do NOT reach the viewer's keyboard pan/zoom.
       event.stopPropagation();
       update(0);
     } else if (event.key === 'End') {
@@ -316,14 +316,14 @@ export function CompareSlider({
   }
 
   function followsHover(event: PointerEvent<HTMLDivElement>): boolean {
-    // Con dragTarget='handle' el hover-follow queda desactivado por completo: la
-    // superficie no responde al puntero, solo el handle (puntero o teclado).
-    // En pausa (C6) el seguimiento se suspende: el divisor se queda donde estaba.
+    // With dragTarget='handle' hover-follow is completely disabled: the
+    // surface does not respond to the pointer, only the handle (pointer or keyboard).
+    // When paused (C6) tracking is suspended: the divider stays where it was.
     return dragTarget === 'surface' && mode === 'hover' && event.pointerType === 'mouse' && !paused;
   }
 
   function togglePaused() {
-    // Fuera del updater de setPaused: los updaters deben ser puros (sin side effects).
+    // Outside the setPaused updater: updaters must be pure (no side effects).
     const next = !paused;
     setAnnouncement(next ? pauseLabel : resumeLabel);
     setPaused(next);
@@ -332,18 +332,18 @@ export function CompareSlider({
   function toggleBlinkRunning() {
     // blinkPauseLabel/blinkResumeLabel are button-actions (they describe what the switch
     // does next, not the state already reached): running=true -> the switch
-    // ofrece "pausar" (blinkPauseLabel), running=false -> ofrece "reanudar"
+    // offers "pause" (blinkPauseLabel), running=false -> offers "resume"
     // (blinkResumeLabel). The aria-live announces that SAME action available after the
     // toggle, with the same condition as the render below (`blinkRunning ?
     // blinkPauseLabel : blinkResumeLabel`), so the announcement can never become out of sync
-    // del texto visible del switch (design review F3.6 T21 + F3.7 T24).
+    // with the visible switch text (design review F3.6 T21 + F3.7 T24).
     const next = !blinkRunning;
     setAnnouncement(next ? blinkPauseLabel : blinkResumeLabel);
     setBlinkRunning(next);
   }
 
   // The `expand` (C1) lightbox mounts via createPortal in document.body but continues
-  // siendo hijo de React de ESTE componente: sus eventos de puntero burbujean hasta
+  // to be a React child of THIS component: its pointer events bubble up to
   // here according to the React tree, not the real DOM. `currentTarget.contains(target)` uses
   // the real DOM, so it correctly discards events originating inside the
   // lightbox (help, controls, close…) even if its node is not under containerRef.
@@ -370,7 +370,7 @@ export function CompareSlider({
     // With hover active the mouse already follows the pointer; the down only applies to touch/pen.
     if (followsHover(event)) return;
     // When paused (C6), the surface does not reposition the divider with any pointer: the
-    // down queda registrado SOLO para clasificar en pointerup el click que reanuda
+    // down is recorded ONLY to classify the resuming click in pointerup
     // (without capture or update, the divider does not jump to the click position).
     if (mode === 'hover' && paused) return;
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -400,10 +400,10 @@ export function CompareSlider({
     const dragged = draggedSinceDownRef.current;
     downPosRef.current = null;
     draggedSinceDownRef.current = false;
-    // Click = down+up sin arrastre; solo pausa/reanuda en mode="hover" con pauseOnClick
-    // y dragTarget='surface' (con dragTarget='handle' no hay hover-follow que pausar).
-    // wasDown discards clicks whose down was absorbed by another element (e.g. the button
-    // expand, que hace stopPropagation en su propio pointerdown).
+    // Click = down+up without drag; only pauses/resumes in mode="hover" with pauseOnClick
+    // and dragTarget='surface' (with dragTarget='handle' there is no hover-follow to pause).
+    // wasDown discards clicks whose down was absorbed by another element (e.g. the expand
+    // button, which calls stopPropagation on its own pointerdown).
     if (!wasDown || dragged || mode !== 'hover' || !pauseOnClick || dragTarget !== 'surface') {
       return;
     }
@@ -414,7 +414,7 @@ export function CompareSlider({
     preloadFullSources([before, after].filter(isMediaSource));
   }
 
-  // C5: marca un lado como cargado. Idempotente: si ya estaba, devuelve el MISMO
+  // C5: marks a side as loaded. Idempotent: if already loaded, returns the SAME
   // state object (without re-render), so the complete+onLoad double fire is harmless.
   function markSideLoaded(side: CompareSide) {
     setLoadedSides((prev) => (prev[side] ? prev : { ...prev, [side]: true }));
@@ -440,9 +440,9 @@ export function CompareSlider({
       </div>
       <div
         className="mk-compare__after"
-        // side-by-side muestra dos medios completos e independientes (ambos con
-        // su propio nombre accesible); en el resto de modos `after` es un efecto
-        // de revelado sobre `before` y se oculta a lectores de pantalla.
+        // side-by-side shows two complete and independent media items (both with
+        // their own accessible name); in the remaining modes `after` is a
+        // reveal effect over `before` and is hidden from screen readers.
         aria-hidden={compareMode === 'side-by-side' ? undefined : 'true'}
       >
         {renderSide(after, 'after', objectFit, markSideLoaded)}
@@ -474,7 +474,7 @@ export function CompareSlider({
           aria-valuemax={100}
           aria-valuenow={Math.round(position)}
           // onion governs opacity, not the divider position: the valuetext
-          // anuncia lo que realmente cambia con el handle en ese modo.
+          // announces what actually changes with the handle in that mode.
           aria-valuetext={compareMode === 'onion' ? `${Math.round(position)}% after` : undefined}
           aria-orientation={orientation}
           className="mk-compare__handle"

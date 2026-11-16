@@ -92,7 +92,7 @@ function stubAnimationFrame() {
     frames.delete(id);
   });
   return {
-    /** Ejecuta los frames agendados en este instante (una "ronda" de streaming). */
+    /** Executes the frames scheduled at this instant (one streaming "round"). */
     flush: () => {
       const pending = Array.from(frames.values());
       frames.clear();
@@ -227,9 +227,9 @@ describe('ApiRequestPlayer', () => {
   });
 
   it('desmontar durante pending cancela el timeout pendiente (mecanismo, no solo ausencia de crash)', () => {
-    // React 19 vuelve un no-op silencioso el setState post-unmount (ya no hay warning
-    // "state update on an unmounted component"), so "does not throw / does not do
-    // console.error" NO discrimina si el cleanup deja de llamar clearTimeout. La
+    // React 19 turns post-unmount setState into a silent no-op (no more
+    // "state update on an unmounted component" warning), so "does not throw / does not do
+    // console.error" DOES NOT distinguish whether cleanup stops calling clearTimeout. The
     // actual assertion is on the fake timers engine: `getTimerCount()` counts
     // timers (`setTimeout`) still pending — must go from 1 to 0 on unmount.
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
@@ -240,7 +240,7 @@ describe('ApiRequestPlayer', () => {
     expect(screen.getByRole('button', { name: labels.running })).toBeInTheDocument();
     expect(vi.getTimerCount()).toBe(1);
 
-    // Desmonta ANTES de que el setTimeout de 600ms llegue a disparar.
+    // Unmounts BEFORE the 600ms setTimeout gets a chance to fire.
     unmount();
     expect(vi.getTimerCount()).toBe(0);
   });
@@ -257,8 +257,8 @@ describe('ApiRequestPlayer', () => {
 
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: labels.copy }));
-      // Deja correr el microtask del catch antes de aserciones (evita el warning
-      // "not wrapped in act" por el setState que NO llega a producirse).
+      // Let the catch microtask run before assertions (avoids the
+      // "not wrapped in act" warning for the setState that DOES NOT end up happening).
       await Promise.resolve();
     });
 
@@ -330,7 +330,7 @@ describe('ApiRequestPlayer', () => {
 
     const endpointSelect = screen.getByRole('combobox', { name: labels.endpoint });
     expect(endpointSelect).toHaveClass('transition-colors', 'hover:border-fg-muted');
-    // flex-1 gobierna el ancho: el w-full por defecto del Select queda muerto y no debe llegar al DOM.
+    // flex-1 governs the width: Select's default w-full becomes dead weight and must not reach the DOM.
     expect(endpointSelect).toHaveClass('flex-1');
     expect(endpointSelect).not.toHaveClass('w-full');
     fireEvent.change(endpointSelect, {

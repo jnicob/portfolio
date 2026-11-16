@@ -6,7 +6,7 @@ import { prefersReducedMotion } from '../internal/prefers-reduced-motion';
 export type HoverVideoProps = {
   /** MP4 URL; only downloaded after activation (facade — 0 bytes at rest). */
   src: string;
-  /** Imagen visible en reposo. */
+  /** Image visible at rest. */
   poster: string;
   /** Accessible name of the interactive area. */
   label: string;

@@ -12,7 +12,7 @@ import { describe, expect, it } from 'vitest';
 const CSS_PATH = path.resolve(__dirname, 'editorial.css');
 const css = readFileSync(CSS_PATH, 'utf-8');
 
-/** Selectores de regla: lo que precede a cada `{`, ignorando comentarios y @media. */
+/** Rule selectors: what precedes each `{`, ignoring comments and @media. */
 function ruleSelectors(source: string): string[] {
   const clean = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@media[^{]*\{/g, '');
   const selectors: string[] = [];
@@ -50,14 +50,14 @@ describe('editorial.css (disposición del skin editorial)', () => {
 
   it('no contiene named colors sueltos (black/white/red/blue/gray/grey) (solo tokens)', () => {
     // Boundaries excluding hyphens so as not to trigger on CSS identifiers
-    // como `white-space` o `off-white` (no son el color named "white").
+    // such as `white-space` or `off-white` (which are not the named color "white").
     expect(css).not.toMatch(/(?<![\w-])(black|white|red|blue|gray|grey)(?![\w-])/i);
   });
 
   it('CV vertical rhythm has a single owner: editorial overrides layout gap and declares the total', () => {
-    // Higiene adjudicada en el design review de F3.9: los 4.5rem entre secciones
-    // (2.5rem sobre la hairline + 2rem bajo ella) viven ENTEROS en este parcial,
-    // no repartidos entre el gap-10 del layout base y este padding.
+    // Hygiene established in the F3.9 design review: the 4.5rem between sections
+    // (2.5rem above the hairline + 2rem below it) live ENTIRELY in this partial,
+    // rather than split between the base layout's gap-10 and this padding.
     const container = css.match(/\[data-skin='editorial'\] \[data-cv-sections\]\s*\{([^}]*)\}/);
     expect(container).not.toBeNull();
     expect(container?.[1]).toMatch(/row-gap:\s*0/);

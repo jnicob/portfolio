@@ -13,7 +13,7 @@ export type VideoScrubDemoStrings = {
    * already comes from `label`/`figcaption`, so the hint does not need to be announced.
    */
   hint: string;
-  /** Texto del figcaption. */
+  /** Figcaption text. */
   caption: string;
 };
 
@@ -113,7 +113,7 @@ export function VideoScrubDemo({ strings }: Props) {
   );
 }
 
-/** Icono decorativo (flechas ↔) que refuerza el cursor `ew-resize` del scrub. */
+/** Decorative icon (↔ arrows) that reinforces the scrub `ew-resize` cursor. */
 function ScrubHintIcon() {
   return (
     <svg

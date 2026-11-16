@@ -1,12 +1,12 @@
 import './globals.css';
 
-// Init de tema minimalista: el root layout no renderiza <html>/<body> (los pone
+// Minimalist theme init: the root layout does not render <html>/<body> (provided by
 // [locale]/layout.tsx), so there is no default data-theme here. document.documentElement
 // is ALWAYS the real <html> constructed by the browser, even if no JSX in this tree
 // explicitly declares it — setting it here is enough for token utilities
 // (bg-bg/text-fg/text-accent, imported from globals.css) to resolve their variables.
-// Mismo criterio que themeInitScript en [locale]/layout.tsx (URL > stored > sistema),
-// Simplified: this page does not read `?theme=` because it is not a normal navigation destination.
+// Same precedence as themeInitScript in [locale]/layout.tsx (URL > stored > system),
+// simplified: this page does not read `?theme=` because it is not a normal navigation destination.
 const THEME_INIT_SCRIPT = `(function () {
   try {
     var stored = localStorage.getItem('theme');

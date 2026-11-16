@@ -393,8 +393,8 @@ describe('CompareSlider v2.2 — expand (C1)', () => {
     // Regression (T26 finding 2): the `expand` lightbox is a React child of this
     // component but mounts via createPortal in document.body. React bubbles its
     // pointer events according to the React tree, not the real DOM: without a guard, a
-    // pointerdown sobre CUALQUIER control del lightbox (p.ej. el toggle de ayuda)
-    // llegaba al onPointerDown de ESTA superficie de fondo y capturaba el puntero
+    // pointerdown on ANY lightbox control (e.g. the help toggle)
+    // reached the onPointerDown of THIS background surface and captured the pointer
     // here, stealing the real pointerup/click from its destination in the browser.
     render(
       <CompareSlider
@@ -543,11 +543,11 @@ describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
     const container = slider.closest('.mk-compare') as HTMLElement;
     mockRect(container);
 
-    // Pausar
+    // Pause
     click(container, { clientX: 100, clientY: 50 });
     expect(container).toHaveAttribute('data-paused');
 
-    // Cambiar a drag
+    // Switch to drag
     rerender(
       <CompareSlider
         before={<img src="/b.png" alt="b" />}
@@ -557,7 +557,7 @@ describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
     );
     expect(container).not.toHaveAttribute('data-paused');
 
-    // El drag funciona
+    // Drag works
     const onPositionChange = vi.fn();
     rerender(
       <CompareSlider
@@ -630,7 +630,7 @@ describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
       pointerId: 1,
     });
     expect(slider).toHaveAttribute('aria-valuenow', '80');
-    // …ni tras el up que reanuda: se queda donde estaba congelado.
+    // …nor after the resuming up: it stays where it was frozen.
     fireEvent.pointerUp(container, {
       clientX: 40,
       clientY: 50,
@@ -642,7 +642,7 @@ describe('CompareSlider v2.2 — pauseOnClick (C6)', () => {
     expect(container).not.toHaveAttribute('data-paused');
     expect(slider).toHaveAttribute('aria-valuenow', '80');
 
-    // Reanudado: el hover vuelve a seguir al puntero.
+    // Resumed: hover follows the pointer again.
     fireEvent.pointerMove(container, { clientX: 60, clientY: 50, pointerType: 'mouse' });
     expect(slider).toHaveAttribute('aria-valuenow', '30');
   });
@@ -795,7 +795,7 @@ describe('CompareSlider v2.2 — paridad C5', () => {
     const container = screen.getByRole('slider').closest('.mk-compare') as HTMLElement;
     expect(container).toHaveAttribute('data-loading');
 
-    // Doble disparo en el MISMO lado (complete + onLoad pueden solaparse tras
+    // Double fire on the SAME side (complete + onLoad may overlap after
     // hydration): the other side remains pending → data-loading must persist.
     fireEvent.load(screen.getByAltText('Antes'));
     fireEvent.load(screen.getByAltText('Antes'));
@@ -815,15 +815,15 @@ describe('CompareSlider v2.2 — paridad C5', () => {
     const container = screen.getByRole('slider').closest('.mk-compare') as HTMLElement;
     expect(container).toHaveAttribute('data-loading');
 
-    // Simula imgs que ya dispararon su `load` nativo antes de que React adjuntara
+    // Simulates imgs that already fired their native `load` before React attached
     // handlers (static export + hydration): complete=true and naturalWidth>0.
     for (const alt of ['Antes', 'Después']) {
       const img = screen.getByAltText(alt);
       Object.defineProperty(img, 'complete', { value: true, configurable: true });
       Object.defineProperty(img, 'naturalWidth', { value: 800, configurable: true });
     }
-    // El ref callback es inline (identidad nueva por render): un re-render lo
-    // re-adjunta y debe detectar los nodos ya completos sin esperar onLoad.
+    // The ref callback is inline (new identity per render): a re-render
+    // re-attaches it and must detect the already-complete nodes without waiting for onLoad.
     rerender(
       <CompareSlider
         before={{ src: '/a.png', alt: 'Antes' }}
@@ -951,7 +951,7 @@ describe('CompareSlider — compareMode blink (T5)', () => {
     expect(root).toHaveAttribute('data-blink-side', 'after');
     fireEvent.click(screen.getByRole('switch'));
     act(() => vi.advanceTimersByTime(1600));
-    expect(root).toHaveAttribute('data-blink-side', 'after'); // pausado
+    expect(root).toHaveAttribute('data-blink-side', 'after'); // paused
     vi.useRealTimers();
   });
 
@@ -1037,7 +1037,7 @@ describe('CompareSlider — compareMode blink (T5)', () => {
       />,
     );
     const toggle = screen.getByRole('switch');
-    // Arranca corriendo (sin prefers-reduced-motion): el switch debe anunciar la
+    // Starts running (without prefers-reduced-motion): the switch must announce the
     // available action ("Pause blinking"), not describe the state backwards.
     expect(toggle).toHaveAttribute('aria-checked', 'true');
     expect(toggle).toHaveAccessibleName('Pause blinking');

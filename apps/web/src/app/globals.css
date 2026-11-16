@@ -114,7 +114,7 @@ html {
   --font-heading: var(--font-serif);
 }
 
-/* ── Skin: terminal — monospace, alto contraste, radios 0, brutalist ── */
+/* ── Skin: terminal — monospace, high contrast, 0 radii, brutalist ── */
 :root[data-skin='terminal'][data-theme='dark'] {
   --bg: #050805;
   --surface: #0c120c;
@@ -151,7 +151,7 @@ html {
   --font-body: var(--font-geist-mono);
 }
 
-/* ── Skin: vibrant — acentos saturados, playful ── */
+/* ── Skin: vibrant — saturated accents, playful ── */
 :root[data-skin='vibrant'][data-theme='dark'] {
   --bg: #140a20;
   --surface: #1f1130;

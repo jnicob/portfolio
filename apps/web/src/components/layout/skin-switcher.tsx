@@ -71,12 +71,12 @@ export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
     closeAndFocusButton();
   }
 
-  // Cierre por capas, de adentro hacia afuera (misma tecla, tres pasos): Escape
+  // Layered closing, from inside out (same key, three steps): Escape
   // with text → the combobox clears the filter (T22); with the filter already empty →
   // this panel is closed. In BOTH cases the keydown is consumed here with
-  // stopPropagation: if it continued bubbling up, it would also close a disclosure
-  // ancestro (p.ej. el MobileMenu, cuando este switcher vive dentro de su
-  // panel) en el mismo golpe de tecla.
+  // stopPropagation: if it continued bubbling up, it would also close an ancestor
+  // disclosure (e.g. MobileMenu, when this switcher lives inside its
+  // panel) on the same keystroke.
   function handlePanelKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key !== 'Escape') return;
     event.stopPropagation();
@@ -95,9 +95,9 @@ export function SkinSwitcher({ labels }: { labels: SkinSwitcherLabels }) {
         className="inline-flex h-9 cursor-pointer items-center justify-center rounded-control border border-border px-3 text-sm text-fg transition-colors hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         onClick={() => {
           // The applied skin is read synchronously, in the same batch as
-          // setOpen: FilterableList monta con el selectedId correcto desde su
-          // primer render (su activeIndex inicial es un useState perezoso que
-          // solo se calcula una vez, al montar).
+          // setOpen: FilterableList mounts with the right selectedId from its
+          // first render (its initial activeIndex is a lazy useState that
+          // is only computed once, on mount).
           setSelectedSkin(currentSkin());
           setOpen((value) => !value);
         }}

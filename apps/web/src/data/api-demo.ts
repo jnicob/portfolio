@@ -30,7 +30,7 @@ export type ApiDemoExample = {
   preview: ApiDemoPreview;
 };
 
-/** Falla en build/test si un asset compartido desaparece o cambia de tipo. */
+/** Fails at build/test time if a shared asset disappears or changes type. */
 function galleryItemOf<T extends GalleryItem['type']>(
   id: string,
   type: T,

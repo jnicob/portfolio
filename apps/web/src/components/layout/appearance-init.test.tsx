@@ -70,7 +70,7 @@ describe('AppearanceInit', () => {
     window.history.pushState(null, '', '/es/cv?view=timeline');
     const AppearanceInit = await importFreshAppearanceInit();
 
-    // Orden real: el layout monta el suyo (sin onView) primero y limpia la URL.
+    // Real order: the layout mounts its own instance (without onView) first and clears the URL.
     render(<AppearanceInit />);
     expect(window.location.search).toBe('');
 

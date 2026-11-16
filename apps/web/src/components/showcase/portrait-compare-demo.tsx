@@ -2,17 +2,17 @@
 
 import { CompareSlider, type CompareSliderExpand } from '@nicobehm/media-kit';
 
-/** Perf (T30/qa-B1): ver el mismo comentario en media-kit-demo.tsx — variante ~840w. */
+/** Perf (T30/qa-B1): see the same comment in media-kit-demo.tsx — ~840w variant. */
 const PORTRAIT_SRC_SET = '/demo/portrait-840.webp 840w, /demo/portrait.webp 1600w';
-/** Figure a ancho completo del contenido (sin grid), en cualquier breakpoint. */
+/** Full-content-width figure (no grid), at any breakpoint. */
 const FULL_WIDTH_SIZES = '(min-width: 1024px) 1000px, calc(100vw - 3rem)';
 
 type Props = {
-  /** Alt del lado "antes" (ReactNode con filter grayscale). */
+  /** Alt text for the "before" side (ReactNode with grayscale filter). */
   beforeAlt: string;
-  /** Nombre accesible del divisor. */
+  /** Accessible name of the divider. */
   compareLabel: string;
-  /** Texto del figcaption, traducido. */
+  /** Translated figcaption text. */
   caption: string;
   /** Slider expand CTA (overlay button + internal compare-lightbox). */
   expand: CompareSliderExpand;

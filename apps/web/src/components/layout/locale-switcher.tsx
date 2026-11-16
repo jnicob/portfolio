@@ -4,7 +4,7 @@ import { useTransition } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/navigation';
 
-/** Alterna entre es/en conservando la ruta actual; anuncia el idioma DESTINO. */
+/** Toggles between es/en while preserving the current route; announces the TARGET language. */
 export function LocaleSwitcher() {
   const [isPending, startTransition] = useTransition();
   const locale = useLocale();

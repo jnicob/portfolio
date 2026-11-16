@@ -96,9 +96,9 @@ describe('SkinSwitcher', () => {
     fireEvent.click(screen.getByRole('button', { name: LABELS.button }));
     const option = screen.getByRole('option', { name: new RegExp(LABELS.skinNames.terminal) });
     expect(option).toHaveAttribute('aria-current', 'true');
-    // The active highlight (keyboard/mouse) must match the skin selected from
-    // el primer render, no solo el aria-current: si selectedSkin llegara tarde
-    // (p.ej. via useEffect tras montar FilterableList), aria-activedescendant se
+    // The active highlight (keyboard/mouse) must match the selected skin from
+    // the first render, not just aria-current: if selectedSkin arrived late
+    // (e.g. via useEffect after mounting FilterableList), aria-activedescendant
     // would stay on the first item in the list instead of the actual skin.
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-activedescendant', option.id);
   });

@@ -8,15 +8,15 @@ export type FilterableItem = { id: string; label: string; keywords?: readonly st
 
 export type FilterableListProps<T extends FilterableItem> = {
   items: readonly T[];
-  /** Label accesible del input (visible u oculto via labelClassName sr-only). */
+  /** Accessible label for the input (visible or hidden via sr-only labelClassName). */
   inputLabel: string;
   emptyMessage: string;
   onSelect: (item: T) => void;
   placeholder?: string;
-  /** Contenido custom del item (swatches…); default: item.label. */
+  /** Custom item content (swatches…); defaults to item.label. */
   renderItem?: (item: T, active: boolean) => ReactNode;
   className?: string;
-  /** Id del item actualmente aplicado: se marca con aria-current + ✓ y arranca activo. */
+  /** ID of the currently applied item: marked with aria-current + ✓ and starts active. */
   selectedId?: string;
 };
 
@@ -47,7 +47,7 @@ export function FilterableList<T extends FilterableItem>({
 
   const filtered = useMemo(() => items.filter((item) => matchesQuery(item, query)), [items, query]);
 
-  // Clamp derivado en render (no efecto): si el filtro reduce la lista, el
+  // Derived clamp during render (not an effect): if the filter shrinks the list, the
   // active index falls within range without extra synchronized state.
   const clampedActiveIndex =
     filtered.length === 0 ? -1 : Math.min(activeIndex, filtered.length - 1);
@@ -101,7 +101,7 @@ export function FilterableList<T extends FilterableItem>({
               id={`${baseId}-option-${item.id}`}
               role="option"
               // aria-selected = active combobox option (APG pattern, arrow navigation).
-              // aria-current = valor actualmente aplicado (selectedId). Ambos pueden diferir:
+              // aria-current = currently applied value (selectedId). Both may differ:
               // you can navigate over other options without changing the applied selection.
               aria-selected={active}
               aria-current={selected || undefined}

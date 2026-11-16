@@ -71,7 +71,7 @@ function toMediaSource(item: GalleryItem, title: string): MediaSource {
   return { src: item.poster, alt: title };
 }
 
-/** Fullscreen de imagen siempre usa el asset 2560px; solo se monta tras abrir el visor. */
+/** Image fullscreen always uses the 2560px asset; only mounted after opening the viewer. */
 function toFullscreenImageSource(
   item: Extract<GalleryItem, { type: 'image' }>,
   title: string,
@@ -229,7 +229,7 @@ export function GalleryDemo({ locale, labels }: Props) {
   // T11 review): `hasResults` needs to know the active category to compute the
   // REAL category AND search intersection — with an uncontrolled filter, FilterGallery
   // could end up showing 0 tiles (category + search with no matches) without
-  // este componente se enterara para mostrar el empty state.
+  // this component knowing about it to show the empty state.
   const [category, setCategory] = useState<string | null>(null);
   const [layout, setLayout] = useState<FilterGalleryLayout>('masonry');
   const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);

@@ -24,7 +24,7 @@ export type MediaLightboxLabels = {
   controls: string;
   zoomIn: string;
   zoomOut: string;
-  /** Plantilla del anuncio de zoom; {percent} se sustituye. */
+  /** Zoom announcement template; {percent} is replaced. */
   zoomLevel: string;
   reset: string;
   /** Fit button template; {current} and {next} are replaced. */
@@ -36,9 +36,9 @@ export type MediaLightboxLabels = {
   close: string;
   /** aria-label of the help button. */
   help: string;
-  /** Encabezado del panel de ayuda. */
+  /** Help panel heading. */
   helpTitle: string;
-  /** Descripciones del mapa de teclado (las teclas son literales, no traducibles). */
+  /** Keyboard map descriptions (keys are literal, not translatable). */
   shortcutZoom: string;
   shortcutReset: string;
   shortcutPanKeys: string;
@@ -53,19 +53,19 @@ export type MediaLightboxLabels = {
 export type MediaLightboxProps = {
   open: boolean;
   onClose: () => void;
-  /** Nombre accesible del dialog. */
+  /** Accessible name of the dialog. */
   label: string;
-  /** Alias v1 de labels.close (labels.close tiene precedencia). */
+  /** v1 alias of labels.close (labels.close takes precedence). */
   closeLabel?: string;
-  /** Modo de ajuste base a zoom 1x. Default 'contain'. */
+  /** Base fit mode at 1x zoom. Default 'contain'. */
   fit?: MediaLightboxFit;
   /** Zoom limits. Default { min: 1, max: 8 }. */
   zoom?: { min?: number; max?: number };
-  /** Renderizar la caja de controles. Default true. */
+  /** Render the controls box. Default true. */
   controls?: boolean;
-  /** Visibilidad inicial de los controles. Default true. */
+  /** Initial controls visibility. Default true. */
   defaultControlsVisible?: boolean;
-  /** ms de inactividad antes del auto-hide. null lo desactiva. Default 3000. */
+  /** ms of inactivity before auto-hide. null disables it. Default 3000. */
   autoHideDelay?: number | null;
   /** Button texts (i18n); each key has an English default. */
   labels?: Partial<MediaLightboxLabels>;
@@ -139,7 +139,7 @@ const DEFAULT_LABELS: MediaLightboxLabels = {
 
 const FIT_ORDER: MediaLightboxFit[] = ['contain', 'cover', 'actual'];
 
-// Iconos SVG inline (trazo currentColor): deterministas y sin dependencias.
+// Inline SVG icons (currentColor stroke): deterministic and dependency-free.
 const EYE_ICON = (
   <svg
     data-mk-icon="eye"
@@ -186,7 +186,7 @@ function nativeFullscreenActive(): boolean {
 }
 
 // Fullscreen = HD context: any MediaSource (single media or each side of the
-// compare) se resuelve con pickFullscreenSrc antes de renderizarse.
+// compare) is resolved with pickFullscreenSrc before rendering.
 function renderFullscreenSide(side: ReactNode | MediaSource): ReactNode {
   return isMediaSource(side) ? (
     <img src={pickFullscreenSrc(side)} alt={side.alt} draggable={false} />
@@ -196,11 +196,11 @@ function renderFullscreenSide(side: ReactNode | MediaSource): ReactNode {
 }
 
 export function MediaLightbox(props: MediaLightboxProps) {
-  // Guard externo: el contenido monta FRESCO en cada apertura. Esto garantiza
-  // estado limpio (zoom/fit/toolbar) sin effects de reset, y que el effect de
-  // gestos de useZoomPan se ejecute con los refs ya poblados (sus deps son
+  // Outer guard: content mounts FRESH on each opening. This guarantees
+  // clean state (zoom/fit/toolbar) without reset effects, and that useZoomPan's
+  // gesture effect runs with refs already populated (its deps are
   // stable refs and would not re-trigger if the dialog appeared conditionally
-  // dentro del mismo componente).
+  // inside the same component).
   if (!props.open) return null;
   return <MediaLightboxContent {...props} />;
 }
@@ -247,14 +247,14 @@ function MediaLightboxContent({
   };
 
   const percent = Math.round(zoomPan.scale * 100);
-  // Anuncio debounced: el aria-live comunica el valor FINAL del gesto, no cada tick.
+  // Debounced announcement: aria-live communicates the FINAL value of the gesture, not every tick.
   const [announced, setAnnounced] = useState(percent);
   useEffect(() => {
     const timer = setTimeout(() => setAnnounced(percent), 250);
     return () => clearTimeout(timer);
   }, [percent]);
 
-  // Al montar (= al abrir): foco previo, scroll lock compensando la barra, foco al Close.
+  // On mount (= on open): previous focus, scroll lock compensating for the scrollbar, focus on Close.
   // Close lives in the top-right corner (outside the auto-hiding region), so
   // this opening focus does not trigger the region's onFocus/pin.
   useEffect(() => {
@@ -289,7 +289,7 @@ function MediaLightboxContent({
     region.toggleAttribute('inert', hiding);
   }, [autoHide.visible]);
 
-  // Si la ventana pierde el foco con Espacio pulsado, el keyup nunca llega: liberar.
+  // If the window loses focus while Space is held, keyup never arrives: release.
   useEffect(() => {
     if (!spacePan) return;
     const release = () => {
@@ -306,7 +306,7 @@ function MediaLightboxContent({
   }, [helpOpen]);
 
   // When toggling fullscreen, focus remains on the ⤢ button, and Space on a button
-  // no activa el space-pan (:354). Devolver el foco al root restablece el follow.
+  // does not activate space-pan (:354). Returning focus to the root restores follow.
   const fullscreenWasActive = useRef(fullscreen.active);
   useEffect(() => {
     if (fullscreenWasActive.current === fullscreen.active) return;
@@ -331,15 +331,15 @@ function MediaLightboxContent({
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     // Any keyboard interaction revives a toolbar hidden due to inactivity
-    // (poke() is a no-op if the user explicitly hid it): this way a keyboard
-    // teclado estacionario recupera la toolbar y el feedback de zoom.
+    // (poke() is a no-op if the user explicitly hid it): this way a stationary
+    // keyboard user recovers the toolbar and zoom feedback.
     autoHide.poke();
     const target = event.target as HTMLElement;
     if (event.key === 'Escape') {
-      // Con fullscreen nativo activo el navegador sale de fullscreen con este
-      // mismo Escape; el lightbox no debe cerrarse a la vez.
+      // With native fullscreen active the browser exits fullscreen on this
+      // same Escape; the lightbox must not close at the same time.
       if (nativeFullscreenActive()) return;
-      // Evita que otros handlers React por encima reaccionen al mismo Escape.
+      // Prevents other React handlers above from reacting to the same Escape.
       event.stopPropagation();
       if (helpOpen) {
         closeHelp();
@@ -360,9 +360,9 @@ function MediaLightboxContent({
         event.preventDefault();
         last?.focus();
       } else if (!event.shiftKey && active === dialogRef.current) {
-        // El propio root del dialog enfocado (p.ej. tras click en contenido no
-        // focusable, or focus placed there programmatically): advances to the LAST
-        // focusable, igual que en v1 cuando Close era el primer nodo del DOM
+        // The dialog root itself is focused (e.g. after clicking non-focusable
+        // content, or focus placed there programmatically): advances to the LAST
+        // focusable, just like in v1 when Close was the first DOM node
         // immediately after the root.
         event.preventDefault();
         last?.focus();
@@ -377,8 +377,8 @@ function MediaLightboxContent({
     }
     if (target.matches('input, textarea, select, [contenteditable="true"]')) return;
     if (event.key === ' ') {
-      // Espacio sobre un elemento interactivo conserva el default del navegador
-      // (activa botones; en enlaces no hace nada): nunca entra en modo pan.
+      // Space on an interactive element preserves browser default behavior
+      // (activates buttons; on links it does nothing): never enters pan mode.
       if (target.closest('button, a')) return;
       event.preventDefault();
       if (!event.repeat) setSpacePan(true);
@@ -408,11 +408,11 @@ function MediaLightboxContent({
       if (delta) {
         event.preventDefault();
         // panBy() clamps against the LIVE size of the viewport/content (reads the
-        // refs en el momento de la llamada): si no hay desborde real, el propio
-        // clamp deja tx/ty en 0 y esto es un no-op. No usamos zoomPan.canPan
+        // refs at call time): if there is no actual overflow, the clamp itself
+        // leaves tx/ty at 0 and this is a no-op. We do not use zoomPan.canPan
         // here because it is a snapshot of the render in which it was read (it does not
-        // recalcula si el layout cambia sin que el componente vuelva a
-        // renderizar), y dependemos de la lectura fresca de panBy.
+        // recalculate if layout changes without the component re-rendering),
+        // and we rely on panBy's fresh read.
         zoomPan.panBy(delta[0], delta[1]);
       }
     }
@@ -439,7 +439,7 @@ function MediaLightboxContent({
   }
 
   function onOverlayClick(event: MouseEvent<HTMLDivElement>) {
-    // Un pan que termina en click no debe cerrar.
+    // A pan that ends in a click must not close.
     if (zoomPan.consumeDrag()) return;
     // T25 QA fix, defense in depth: if the pointerdown that originated this gesture
     // started on an interactive control (button, <video controls>…), do not close. The root
@@ -456,8 +456,8 @@ function MediaLightboxContent({
       role="dialog"
       aria-modal="true"
       aria-label={label}
-      // Enfocable (no tabulable): al hacer click en contenido no enfocable, el
-      // navegador enfoca este root en vez de body, y Escape/Tab siguen llegando.
+      // Focusable (not tabbable): when clicking non-focusable content, the
+      // browser focuses this root instead of body, and Escape/Tab keep arriving.
       tabIndex={-1}
       className="mk-lightbox"
       data-fit={fit}

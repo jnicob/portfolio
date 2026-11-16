@@ -29,10 +29,10 @@ describe('isMediaSource', () => {
     expect(isMediaSource('string')).toBe(false);
     expect(isMediaSource(42)).toBe(false);
     expect(isMediaSource({})).toBe(false);
-    expect(isMediaSource({ src: '/a.png' })).toBe(false); // falta alt
-    expect(isMediaSource({ alt: 'A' })).toBe(false); // falta src
-    expect(isMediaSource({ src: 1, alt: 'A' })).toBe(false); // src no string
-    expect(isMediaSource({ src: '/a.png', alt: 'A', fullSrc: 1 })).toBe(false); // fullSrc no string
+    expect(isMediaSource({ src: '/a.png' })).toBe(false); // missing alt
+    expect(isMediaSource({ alt: 'A' })).toBe(false); // missing src
+    expect(isMediaSource({ src: 1, alt: 'A' })).toBe(false); // src not a string
+    expect(isMediaSource({ src: '/a.png', alt: 'A', fullSrc: 1 })).toBe(false); // fullSrc not a string
   });
 
   it('does not confuse a ReactNode (string/number) with a MediaSource', () => {
@@ -90,13 +90,13 @@ describe('preloadFullSources', () => {
 
     const sources: MediaSource[] = [
       { src: '/a.png', fullSrc: '/a-full-unique-1.png', alt: 'A' },
-      { src: '/b.png', alt: 'B' }, // sin fullSrc: no precarga nada
+      { src: '/b.png', alt: 'B' }, // without fullSrc: preloads nothing
       { src: '/c.png', fullSrc: '/c-full-unique-1.png', alt: 'C' },
     ];
     preloadFullSources(sources);
     expect(calls).toEqual(['/a-full-unique-1.png', '/c-full-unique-1.png']);
 
-    // Repetir la misma llamada no debe volver a pedir las mismas URLs.
+    // Repeating the same call must not re-request the same URLs.
     preloadFullSources(sources);
     expect(calls).toEqual(['/a-full-unique-1.png', '/c-full-unique-1.png']);
   });

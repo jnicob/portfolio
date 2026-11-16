@@ -50,7 +50,7 @@ describe('FeaturedProjects', () => {
 
   it('renders MoreProjectsCard as the last grid cell, linking to /projects', () => {
     renderFeaturedProjects();
-    // localePrefix: 'always' (i18n/routing.ts) antepone el locale a cualquier href de <Link>.
+    // localePrefix: 'always' (i18n/routing.ts) prepends the locale to any <Link> href.
     expect(screen.getByRole('link', { name: /all projects/i })).toHaveAttribute(
       'href',
       '/en/projects',

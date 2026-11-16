@@ -62,7 +62,7 @@ describe('PortraitCompareDemo', () => {
     expect(screen.getByText(caption)).toBeInTheDocument();
   });
 
-  // Perf (T30/qa-B1): portrait.webp es 1600×900, muy por encima del ancho real de esta
+  // Perf (T30/qa-B1): portrait.webp is 1600×900, well above the actual width of this
   // figure on mobile. srcSet allows choosing the ~840w variant (the "after" side, MediaSource
   // with fullSrc HD, is already resolved by the package itself — not touched here).
   it('the "antes" side (ReactNode) offers a ~840w variant via srcSet', () => {

@@ -95,8 +95,8 @@ describe('CompareModesDemo', () => {
     expect(screen.getByText(strings.caption)).toBeInTheDocument();
   });
 
-  // Perf (T30/qa-B1): mismo fix que MediaKitDemo — landscape.webp es 1600×900, muy por
-  // encima del ancho real de esta figure en mobile. srcSet deja elegir la variante ~840w.
+  // Perf (T30/qa-B1): same fix as MediaKitDemo — landscape.webp is 1600×900, well
+  // above the actual width of this figure on mobile. srcSet allows choosing the ~840w variant.
   it('both sides offer a ~840w variant via srcSet', () => {
     const { container } = renderDemo();
     const landscapeImages = Array.from(

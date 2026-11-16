@@ -11,8 +11,8 @@ export type FieldProps = {
 };
 
 /**
- * Envuelve un control de formulario con label, hint y error accesibles.
- * El control hijo debe recibir id={htmlFor} y, si hay error,
+ * Wraps a form control with accessible label, hint, and error message.
+ * The child control must receive id={htmlFor} and, when an error is present,
  * aria-invalid + aria-describedby={`${htmlFor}-error`}.
  */
 export function Field({ label, htmlFor, children, hint, error, className }: FieldProps) {

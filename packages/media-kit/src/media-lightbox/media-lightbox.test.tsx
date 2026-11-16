@@ -84,9 +84,9 @@ describe('MediaLightbox', () => {
   });
 
   it('con el foco en el root del dialog (click en contenido no enfocable), Escape y Tab siguen funcionando', async () => {
-    // En navegador, click sobre contenido no enfocable mueve el foco al ancestro
-    // nearest focusable; the dialog root must be one (tabIndex=-1) so that
-    // sus handlers de teclado sigan recibiendo los eventos.
+    // In a browser, clicking non-focusable content moves focus to the nearest
+    // focusable ancestor; the dialog root must be one (tabIndex=-1) so that
+    // its keyboard handlers continue receiving events.
     const onClose = vi.fn();
     render(
       <MediaLightbox open onClose={onClose} label="V">
@@ -285,7 +285,7 @@ describe('MediaLightbox v2', () => {
   });
 
   it('when hiding the toolbar with focus inside, relocates focus outside the region before making it inert', async () => {
-    // El auto-hide por inactividad no puede dispararse con foco dentro (queda pineada),
+    // Inactivity auto-hide cannot fire with focus inside (it stays pinned),
     // so the "hide with focus inside" path is the "c" key (or the toggle). After it,
     // the focus must NOT be left orphaned in the inerted region.
     render(
@@ -707,8 +707,8 @@ describe('tooltips (v0.5)', () => {
 
 describe('MediaLightbox — no secuestrar punteros de children interactivos (T25 QA fix)', () => {
   // Root cause (t25-qa-a11y.md): useZoomPan captured the pointer of ANY
-  // pointerdown dentro del viewport salvo [data-mk-drag-exempt]. En un navegador
-  // real eso retargetea el pointerup/click subsiguiente al div del viewport, y
+  // pointerdown inside the viewport except [data-mk-drag-exempt]. In a real
+  // browser that retargets the subsequent pointerup/click to the viewport div, and
   // onOverlayClick (target === viewportRef.current) closes the dialog instead of
   // letting the button receive its own click (e.g. audio play/pause).
 
@@ -754,9 +754,9 @@ describe('MediaLightbox — no secuestrar punteros de children interactivos (T25
     const video = screen.getByTestId('video');
     const viewport = video.closest('.mk-lightbox__viewport') as HTMLElement;
     const captureSpy = vi.spyOn(viewport, 'setPointerCapture');
-    // El navegador entrega el pointerdown al propio <video> cuando el clic cae
-    // en su zona de controles nativos (no hay un DOM separado accesible en jsdom
-    // para esa franja, pero el target real sigue siendo el elemento <video>).
+    // The browser delivers the pointerdown to the <video> itself when the click lands
+    // on its native controls strip (there is no separate accessible DOM in jsdom
+    // for that strip, but the real target is still the <video> element).
     fireEvent.pointerDown(video, {
       pointerId: 1,
       clientX: 10,
