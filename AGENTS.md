@@ -11,6 +11,7 @@ structure, tests, tooling and this agent config are meant to be audited.
 
 - Spec: `docs/superpowers/specs/2026-07-10-portfolio-design.md`
 - Roadmap: `docs/superpowers/plans/2026-07-10-portfolio-roadmap.md`
+- Architecture & Knowledge Base: `docs/architecture.md`
 
 ## Commands
 

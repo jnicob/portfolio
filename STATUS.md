@@ -1,15 +1,21 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-11-11 · Optimización de presentación (LinkedIn, Home, Hero y CV), skills en píldoras sin puntos subjetivos, incorporación del caso de estudio Lauquen Transporte y correcciones técnicas de auditoría
+> Actualizado: 2026-11-16 · Base de conocimiento arquitectónica (`docs/architecture.md`), Quick Wins de auditoría (PII Guard recursivo, simetría `/api/contact` + poda de rate-limit, limpieza de `pnpm.overrides` y endurecimiento de `deploy.yml`) y refinamiento de skills/CV
 
 ## Ahora
 
 **Validación y Despliegue**
 
-- Revisar el PR `feat/portfolio-cv-and-lauquen-improvements` y actualizar en LinkedIn el titular, resumen (About), las 5 aptitudes principales y el proyecto destacado Lauquen Transporte.
+- Revisar el PR `feat/architecture-kb-and-quick-wins` y actualizar en LinkedIn el titular, resumen (About), las 5 aptitudes principales y el proyecto destacado Lauquen Transporte.
 
 ## Hecho
 
+- ✅ **Base de Conocimiento Arquitectónica (`docs/architecture.md`)**: Documentación integral del stack tecnológico, decisiones de arquitectura con referencias al código, auditoría crítica de trade-offs, plan de mejora por fases y guía operativa de extensión.
+- ✅ **Quick Wins de Auditoría y Seguridad**:
+  - Ampliado el `PII GUARD` en `validate-content.test.ts` con escaneo recursivo de archivos fuente y tests (`src/` y `public/api/`), eliminando PII residual en `route.test.ts` y `contact-form.test.tsx`.
+  - Unificado el contrato de `/api/contact/route.ts` con `contact.php` (`{ ok, success }`), incorporada validación anti-bot de tiempo mínimo (`verifySubmissionTime`) y poda automática de registros expirados en `rateLimitMap` (`contact-security.ts`).
+  - Eliminado el bloque obsoleto `pnpm.overrides` en `package.json` raíz y endurecido `.github/workflows/deploy.yml` con `agents:validate` y `format`.
+  - Actualizados `AGENTS.md`, `skills/code-conventions/SKILL.md` y traducciones de comentarios/tests restantes al inglés.
 - ✅ **Titular y Resumen unificados (`profile.ts` y LinkedIn)**: Titular actualizado a `Senior Full-Stack & AI Engineer | Analista Funcional Técnico — TypeScript, React/Next.js, Python/FastAPI, PHP/Laravel, APIs & Cloud` (ES/EN), mención explícita de escala (`+2M de usuarios y +350 endpoints en producción`) y refuerzo de agentes de IA para testing, buenas prácticas y seguridad, además de incluir `Drizzle` en ORMs.
 - ✅ **Experiencia en Magnific (`experience.ts`)**: Rol actualizado a `Senior Full-Stack / Frontend & AI Engineer`, incorporación de `+1.000 PRs desplegadas en producción`, mención explícita a proyectos de backoffice con Vue y PHP/Laravel y métrica de impacto en agentes de IA (`reduciendo el tiempo de integración de nuevos modelos de días a minutos`).
 - ✅ **Visualización de Skills en Píldoras/Chips (`skill-group.tsx`, `skills-summary.tsx`, `skills.ts`)**: Sustitución del indicador subjetivo de 5 puntos por píldoras/chips limpios ordenados por dominio/proficiencia tanto en Home como en las 3 vistas del CV. Añadido `PostgreSQL` junto a MySQL y SQL Server manteniendo `Python / FastAPI` y `Java`.
