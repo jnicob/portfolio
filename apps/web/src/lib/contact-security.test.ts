@@ -2,9 +2,11 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import {
   checkRateLimit,
   clearRateLimitStore,
+  getRateLimitStoreSize,
   sanitizeHeader,
   sanitizeText,
   verifyHoneypot,
+  verifySubmissionTime,
 } from './contact-security';
 
 describe('contact-security (nico-security)', () => {
@@ -13,7 +15,7 @@ describe('contact-security (nico-security)', () => {
   });
 
   describe('sanitizeText & sanitizeHeader', () => {
-    it('escapa caracteres HTML peligrosos', () => {
+    it('escapes dangerous HTML characters', () => {
       const malicious = '<script>alert("xss")</script> <b>Hola</b> & "test"';
       const clean = sanitizeText(malicious);
       expect(clean).not.toContain('<script>');
@@ -22,7 +24,7 @@ describe('contact-security (nico-security)', () => {
       expect(clean).toContain('&quot;test&quot;');
     });
 
-    it('elimina etiquetas iframe', () => {
+    it('removes iframe tags', () => {
       const malicious = '<iframe src="http://evil.com"></iframe>';
       const clean = sanitizeText(malicious);
       expect(clean).not.toContain('<iframe');
@@ -45,9 +47,25 @@ describe('contact-security (nico-security)', () => {
       expect(verifyHoneypot('   ')).toBe(true);
     });
 
-    it('retorna false para bots (campo con datos)', () => {
+    it('returns false for bots (filled field)', () => {
       expect(verifyHoneypot('buy cheap pills')).toBe(false);
       expect(verifyHoneypot('http://bot-link.com')).toBe(false);
+    });
+  });
+
+  describe('verifySubmissionTime', () => {
+    it('returns true when ts is omitted or elapsed time meets minimum threshold', () => {
+      const now = 1_700_000_000_000;
+      expect(verifySubmissionTime(undefined, 3, now)).toBe(true);
+      expect(verifySubmissionTime(null, 3, now)).toBe(true);
+      expect(verifySubmissionTime(now - 3500, 3, now)).toBe(true);
+    });
+
+    it('returns false when submission is faster than minimum threshold or invalid', () => {
+      const now = 1_700_000_000_000;
+      expect(verifySubmissionTime(now - 500, 3, now)).toBe(false);
+      expect(verifySubmissionTime(0, 3, now)).toBe(false);
+      expect(verifySubmissionTime(-100, 3, now)).toBe(false);
     });
   });
 
@@ -68,6 +86,16 @@ describe('contact-security (nico-security)', () => {
       expect(blocked.allowed).toBe(false);
       expect(blocked.remaining).toBe(0);
       expect(blocked.resetMs).toBeGreaterThan(0);
+    });
+
+    it('prunes expired records from memory when checking new requests', async () => {
+      checkRateLimit('expired-ip-1', 2, 5);
+      checkRateLimit('expired-ip-2', 2, 5);
+      expect(getRateLimitStoreSize()).toBe(2);
+
+      await new Promise((resolve) => setTimeout(resolve, 15));
+      checkRateLimit('active-ip', 2, 60000);
+      expect(getRateLimitStoreSize()).toBe(1);
     });
   });
 });

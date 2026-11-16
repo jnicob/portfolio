@@ -5,6 +5,7 @@ import {
   sanitizeHeader,
   sanitizeText,
   verifyHoneypot,
+  verifySubmissionTime,
 } from '@/lib/contact-security';
 
 export async function POST(request: Request) {
@@ -17,6 +18,7 @@ export async function POST(request: Request) {
     if (!rateLimit.allowed) {
       return NextResponse.json(
         {
+          ok: false,
           success: false,
           error: 'Demasiadas solicitudes. Por favor, inténtalo de nuevo en unos minutos.',
           resetMs: rateLimit.resetMs,
@@ -27,10 +29,17 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    // 2. Anti-spam Honeypot check
-    if (!verifyHoneypot(body.honeypot)) {
+    // 2. Anti-spam Honeypot & minimum submission time check (mirrors contact.php)
+    const minSeconds =
+      process.env.CONTACT_MIN_SECONDS !== undefined
+        ? Number(process.env.CONTACT_MIN_SECONDS)
+        : process.env.NODE_ENV === 'test'
+          ? 0
+          : 3;
+
+    if (!verifyHoneypot(body.honeypot) || !verifySubmissionTime(body.ts, minSeconds)) {
       // Return simulated 200 to mislead spambots without processing submission
-      return NextResponse.json({ success: true, message: 'Mensaje procesado' });
+      return NextResponse.json({ ok: true, success: true, message: 'Mensaje procesado' });
     }
 
     // 3. Frontend/Backend validation with Zod
@@ -44,6 +53,7 @@ export async function POST(request: Request) {
 
       return NextResponse.json(
         {
+          ok: false,
           success: false,
           error: 'Datos del formulario inválidos',
           errors: fieldErrors,
@@ -136,6 +146,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
+      ok: true,
       success: true,
       message: 'Mensaje enviado correctamente. Te responderé a la brevedad.',
       emailSentReal: emailSent,
@@ -143,6 +154,7 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json(
       {
+        ok: false,
         success: false,
         error: 'Error interno del servidor al procesar el mensaje.',
       },

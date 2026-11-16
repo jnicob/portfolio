@@ -187,8 +187,8 @@ describe('ContactForm', () => {
     render(<ContactForm labels={MOCK_LABELS} />);
 
     await user.type(screen.getByLabelText(/Asunto/i), 'prueba desde web +');
-    await user.type(screen.getByLabelText(/Correo electrónico/i), 'j.nicob@gmail.com');
-    await user.type(screen.getByLabelText(/Teléfono/i), '672814444');
+    await user.type(screen.getByLabelText(/Correo electrónico/i), 'contact@example.com');
+    await user.type(screen.getByLabelText(/Teléfono/i), '+34 600 000 000');
     await user.type(screen.getByLabelText(/Mensaje/i), 'prueba de que sigue funcionando');
 
     await user.click(screen.getByRole('button', { name: /Enviar mensaje/i }));
@@ -203,8 +203,8 @@ describe('ContactForm', () => {
     const parsedBody = JSON.parse(String(calledInit?.body));
     expect(parsedBody).toMatchObject({
       subject: 'prueba desde web +',
-      email: 'j.nicob@gmail.com',
-      phone: '672814444',
+      email: 'contact@example.com',
+      phone: '+34 600 000 000',
       message: 'prueba de que sigue funcionando',
       honeypot: '',
     });
@@ -227,7 +227,7 @@ describe('ContactForm', () => {
     render(<ContactForm labels={MOCK_LABELS} />);
 
     await user.type(screen.getByLabelText(/Asunto/i), 'prueba fallback 405');
-    await user.type(screen.getByLabelText(/Correo electrónico/i), 'j.nicob@gmail.com');
+    await user.type(screen.getByLabelText(/Correo electrónico/i), 'contact@example.com');
     await user.type(screen.getByLabelText(/Mensaje/i), 'prueba de que el fallback 405 funciona');
 
     await user.click(screen.getByRole('button', { name: /Enviar mensaje/i }));
@@ -253,8 +253,8 @@ describe('ContactForm', () => {
     render(<ContactForm labels={MOCK_LABELS} />);
 
     await user.type(screen.getByLabelText(/Asunto/i), 'prueba desde web +');
-    await user.type(screen.getByLabelText(/Correo electrónico/i), 'j.nicob@gmail.com');
-    await user.type(screen.getByLabelText(/Teléfono/i), '672814490');
+    await user.type(screen.getByLabelText(/Correo electrónico/i), 'contact@example.com');
+    await user.type(screen.getByLabelText(/Teléfono/i), '+34 600 000 000');
     await user.type(screen.getByLabelText(/Mensaje/i), 'prueba de que sigue funcionando');
 
     await user.click(screen.getByRole('button', { name: /Enviar mensaje/i }));
