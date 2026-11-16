@@ -30,8 +30,11 @@ export function Hero({ locale, cvLabel }: HeroProps) {
     <section className="relative py-8 sm:py-12 md:py-16">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-12 md:gap-x-8 md:gap-y-6 lg:gap-x-12 lg:gap-y-6">
         {/* 1. Header & Title Block */}
-        <div className="flex flex-col gap-4 md:col-span-7 md:row-start-1 lg:col-span-7 lg:row-start-1">
-          <div className="flex flex-wrap items-center gap-2.5">
+        <div
+          data-hero-header
+          className="flex flex-col gap-4 md:col-span-7 md:row-start-1 lg:col-span-7 lg:row-start-1"
+        >
+          <div data-hero-badges className="flex flex-wrap items-center gap-2.5">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-semibold tracking-wide text-accent uppercase">
               <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
               {t('roleBadge')}
@@ -40,10 +43,16 @@ export function Hero({ locale, cvLabel }: HeroProps) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <h1 className="text-3xl font-bold tracking-tight text-fg sm:text-4xl md:text-5xl lg:text-6xl">
+            <h1
+              data-hero-title
+              className="text-3xl font-bold tracking-tight text-fg sm:text-4xl md:text-5xl lg:text-6xl"
+            >
               {profile.name}
             </h1>
-            <p className="text-base font-medium text-accent sm:text-xl md:text-2xl">
+            <p
+              data-hero-headline
+              className="text-base font-medium text-accent sm:text-xl md:text-2xl"
+            >
               {profile.headline[locale]}
             </p>
           </div>
@@ -97,7 +106,10 @@ export function Hero({ locale, cvLabel }: HeroProps) {
         </div>
 
         {/* 4. Action CTAs */}
-        <div className="flex flex-wrap items-center gap-3 pt-1 md:col-span-12 md:row-start-3 lg:col-span-7 lg:row-start-3">
+        <div
+          data-hero-actions
+          className="flex flex-wrap items-center gap-3 pt-1 md:col-span-12 md:row-start-3 lg:col-span-7 lg:row-start-3"
+        >
           <Link href="/showcase" className={cn(buttonVariants({ variant: 'primary', size: 'md' }))}>
             <span>{t('projectsCta')}</span>
             <svg

@@ -13,13 +13,13 @@
 /* ── Home: masthead ─────────────────────────────────────────────────── */
 
 /* Centered hero styled like a newspaper masthead. */
-[data-skin='editorial'] [data-home-content] > section:first-of-type > div {
+[data-skin='editorial'] [data-home-content] [data-hero-header] {
   align-items: center;
   text-align: center;
 }
 
 /* Headline between double rules (thin-thick), masthead style. */
-[data-skin='editorial'] [data-home-content] > section:first-of-type h1 {
+[data-skin='editorial'] [data-home-content] [data-hero-title] {
   width: 100%;
   padding-block: 1rem;
   border-block: 4px double var(--fg);
@@ -27,16 +27,15 @@
   letter-spacing: -0.01em;
 }
 
-/* The hero lead paragraph, in newspaper italic serif (only the direct
- * paragraph of the hero: a future <p> nested in the block does not inherit). */
-[data-skin='editorial'] [data-home-content] > section:first-of-type > div > p {
+/* The hero lead headline, in newspaper italic serif. */
+[data-skin='editorial'] [data-home-content] [data-hero-headline] {
   font-family: var(--font-serif);
   font-style: italic;
 }
 
-/* The Badge+CTA row in the hero, centered below the headline (at 375px it is
- * left-aligned by default; see hero.tsx). */
-[data-skin='editorial'] [data-home-content] > section:first-of-type > div > div {
+/* The Badge row and CTA row in the hero, centered below the headline. */
+[data-skin='editorial'] [data-home-content] [data-hero-badges],
+[data-skin='editorial'] [data-home-content] [data-hero-actions] {
   justify-content: center;
 }
 

@@ -165,11 +165,11 @@ A continuación se cuestionan de forma crítica las decisiones adoptadas, identi
 
 - **Resolución aplicada:** Se actualizó `"engines": { "node": ">=22" }` en [package.json](file:///home/nico/workspace/portfolio/package.json), se migraron los workflows de GitHub Actions a Node 24 (`FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true`), se retiró `pnpm.overrides` regenerando `pnpm-lock.yaml` y se marcó [2026-07-10-dependency-pins.md](file:///home/nico/workspace/portfolio/docs/decisions/2026-07-10-dependency-pins.md) como `superseded`.
 
-#### 5. Fragilidad de selectores posicionales en `editorial.css` y parche de `console.error`
+#### 5. ✅ [RESUELTO] Desacoplamiento de selectores posicionales en `editorial.css`
 
-- **Evidencia:**
-  - En [editorial.css](file:///home/nico/workspace/portfolio/apps/web/src/app/skins/editorial.css#L32-L41), reglas como `[data-skin='editorial'] [data-home-content] > section:first-of-type > div > div` dependen de la profundidad exacta de etiquetas `<div>` dentro de `Hero`. Además, al ser CSS fuera de `@layer`, pisa cualquier utilidad de Tailwind sin aviso.
-  - En [appearance-init.tsx](file:///home/nico/workspace/portfolio/apps/web/src/components/layout/appearance-init.tsx#L16-L27), se muta `window.console.error` en desarrollo para ocultar el warning de React 19 sobre `<script>` en `<head>`.
+- **Evidencia original:**
+  - En [editorial.css](file:///home/nico/workspace/portfolio/apps/web/src/app/skins/editorial.css), reglas como `[data-skin='editorial'] [data-home-content] > section:first-of-type > div > div` dependían de la profundidad exacta de etiquetas `<div>` dentro de `Hero`.
+- **Resolución aplicada:** Se incorporaron hooks semánticos explícitos (`data-hero-header`, `data-hero-badges`, `data-hero-title`, `data-hero-headline`, `data-hero-actions`) en [hero.tsx](file:///home/nico/workspace/portfolio/apps/web/src/components/home/hero.tsx) y se migró [editorial.css](file:///home/nico/workspace/portfolio/apps/web/src/app/skins/editorial.css) para usarlos, añadiendo una invariante automatizada en [editorial-css.test.ts](file:///home/nico/workspace/portfolio/apps/web/src/app/skins/editorial-css.test.ts) que prohíbe cadenas posicionales `> div`.
 
 #### 6. ✅ [RESUELTO] Barrido completo de comentarios en inglés + Fase 6 (E2E pendiente)
 
