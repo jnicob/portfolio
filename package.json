@@ -16,11 +16,6 @@
     "agents:setup": "bash scripts/setup-agents.sh --all",
     "agents:validate": "bash scripts/setup-agents.sh --validate"
   },
-  "pnpm": {
-    "overrides": {
-      "vite": "^6"
-    }
-  },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
     "eslint": "^9.39.4",

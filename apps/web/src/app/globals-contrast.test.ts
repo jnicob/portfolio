@@ -3,10 +3,10 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 /*
- * AA de contraste (WCAG 2.x) para las 11 variables de color en cada combo
- * skin x theme. Lee globals.css con fs y parsea los bloques :root[...] tal
- * cual quedan escritos — es la fuente de verdad de los hex finales, no una
- * copia mantenida a mano.
+ * WCAG 2.x AA contrast check for the 11 color variables across every
+ * skin x theme combo. Reads globals.css via fs and parses the :root[...] blocks
+ * as written — single source of truth for the final hex values rather than a
+ * manually maintained copy.
  */
 
 const CSS_PATH = path.resolve(__dirname, 'globals.css');
@@ -46,15 +46,15 @@ function parseBlocks(source: string): ParsedBlock[] {
       const varMatch = (body ?? '').match(new RegExp(`--${varName}:\\s*(#[0-9a-fA-F]{3,8})\\s*;`));
       if (varMatch) vars[varName] = varMatch[1];
     }
-    // Bloques sin ninguna de las 11 variables (p.ej. el mapeo a media-kit) no son
-    // bloques de tema/skin: se descartan para no pisar el bloque base real.
+    // Blocks without any of the 11 variables (e.g. media-kit token mapping) are not
+    // theme/skin blocks: discard them so they do not overwrite the real base block.
     if (Object.keys(vars).length === 0) continue;
     blocks.push({ skin: skin ?? null, theme: theme as ThemeName, vars });
   }
   return blocks;
 }
 
-/** dev-tool = bloques base sin data-skin; cada skin hereda del base y sobreescribe. */
+/** dev-tool = base blocks without data-skin; each skin inherits from base and overrides. */
 function buildCombos(blocks: ParsedBlock[]): Combo[] {
   const baseBlocks = blocks.filter((block) => block.skin === null);
   const skinBlocks = blocks.filter((block) => block.skin !== null);

@@ -29,8 +29,8 @@ function diff(a: Set<string>, b: Set<string>): string[] {
   return [...a].filter((key) => !b.has(key)).sort();
 }
 
-describe('paridad estructural de mensajes es/en', () => {
-  it('expone exactamente el mismo set de claves en ambos idiomas', () => {
+describe('structural parity of es/en messages', () => {
+  it('exposes the exact same set of leaf keys in both locales', () => {
     const esKeys = leafKeyPaths(es);
     const enKeys = leafKeyPaths(en);
 

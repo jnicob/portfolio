@@ -18,7 +18,7 @@
   text-align: center;
 }
 
-/* Titular entre reglas dobles (thin-thick), marca de masthead. */
+/* Headline between double rules (thin-thick), masthead style. */
 [data-skin='editorial'] [data-home-content] > section:first-of-type h1 {
   width: 100%;
   padding-block: 1rem;
@@ -34,13 +34,13 @@
   font-style: italic;
 }
 
-/* El row de Badge+CTA del hero, centrado bajo el titular (a 375px queda
- * alineado a la izquierda por defecto; ver hero.tsx). */
+/* The Badge+CTA row in the hero, centered below the headline (at 375px it is
+ * left-aligned by default; see hero.tsx). */
 [data-skin='editorial'] [data-home-content] > section:first-of-type > div > div {
   justify-content: center;
 }
 
-/* Secciones separadas por hairline. */
+/* Sections separated by a hairline. */
 [data-skin='editorial'] [data-home-content] > section + section {
   border-top: 1px solid var(--border);
 }
@@ -63,7 +63,7 @@
   border-top: 1px solid var(--fg);
 }
 
-/* ── CV: diario ─────────────────────────────────────────────────────── */
+/* ── CV: newspaper ──────────────────────────────────────────────────── */
 
 /* CV sections separated by a hairline with column spacing. Sole owner of the
  * vertical rhythm (design review F3.9): base layout gap-10 is nullified and this
@@ -79,8 +79,8 @@
   padding-top: 2rem;
 }
 
-/* La experiencia fluye a dos columnas en >=lg o al imprimir (orden column-major = orden
- * de lectura de diario; el DOM y el Tab no cambian). */
+/* Experience flows in two columns on >=lg or print (column-major order = newspaper
+ * reading order; DOM and Tab order do not change). */
 @media (min-width: 64rem), print {
   [data-skin='editorial'] [data-cv-experience] {
     display: block;

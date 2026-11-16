@@ -47,7 +47,7 @@ export function resolveAppearance(input: {
   };
 }
 
-/** Aplica data-theme y data-skin (dev-tool = SIN atributo) y persiste. */
+/** Applies data-theme and data-skin (dev-tool = NO attribute) and persists to storage. */
 export function applyAppearance(appearance: Appearance): void {
   document.documentElement.dataset.theme = appearance.theme;
   if (appearance.skin === 'dev-tool') {
@@ -63,14 +63,14 @@ export function applyAppearance(appearance: Appearance): void {
   }
 }
 
-/** Skin actualmente aplicado al DOM (dataset ausente = 'dev-tool'), validado. */
+/** Skin currently applied to the DOM (missing dataset = 'dev-tool'), validated. */
 export function currentSkin(): Skin {
   return (
     parseValid(SKINS, document.documentElement.dataset.skin ?? null) ?? DEFAULT_APPEARANCE.skin
   );
 }
 
-/** Theme actualmente aplicado al DOM, validado (fallback al default si el dataset falta). */
+/** Theme currently applied to the DOM, validated (falls back to default if dataset is missing). */
 export function currentTheme(): Theme {
   return (
     parseValid(THEMES, document.documentElement.dataset.theme ?? null) ?? DEFAULT_APPEARANCE.theme
@@ -97,7 +97,7 @@ export function reapplyStoredAppearance(fallback: Appearance): void {
     storedTheme = localStorage.getItem(STORAGE_KEYS.theme);
     storedSkin = localStorage.getItem(STORAGE_KEYS.skin);
   } catch {
-    /* almacenamiento no disponible: re-aplica el fallback de la primera carga */
+    /* Storage not available: re-applies the initial load fallback */
   }
   applyAppearance({
     theme: parseValid(THEMES, storedTheme) ?? fallback.theme,

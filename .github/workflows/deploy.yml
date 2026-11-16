@@ -24,11 +24,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Validate agent configuration
+        run: |
+          pnpm run agents:setup
+          pnpm run agents:validate
+
       - name: Build packages and static export
         run: pnpm run build
 
       - name: Run quality checks
         run: |
+          pnpm run format
           pnpm run lint
           pnpm run typecheck
           pnpm run test
