@@ -231,6 +231,25 @@ html {
   .no-print {
     display: none !important;
   }
+  /* Neutralize browser search, text-fragment, selection, and extension highlights in PDF export */
+  ::selection,
+  *::selection,
+  ::target-text,
+  *::target-text,
+  mark,
+  p [style*='background'],
+  li [style*='background'],
+  h1 [style*='background'],
+  h3 [style*='background'],
+  a [style*='background'],
+  [class*='highlight' i],
+  [class*='find-in-page' i] {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: inherit !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
   html,
   body {
     background-color: #ffffff !important;

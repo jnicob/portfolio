@@ -9,16 +9,18 @@ describe('skills and experience frontend prioritization', () => {
     expect(SKILL_CATEGORIES[0]).toBe('frontend');
   });
 
-  it('reflects the level review and includes state management (Hooks & State Management), PostgreSQL, Python / FastAPI, and Java', () => {
+  it('reflects the level review and includes state management (Hooks & State Management), SQL/ERD, NoSQL (MongoDB/Redis), Python / FastAPI, Java (Spring / Hibernate), GCP, and SCRUM', () => {
     const byName = Object.fromEntries(skills.map((s) => [s.name, s.level]));
     expect(byName['JavaScript']).toBe(5);
     expect(byName['React / Next.js']).toBe(4);
     expect(byName['TypeScript']).toBe(4);
     expect(byName['Hooks & State Management (React Query / Zustand / Jotai / Redux)']).toBe(4);
     expect(byName['Vue']).toBe(3);
-    expect(byName['SQL (MySQL / PostgreSQL / SQL Server)']).toBe(4);
+    expect(byName['SQL, NoSQL & ERD (PostgreSQL / MySQL / SQL Server / MongoDB)']).toBe(4);
     expect(byName['Python / FastAPI']).toBe(2);
-    expect(byName['Java']).toBe(2);
+    expect(byName['Java (Spring / Hibernate)']).toBe(2);
+    expect(byName['Google Cloud (GCP) & Gateway APISIX']).toBe(3);
+    expect(byName['SCRUM & Agile Methodologies']).toBe(5);
     expect(byName['React']).toBeUndefined();
     expect(byName['Next.js']).toBeUndefined();
   });
@@ -85,15 +87,19 @@ describe('skills and experience frontend prioritization', () => {
     expect(profile.summary.coreTechBullets[3]?.value.es).toMatch(/Bootstrap, AJAX \/ jQuery, DOM/);
     expect(profile.summary.coreTechBullets[3]?.value.es).toMatch(/OpenSearch \/ Kibana/);
 
-    // Fares Taie CDSS + HL7 FHIR & V3 Infobuttons + Java/REST
+    // Fares Taie CDSS + HL7 FHIR & V3 Infobuttons + Java (Spring + Hibernate)/REST + relational data modeling
     const faresTaie = experience.find((e) => e.id === 'fares-taie')!;
     expect(faresTaie.highlights[0]?.es).toMatch(/HL7 FHIR y HL7 V3 Infobuttons/);
     expect(faresTaie.highlights[0]?.en).toMatch(/HL7 FHIR and HL7 V3 Infobuttons/);
+    expect(faresTaie.highlights[1]?.es).toMatch(/modelado de datos relacional/);
     expect(faresTaie.highlights[1]?.es).toMatch(/APIs RESTful/);
+    expect(faresTaie.highlights[1]?.es).toMatch(/Java \(Spring \+ Hibernate\)/);
     expect(faresTaie.highlights[1]?.en).toMatch(/RESTful APIs/);
+    expect(faresTaie.highlights[1]?.en).toMatch(/Java \(Spring \+ Hibernate\)/);
 
-    // Municipalidad HIS presentation & Doctrine ORM
+    // Municipalidad HIS relational data modeling, presentation & Doctrine ORM
     const muni = experience.find((e) => e.id === 'municipalidad-general-pueyrredon')!;
+    expect(muni.highlights[0]?.es).toMatch(/modelado de datos relacional/);
     expect(muni.highlights[2]?.es).toMatch(/HTML5, CSS, Bootstrap, JavaScript, jQuery, AJAX/);
     expect(muni.highlights[2]?.es).toMatch(/Doctrine ORM/);
     expect(muni.highlights[2]?.en).toMatch(/HTML5, CSS, Bootstrap, JavaScript, jQuery, AJAX/);
@@ -102,9 +108,21 @@ describe('skills and experience frontend prioritization', () => {
     // Skills pills visibility
     const names = skills.map((s) => s.name);
     expect(names).toContain('HTML5 / CSS3 / DOM / AJAX / jQuery');
-    expect(names).toContain('RESTful APIs & ORMs (Doctrine / Eloquent / Prisma / Drizzle)');
+    expect(names).toContain(
+      'RESTful APIs, Hexagonal Arch. & ORMs (Doctrine / Eloquent / Prisma / Drizzle)',
+    );
     expect(names).toContain('HL7 (V2 / V3 / FHIR) & Healthcare Interoperability');
     expect(names).toContain('Observability (OpenSearch / Kibana / Analytics)');
     expect(names).toContain('Tailwind CSS / Bootstrap');
+  });
+
+  it('keeps skill pills and English experience copy free of untranslated Spanish terms and consistent in metric/role formatting', () => {
+    for (const skill of skills) {
+      expect(skill.name).not.toMatch(/Arq\.|Metodologías|Ágiles/i);
+    }
+    const freepik = experience.find((e) => e.id === 'freepik')!;
+    expect(freepik.summary.en).toMatch(/2M\+ users, 1M\+ active subscribers, and 1,000\+ PRs/);
+    const accelone = experience.find((e) => e.id === 'accelone')!;
+    expect(accelone.role.en).toBe('Senior Full-Stack / Frontend Developer');
   });
 });

@@ -30,16 +30,25 @@ const entries = [
     tags: ['nodejs', 'express', 'rest-api'],
   },
   {
-    name: 'RESTful APIs & ORMs (Doctrine / Eloquent / Prisma / Drizzle)',
+    name: 'RESTful APIs, Hexagonal Arch. & ORMs (Doctrine / Eloquent / Prisma / Drizzle)',
     level: 4,
     category: 'backend',
-    tags: ['rest-api', 'doctrine', 'eloquent', 'prisma', 'drizzle', 'orm'],
+    tags: [
+      'rest-api',
+      'microservices',
+      'hexagonal',
+      'doctrine',
+      'eloquent',
+      'prisma',
+      'drizzle',
+      'orm',
+    ],
   },
   {
-    name: 'SQL (MySQL / PostgreSQL / SQL Server)',
+    name: 'SQL, NoSQL & ERD (PostgreSQL / MySQL / SQL Server / MongoDB)',
     level: 4,
     category: 'backend',
-    tags: ['mysql', 'postgresql', 'sql-server', 'database'],
+    tags: ['mysql', 'postgresql', 'mariadb', 'sql-server', 'mongodb', 'redis', 'erd', 'database'],
   },
   {
     name: 'Python / FastAPI',
@@ -48,10 +57,10 @@ const entries = [
     tags: ['python', 'fastapi', 'openapi'],
   },
   {
-    name: 'Java',
+    name: 'Java (Spring / Hibernate)',
     level: 2,
     category: 'backend',
-    tags: ['java'],
+    tags: ['java', 'spring', 'hibernate'],
   },
   {
     name: 'AI Engineering & Agent Orchestration',
@@ -66,10 +75,10 @@ const entries = [
     tags: ['claude', 'claude-code', 'codex', 'gemini', 'llm'],
   },
   {
-    name: 'Gateway APISIX',
+    name: 'Google Cloud (GCP) & Gateway APISIX',
     level: 3,
     category: 'platform',
-    tags: ['apisix', 'gateway', 'rate-limiting'],
+    tags: ['gcp', 'cloud', 'apisix', 'gateway', 'rate-limiting'],
   },
   {
     name: 'Linux server administration',
@@ -94,6 +103,12 @@ const entries = [
     level: 3,
     category: 'platform',
     tags: ['opensearch', 'kibana', 'gcp-logs', 'posthog', 'calibre', 'web-vitals'],
+  },
+  {
+    name: 'SCRUM & Agile Methodologies',
+    level: 5,
+    category: 'tooling',
+    tags: ['scrum', 'agile'],
   },
   {
     name: 'Testing (Jest / PHPUnit / Vitest)',

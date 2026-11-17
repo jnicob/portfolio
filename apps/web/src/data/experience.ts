@@ -16,7 +16,7 @@ const entries = [
     },
     summary: {
       es: 'Ecosistema de productos de IA y stock en magnific.com (+2M de usuarios, +1M de suscriptores activos y +1.000 PRs desplegadas en producción). Desarrollo frontend y full-stack abarcando múltiples proyectos: APIs de servicios de IA y stock, landings de producto de alto impacto y tráfico, playground interactivo, panel de estadísticas para APIs y proyectos de backoffice con Vue y PHP/Laravel (Freepik/Flaticon).',
-      en: 'AI and creative stock product ecosystem at magnific.com (+2M users, +1M active subscribers, and 1,000+ PRs shipped to production). Frontend and full-stack engineering across key initiatives: APIs for AI services and stock, high-impact product landings, interactive playground, API statistics dashboard, and backoffice projects with Vue and PHP/Laravel (Freepik/Flaticon).',
+      en: 'AI and creative stock product ecosystem at magnific.com (2M+ users, 1M+ active subscribers, and 1,000+ PRs shipped to production). Frontend and full-stack engineering across key initiatives: APIs for AI services and stock, high-impact product landings, interactive playground, API statistics dashboard, and backoffice projects with Vue and PHP/Laravel (Freepik/Flaticon).',
     },
     highlights: [
       {
@@ -24,16 +24,16 @@ const entries = [
         en: 'High-impact web applications & landings: frontend development for public product landings (APIs, image/audio/video generation and editing), design system, accessibility, Core Web Vitals optimization, technical SEO, testing and production deployment. Interactive playground to test models from the browser, consumption dashboards, limits, billing and API key management (React, Next.js, TypeScript, React Query, Zustand, Jotai).',
       },
       {
-        es: 'Catálogo multimodal de IA y arquitectura de servicios: exposición y monetización de más de 40 modelos de IA y más de 350 endpoints con FastAPI y APISIX gateway, reduciendo latencias mediante caché distribuida (Redis), rate-limiting y procesos asíncronos con alto tráfico.',
-        en: 'Multimodal AI catalog & service architecture: monetizing and serving 40+ AI models and 350+ endpoints in production with FastAPI and APISIX gateway, minimizing response times through distributed caching (Redis), rate-limiting, and asynchronous workflows under high traffic.',
+        es: 'Catálogo multimodal de IA y microservicios en GCP: exposición de +40 modelos y +350 endpoints con FastAPI, servicios bajo DDD / arquitectura hexagonal y APISIX gateway (autenticación, autorización, caché Redis, rate-limiting y procesos asíncronos con alto tráfico).',
+        en: 'Multimodal AI catalog & microservices on GCP: serving 40+ AI models and 350+ endpoints with FastAPI, backend services under DDD / hexagonal architecture, and APISIX gateway (authentication, authorization, Redis caching, rate-limiting, and asynchronous workflows under high traffic).',
       },
       {
         es: 'Automatización con agentes de IA (Claude Code, skills y commands): pipelines para convertir especificaciones OpenAPI en endpoints FastAPI, reglas de gateway, configuración de precios/créditos, playground y documentación interactiva, reduciendo el tiempo de integración de nuevos modelos de días a minutos.',
         en: 'AI agent automation (Claude Code, skills & commands): pipelines converting OpenAPI specs into FastAPI endpoints, gateway rules, pricing/credits configuration, playground, and interactive documentation, cutting new model integration time from days to minutes.',
       },
       {
-        es: 'Backoffice, gestión de contenido y colaboradores (Freepik/Flaticon): ingeniería full-stack en PHP/Laravel y JS/Vue para moderación y gestión de activos digitales, colaboradores y portal fiscal.',
-        en: 'Backoffice, content management and contributors (Freepik/Flaticon): full-stack engineering across PHP/Laravel and JS/Vue for digital asset moderation, contributor management, and tax portal.',
+        es: 'Backoffice, gestión de contenido y colaboradores (Freepik/Flaticon): ingeniería full-stack en PHP/Laravel y JS/Vue para moderación de activos digitales, control de accesos, colaboradores y portal fiscal.',
+        en: 'Backoffice, content management and contributors (Freepik/Flaticon): full-stack engineering across PHP/Laravel and JS/Vue for digital asset moderation, access control, contributor management, and tax portal.',
       },
     ],
     tags: [
@@ -59,8 +59,8 @@ const entries = [
     id: 'accelone',
     company: 'AccelOne',
     role: {
-      es: 'Senior FullStack / Frontend Developer',
-      en: 'Senior FullStack / Frontend Developer',
+      es: 'Senior Full-Stack / Frontend Developer',
+      en: 'Senior Full-Stack / Frontend Developer',
     },
     start: '2020-09',
     end: '2022-10',
@@ -82,8 +82,8 @@ const entries = [
         en: 'GDS: web platform for operational management, stock tracking, and point-of-sale operations in real time (React, Redux, Node.js, SQL Server).',
       },
       {
-        es: 'Candidate Viewer: plataforma de evaluación y gestión de candidatos para procesos de selección (React, Node.js, Express, MySQL).',
-        en: 'Candidate Viewer: job-candidate screening and talent management platform (React, Node.js, Express, MySQL).',
+        es: 'Candidate Viewer: plataforma de evaluación y gestión de candidatos con control de autenticación y permisos (React, Node.js, Express, MySQL).',
+        en: 'Candidate Viewer: job-candidate screening and talent management platform with authentication and permission control (React, Node.js, Express, MySQL).',
       },
       {
         es: 'DevelopIntelligence: aplicación para instructores y gestión de disponibilidad en cursos técnicos corporativos con Salesforce Lightning Components.',
@@ -121,8 +121,8 @@ const entries = [
     },
     highlights: [
       {
-        es: 'Desarrollo e implantación del sistema de historia clínica electrónica, garantizando la trazabilidad médica y atención de miles de pacientes en centros municipales.',
-        en: 'Developed and rolled out the digital health record system, ensuring medical traceability and care continuity for thousands of patients across municipal centers.',
+        es: 'Desarrollo del sistema de historia clínica electrónica (modelado de datos relacional, autenticación y control de acceso por rol), garantizando la trazabilidad médica de miles de pacientes.',
+        en: 'Developed the digital health record system (relational data modeling, authentication, and role-based access control), ensuring medical traceability for thousands of patients.',
       },
       {
         es: 'Interoperabilidad clínica crítica: integración en tiempo real entre laboratorios (LIS), diagnóstico por imagen (RIS) y padrón de pacientes mediante estándares HL7 V2 y Mirth Connect.',
@@ -201,8 +201,8 @@ const entries = [
         en: 'Development of Clinical Decision Support Systems (CDSS) services using HL7 FHIR and HL7 V3 Infobuttons, integrating controlled medical vocabularies (SNOMED CT, LOINC, ICD-10).',
       },
       {
-        es: 'Diseño, mantenimiento e integración de servicios web y APIs RESTful con Java, PHP / Laravel, JavaScript (AJAX / jQuery, DOM, Bootstrap) y administración de servidores Linux.',
-        en: 'Design, maintenance, and integration of web services and RESTful APIs with Java, PHP / Laravel, JavaScript (AJAX / jQuery, DOM, Bootstrap), and Linux server administration.',
+        es: 'Diseño, modelado de datos relacional e integración de APIs RESTful y autenticación con Java (Spring + Hibernate), PHP / Laravel, MySQL, JavaScript (AJAX / jQuery, DOM, Bootstrap) y servidores Linux.',
+        en: 'Design, relational data modeling, and integration of RESTful APIs and authentication with Java (Spring + Hibernate), PHP / Laravel, MySQL, JavaScript (AJAX / jQuery, DOM, Bootstrap), and Linux servers.',
       },
     ],
     tags: [

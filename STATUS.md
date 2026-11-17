@@ -1,6 +1,6 @@
 # STATUS — nicobehm portfolio
 
-> Actualizado: 2026-11-16 · Base de conocimiento arquitectónica (`docs/architecture.md`), Quick Wins de auditoría (PII Guard recursivo, simetría `/api/contact` + poda de rate-limit, limpieza de `pnpm.overrides` y endurecimiento de `deploy.yml`) y refinamiento de skills/CV
+> Actualizado: 2026-11-17 · Refinamiento de CV (titular con Node.js sin FastAPI/Laravel, traducción EN de skills/métricas) y limpieza automática de resaltados de búsqueda al imprimir PDF
 
 ## Ahora
 
