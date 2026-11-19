@@ -78,9 +78,10 @@
   padding-top: 2rem;
 }
 
-/* Experience flows in two columns on >=lg or print (column-major order = newspaper
- * reading order; DOM and Tab order do not change). */
-@media (min-width: 64rem), print {
+/* Experience flows in two columns on >=lg screen (column-major order = newspaper
+ * reading order; DOM and Tab order do not change). Print intentionally ignores
+ * skin layout overrides so ATS/A4 pagination stays deterministic across all skins. */
+@media (min-width: 64rem) {
   [data-skin='editorial'] [data-cv-experience] {
     display: block;
     columns: 2;
@@ -91,6 +92,28 @@
   [data-skin='editorial'] [data-cv-experience] > article {
     break-inside: avoid;
     margin-bottom: 2rem;
+  }
+}
+
+@media print {
+  [data-skin='editorial'] [data-cv-sections] {
+    row-gap: 0.75rem;
+  }
+
+  [data-skin='editorial'] [data-cv-sections] > section + section {
+    border-top: 0;
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  [data-skin='editorial'] [data-cv-experience] {
+    display: flex;
+    columns: auto;
+    column-rule: none;
+  }
+
+  [data-skin='editorial'] [data-cv-experience] > article {
+    margin-bottom: 0;
   }
 }
 

@@ -25,9 +25,6 @@ export type CvStrings = {
   contactGithub: string;
   contactLinkedin: string;
   contactForm?: string;
-  briefTitle?: string;
-  showBrief?: string;
-  hideBrief?: string;
   showPhoto?: string;
   hidePhoto?: string;
   categories: Record<Skill['category'], string>;
@@ -42,10 +39,10 @@ export type CvViewProps = { locale: Locale; strings: CvStrings };
  */
 export function CvStandard({ locale, strings }: CvViewProps) {
   return (
-    <div data-cv-sections className="flex flex-col gap-6">
-      <section className="flex flex-col gap-6">
+    <div data-cv-sections className="flex flex-col gap-6 print:gap-3">
+      <section className="flex flex-col gap-6 print:gap-3">
         <h2 className="text-2xl font-semibold text-fg">{strings.experienceTitle}</h2>
-        <div data-cv-experience className="flex flex-col gap-8">
+        <div data-cv-experience className="flex flex-col gap-8 print:gap-4">
           {experience.map((entry) => (
             <ExperienceEntryBlock
               key={entry.id}
@@ -57,9 +54,9 @@ export function CvStandard({ locale, strings }: CvViewProps) {
         </div>
       </section>
 
-      <section className="flex flex-col gap-6">
+      <section className="flex flex-col gap-6 print:gap-2">
         <h2 className="text-2xl font-semibold text-fg">{strings.skillsTitle}</h2>
-        <div className="flex flex-col gap-6 print:grid print:grid-cols-3 print:gap-x-6 print:gap-y-4">
+        <div className="flex flex-col gap-6 print:grid print:grid-cols-3 print:gap-x-6 print:gap-y-2.5">
           {SKILL_CATEGORIES.map((category) => {
             const categorySkills = skills.filter((skill) => skill.category === category);
             if (categorySkills.length === 0) return null;
@@ -77,15 +74,17 @@ export function CvStandard({ locale, strings }: CvViewProps) {
         </div>
       </section>
 
-      <section className="flex flex-col gap-6">
-        <h2 className="text-2xl font-semibold text-fg">{strings.educationTitle}</h2>
-        <EducationList education={education} locale={locale} />
-      </section>
+      <div className="grid grid-cols-1 gap-6 print:grid-cols-2 print:gap-x-8 print:gap-y-2">
+        <section className="flex flex-col gap-6 print:gap-2">
+          <h2 className="text-2xl font-semibold text-fg">{strings.educationTitle}</h2>
+          <EducationList education={education} locale={locale} />
+        </section>
 
-      <section className="flex flex-col gap-6">
-        <h2 className="text-2xl font-semibold text-fg">{strings.languagesTitle}</h2>
-        <LanguageList languages={languages} locale={locale} />
-      </section>
+        <section className="flex flex-col gap-6 print:gap-2">
+          <h2 className="text-2xl font-semibold text-fg">{strings.languagesTitle}</h2>
+          <LanguageList languages={languages} locale={locale} />
+        </section>
+      </div>
     </div>
   );
 }

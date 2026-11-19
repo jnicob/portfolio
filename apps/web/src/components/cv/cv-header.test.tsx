@@ -5,47 +5,64 @@ import { profile } from '@/data/profile';
 import { CvHeader } from './cv-header';
 
 describe('CvHeader', () => {
-  it('renders name, headline, and public contact links', () => {
+  it('renders name, headline, and places location with shortened public links when no private contact is present', () => {
     render(<CvHeader locale="es" />);
 
     const expectedName = profile.fullName ? profile.fullName.es : profile.name;
-    expect(screen.getByRole('heading', { level: 1, name: expectedName })).toBeInTheDocument();
+    const heading = screen.getByRole('heading', { level: 1, name: expectedName });
+    expect(heading).toBeInTheDocument();
     expect(screen.getByText(profile.headline.es)).toBeInTheDocument();
+    expect(heading.parentElement).not.toHaveTextContent(profile.location.es);
+    const contactColumn = screen.getByTestId('cv-contact-column');
+    expect(contactColumn).toHaveTextContent(profile.location.es);
     if (profile.links.website) {
-      expect(screen.getByRole('link', { name: profile.links.website })).toHaveAttribute(
+      expect(screen.getByRole('link', { name: 'jnicob.dev' })).toHaveAttribute(
         'href',
         profile.links.website,
       );
     }
-    expect(screen.getByRole('link', { name: profile.links.github })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'github.com/jnicob' })).toHaveAttribute(
       'href',
       profile.links.github,
     );
-    expect(screen.getByRole('link', { name: profile.links.linkedin })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'linkedin.com/in/nicobehm' })).toHaveAttribute(
       'href',
       profile.links.linkedin,
     );
-    expect(screen.getByText(profile.location.es)).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /@/ })).not.toBeInTheDocument();
   });
 
-  it('displays professional brief by default and toggles visibility on click', async () => {
-    const user = userEvent.setup();
+  it('renders private email/phone in contact column and moves location under headline when provided', () => {
     render(
-      <CvHeader locale="es" showBriefLabel="Mostrar resumen" hideBriefLabel="Ocultar resumen" />,
+      <CvHeader
+        locale="en"
+        privateContact={{ email: 'contact@example.com', phone: '+34 600 000 000' }}
+      />,
     );
 
-    // Visible initially
-    const toggleButton = screen.getByRole('button', { name: 'Ocultar resumen' });
-    expect(toggleButton).toBeInTheDocument();
+    const expectedName = profile.fullName ? profile.fullName.en : profile.name;
+    const heading = screen.getByRole('heading', { level: 1, name: expectedName });
+    const contactColumn = screen.getByTestId('cv-contact-column');
+    expect(heading.parentElement).toHaveTextContent(profile.location.en);
+    expect(contactColumn).not.toHaveTextContent(profile.location.en);
+    expect(screen.getByRole('link', { name: 'contact@example.com' })).toHaveAttribute(
+      'href',
+      'mailto:contact@example.com',
+    );
+    expect(screen.getByRole('link', { name: '+34 600 000 000' })).toHaveAttribute(
+      'href',
+      'tel:+34600000000',
+    );
+  });
+
+  it('always displays the professional brief without a hide-summary toggle', () => {
+    render(<CvHeader locale="es" />);
+
     const summarySample = profile.summary.paragraphs.es[0] ?? '';
     expect(
       screen.getByText((content) => content.includes(summarySample.slice(0, 30))),
     ).toBeInTheDocument();
-
-    // Toggle off
-    await user.click(toggleButton);
-
-    expect(screen.getByRole('button', { name: 'Mostrar resumen' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /resumen|summary/i })).not.toBeInTheDocument();
   });
 
   it('hides profile photo by default and toggles on/off when clicked', async () => {

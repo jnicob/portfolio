@@ -39,9 +39,6 @@ export default async function CvPage({ params }: Props) {
     contactGithub: tFooter('github'),
     contactLinkedin: tFooter('linkedin'),
     contactForm: t('contactForm'),
-    briefTitle: t('briefTitle'),
-    showBrief: t('showBrief'),
-    hideBrief: t('hideBrief'),
     showPhoto: t('showPhoto'),
     hidePhoto: t('hidePhoto'),
     categories: categoryLabels,
@@ -54,13 +51,22 @@ export default async function CvPage({ params }: Props) {
     timeline: t('views.timeline'),
   };
 
+  // Signal only whether local private contact lookup is enabled; PII is never
+  // embedded in RSC HTML and is fetched strictly over loopback via POST /api/cv-pdf-local/.
+  const localPrivateEnabled =
+    process.env.NODE_ENV === 'development' && process.env.CV_INCLUDE_PRIVATE === 'true';
+
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8 print:gap-1.5 print:p-0">
       <JsonLd data={personJsonLd(locale)} />
       <CvContent
         locale={locale}
         strings={strings}
+        localPrivateEnabled={localPrivateEnabled}
         switcherLabels={switcherLabels}
+        downloadPdfLabel={t('downloadPdf')}
+        privatePdfErrorLabel={t('privatePdfError')}
+        privatePdfFallbackLabel={t('privatePdfFallback')}
         printLabel={t('print')}
         shareLabels={{ share: tShare('share'), copied: tShare('copied'), error: tShare('error') }}
       />

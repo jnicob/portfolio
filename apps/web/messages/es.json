@@ -9,9 +9,12 @@
     "menuOpen": "Abrir menú",
     "menuClose": "Cerrar menú"
   },
-  "footer": { "github": "GitHub", "linkedin": "LinkedIn" },
+  "footer": {
+    "github": "GitHub",
+    "linkedin": "LinkedIn"
+  },
   "share": {
-    "share": "Compartir esta vista",
+    "share": "Compartir",
     "copied": "Enlace copiado",
     "error": "No se pudo copiar"
   },
@@ -88,10 +91,10 @@
       "tooling": "Tooling"
     },
     "viewsLabel": "Vista del CV",
-    "print": "Imprimir CV",
-    "briefTitle": "Resumen Profesional",
-    "showBrief": "Mostrar resumen",
-    "hideBrief": "Ocultar resumen",
+    "downloadPdf": "Descargar",
+    "privatePdfError": "No se pudo descargar el PDF privado con contacto (ejecutá `pnpm run cv:pdf`).",
+    "privatePdfFallback": "Descargar PDF público (sin email/teléfono)",
+    "print": "Imprimir",
     "showPhoto": "Incluir foto",
     "hidePhoto": "Quitar foto",
     "views": {

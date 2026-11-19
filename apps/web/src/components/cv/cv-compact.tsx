@@ -34,7 +34,7 @@ export function CvCompact({ locale, strings }: CvViewProps) {
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-fg">{strings.skillsTitle}</h2>
-        <div className="flex flex-col gap-3 print:grid print:grid-cols-3 print:gap-x-6 print:gap-y-4">
+        <div className="flex flex-col gap-3 print:grid print:grid-cols-3 print:gap-x-6 print:gap-y-2">
           {SKILL_CATEGORIES.map((category) => {
             const categorySkills = skills.filter((skill) => skill.category === category);
             if (categorySkills.length === 0) return null;

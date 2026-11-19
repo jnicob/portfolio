@@ -204,6 +204,293 @@ describe('CvContent', () => {
     printSpy.mockRestore();
   });
 
+  it('with downloadPdfLabel, updates the direct download link for active locale, view, and photo toggle', async () => {
+    const user = userEvent.setup();
+    const { CvContent } = await importFreshComponents();
+
+    render(
+      <CvContent
+        locale="en"
+        strings={{ ...STRINGS, showPhoto: 'Show photo', hidePhoto: 'Hide photo' }}
+        switcherLabels={SWITCHER_LABELS}
+        downloadPdfLabel="Download PDF"
+      />,
+    );
+
+    const downloadLink = screen.getByRole('link', { name: 'Download PDF' });
+    expect(downloadLink).toHaveAttribute('href', '/cv/nico-behm-cv-en-standard.pdf');
+    expect(downloadLink).toHaveAttribute('download', 'Nico-Behm-CV-EN-standard.pdf');
+
+    await user.click(screen.getByRole('radio', { name: 'Compact' }));
+    expect(downloadLink).toHaveAttribute('href', '/cv/nico-behm-cv-en-compact.pdf');
+    expect(downloadLink).toHaveAttribute('download', 'Nico-Behm-CV-EN-compact.pdf');
+
+    // Enabling photo switches download link to the pre-generated -photo variant
+    await user.click(screen.getByRole('button', { name: 'Show photo' }));
+    expect(downloadLink).toHaveAttribute('href', '/cv/nico-behm-cv-en-compact-photo.pdf');
+    expect(downloadLink).toHaveAttribute('download', 'Nico-Behm-CV-EN-compact-photo.pdf');
+
+    // Timeline falls back to standard PDF while preserving active photo state
+    await user.click(screen.getByRole('radio', { name: 'Timeline' }));
+    expect(downloadLink).toHaveAttribute('href', '/cv/nico-behm-cv-en-standard-photo.pdf');
+    expect(downloadLink).toHaveAttribute('download', 'Nico-Behm-CV-EN-standard-photo.pdf');
+  });
+
+  it('activates photo from ?photo=1 URL query parameter on initial load', async () => {
+    window.history.pushState(null, '', '/en/cv?view=compact&photo=1');
+    const { CvContent, AppearanceInit } = await importFreshComponents();
+
+    render(
+      <>
+        <AppearanceInit />
+        <CvContent
+          locale="en"
+          strings={{ ...STRINGS, showPhoto: 'Show photo', hidePhoto: 'Hide photo' }}
+          switcherLabels={SWITCHER_LABELS}
+          downloadPdfLabel="Download PDF"
+        />
+      </>,
+    );
+
+    expect(screen.getByTestId('cv-photo')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Download PDF' })).toHaveAttribute(
+      'href',
+      '/cv/nico-behm-cv-en-compact-photo.pdf',
+    );
+  });
+
+  it('downloads the private PDF via POST /api/cv-pdf-local when privateContact is active in local dev', async () => {
+    const user = userEvent.setup();
+    const { CvContent } = await importFreshComponents();
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d]), {
+        status: 200,
+        headers: { 'Content-Type': 'application/pdf' },
+      }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    const createObjectURL = vi.fn(() => 'blob:private-cv');
+    const revokeObjectURL = vi.fn();
+    vi.stubGlobal('URL', Object.assign(URL, { createObjectURL, revokeObjectURL }));
+    const anchorClickSpy = vi
+      .spyOn(HTMLAnchorElement.prototype, 'click')
+      .mockImplementation(() => {});
+
+    try {
+      render(
+        <CvContent
+          locale="es"
+          strings={{ ...STRINGS, showPhoto: 'Incluir foto', hidePhoto: 'Quitar foto' }}
+          privateContact={{ email: 'contact@example.com', phone: '+34 600 000 000' }}
+          switcherLabels={SWITCHER_LABELS}
+          downloadPdfLabel="Descargar"
+        />,
+      );
+
+      await user.click(screen.getByRole('link', { name: 'Descargar' }));
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        '/api/cv-pdf-local/',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ locale: 'es', view: 'standard', photo: false }),
+        }),
+      );
+      expect(createObjectURL).toHaveBeenCalledTimes(1);
+    } finally {
+      anchorClickSpy.mockRestore();
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('shows an explicit error and fallback link instead of silent redirect if private PDF download fails', async () => {
+    const user = userEvent.setup();
+    const { CvContent } = await importFreshComponents();
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ error: 'Private PDF missing' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    try {
+      render(
+        <CvContent
+          locale="en"
+          strings={{ ...STRINGS, showPhoto: 'Show photo', hidePhoto: 'Hide photo' }}
+          privateContact={{ email: 'contact@example.com', phone: '+34 600 000 000' }}
+          switcherLabels={SWITCHER_LABELS}
+          downloadPdfLabel="Download"
+          privatePdfErrorLabel="Default private error"
+          privatePdfFallbackLabel="Download public PDF"
+        />,
+      );
+
+      await user.click(screen.getByRole('link', { name: 'Download' }));
+
+      const alert = await screen.findByRole('alert');
+      expect(alert).toHaveTextContent('Private PDF missing');
+      const fallback = screen.getByRole('link', { name: 'Download public PDF' });
+      expect(fallback).toHaveAttribute('href', '/cv/nico-behm-cv-en-standard.pdf');
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('fetches private contact over loopback when localPrivateEnabled is true on localhost', async () => {
+    const { CvContent } = await importFreshComponents();
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ email: 'contact@example.com', phone: '+34 600 000 000' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    try {
+      render(
+        <CvContent
+          locale="en"
+          strings={STRINGS}
+          localPrivateEnabled
+          switcherLabels={SWITCHER_LABELS}
+        />,
+      );
+
+      expect(await screen.findByRole('link', { name: 'contact@example.com' })).toHaveAttribute(
+        'href',
+        'mailto:contact@example.com',
+      );
+      expect(screen.getByRole('link', { name: '+34 600 000 000' })).toBeInTheDocument();
+      expect(fetchMock).toHaveBeenCalledWith(
+        '/api/cv-pdf-local/',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ mode: 'contact' }),
+        }),
+      );
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('downloads the private PDF via POST /api/cv-pdf-local when privateContact is active in local dev', async () => {
+    const user = userEvent.setup();
+    const { CvContent } = await importFreshComponents();
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d]), {
+        status: 200,
+        headers: { 'Content-Type': 'application/pdf' },
+      }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    const createObjectURL = vi.fn(() => 'blob:private-cv');
+    const revokeObjectURL = vi.fn();
+    vi.stubGlobal('URL', Object.assign(URL, { createObjectURL, revokeObjectURL }));
+    const anchorClickSpy = vi
+      .spyOn(HTMLAnchorElement.prototype, 'click')
+      .mockImplementation(() => {});
+
+    try {
+      render(
+        <CvContent
+          locale="es"
+          strings={{ ...STRINGS, showPhoto: 'Incluir foto', hidePhoto: 'Quitar foto' }}
+          privateContact={{ email: 'contact@example.com', phone: '+34 600 000 000' }}
+          switcherLabels={SWITCHER_LABELS}
+          downloadPdfLabel="Descargar"
+        />,
+      );
+
+      await user.click(screen.getByRole('link', { name: 'Descargar' }));
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        '/api/cv-pdf-local/',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ locale: 'es', view: 'standard', photo: false }),
+        }),
+      );
+      expect(createObjectURL).toHaveBeenCalledTimes(1);
+    } finally {
+      anchorClickSpy.mockRestore();
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('shows an explicit error and fallback link instead of silent redirect if private PDF download fails', async () => {
+    const user = userEvent.setup();
+    const { CvContent } = await importFreshComponents();
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ error: 'Private PDF missing' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    try {
+      render(
+        <CvContent
+          locale="en"
+          strings={{ ...STRINGS, showPhoto: 'Show photo', hidePhoto: 'Hide photo' }}
+          privateContact={{ email: 'contact@example.com', phone: '+34 600 000 000' }}
+          switcherLabels={SWITCHER_LABELS}
+          downloadPdfLabel="Download"
+          privatePdfErrorLabel="Default private error"
+          privatePdfFallbackLabel="Download public PDF"
+        />,
+      );
+
+      await user.click(screen.getByRole('link', { name: 'Download' }));
+
+      const alert = await screen.findByRole('alert');
+      expect(alert).toHaveTextContent('Private PDF missing');
+      const fallback = screen.getByRole('link', { name: 'Download public PDF' });
+      expect(fallback).toHaveAttribute('href', '/cv/nico-behm-cv-en-standard.pdf');
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('fetches private contact over loopback when localPrivateEnabled is true on localhost', async () => {
+    const { CvContent } = await importFreshComponents();
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ email: 'contact@example.com', phone: '+34 600 000 000' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    try {
+      render(
+        <CvContent
+          locale="en"
+          strings={STRINGS}
+          localPrivateEnabled
+          switcherLabels={SWITCHER_LABELS}
+        />,
+      );
+
+      expect(await screen.findByRole('link', { name: 'contact@example.com' })).toHaveAttribute(
+        'href',
+        'mailto:contact@example.com',
+      );
+      expect(screen.getByRole('link', { name: '+34 600 000 000' })).toBeInTheDocument();
+      expect(fetchMock).toHaveBeenCalledWith(
+        '/api/cv-pdf-local/',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ mode: 'contact' }),
+        }),
+      );
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('el contenedor de la barra de controles (switcher, print, share) tiene la clase no-print', async () => {
     const { CvContent } = await importFreshComponents();
     render(
