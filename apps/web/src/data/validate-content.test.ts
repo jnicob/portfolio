@@ -65,11 +65,12 @@ describe('validate-content', () => {
     expect(all).not.toMatch(PHONE);
   });
 
-  it('PII GUARD: no personal email addresses or real phone numbers leaked in source or test files', async () => {
+  it('PII GUARD: no personal email addresses or real phone numbers leaked in source, test, or .env.example files', async () => {
     const webRoot = path.resolve(__dirname, '../..');
     const files = [
       ...(await collectSourceFiles(path.join(webRoot, 'src'))),
       ...(await collectSourceFiles(path.join(webRoot, 'public', 'api'))),
+      path.join(webRoot, '.env.example'),
     ];
 
     const leakedEmails: string[] = [];

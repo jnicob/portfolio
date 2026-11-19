@@ -10,21 +10,20 @@ afterEach(() => {
   cleanup();
 });
 
-// jsdom: pointer capture inexistente/inconsistente (ver el mismo stub en
-// packages/media-kit/vitest.setup.ts). Necesario desde que el showcase anida
-// botones (p.ej. el CTA `expand` de CompareSlider) dentro de un contenedor con
-// handlers de puntero: el pointermove que userEvent dispara al mover el cursor
-// hacia el botón burbujea hasta ese contenedor y llama a estos métodos.
+// jsdom: missing/inconsistent pointer capture (mirrors packages/media-kit/vitest.setup.ts).
+// Required because the showcase nests buttons (e.g. CompareSlider's `expand` CTA) inside a
+// container with pointer handlers: the pointermove fired by userEvent bubbles up and invokes
+// these methods.
 Element.prototype.setPointerCapture ??= () => {};
 Element.prototype.releasePointerCapture ??= () => {};
 Element.prototype.hasPointerCapture ??= () => false;
 
-// jsdom no implementa el constructor PointerEvent (https://github.com/jsdom/jsdom/issues/2527):
-// fireEvent.pointerDown/Move cae a `new Event(...)` y descarta clientX/pointerType/button/
-// isPrimary/pointerId. Polyfill mínimo sobre MouseEvent (que sí soporta clientX/clientY/button)
-// solo para el entorno de test; el navegador real siempre trae su propio PointerEvent. Mismo
-// polyfill que `packages/media-kit/vitest.setup.ts` — necesario aquí desde TiltCard, que lee
-// `event.clientX/clientY` en su handler de pointermove.
+// jsdom does not implement the PointerEvent constructor (https://github.com/jsdom/jsdom/issues/2527):
+// fireEvent.pointerDown/Move falls back to `new Event(...)` and drops clientX/pointerType/button/
+// isPrimary/pointerId. Minimal polyfill over MouseEvent (which supports clientX/clientY/button)
+// for the test environment only; real browsers provide a native PointerEvent. Mirrors
+// `packages/media-kit/vitest.setup.ts` — required here by TiltCard, which reads
+// `event.clientX/clientY` in its pointermove handler.
 if (typeof globalThis.PointerEvent === 'undefined') {
   class PointerEventPolyfill extends MouseEvent implements PointerEvent {
     pointerId: number;
@@ -68,20 +67,16 @@ if (typeof globalThis.PointerEvent === 'undefined') {
   globalThis.PointerEvent = PointerEventPolyfill;
 }
 
-// jsdom no implementa el contexto 2D de canvas: cada llamada a
-// `canvas.getContext('2d')` loggea un error "not implemented" por consola
-// (vía su virtual console) y devuelve undefined. Desde HeroCanvas, que
-// comprueba `if (!ctx) return` de forma defensiva, alcanza con silenciar ese
-// ruido devolviendo null directamente. Tests que necesiten un contexto real
-// (pintado, animación) lo sobreescriben localmente con `vi.spyOn` — ver
-// `hero-canvas.test.tsx`.
+// jsdom does not implement the 2D canvas context: each `canvas.getContext('2d')` call
+// logs a "not implemented" error via its virtual console and returns undefined. Since
+// HeroCanvas defensively checks `if (!ctx) return`, returning null directly silences
+// the noise. Tests that need a real context (drawing, animation) override it locally
+// with `vi.spyOn` — see `hero-canvas.test.tsx`.
 //
-// Guard de entorno, no de feature: no hay forma de comprobar "¿ya da un
-// contexto real?" sin invocar el método (lo que dispararía el mismo log que
-// queremos evitar). La única vía por la que jsdom devolvería un contexto real
-// es el paquete opcional `canvas`, que este repo no instala (cero
-// dependencias nuevas), así que el reemplazo es correcto siempre que
-// `HTMLCanvasElement` exista (jsdom real, no un entorno sin DOM).
+// Environment guard rather than feature check: calling the method to inspect it would
+// trigger the exact log we want to suppress. The only way jsdom provides a real context
+// is via the optional `canvas` package, which this repo does not install (zero extra
+// dependencies), so stubbing when `HTMLCanvasElement` exists is safe.
 if (typeof HTMLCanvasElement !== 'undefined') {
   HTMLCanvasElement.prototype.getContext = (() =>
     null) as typeof HTMLCanvasElement.prototype.getContext;
