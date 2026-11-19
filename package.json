@@ -14,7 +14,11 @@
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
     "agents:setup": "bash scripts/setup-agents.sh --all",
-    "agents:validate": "bash scripts/setup-agents.sh --validate"
+    "agents:validate": "bash scripts/setup-agents.sh --validate",
+    "cv:pdf": "node scripts/generate-cv-pdfs.mjs",
+    "cv:pdf:public": "node scripts/generate-cv-pdfs.mjs --public-only",
+    "cv:pdf:check": "node scripts/check-cv-pdfs.mjs",
+    "hooks:setup": "bash scripts/setup-git-hooks.sh"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",

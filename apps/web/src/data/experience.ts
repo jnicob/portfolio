@@ -2,6 +2,51 @@ import { experienceEntrySchema, type ExperienceEntry } from './schemas';
 
 const entries = [
   {
+    id: 'independent-consulting',
+    company: 'Freelance',
+    role: {
+      es: 'Senior Full-Stack & AI Engineer',
+      en: 'Senior Full-Stack & AI Engineer',
+    },
+    start: '2026-08',
+    end: null,
+    location: {
+      es: 'Almería, España (Remoto)',
+      en: 'Almería, Spain (Remote)',
+    },
+    summary: {
+      es: 'Desarrollo end-to-end de productos web a medida con arquitecturas modernas (Next.js 16, React 19, TypeScript) y flujos guiados por IA.',
+      en: 'End-to-end delivery of custom web products with modern architectures (Next.js 16, React 19, TypeScript) and AI-assisted spec-driven workflows.',
+    },
+    highlights: [
+      {
+        es: 'Lauquen Transporte (2026): modernización de un sistema legacy Access 97 a plataforma web de control de gastos de flota (combustible, peajes y mantenimiento) con migración ETL automatizada de +11.300 registros, RBAC, auditoría inmutable, reportes Excel y suite TDD (Vitest) en Next.js 16, React 19, TypeScript, Drizzle ORM y MySQL 8.0.',
+        en: 'Lauquen Transporte (2026): modernization of a legacy Access 97 system into a fleet expense management web platform (fuel, tolls, and maintenance) featuring automated ETL migration of 11,300+ records, RBAC, immutable audit trail, Excel reporting, and a Vitest TDD suite in Next.js 16, React 19, TypeScript, Drizzle ORM, and MySQL 8.0.',
+      },
+      {
+        es: 'Hotel Monte Cervino (2026): sitio web trilingüe de hotel orientado a reservas directas y SEO local en Next.js SSG, TypeScript y Tailwind CSS, con integración del motor de reservas Cloudbeds y CI/CD con GitHub Actions.',
+        en: 'Hotel Monte Cervino (2026): trilingual hotel website built to drive direct bookings and local organic SEO in Next.js SSG, TypeScript, and Tailwind CSS, integrating the Cloudbeds booking engine and GitHub Actions CI/CD.',
+      },
+      {
+        es: 'Manos Activas (2026): sitio web de terapia ocupacional con e-commerce de recursos digitales (pagos con Stripe API) y agenda de citas clínicas, desarrollado con specs y custom agent skills en React, TypeScript, Tailwind CSS, WordPress/PHP y Docker.',
+        en: 'Manos Activas (2026): occupational therapy website with digital-resource e-commerce (Stripe API checkout) and clinical appointment scheduling, built with spec-driven AI workflows & custom skills in React, TypeScript, Tailwind CSS, WordPress/PHP, and Docker.',
+      },
+    ],
+    tags: [
+      'nextjs',
+      'react',
+      'typescript',
+      'tailwind',
+      'drizzle-orm',
+      'mysql',
+      'vitest',
+      'stripe',
+      'wordpress',
+      'docker',
+      'ai',
+    ],
+  },
+  {
     id: 'freepik',
     company: 'Magnific (Freepik Company)',
     role: {
@@ -20,32 +65,31 @@ const entries = [
     },
     highlights: [
       {
-        es: 'Webs y landings de alto impacto: desarrollo frontend para landings públicas de producto (APIs, generación y edición de imágenes/audio/video), sistema de diseño, accesibilidad, optimización de Core Web Vitals, SEO técnico, testing y puesta en producción. Playground interactivo para probar modelos desde el navegador, dashboards de consumo, límites, facturación y gestión de API keys (React, Next.js, TypeScript, React Query, Zustand, Jotai).',
-        en: 'High-impact web applications & landings: frontend development for public product landings (APIs, image/audio/video generation and editing), design system, accessibility, Core Web Vitals optimization, technical SEO, testing and production deployment. Interactive playground to test models from the browser, consumption dashboards, limits, billing and API key management (React, Next.js, TypeScript, React Query, Zustand, Jotai).',
+        es: 'Webs y landings de alto impacto: desarrollo frontend para landings públicas de producto (APIs, generación y edición de imágenes/audio/video), sistema de diseño, accesibilidad, optimización de Core Web Vitals, SEO técnico, testing y puesta en producción. Playground interactivo para probar modelos desde el navegador, dashboards de consumo, límites, facturación y gestión de API keys (React, Next.js, TypeScript, TanStack Query (React Query), Zustand, Jotai).',
+        en: 'High-impact web applications & landings: frontend development for public product landings (APIs, image/audio/video generation and editing), design system, accessibility, Core Web Vitals optimization, technical SEO, testing and production deployment. Interactive playground to test models from the browser, consumption dashboards, limits, billing and API key management (React, Next.js, TypeScript, TanStack Query (React Query), Zustand, Jotai).',
       },
       {
-        es: 'Catálogo multimodal de IA y microservicios en GCP: exposición de +40 modelos y +350 endpoints con FastAPI, servicios bajo DDD / arquitectura hexagonal y APISIX gateway (autenticación, autorización, caché Redis, rate-limiting y procesos asíncronos con alto tráfico).',
-        en: 'Multimodal AI catalog & microservices on GCP: serving 40+ AI models and 350+ endpoints with FastAPI, backend services under DDD / hexagonal architecture, and APISIX gateway (authentication, authorization, Redis caching, rate-limiting, and asynchronous workflows under high traffic).',
+        es: 'Catálogo de IA Generativa multimodal y microservicios en GCP: integración y exposición de +40 modelos y +350 endpoints REST con FastAPI bajo DDD / arquitectura hexagonal y APISIX gateway (autenticación, autorización, caché Redis, rate-limiting y procesos asíncronos con alto tráfico).',
+        en: 'Multimodal Generative AI catalog & microservices on GCP: integrating and serving 40+ models and 350+ REST endpoints with FastAPI under DDD / hexagonal architecture and APISIX gateway (authentication, authorization, Redis caching, rate-limiting, and asynchronous workflows under high traffic).',
       },
       {
-        es: 'Automatización con agentes de IA (Claude Code, skills y commands): pipelines para convertir especificaciones OpenAPI en endpoints FastAPI, reglas de gateway, configuración de precios/créditos, playground y documentación interactiva, reduciendo el tiempo de integración de nuevos modelos de días a minutos.',
-        en: 'AI agent automation (Claude Code, skills & commands): pipelines converting OpenAPI specs into FastAPI endpoints, gateway rules, pricing/credits configuration, playground, and interactive documentation, cutting new model integration time from days to minutes.',
+        es: 'Automatización de procesos con sistemas multiagente (HITL) e integración de LLMs (Claude Code, skills y commands): pipelines para convertir especificaciones OpenAPI en endpoints FastAPI, reglas de gateway, configuración de precios/créditos, playground y documentación interactiva, reduciendo el tiempo de integración de nuevos modelos de días a horas.',
+        en: 'Process automation with multi-agent systems (HITL) & LLM integration (Claude Code, skills & commands): pipelines converting OpenAPI specs into FastAPI endpoints, gateway rules, pricing/credits configuration, playground, and interactive documentation, cutting new model integration time from days to hours.',
       },
       {
-        es: 'Backoffice, gestión de contenido y colaboradores (Freepik/Flaticon): ingeniería full-stack en PHP/Laravel y JS/Vue para moderación de activos digitales, control de accesos, colaboradores y portal fiscal.',
-        en: 'Backoffice, content management and contributors (Freepik/Flaticon): full-stack engineering across PHP/Laravel and JS/Vue for digital asset moderation, access control, contributor management, and tax portal.',
+        es: 'Backoffice, gestión de contenido y colaboradores (Freepik/Flaticon): ingeniería full-stack en Vue (TypeScript) y PHP/Laravel para moderación de activos digitales, control de accesos, colaboradores y portal fiscal.',
+        en: 'Backoffice, content management and contributors (Freepik/Flaticon): full-stack engineering across Vue (TypeScript) and PHP/Laravel for digital asset moderation, access control, contributor management, and tax portal.',
       },
     ],
     tags: [
       'nextjs',
       'react',
       'typescript',
-      'react-query',
+      'tanstack-query',
       'zustand',
       'jotai',
       'vue',
       'ai',
-      'javascript',
       'python',
       'fastapi',
       'openapi',
@@ -74,8 +118,8 @@ const entries = [
     },
     highlights: [
       {
-        es: 'Cadi: plataforma e-commerce de artículos de golf en React / Next.js / Context API / Material UI con servicios REST escalables en Node.js, Express y PostgreSQL.',
-        en: 'Cadi: golf e-commerce platform built with React / Next.js / Context API / Material UI and scalable REST services in Node.js, Express, and PostgreSQL.',
+        es: 'Cadi: plataforma e-commerce de artículos de golf en React / Next.js / Context API / Material UI con pasarela de pago Stripe y servicios REST escalables en Node.js, Express y PostgreSQL.',
+        en: 'Cadi: golf e-commerce platform built with React / Next.js / Context API / Material UI, Stripe payments, and scalable REST services in Node.js, Express, and PostgreSQL.',
       },
       {
         es: 'GDS: plataforma web para gestión operativa, seguimiento de stock y operaciones en puntos de venta en tiempo real (React, Redux, Node.js, SQL Server).',
@@ -99,6 +143,7 @@ const entries = [
       'express',
       'postgresql',
       'sql-server',
+      'stripe',
       'salesforce',
     ],
   },

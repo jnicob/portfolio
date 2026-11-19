@@ -12,7 +12,7 @@ type LanguageListProps = {
  */
 export function LanguageList({ languages, locale }: LanguageListProps) {
   return (
-    <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+    <ul data-language-list className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
       {languages.map((entry) => (
         <li key={entry.id} className="flex items-center gap-1.5">
           <span className="font-semibold text-fg">{entry.language[locale]}:</span>

@@ -64,7 +64,9 @@ describe('ExperienceEntryBlock', () => {
       <ExperienceEntryBlock entry={entry} locale="es" presentLabel={PRESENT_LABEL} hideDates />,
     );
 
-    expect(screen.queryByText(`${entry.start} — ${entry.end}`)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(`${entry.start} — ${entry.end ?? PRESENT_LABEL}`),
+    ).not.toBeInTheDocument();
   });
 
   it('renderiza los tags como píldoras con borde y sin background', () => {

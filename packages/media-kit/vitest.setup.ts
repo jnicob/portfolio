@@ -4,15 +4,15 @@ import { cleanup } from '@testing-library/react';
 
 afterEach(() => cleanup());
 
-// jsdom: pointer capture inexistente/inconsistente; stubs inofensivos para navegador real.
+// jsdom: missing/inconsistent pointer capture; harmless no-op stubs in real browsers.
 Element.prototype.setPointerCapture ??= () => {};
 Element.prototype.releasePointerCapture ??= () => {};
 Element.prototype.hasPointerCapture ??= () => false;
 
-// jsdom no implementa el constructor PointerEvent (https://github.com/jsdom/jsdom/issues/2527):
-// fireEvent.pointerDown/Move cae a `new Event(...)` y descarta clientX/pointerType/button/
-// isPrimary/pointerId. Polyfill mínimo sobre MouseEvent (que sí soporta clientX/clientY/button)
-// solo para el entorno de test; el navegador real siempre trae su propio PointerEvent.
+// jsdom does not implement the PointerEvent constructor (https://github.com/jsdom/jsdom/issues/2527):
+// fireEvent.pointerDown/Move falls back to `new Event(...)` and drops clientX/pointerType/button/
+// isPrimary/pointerId. Minimal polyfill over MouseEvent (which supports clientX/clientY/button)
+// for the test environment only; real browsers provide a native PointerEvent.
 if (typeof globalThis.PointerEvent === 'undefined') {
   class PointerEventPolyfill extends MouseEvent implements PointerEvent {
     pointerId: number;

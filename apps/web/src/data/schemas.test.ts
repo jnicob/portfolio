@@ -505,7 +505,7 @@ describe('contactSchema (nico-zod)', () => {
     expect(contactSchema.safeParse(validContact).success).toBe(true);
     expect(contactSchema.safeParse({ ...validContact, phone: '' }).success).toBe(true);
     expect(contactSchema.safeParse({ ...validContact, phone: undefined }).success).toBe(true);
-    expect(contactSchema.safeParse({ ...validContact, phone: '672814490' }).success).toBe(true);
+    expect(contactSchema.safeParse({ ...validContact, phone: '600123456' }).success).toBe(true);
     expect(contactSchema.safeParse({ ...validContact, phone: '(011) 4567-8900' }).success).toBe(
       true,
     );

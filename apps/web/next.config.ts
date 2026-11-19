@@ -12,6 +12,8 @@ if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_SITE_URL) 
 
 const nextConfig: NextConfig = {
   trailingSlash: true,
+  // Optional isolated distDir (e.g. `.next-cv-pdf`) so scripts can run alongside `pnpm run dev`.
+  ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
   // 'export' mode: pure static export (shared hosting). 'node' mode: SSR + route handlers.
   ...(mode === 'export' ? { output: 'export' as const } : {}),
   // output:'export' does not support the server-side image optimizer.

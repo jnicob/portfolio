@@ -12,12 +12,12 @@ type EducationListProps = {
  */
 export function EducationList({ education, locale }: EducationListProps) {
   return (
-    <ul className="flex flex-col gap-4">
+    <ul className="flex flex-col gap-4 print:gap-1.5">
       {education.map((entry) => (
         <li key={entry.id} className="flex flex-col gap-0.5">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
             <h3 className="font-semibold text-fg">{entry.degree[locale]}</h3>
-            <p className="text-sm text-fg-muted">
+            <p className="shrink-0 text-sm text-fg-muted">
               {entry.end ? `${entry.start} — ${entry.end}` : entry.start}
             </p>
           </div>

@@ -1,5 +1,6 @@
 node_modules/
 .next/
+.next-cv-pdf/
 out/
 dist/
 coverage/
@@ -11,6 +12,6 @@ test-results/
 playwright-report/
 .superpowers/
 
-# CV con PII: fuente local, nunca versionada (spec F3 §1)
+# CV with PII: local source, never tracked in Git (spec F3 §1)
 apps/web/content/cv/
 .playwright-mcp/

@@ -14,7 +14,7 @@
     "linkedin": "LinkedIn"
   },
   "share": {
-    "share": "Share this view",
+    "share": "Share",
     "copied": "Link copied",
     "error": "Could not copy"
   },
@@ -91,10 +91,10 @@
       "tooling": "Tooling"
     },
     "viewsLabel": "CV view",
-    "print": "Print CV",
-    "briefTitle": "Professional Summary",
-    "showBrief": "Show summary",
-    "hideBrief": "Hide summary",
+    "downloadPdf": "Download",
+    "privatePdfError": "Could not download the private CV PDF (run `pnpm run cv:pdf`).",
+    "privatePdfFallback": "Download public PDF (without email/phone)",
+    "print": "Print",
     "showPhoto": "Show photo",
     "hidePhoto": "Hide photo",
     "views": {

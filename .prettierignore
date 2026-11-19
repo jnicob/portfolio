@@ -1,8 +1,10 @@
 pnpm-lock.yaml
 .next/
+.next-cv-pdf/
 out/
 dist/
 coverage/
 .superpowers/
 .github/copilot-instructions.md
 apps/web/next-env.d.ts
+apps/web/public/cv/*.pdf

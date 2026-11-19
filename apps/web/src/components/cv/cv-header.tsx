@@ -13,10 +13,17 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 import { ProfileSummary } from '@/components/home/profile-summary';
 
+export type CvPrivateContact = {
+  email?: string;
+  phone?: string;
+};
+
 type CvHeaderProps = {
   locale: Locale;
-  showBriefLabel?: string;
-  hideBriefLabel?: string;
+  privateContact?: CvPrivateContact;
+  /** Controlled photo visibility (owned by CvContent so Download PDF stays in sync). */
+  showPhoto?: boolean;
+  onTogglePhoto?: () => void;
   showPhotoLabel?: string;
   hidePhotoLabel?: string;
   contactFormLabel?: string;
@@ -24,38 +31,52 @@ type CvHeaderProps = {
 };
 
 /**
+ * Strips scheme, optional `www.` prefix, and trailing slash for compact display
+ * while keeping the full canonical URL in `href`.
+ */
+function formatDisplayUrl(url: string): string {
+  return url.replace(/^https?:\/\/(?:www\.)?/, '').replace(/\/$/, '');
+}
+
+/**
  * Main CV Header (Screen and Print):
- * - Displays prominent name ("Nico Behm") and professional headline.
- * - Supports an optional profile photo (interactive toggle, off by default for ATS).
- * - Displays public contact links (GitHub, LinkedIn, Website, Contact form).
- * - Provides interactive toggles for brief and photo customization.
- * - Strictly preserves toggle state in @media print and across locale switches.
+ * - Left column: optional avatar, full name, professional headline, and location (when private contact is present).
+ * - Right column: optional local-only email/phone (never bundled in prod), shortened public links, and location (public mode).
+ * - Always displays the professional summary (ATS keywords & Core Tech).
+ * - Provides an optional profile photo toggle (off by default for international ATS).
  */
 export function CvHeader({
   locale,
-  showBriefLabel = 'Mostrar resumen',
-  hideBriefLabel = 'Ocultar resumen',
+  privateContact,
+  showPhoto: controlledShowPhoto,
+  onTogglePhoto,
   showPhotoLabel = 'Incluir foto',
   hidePhotoLabel = 'Quitar foto',
   contactFormLabel,
   photoSrc = '/profile/avatar-cv.jpg',
 }: CvHeaderProps) {
-  const [showBrief, setShowBrief] = useState(true);
-  const [showPhoto, setShowPhoto] = useState(false);
+  const [uncontrolledShowPhoto, setUncontrolledShowPhoto] = useState(false);
+  const isControlled = controlledShowPhoto !== undefined;
+  const showPhoto = isControlled ? controlledShowPhoto : uncontrolledShowPhoto;
 
   useEffect(() => {
+    if (isControlled) return;
     try {
       const stored = localStorage.getItem(STORAGE_KEYS.cvPhoto);
       if (stored !== null) {
-        setShowPhoto(stored === 'true');
+        setUncontrolledShowPhoto(stored === 'true');
       }
     } catch {
       /* Storage not available (e.g. private browsing mode) */
     }
-  }, []);
+  }, [isControlled]);
 
   const handleTogglePhoto = () => {
-    setShowPhoto((prev) => {
+    if (onTogglePhoto) {
+      onTogglePhoto();
+      return;
+    }
+    setUncontrolledShowPhoto((prev) => {
       const next = !prev;
       try {
         localStorage.setItem(STORAGE_KEYS.cvPhoto, String(next));
@@ -67,15 +88,35 @@ export function CvHeader({
   };
 
   const displayName = profile.fullName ? profile.fullName[locale] : profile.name;
+  const email = privateContact?.email?.trim() || undefined;
+  const phone = privateContact?.phone?.trim() || undefined;
+  const phoneHref = phone ? `tel:${phone.replace(/[^\d+]/g, '')}` : undefined;
+  const hasPrivateContact = Boolean(email || phone);
+
+  const locationNode = profile.location ? (
+    <>
+      <svg
+        viewBox="0 0 24 24"
+        width={14}
+        height={14}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+        className="shrink-0 text-fg-muted print:text-fg"
+      >
+        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+        <circle cx="12" cy="10" r="3" />
+      </svg>
+      <span className="whitespace-nowrap">{profile.location[locale]}</span>
+    </>
+  ) : null;
 
   return (
     <header className="flex flex-col gap-2 border-b border-border pb-2.5 print:gap-1.5">
-      <div
-        className={cn(
-          'flex flex-col pb-2.5 gap-4 sm:flex-row sm:items-start sm:justify-between',
-          showBrief && 'border-b border-border',
-        )}
-      >
+      <div className="flex flex-col border-b border-border pb-2.5 gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-center min-w-0">
           <div
             aria-hidden={!showPhoto}
@@ -109,18 +150,31 @@ export function CvHeader({
             <h1 className="text-5xl font-bold tracking-tight text-fg print:text-4xl">
               {displayName}
             </h1>
-            <p className="text-xl text-fg-muted print:text-lg print:font-semibold print:text-fg font-medium">
+            <p className="text-xl text-fg-muted print:text-base print:font-semibold print:text-fg font-medium">
               {profile.headline[locale]}
             </p>
+            {hasPrivateContact && locationNode && (
+              <div className="mt-1.5 flex items-center gap-1.5 text-sm text-fg-muted print:mt-0.5 print:text-xs print:text-fg">
+                {locationNode}
+              </div>
+            )}
           </div>
         </div>
-        <div className="flex flex-col gap-1.5 text-sm text-fg-muted items-start">
-          {profile.location && (
-            <div className="flex items-center gap-2 print:text-fg">
+        <div
+          data-testid="cv-contact-column"
+          className="shrink-0 flex flex-col gap-1.5 text-sm text-fg-muted items-start print:gap-0.5 print:text-xs"
+        >
+          {!hasPrivateContact && locationNode && (
+            <div className="flex items-center gap-2 text-fg-muted print:text-fg">
+              {locationNode}
+            </div>
+          )}
+          {email && (
+            <div className="flex items-center gap-2">
               <svg
                 viewBox="0 0 24 24"
-                width={15}
-                height={15}
+                width={14}
+                height={14}
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={2}
@@ -129,18 +183,47 @@ export function CvHeader({
                 aria-hidden
                 className="shrink-0 text-fg-muted print:text-fg"
               >
-                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                <circle cx="12" cy="10" r="3" />
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
               </svg>
-              <span>{profile.location[locale]}</span>
+              <a
+                href={`mailto:${email}`}
+                className="text-accent hover:underline print:text-fg print:underline whitespace-nowrap"
+              >
+                {email}
+              </a>
+            </div>
+          )}
+          {phone && phoneHref && (
+            <div className="flex items-center gap-2">
+              <svg
+                viewBox="0 0 24 24"
+                width={14}
+                height={14}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+                className="shrink-0 text-fg-muted print:text-fg"
+              >
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <a
+                href={phoneHref}
+                className="text-accent hover:underline print:text-fg print:underline whitespace-nowrap"
+              >
+                {phone}
+              </a>
             </div>
           )}
           {profile.links.website && (
             <div className="flex items-center gap-2">
               <svg
                 viewBox="0 0 24 24"
-                width={15}
-                height={15}
+                width={14}
+                height={14}
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={2}
@@ -157,17 +240,17 @@ export function CvHeader({
                 href={profile.links.website}
                 target="_blank"
                 rel="noreferrer"
-                className="text-accent hover:underline print:text-fg print:underline"
+                className="text-accent hover:underline print:text-fg print:underline whitespace-nowrap"
               >
-                {profile.links.website}
+                {formatDisplayUrl(profile.links.website)}
               </a>
             </div>
           )}
           <div className="flex items-center gap-2">
             <svg
               viewBox="0 0 24 24"
-              width={15}
-              height={15}
+              width={14}
+              height={14}
               fill="none"
               stroke="currentColor"
               strokeWidth={2}
@@ -183,16 +266,16 @@ export function CvHeader({
               href={profile.links.github}
               target="_blank"
               rel="noreferrer"
-              className="text-accent hover:underline print:text-fg print:underline"
+              className="text-accent hover:underline print:text-fg print:underline whitespace-nowrap"
             >
-              {profile.links.github}
+              {formatDisplayUrl(profile.links.github)}
             </a>
           </div>
           <div className="flex items-center gap-2">
             <svg
               viewBox="0 0 24 24"
-              width={15}
-              height={15}
+              width={14}
+              height={14}
               fill="none"
               stroke="currentColor"
               strokeWidth={2}
@@ -209,16 +292,16 @@ export function CvHeader({
               href={profile.links.linkedin}
               target="_blank"
               rel="noreferrer"
-              className="text-accent hover:underline print:text-fg print:underline"
+              className="text-accent hover:underline print:text-fg print:underline whitespace-nowrap"
             >
-              {profile.links.linkedin}
+              {formatDisplayUrl(profile.links.linkedin)}
             </a>
           </div>
           <div className="flex items-center gap-2 no-print">
             <svg
               viewBox="0 0 24 24"
-              width={15}
-              height={15}
+              width={14}
+              height={14}
               fill="none"
               stroke="currentColor"
               strokeWidth={2}
@@ -238,53 +321,6 @@ export function CvHeader({
       </div>
 
       <div className="flex items-center gap-2 no-print mt-1">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setShowBrief((prev) => !prev)}
-          className="text-xs text-fg-muted hover:text-fg flex items-center gap-1.5 px-2 h-7"
-        >
-          {showBrief ? (
-            <>
-              <svg
-                viewBox="0 0 24 24"
-                width={14}
-                height={14}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden
-                className="shrink-0"
-              >
-                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                <line x1="1" y1="1" x2="23" y2="23" />
-              </svg>
-              <span>{hideBriefLabel}</span>
-            </>
-          ) : (
-            <>
-              <svg
-                viewBox="0 0 24 24"
-                width={14}
-                height={14}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden
-                className="shrink-0"
-              >
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="13" r="3" />
-              </svg>
-              <span>{showBriefLabel}</span>
-            </>
-          )}
-        </Button>
-
         <Button
           variant="ghost"
           size="sm"
@@ -333,18 +369,8 @@ export function CvHeader({
         </Button>
       </div>
 
-      {/* Smooth animated accordion container for the professional brief */}
-      <div
-        className={cn(
-          'grid transition-all duration-300 ease-in-out',
-          showBrief
-            ? 'mt-1 mb-2 grid-rows-[1fr] opacity-100 print:my-1'
-            : 'my-0 grid-rows-[0fr] opacity-0 print:hidden',
-        )}
-      >
-        <div className="overflow-hidden">
-          <ProfileSummary summary={profile.summary} locale={locale} variant="cv" />
-        </div>
+      <div className="mt-1 mb-2 print:my-1">
+        <ProfileSummary summary={profile.summary} locale={locale} variant="cv" />
       </div>
     </header>
   );
