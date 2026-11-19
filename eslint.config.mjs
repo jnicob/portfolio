@@ -8,6 +8,7 @@ export default tseslint.config(
     ignores: [
       '**/node_modules/',
       '**/.next/',
+      '**/.next-cv-pdf/',
       '**/out/',
       '**/dist/',
       '**/coverage/',
@@ -28,6 +29,20 @@ export default tseslint.config(
     files: ['apps/web/src/components/showcase/**/*.{ts,tsx}'],
     rules: {
       '@next/next/no-img-element': 'off',
+    },
+  },
+  {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        Buffer: 'readonly',
+        URL: 'readonly',
+        clearTimeout: 'readonly',
+        console: 'readonly',
+        fetch: 'readonly',
+        process: 'readonly',
+        setTimeout: 'readonly',
+      },
     },
   },
   prettier,
