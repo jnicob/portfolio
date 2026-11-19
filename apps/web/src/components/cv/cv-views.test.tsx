@@ -1,8 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { experience } from '@/data/experience';
-import type { CvStrings } from './cv-standard';
-import { CvStandard } from './cv-standard';
+import { CvStandard, type CvStrings } from './cv-standard';
 import { CvCompact } from './cv-compact';
 import { CvTimeline } from './cv-timeline';
 
@@ -28,32 +27,38 @@ const VIEWS = [
   { name: 'CvStandard', Component: CvStandard },
   { name: 'CvCompact', Component: CvCompact },
   { name: 'CvTimeline', Component: CvTimeline },
-];
+] as const;
 
-describe('las 3 vistas del CV', () => {
+describe('the 3 CV views', () => {
   it.each(VIEWS)(
-    '$name renderiza exactamente una entrada de experiencia por dato en su sección',
-    ({ Component }) => {
+    '$name renders every experience entry (including 2026 independent work)',
+    ({ name, Component }) => {
       render(<Component locale="en" strings={STRINGS} />);
-      // Scoped to experience section: skills/education h3s cannot
-      // mask a missing experience entry.
-      const section = screen
-        .getByRole('heading', { level: 2, name: STRINGS.experienceTitle })
-        .closest('section');
+      const heading = screen.getByRole('heading', { level: 2, name: STRINGS.experienceTitle });
+      const section = heading.closest('section');
       expect(section).not.toBeNull();
       const headings = within(section as HTMLElement).getAllByRole('heading', { level: 3 });
       expect(headings).toHaveLength(experience.length);
+      expect(within(section as HTMLElement).getByText(/Freelance/)).toBeInTheDocument();
+      if (name !== 'CvCompact') {
+        expect(within(section as HTMLElement).getByText(/Lauquen Transporte/)).toBeInTheDocument();
+        expect(within(section as HTMLElement).getByText(/Hotel Monte Cervino/)).toBeInTheDocument();
+        expect(within(section as HTMLElement).getByText(/Manos Activas/)).toBeInTheDocument();
+      }
+      expect(
+        within(section as HTMLElement).queryByText(/@nicobehm\/media-kit/),
+      ).not.toBeInTheDocument();
     },
   );
 
-  it.each(VIEWS)('$name renderiza la sección de idiomas', ({ Component }) => {
+  it.each(VIEWS)('$name renders education and languages', ({ Component }) => {
     render(<Component locale="en" strings={STRINGS} />);
     expect(screen.getByRole('heading', { name: STRINGS.languagesTitle })).toBeInTheDocument();
     expect(screen.getByText('Spanish:')).toBeInTheDocument();
     expect(screen.getByText('English:')).toBeInTheDocument();
   });
 
-  it('CvCompact no renderiza controles interactivos (print-safe)', () => {
+  it('CvCompact renders no interactive controls (print-safe)', () => {
     render(<CvCompact locale="en" strings={STRINGS} />);
     expect(screen.queryAllByRole('button')).toHaveLength(0);
   });
@@ -73,10 +78,11 @@ describe('las 3 vistas del CV', () => {
   });
 });
 
-describe('CvTimeline — fecha en badge', () => {
-  it('muestra la fecha en badge dentro de la card y no duplicada', () => {
+describe('CvTimeline — date badge', () => {
+  it('renders the date range badge inside the card without duplication', () => {
     render(<CvTimeline locale="es" strings={STRINGS} />);
-    const freepikCard = screen.getByText(experience[0]!.company).closest('li')!;
+    const freepik = experience.find((entry) => entry.id === 'freepik')!;
+    const freepikCard = screen.getByText(freepik.company).closest('li')!;
     // The range Badge has data-testid="timeline-date"
     expect(within(freepikCard).getByTestId('timeline-date')).toHaveTextContent(/2022/);
     // ExperienceEntryBlock does not repaint the range (hideDates)

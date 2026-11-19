@@ -100,7 +100,7 @@ const entries = [
       en: 'Interactive dashboard for Freepik/Magnific API developers and enterprise clients: real-time consumption charts, budget and quota management, error monitoring, and autonomous API key governance with multi-user enterprise support.',
     },
     role: { es: 'Ingeniero frontend', en: 'Frontend engineer' },
-    stack: ['nextjs', 'react', 'typescript', 'react-query', 'tailwind'],
+    stack: ['nextjs', 'react', 'typescript', 'react-query', 'tailwind', 'stripe'],
     links: { live: 'https://www.magnific.com/api', docs: 'https://docs.magnific.com' },
     metrics: [],
     featured: false,
@@ -130,11 +130,11 @@ const entries = [
     slug: 'cadi',
     title: { es: 'Cadi — e-commerce de golf', en: 'Cadi — golf e-commerce' },
     summary: {
-      es: 'Plataforma e-commerce responsive de artículos de golf. Componentes reutilizables con React / Next.js / Material UI y servicios REST con Node.js / Express / PostgreSQL / Sequelize / Swell.',
-      en: 'Responsive golf e-commerce platform. Reusable components with React / Next.js / Material UI and REST services with Node.js / Express / PostgreSQL / Sequelize / Swell.',
+      es: 'Plataforma e-commerce responsive de artículos de golf. Componentes reutilizables con React / Next.js / Material UI, pagos con Stripe y servicios REST con Node.js / Express / PostgreSQL / Sequelize / Swell.',
+      en: 'Responsive golf e-commerce platform. Reusable components with React / Next.js / Material UI, Stripe payments, and REST services with Node.js / Express / PostgreSQL / Sequelize / Swell.',
     },
     role: { es: 'Senior full-stack developer', en: 'Senior full-stack developer' },
-    stack: ['react', 'nextjs', 'redux', 'nodejs', 'express', 'postgresql'],
+    stack: ['react', 'nextjs', 'redux', 'nodejs', 'express', 'postgresql', 'stripe'],
     links: { live: 'https://www.cadigolf.com/' },
     metrics: [],
     featured: false,
@@ -261,8 +261,8 @@ const entries = [
   {
     slug: 'hotel-monte-cervino',
     title: {
-      es: 'Hotel Monte Cervino — web institucional y reservas',
-      en: 'Hotel Monte Cervino — hospitality website & booking',
+      es: 'Hotel Monte Cervino — web de hotel y reservas',
+      en: 'Hotel Monte Cervino — hotel website & booking',
     },
     summary: {
       es: 'Sitio web institucional trilingüe (ES, EN, PT) para el Hotel Monte Cervino (Bariloche, Argentina; montecervino.net), diseñado para máxima velocidad y SEO local. Arquitectura estática con Next.js (App Router / SSG), TypeScript, Tailwind CSS y MDX. Incluye pipeline automatizado de procesamiento y optimización de imágenes (Sharp), integración con motor de reservas online (Cloudbeds) y pipeline CI/CD con GitHub Actions para despliegue automatizado sobre hosting compartido (SSH/FTPS).',

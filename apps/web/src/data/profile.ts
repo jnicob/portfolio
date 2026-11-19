@@ -7,18 +7,18 @@ export const profile = profileSchema.parse({
     en: 'Juan Nicolas Behm',
   },
   headline: {
-    es: 'Senior Full-Stack & AI Engineer | Analista Funcional Técnico — TypeScript, React/Next.js, Node.js, Python, PHP, APIs & Cloud',
-    en: 'Senior Full-Stack & AI Engineer | Technical Functional Analyst — TypeScript, React/Next.js, Node.js, Python, PHP, APIs & Cloud',
+    es: 'Senior Frontend Engineer · Full-Stack & AI Engineer · Analista Técnico — TypeScript, React/Next.js, Vue, Node.js & AI Agents',
+    en: 'Senior Frontend Engineer · Full-Stack & AI Engineer · Technical Analyst — TypeScript, React/Next.js, Vue, Node.js & AI Agents',
   },
   summary: {
     paragraphs: {
       es: [
-        'Ingeniero en Informática con más de 15 años de trayectoria diseñando, evolucionando y construyendo soluciones de software de extremo a extremo: desde interfaces web modernas, sistemas de gestión hospitalaria (HIS/EHR) y backoffices transaccionales hasta arquitecturas de microservicios y plataformas de APIs REST distribuidas en la nube (+2M de usuarios y +350 endpoints en producción).',
-        'Aporto valor uniendo mentalidad de producto y análisis funcional (traduciendo requerimientos de negocio en especificaciones robustas y contratos de APIs) con un riguroso estándar de ingeniería (TDD, SOLID, Clean Code, seguridad, observabilidad y rendimiento). Además, integro agentes de IA para acelerar el ciclo de desarrollo y asegurar testing, buenas prácticas y seguridad, sin comprometer la fiabilidad a largo plazo.',
+        'Ingeniero en Informática con +15 años diseñando y construyendo soluciones de software para clientes de España, EE. UU. y Latinoamérica: desde interfaces web de alto tráfico, sistemas de diseño y plataformas SaaS/e-commerce hasta backoffices transaccionales, sistemas críticos de salud (HIS/EHR) y plataformas de microservicios, APIs e IA en la nube (+2M de usuarios y +350 endpoints).',
+        'Aporto valor uniendo mentalidad de producto y análisis funcional con un riguroso estándar de ingeniería (TDD, Clean Code, accesibilidad, observabilidad y rendimiento). Integro agentes de IA (Claude Code, Codex, MCPs) para automatizar procesos y acelerar entregas, garantizando testing y seguridad sin comprometer la fiabilidad del producto.',
       ],
       en: [
-        'Computer Engineer with 15+ years of experience designing, building, and evolving end-to-end software solutions: from modern web interfaces, hospital information systems (HIS/EHR), and transactional backoffices to microservice architectures and distributed Cloud REST API platforms (2M+ users and 350+ production endpoints).',
-        'I deliver value by pairing product thinking and functional analysis (translating business requirements into robust technical specifications and API contracts) with solid engineering standards (TDD, SOLID, Clean Code, security, observability, and performance). In addition, I leverage AI agents to accelerate development cycles and enforce testing, best practices, and security, while ensuring long-term system reliability.',
+        'Computer Engineer with 15+ years designing and building software solutions for clients across Spain, the US, and Latin America: from high-traffic web interfaces, design systems, and SaaS/e-commerce platforms to transactional backoffices, mission-critical healthcare systems (HIS/EHR), and cloud microservices, API & AI platforms (2M+ users and 350+ endpoints).',
+        'I deliver value by combining product mindset and functional analysis with rigorous engineering standards (TDD, Clean Code, accessibility, observability, and performance). I integrate AI agents (Claude Code, Codex, MCPs) to automate workflows and accelerate delivery while ensuring testing and security without compromising product reliability.',
       ],
     },
     coreTechTitle: {
@@ -29,36 +29,36 @@ export const profile = profileSchema.parse({
       {
         label: { es: 'Lenguajes & Frameworks', en: 'Languages & Frameworks' },
         value: {
-          es: 'JavaScript, TypeScript, HTML5, CSS3, React / Next.js (Hooks, React Query, Zustand, Redux), Vue, Node.js, PHP (Laravel, CodeIgniter, WordPress), Python (FastAPI), Java (Spring).',
-          en: 'JavaScript, TypeScript, HTML5, CSS3, React / Next.js (Hooks, React Query, Zustand, Redux), Vue, Node.js, PHP (Laravel, CodeIgniter, WordPress), Python (FastAPI), Java (Spring).',
+          es: 'JavaScript, TypeScript, React / Next.js (Hooks, TanStack Query, Zustand, Jotai, Redux), Vue 2/3, Node.js (Express), HTML5, CSS3, PHP (Laravel, CodeIgniter), Python (FastAPI), Java (Spring).',
+          en: 'JavaScript, TypeScript, React / Next.js (Hooks, TanStack Query, Zustand, Jotai, Redux), Vue 2/3, Node.js (Express), HTML5, CSS3, PHP (Laravel, CodeIgniter), Python (FastAPI), Java (Spring).',
         },
       },
       {
         label: { es: 'AI & API Platform', en: 'AI & API Platform' },
         value: {
-          es: 'API Gateways (APISIX), OpenAPI, Auth & RBAC, Orquestación de Agentes de IA (Claude Code, Codex, Gemini), Spec-Driven Development (SDD), automatización con skills y commands.',
-          en: 'API Gateways (APISIX), OpenAPI, Auth & RBAC, AI Agent Orchestration (Claude Code, Codex, Gemini), Spec-Driven Development (SDD), custom skills and commands automation.',
+          es: 'LLMs e IA Generativa, sistemas multiagente, Model Context Protocol (MCP), subagentes y automatización (Claude Code, Codex, Gemini), SDD, skills y commands, API Gateways (APISIX), OpenAPI, Auth & RBAC.',
+          en: 'LLMs & Generative AI, multi-agent systems, Model Context Protocol (MCP), subagents & automation (Claude Code, Codex, Gemini), SDD, custom skills and commands, API Gateways (APISIX), OpenAPI, Auth & RBAC.',
         },
       },
       {
         label: { es: 'Datos & Middleware', en: 'Data & Middleware' },
         value: {
-          es: 'SQL (PostgreSQL, MySQL, MariaDB, SQL Server), NoSQL (MongoDB, Redis), ERD, ORMs (Eloquent, Doctrine, Prisma, Drizzle, Hibernate), APIs RESTful, HL7 (V2, V3 Infobuttons, FHIR), Mirth Connect, CDSS, SNOMED CT, LOINC, CIE-10.',
-          en: 'SQL (PostgreSQL, MySQL, MariaDB, SQL Server), NoSQL (MongoDB, Redis), ERD, ORMs (Eloquent, Doctrine, Prisma, Drizzle, Hibernate), RESTful APIs, HL7 (V2, V3 Infobuttons, FHIR), Mirth Connect, CDSS, SNOMED CT, LOINC, ICD-10.',
+          es: 'SQL (PostgreSQL, MySQL, MariaDB, SQL Server), NoSQL (MongoDB, Redis), ERD, ORMs (Drizzle, Prisma, Eloquent, Doctrine, Hibernate), APIs RESTful, HL7 (V2, V3 Infobuttons, FHIR), Mirth Connect, CDSS, SNOMED CT, LOINC, CIE-10.',
+          en: 'SQL (PostgreSQL, MySQL, MariaDB, SQL Server), NoSQL (MongoDB, Redis), ERD, ORMs (Drizzle, Prisma, Eloquent, Doctrine, Hibernate), RESTful APIs, HL7 (V2, V3 Infobuttons, FHIR), Mirth Connect, CDSS, SNOMED CT, LOINC, ICD-10.',
         },
       },
       {
         label: { es: 'Tooling & Calidad', en: 'Tooling & Quality' },
         value: {
-          es: 'Tailwind CSS, Bootstrap, AJAX / jQuery, DOM, Vitest / Jest, PHPUnit, Git, Docker, CI/CD, GCP, OpenSearch / Kibana.',
-          en: 'Tailwind CSS, Bootstrap, AJAX / jQuery, DOM, Vitest / Jest, PHPUnit, Git, Docker, CI/CD, GCP, OpenSearch / Kibana.',
+          es: 'Tailwind CSS, Radix UI, Bootstrap, Vitest / Jest, Testing Library, PHPUnit, Git, Docker, Kubernetes, CI/CD (GitHub Actions), GCP, OpenSearch / Kibana.',
+          en: 'Tailwind CSS, Radix UI, Bootstrap, Vitest / Jest, Testing Library, PHPUnit, Git, Docker, Kubernetes, CI/CD (GitHub Actions), GCP, OpenSearch / Kibana.',
         },
       },
       {
         label: { es: 'Arquitectura & Prácticas', en: 'Architecture & Practices' },
         value: {
-          es: 'TDD, SOLID, Clean Code, Microservicios, Arq. Hexagonal, MVC, DDD, sistema de diseño, accesibilidad (WCAG), SCRUM.',
-          en: 'TDD, SOLID, Clean Code, Microservices, Hexagonal Architecture, MVC, DDD, design system, accessibility (WCAG), SCRUM.',
+          es: 'TDD, SOLID, Clean Code, Design Systems, accesibilidad (WCAG AA), SEO técnico (SSR/SSG, Core Web Vitals), Microservicios, Arq. Hexagonal, MVC, DDD, SCRUM.',
+          en: 'TDD, SOLID, Clean Code, Design Systems, accessibility (WCAG AA), Technical SEO (SSR/SSG, Core Web Vitals), Microservices, Hexagonal Arch., MVC, DDD, SCRUM.',
         },
       },
     ],

@@ -50,6 +50,11 @@ describe('seo', () => {
     expect(ld.knowsAbout).toContain('APISIX');
     expect(ld.knowsAbout).toContain('Redis');
     expect(ld.knowsAbout).toContain('Drizzle ORM');
+    expect(ld.knowsAbout).toContain('TanStack Query');
+    expect(ld.knowsAbout).toContain('Design Systems');
+    expect(ld.knowsAbout).toContain('WCAG Accessibility');
+    expect(ld.knowsAbout).toContain('Technical SEO');
+    expect(ld.knowsAbout).toContain('Model Context Protocol (MCP)');
     expect(JSON.stringify(ld)).not.toMatch(/@[\w-]+\.[a-z]{2,}/i);
   });
 
